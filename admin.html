@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>RODAX - Panel de Administración</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-100 font-sans h-screen overflow-hidden">
+
+    <div id="login-screen" class="fixed inset-0 bg-slate-900 flex items-center justify-center z-50 transition-opacity">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-black text-slate-800">RODAX <span class="text-blue-600">ADMIN</span></h2>
+                <p class="text-slate-500 mt-2 text-sm font-medium">Control de Pagos y Marketplace</p>
+            </div>
+            
+            <form id="admin-login-form" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Email</label>
+                    <input type="email" id="admin-email" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all" placeholder="admin@rodax.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Contraseña</label>
+                    <input type="password" id="admin-password" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all" placeholder="admin123">
+                </div>
+                <button type="submit" id="btn-login" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-colors mt-2 flex justify-center items-center">
+                    Entrar al Panel
+                </button>
+                <div id="login-error" class="text-red-500 text-sm font-bold text-center mt-3 hidden">Credenciales incorrectas.</div>
+            </form>
+        </div>
+    </div>
+
+    <div id="admin-panel" class="hidden p-8 max-w-7xl mx-auto h-full flex flex-col">
+        <div class="flex justify-between items-center mb-8 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+            <h1 class="text-2xl font-black text-slate-800">RODAX <span class="text-blue-600">ADMIN</span></h1>
+            <div class="flex space-x-4">
+                <button onclick="cargarTodo()" class="bg-blue-50 text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-xl font-bold flex items-center transition-colors">
+                    <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i> Refrescar
+                </button>
+                <button onclick="cerrarSesionAdmin()" class="bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-xl font-bold flex items-center transition-colors">
+                    <i data-lucide="log-out" class="w-4 h-4 mr-2"></i> Salir
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex-1 overflow-hidden flex flex-col">
+            <h2 class="text-xl font-bold mb-6 flex items-center"><i data-lucide="list" class="mr-2 text-slate-400"></i> Gestión de Reservas</h2>
+            <div class="overflow-y-auto flex-1 pr-2">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-slate-400 text-xs uppercase bg-slate-50 sticky top-0 z-10 shadow-sm">
+                            <th class="p-4 font-bold rounded-tl-xl w-1/5">Cliente</th>
+                            <th class="p-4 font-bold w-1/3">Ruta, Fecha y Detalles</th>
+                            <th class="p-4 font-bold w-1/6">Importes</th>
+                            <th class="p-4 font-bold w-1/5">Estado Actual</th>
+                            <th class="p-4 font-bold rounded-tr-xl text-center w-40">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-admin">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-modal" class="fixed inset-0 bg-slate-900/80 z-[100] flex items-center justify-center p-4 hidden backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+            <div class="flex justify-between items-center p-6 border-b border-slate-100 bg-slate-50">
+                <h3 class="text-xl font-black text-slate-800 flex items-center"><i data-lucide="edit" class="w-5 h-5 mr-2 text-blue-600"></i> Editar Mudanza</h3>
+                <button onclick="cerrarModalEdicion()" class="text-slate-400 hover:text-slate-700 transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto flex-1">
+                <form id="form-edicion" class="space-y-4">
+                    <input type="hidden" id="edit-id">
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nombre</label>
+                            <input type="text" id="edit-nombre" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Teléfono</label>
+                            <input type="text" id="edit-telefono" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 outline-none text-sm">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Email</label>
+                            <input type="email" id="edit-email" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 outline-none text-sm">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-100">
+                        <div class="col-span-2">
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Origen</label>
+                            <input type="text" id="edit-origen" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 outline-none text-sm">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Destino</label>
+                            <input type="text" id="edit-destino" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Kilómetros</label>
+                            <input type="number" step="0.1" id="edit-km" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 outline-none text-sm font-bold text-blue-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Fecha</label>
+                            <input type="date" id="edit-fecha" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 outline-none text-sm">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Volumen</label>
+                            <input type="text" id="edit-volumen" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 outline-none text-sm">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-100">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Precio Total (€)</label>
+                            <input type="text" id="edit-precio" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 outline-none text-sm font-black">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Reserva Cobrada (€)</label>
+                            <input type="text" id="edit-reserva" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 outline-none text-sm font-bold text-orange-600">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Estado</label>
+                            <select id="edit-estado" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 outline-none text-sm font-bold">
+                                <option value="Pendiente de Pago">Pendiente de Pago</option>
+                                <option value="Disponible">Disponible (En Marketplace)</option>
+                                <option value="Asignada">Asignada (En curso)</option>
+                                <option value="Completada">Completada</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="p-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+                <button onclick="cerrarModalEdicion()" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 hover:bg-slate-200 transition-colors text-sm">Cancelar</button>
+                <button onclick="guardarEdicion()" id="btn-guardar-edicion" class="px-6 py-2.5 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-md transition-colors text-sm flex items-center">
+                    <i data-lucide="save" class="w-4 h-4 mr-2"></i> Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. CREDENCIALES
+        const ADMIN_EMAIL = 'admin@rodax.com';
+        const ADMIN_PASS = 'admin123';
+
+        // 2. CONFIGURACIÓN SUPABASE
+        const URL_DB = 'https://fitwaumzrdvsqozlzlit.supabase.co';
+        const KEY_DB = 'sb_publishable_DfBOPKC1US-oy8-_O3hu6w__RBAJGWY';
+        const dbClient = window.supabase.createClient(URL_DB, KEY_DB);
+
+        // Variables Globales
+        let listaMudanzas = []; 
+        let mapaTransportistas = {}; // NUEVO: Para guardar y asociar a los transportistas
+
+        // UI
+        const loginScreen = document.getElementById('login-screen');
+        const adminPanel = document.getElementById('admin-panel');
+        const loginForm = document.getElementById('admin-login-form');
+        const loginError = document.getElementById('login-error');
+        const editModal = document.getElementById('edit-modal');
+
+        lucide.createIcons();
+
+        // 3. LOGIN MANUAL
+        if(localStorage.getItem('rodax_admin_logged') === 'true') {
+            mostrarPanel();
+        }
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value.trim();
+            const pass = document.getElementById('admin-password').value.trim();
+
+            if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
+                localStorage.setItem('rodax_admin_logged', 'true');
+                mostrarPanel();
+            } else {
+                loginError.classList.remove('hidden');
+            }
+        });
+
+        function mostrarPanel() {
+            loginScreen.classList.add('hidden');
+            adminPanel.classList.remove('hidden');
+            cargarTodo();
+        }
+
+        function cerrarSesionAdmin() {
+            localStorage.removeItem('rodax_admin_logged');
+            window.location.reload();
+        }
+
+        // 4. CRUD Y RENDERIZADO
+        async function cargarTodo() {
+            // Primero descargamos la lista de transportistas para saber quién es quién
+            const { data: transData } = await dbClient.from('transportistas').select('*');
+            if (transData) {
+                transData.forEach(t => {
+                    mapaTransportistas[t.id] = t;
+                });
+            }
+
+            // Luego descargamos las mudanzas
+            const { data, error } = await dbClient.from('mudanzas').select('*').order('created_at', { ascending: false });
+            if (error) {
+                console.error("Error cargando datos: ", error);
+                return;
+            }
+            if (data) {
+                listaMudanzas = data;
+                renderizar(data);
+            }
+            lucide.createIcons();
+        }
+
+        function renderizar(mudanzas) {
+            const tbody = document.getElementById('tabla-admin');
+            
+            if(mudanzas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center p-8 text-slate-500 font-medium">No hay mudanzas en el sistema.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = mudanzas.map(m => {
+                let badgeClass = 'bg-slate-100 text-slate-700';
+                if (m.estado === 'Pendiente de Pago') badgeClass = 'bg-orange-100 text-orange-700 border border-orange-200';
+                if (m.estado === 'Disponible') badgeClass = 'bg-blue-100 text-blue-700 border border-blue-200';
+                if (m.estado === 'Asignada') badgeClass = 'bg-green-100 text-green-700 border border-green-200';
+                if (m.estado === 'Completada') badgeClass = 'bg-purple-100 text-purple-700 border border-purple-200';
+
+                const btnConfirmarPago = m.estado === 'Pendiente de Pago' 
+                    ? `<button onclick="confirmarPago(${m.id})" class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center justify-center mb-2 w-full">
+                         <i data-lucide="check-circle" class="w-4 h-4 mr-1"></i> Confirmar Pago
+                       </button>`
+                    : '';
+
+                const btnDesasignar = m.estado === 'Asignada' 
+                    ? `<button onclick="desasignarMudanza(${m.id})" class="text-xs bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center justify-center mb-2 w-full">
+                         <i data-lucide="rotate-ccw" class="w-4 h-4 mr-1"></i> Desasignar
+                       </button>`
+                    : '';
+
+                // FOTOS DE LA CARGA
+                let fotosHTML = '';
+                if (m.urls_fotos && m.urls_fotos.trim() !== '') {
+                    const urlsArray = m.urls_fotos.split(',').map(url => url.trim());
+                    fotosHTML = `
+                        <div class="mt-3 flex gap-2 flex-wrap">
+                            ${urlsArray.map(url => `
+                                <a href="${url}" target="_blank" title="Ver foto" class="relative block w-12 h-12 rounded-lg border border-slate-200 overflow-hidden shadow-sm hover:border-blue-500 hover:shadow-md transition-all group">
+                                    <img src="${url}" alt="Foto" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
+                                </a>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                // NUEVO: DATOS DEL TRANSPORTISTA ASIGNADO
+                let infoTransportistaHTML = '';
+                if (m.transportista_id) {
+                    const trans = mapaTransportistas[m.transportista_id];
+                    if (trans) {
+                        infoTransportistaHTML = `
+                            <div class="mt-3 p-3 bg-blue-50 rounded-xl border border-blue-100 shadow-sm">
+                                <p class="text-[10px] font-bold text-blue-500 uppercase tracking-wider mb-1 flex items-center"><i data-lucide="truck" class="w-3 h-3 mr-1"></i> Asignado a:</p>
+                                <p class="text-sm text-slate-800 font-bold">${trans.nombre}</p>
+                                <p class="text-xs text-blue-600 font-bold"><a href="tel:${trans.telefono}">${trans.telefono}</a></p>
+                            </div>
+                        `;
+                    }
+                }
+
+                return `
+                <tr class="border-b hover:bg-slate-50 transition-colors">
+                    <td class="p-4 align-top">
+                        <p class="font-bold text-slate-800">${m.nombre}</p>
+                        <div class="mt-2 space-y-1">
+                            <p class="text-xs text-blue-600 font-bold flex items-center"><i data-lucide="phone" class="w-3.5 h-3.5 mr-1.5"></i> ${m.telefono}</p>
+                            <p class="text-xs text-slate-500 font-medium flex items-center"><i data-lucide="mail" class="w-3.5 h-3.5 mr-1.5"></i> ${m.email || 'Sin email'}</p>
+                        </div>
+                    </td>
+                    <td class="p-4 align-top">
+                        <p class="text-sm font-medium text-slate-700 leading-snug">
+                            <span class="text-blue-500 font-bold">O:</span> ${m.origen} <br>
+                            <span class="text-orange-500 font-bold">D:</span> ${m.destino}
+                        </p>
+                        <p class="text-xs text-slate-400 mt-2 font-bold inline-block bg-slate-100 px-2 py-1 rounded">Fecha: ${m.fecha} | Km: ${m.km || 0}</p>
+                        ${fotosHTML}
+                    </td>
+                    <td class="p-4 align-top">
+                        <p class="text-lg font-black text-slate-800">${m.preciototal || 'N/A'}</p>
+                        <p class="text-[11px] font-bold text-orange-600 bg-orange-50 inline-block px-2 py-1 rounded mt-1 border border-orange-100">
+                            Reserva: ${m.precioreserva || 'N/A'}
+                        </p>
+                    </td>
+                    <td class="p-4 align-top">
+                        <span class="px-3 py-1.5 rounded-full text-[11px] font-bold ${badgeClass} inline-block shadow-sm">
+                            ${m.estado}
+                        </span>
+                        ${infoTransportistaHTML} </td>
+                    <td class="p-4 align-top">
+                        ${btnConfirmarPago}
+                        ${btnDesasignar}
+                        <button onclick="abrirModalEdicion(${m.id})" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 px-3 py-2 rounded-lg font-bold transition-colors w-full flex items-center justify-center mb-2 shadow-sm">
+                            <i data-lucide="edit" class="w-4 h-4 mr-1"></i> Editar
+                        </button>
+                        <button onclick="borrarMudanza(${m.id})" class="text-xs bg-white hover:bg-red-50 text-red-600 border border-red-200 px-3 py-2 rounded-lg font-bold transition-colors w-full flex items-center justify-center shadow-sm">
+                            <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i> Borrar
+                        </button>
+                    </td>
+                </tr>
+            `}).join('');
+            
+            lucide.createIcons();
+        }
+
+        // 5. FUNCIONES DE ACCIÓN RÁPIDA
+        async function confirmarPago(id) {
+            if(confirm("¿Confirmas que has recibido el pago? \nPasará a 'Disponible' para transportistas.")) {
+                await dbClient.from('mudanzas').update({ estado: 'Disponible' }).eq('id', id);
+                cargarTodo();
+            }
+        }
+
+        async function desasignarMudanza(id) {
+            if(confirm("¿Desasignar transportista? La mudanza volverá a estar 'Disponible'.")) {
+                await dbClient.from('mudanzas').update({ estado: 'Disponible', transportista_id: null }).eq('id', id);
+                cargarTodo();
+            }
+        }
+
+        async function borrarMudanza(id) {
+            if(confirm("¿Seguro que quieres borrar esta mudanza permanentemente?")) {
+                await dbClient.from('mudanzas').delete().eq('id', id);
+                cargarTodo();
+            }
+        }
+
+        // 6. LÓGICA DE EDICIÓN
+        function abrirModalEdicion(id) {
+            const mudanza = listaMudanzas.find(m => m.id === id);
+            if(!mudanza) return;
+
+            document.getElementById('edit-id').value = mudanza.id;
+            document.getElementById('edit-nombre').value = mudanza.nombre || '';
+            document.getElementById('edit-telefono').value = mudanza.telefono || '';
+            document.getElementById('edit-email').value = mudanza.email || '';
+            document.getElementById('edit-origen').value = mudanza.origen || '';
+            document.getElementById('edit-destino').value = mudanza.destino || '';
+            document.getElementById('edit-km').value = mudanza.km || '';
+            document.getElementById('edit-fecha').value = mudanza.fecha || '';
+            document.getElementById('edit-volumen').value = mudanza.volumen || '';
+            document.getElementById('edit-precio').value = mudanza.preciototal || '';
+            document.getElementById('edit-reserva').value = mudanza.precioreserva || '';
+            document.getElementById('edit-estado').value = mudanza.estado || 'Pendiente de Pago';
+
+            editModal.classList.remove('hidden');
+        }
+
+        function cerrarModalEdicion() {
+            editModal.classList.add('hidden');
+        }
+
+        async function guardarEdicion() {
+            const id = document.getElementById('edit-id').value;
+            const btn = document.getElementById('btn-guardar-edicion');
+            
+            const payload = {
+                nombre: document.getElementById('edit-nombre').value.trim(),
+                telefono: document.getElementById('edit-telefono').value.trim(),
+                email: document.getElementById('edit-email').value.trim(),
+                origen: document.getElementById('edit-origen').value.trim(),
+                destino: document.getElementById('edit-destino').value.trim(),
+                km: parseFloat(document.getElementById('edit-km').value) || 0,
+                fecha: document.getElementById('edit-fecha').value,
+                volumen: document.getElementById('edit-volumen').value.trim(),
+                preciototal: document.getElementById('edit-precio').value.trim(),
+                precioreserva: document.getElementById('edit-reserva').value.trim(),
+                estado: document.getElementById('edit-estado').value
+            };
+
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 mr-2 animate-spin"></i> Guardando...`;
+            lucide.createIcons();
+
+            const { error } = await dbClient.from('mudanzas').update(payload).eq('id', id);
+
+            if (error) {
+                alert("Error al guardar: " + error.message);
+            } else {
+                cerrarModalEdicion();
+                cargarTodo();
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = `<i data-lucide="save" class="w-4 h-4 mr-2"></i> Guardar Cambios`;
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>
+

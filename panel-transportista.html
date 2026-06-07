@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Panel de Control — RODAX Transportistas</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #111827; }
+        h1, h2, h3, h4, h5 { font-family: 'Poppins', sans-serif; }
+        .shadow-card { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .nav-item { display: flex; align-items: center; width: 100%; padding: 12px 24px; font-size: 0.875rem; font-weight: 600; color: #9ca3af; transition: background 0.15s, color 0.15s; border-right: 3px solid transparent; }
+        .nav-item:hover { background: #1f2937; color: #fff; }
+        .nav-item.active { background: rgba(59,130,246,0.12); color: #60a5fa; border-right-color: #3b82f6; }
+
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .dato-censurado {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #fef3c7; color: #92400e; font-weight: 700;
+            font-size: 0.75rem; padding: 4px 10px; border-radius: 8px;
+            border: 1px solid #fde68a; letter-spacing: 0.025em;
+        }
+
+        @media print {
+            body * { visibility: hidden !important; }
+            #ficha-print-zone, #ficha-print-zone * { visibility: visible !important; }
+            #ficha-print-zone {
+                position: fixed !important;
+                top: 0; left: 0;
+                width: 100vw; height: auto;
+                background: white !important;
+                z-index: 99999;
+                padding: 30px;
+                border: none !important;
+                box-shadow: none !important;
+            }
+            aside, header, .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+<div id="mobile-overlay" class="fixed inset-0 bg-gray-900/60 z-40 hidden md:hidden backdrop-blur-sm"
+     onclick="cerrarMenuMovil()"></div>
+
+<!-- SIDEBAR -->
+<aside id="sidebar" class="w-64 bg-gray-900 text-white flex-shrink-0 fixed md:relative h-full z-50
+    transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col">
+
+    <div class="h-20 flex items-center justify-between px-4 border-b border-gray-800 flex-shrink-0">
+        <img src="images/logo.png" alt="RODAX" class="h-10 object-contain">
+        <button onclick="cerrarMenuMovil()" class="md:hidden text-gray-400 hover:text-white p-1 rounded-lg bg-gray-800">
+            <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+    </div>
+
+    <div class="p-5 border-b border-gray-800 flex-shrink-0">
+        <div class="flex items-center space-x-3">
+            <div class="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center border-2 border-blue-500 overflow-hidden flex-shrink-0">
+                <img id="profile-img" src="https://ui-avatars.com/api/?name=U&background=1d4ed8&color=fff" alt="Perfil">
+            </div>
+            <div class="overflow-hidden">
+                <p class="text-sm font-bold truncate text-white" id="profile-name">Cargando...</p>
+                <p class="text-xs text-green-400 font-semibold flex items-center">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5"></span> Conectado
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto py-4">
+        <ul class="space-y-0.5">
+            <li>
+                <button onclick="cambiarTab('disponibles')" class="nav-item active" id="nav-disponibles">
+                    <i data-lucide="search" class="w-5 h-5 mr-3 flex-shrink-0"></i>
+                    Trabajos Disponibles
+                    <span class="ml-auto bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full min-w-[22px] text-center" id="badge-disponibles">0</span>
+                </button>
+            </li>
+            <li>
+                <button onclick="cambiarTab('mis-mudanzas')" class="nav-item" id="nav-mis-mudanzas">
+                    <i data-lucide="truck" class="w-5 h-5 mr-3 flex-shrink-0"></i>
+                    Mis Mudanzas Activas
+                    <span class="ml-auto bg-green-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full min-w-[22px] text-center hidden" id="badge-activas">0</span>
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="p-4 border-t border-gray-800 flex-shrink-0">
+        <button onclick="cerrarSesion()" class="flex items-center px-4 py-3 text-sm font-semibold text-gray-400 hover:text-red-400 hover:bg-gray-800 rounded-xl transition-colors w-full">
+            <i data-lucide="log-out" class="w-5 h-5 mr-3"></i> Cerrar Sesión
+        </button>
+    </div>
+</aside>
+
+<!-- CONTENIDO PRINCIPAL -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden bg-gray-50 relative w-full">
+
+    <div id="loading-screen" class="absolute inset-0 bg-gray-50 z-[60] flex flex-col items-center justify-center">
+        <i data-lucide="loader-2" class="w-12 h-12 text-blue-600 animate-spin mb-4"></i>
+        <h2 class="text-xl font-bold text-gray-800">Sincronizando Marketplace...</h2>
+        <p class="text-gray-500 mt-2 text-sm" id="loading-text">Verificando tu sesión</p>
+    </div>
+
+    <header class="h-16 bg-white border-b border-gray-200 flex items-center px-4 md:px-6 shadow-sm z-10 flex-shrink-0 no-print">
+        <button onclick="abrirMenuMovil()" class="md:hidden text-gray-600 hover:text-blue-600 mr-3 p-2 bg-gray-100 rounded-lg">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        <h2 class="text-base md:text-lg font-bold text-gray-800" id="header-title">Trabajos Disponibles</h2>
+        <div class="ml-auto flex items-center gap-2">
+            <span class="text-xs text-gray-400 font-medium hidden md:block">Actualización cada 30s</span>
+            <button onclick="recargarDatos()" class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors no-print" title="Actualizar">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="flex-1 overflow-y-auto p-4 md:p-6">
+
+        <div id="tab-disponibles" class="fade-in">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5" id="contenedor-disponibles"></div>
+        </div>
+
+        <div id="tab-mis-mudanzas" class="hidden fade-in">
+            <div id="contenedor-activas" class="space-y-5">
+                <div id="empty-activas" class="text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300">
+                    <i data-lucide="inbox" class="w-12 h-12 text-gray-300 mx-auto mb-3"></i>
+                    <p class="text-gray-500 font-semibold">No tienes ninguna mudanza asignada actualmente.</p>
+                    <p class="text-gray-400 text-sm mt-1">Busca trabajos en la pestaña "Trabajos Disponibles".</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer dentro del panel -->
+    <footer class="bg-gray-900 text-gray-600 py-4 px-6 border-t border-gray-800 flex-shrink-0 no-print">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-2 text-xs">
+            <div class="flex items-center gap-3">
+                <img src="images/logo 4.png" alt="RODAX" class="h-6 object-contain opacity-60">
+                <span>&copy; 2026 RODAX Furgo Mudanzas</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="condiciones.html" class="hover:text-gray-400 transition-colors">Aviso Legal y Privacidad</a>
+                <span>672 907 012</span>
+                <a href="mailto:rodax.furgo.mudanzas.es@gmail.com" class="hover:text-gray-400 transition-colors">rodax.furgo.mudanzas.es@gmail.com</a>
+            </div>
+        </div>
+    </footer>
+</main>
+
+<!-- MODAL DE ACCIÓN -->
+<div id="action-modal" class="fixed inset-0 bg-gray-900/80 z-[100] flex items-center justify-center p-4 hidden backdrop-blur-sm">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 text-center" id="modal-content"></div>
+</div>
+
+<div id="ficha-print-zone" style="display:none;"></div>
+
+<script>
+    lucide.createIcons();
+
+    const URL_DB = 'https://fitwaumzrdvsqozlzlit.supabase.co';
+    const KEY_DB = 'sb_publishable_DfBOPKC1US-oy8-_O3hu6w__RBAJGWY';
+    const dbClient = window.supabase.createClient(URL_DB, KEY_DB);
+
+    let currentUserId = null;
+    let currentUserNombre = '';
+    const state = { disponibles: [], activas: [] };
+
+    const UI_TABS = {
+        tabs: ['disponibles', 'mis-mudanzas'],
+        titles: { 'disponibles': 'Trabajos Disponibles', 'mis-mudanzas': 'Mis Mudanzas Activas' }
+    };
+
+    function abrirMenuMovil() {
+        document.getElementById('sidebar').classList.remove('-translate-x-full');
+        document.getElementById('mobile-overlay').classList.remove('hidden');
+    }
+    function cerrarMenuMovil() {
+        document.getElementById('sidebar').classList.add('-translate-x-full');
+        document.getElementById('mobile-overlay').classList.add('hidden');
+    }
+
+    async function verificarSesion() {
+        try {
+            const { data: { session }, error } = await dbClient.auth.getSession();
+            if (error || !session) { window.location.replace('transportistas.html'); return; }
+            currentUserId = session.user.id;
+            document.getElementById('loading-text').textContent = 'Cargando tu panel...';
+            await cargarDatosPerfil();
+            document.getElementById('loading-screen').classList.add('hidden');
+            cargarTrabajosDisponibles();
+            cargarMisMudanzas();
+            setInterval(() => {
+                if (!document.getElementById('tab-disponibles').classList.contains('hidden')) {
+                    cargarTrabajosDisponibles();
+                }
+            }, 30000);
+        } catch (err) {
+            console.error('Error de sesión:', err);
+            window.location.replace('transportistas.html');
+        }
+    }
+
+    async function cargarDatosPerfil() {
+        const { data } = await dbClient.from('transportistas').select('nombre').eq('id', currentUserId).single();
+        if (data) {
+            currentUserNombre = data.nombre;
+            document.getElementById('profile-name').textContent = data.nombre;
+            document.getElementById('profile-img').src =
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(data.nombre)}&background=1d4ed8&color=fff&bold=true`;
+        }
+    }
+
+    async function cerrarSesion() {
+        await dbClient.auth.signOut();
+        window.location.replace('transportistas.html');
+    }
+
+    function recargarDatos() {
+        cargarTrabajosDisponibles();
+        cargarMisMudanzas();
+    }
+
+    function cambiarTab(tabId) {
+        UI_TABS.tabs.forEach(t => {
+            document.getElementById(`tab-${t}`).classList.add('hidden');
+            const nav = document.getElementById(`nav-${t}`);
+            if (nav) nav.classList.remove('active');
+        });
+        document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+        document.getElementById('header-title').textContent = UI_TABS.titles[tabId];
+        const navActivo = document.getElementById(`nav-${tabId}`);
+        if (navActivo) navActivo.classList.add('active');
+        cerrarMenuMovil();
+    }
+
+    async function cargarTrabajosDisponibles() {
+        const { data } = await dbClient.from('mudanzas').select('*').eq('estado', 'Disponible').order('id', { ascending: false });
+        if (data) { state.disponibles = data; renderizarDisponibles(); }
+    }
+
+    async function cargarMisMudanzas() {
+        const { data } = await dbClient.from('mudanzas').select('*').eq('estado', 'Asignada').eq('transportista_id', currentUserId).order('id', { ascending: false });
+        if (data) { state.activas = data; renderizarActivas(); }
+    }
+
+    function renderizarDisponibles() {
+        const contenedor = document.getElementById('contenedor-disponibles');
+        const badge = document.getElementById('badge-disponibles');
+        badge.textContent = state.disponibles.length;
+
+        if (state.disponibles.length === 0) {
+            contenedor.innerHTML = `
+                <div class="col-span-1 lg:col-span-2 text-center py-16 bg-white rounded-3xl border border-dashed border-gray-300">
+                    <i data-lucide="satellite" class="w-14 h-14 text-gray-300 mx-auto mb-4"></i>
+                    <h4 class="text-xl font-bold text-gray-700 mb-2">Buscando nuevas rutas</h4>
+                    <p class="text-gray-400 font-medium text-sm">En cuanto un cliente reserve aparecerá aquí automáticamente.</p>
+                </div>`;
+            lucide.createIcons();
+            return;
+        }
+
+        contenedor.innerHTML = state.disponibles.map(t => {
+            let fotosHTML = '';
+            if (t.urls_fotos && t.urls_fotos.trim()) {
+                const urls = t.urls_fotos.split(',').map(u => u.trim());
+                fotosHTML = `
+                    <div class="mt-3 mb-1">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase mb-1.5">Fotos del cliente</p>
+                        <div class="flex gap-2 overflow-x-auto pb-1">
+                            ${urls.map(url => `
+                                <a href="${url}" target="_blank" class="flex-shrink-0 w-12 h-12 rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:border-blue-500 transition-all group">
+                                    <img src="${url}" alt="Foto" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
+                                </a>`).join('')}
+                        </div>
+                    </div>`;
+            }
+
+            return `
+            <div class="bg-white rounded-2xl p-5 shadow-card hover:shadow-md transition-all border border-gray-100 flex flex-col">
+                <div class="mb-4">
+                    <div class="flex items-start text-sm font-bold text-gray-800 mb-1">
+                        <div class="w-2.5 h-2.5 rounded-full bg-blue-500 mr-2 flex-shrink-0 mt-1.5"></div>
+                        <span>${t.origen}</span>
+                    </div>
+                    <div class="text-xs text-gray-400 font-semibold ml-4 mb-1">
+                        <i data-lucide="arrow-down" class="w-3 h-3 inline"></i> ${t.km || '?'} km en carretera
+                    </div>
+                    <div class="flex items-start text-sm font-bold text-gray-800">
+                        <div class="w-2.5 h-2.5 rounded-full bg-orange-500 mr-2 flex-shrink-0 mt-1.5"></div>
+                        <span>${t.destino}</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mb-3 bg-gray-50 p-3 rounded-xl text-xs border border-gray-100">
+                    <div>
+                        <span class="block text-gray-400 font-bold uppercase tracking-wider mb-0.5">Fecha</span>
+                        <span class="font-bold text-gray-900">${t.fecha || 'Sin fecha'}</span>
+                    </div>
+                    <div>
+                        <span class="block text-gray-400 font-bold uppercase tracking-wider mb-0.5">Carga</span>
+                        <span class="font-bold text-gray-900">${t.volumen || '—'}</span>
+                    </div>
+                </div>
+                ${fotosHTML}
+                <div class="mt-auto flex items-end justify-between border-t border-gray-100 pt-4">
+                    <div>
+                        <span class="block text-[10px] font-bold text-gray-400 uppercase mb-0.5">Precio total</span>
+                        <span class="text-2xl font-black text-blue-600">${t.preciototal || 'Consultar'}</span>
+                    </div>
+                    <button onclick="confirmarAceptar(${t.id})"
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-5 rounded-xl shadow-md transition-all transform hover:-translate-y-0.5">
+                        Aceptar trabajo
+                    </button>
+                </div>
+            </div>`;
+        }).join('');
+
+        lucide.createIcons();
+    }
+
+    function renderizarActivas() {
+        const contenedor = document.getElementById('contenedor-activas');
+        const emptyState = document.getElementById('empty-activas');
+        const badge = document.getElementById('badge-activas');
+
+        if (state.activas.length === 0) {
+            badge.classList.add('hidden');
+            contenedor.innerHTML = '';
+            contenedor.appendChild(emptyState);
+            emptyState.classList.remove('hidden');
+            return;
+        }
+
+        emptyState.classList.add('hidden');
+        badge.classList.remove('hidden');
+        badge.textContent = state.activas.length;
+
+        const cards = state.activas.map(t => {
+            const fechaParts = (t.fecha || '').split('-');
+            let moveDate;
+            if (fechaParts.length === 3) {
+                moveDate = new Date(parseInt(fechaParts[0]), parseInt(fechaParts[1]) - 1, parseInt(fechaParts[2]), 0, 0, 0);
+            } else {
+                moveDate = new Date(NaN);
+            }
+
+            const now = new Date();
+            const diffMs = moveDate.getTime() - now.getTime();
+            const diffHoras = diffMs / (1000 * 60 * 60);
+            const mostrarDatos = !isNaN(diffHoras) && diffHoras <= 24;
+
+            let tiempoRestanteHTML = '';
+            if (!isNaN(diffHoras)) {
+                if (diffHoras > 24) {
+                    const h = Math.floor(diffHoras);
+                    const d = Math.floor(h / 24);
+                    tiempoRestanteHTML = `
+                        <div class="flex items-center gap-1.5 text-xs text-amber-600 font-bold bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-lg">
+                            <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                            Datos visibles en ${d > 0 ? d + 'd ' : ''}${h % 24}h (24h antes del servicio)
+                        </div>`;
+                } else if (diffHoras > 0) {
+                    tiempoRestanteHTML = `
+                        <div class="flex items-center gap-1.5 text-xs text-green-700 font-bold bg-green-50 border border-green-200 px-3 py-1.5 rounded-lg">
+                            <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+                            Servicio en menos de 24h — datos del cliente visibles
+                        </div>`;
+                } else {
+                    tiempoRestanteHTML = `
+                        <div class="flex items-center gap-1.5 text-xs text-purple-700 font-bold bg-purple-50 border border-purple-200 px-3 py-1.5 rounded-lg">
+                            <i data-lucide="calendar-check" class="w-3.5 h-3.5"></i>
+                            Servicio ya pasado — marcar como finalizado
+                        </div>`;
+                }
+            }
+
+            let datosClienteHTML, rutaCompletaHTML;
+
+            if (mostrarDatos) {
+                datosClienteHTML = `
+                    <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl space-y-1">
+                        <p class="text-sm text-gray-600 font-medium">Cliente: <strong class="text-gray-900">${t.nombre}</strong></p>
+                        <p class="text-sm text-gray-600 font-medium">Teléfono: <a href="tel:${t.telefono}" class="text-blue-600 font-black hover:underline">${t.telefono}</a></p>
+                        ${t.email ? `<p class="text-xs text-gray-500">Email: <a href="mailto:${t.email}" class="text-blue-500 hover:underline">${t.email}</a></p>` : ''}
+                    </div>`;
+                rutaCompletaHTML = `
+                    <div class="space-y-1 mb-3">
+                        <p class="text-sm font-bold text-gray-900 flex items-start gap-2"><span class="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0 mt-1.5"></span>${t.origen}</p>
+                        <p class="text-xs text-gray-400 ml-4">↓ ${t.km || '?'} km</p>
+                        <p class="text-sm font-bold text-gray-900 flex items-start gap-2"><span class="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0 mt-1.5"></span>${t.destino}</p>
+                    </div>`;
+            } else {
+                datosClienteHTML = `
+                    <div class="bg-gray-50 border border-gray-200 p-3 rounded-xl">
+                        <p class="dato-censurado mb-1.5"><i data-lucide="lock" class="w-3 h-3"></i> Nombre y teléfono ocultos por seguridad</p>
+                        <p class="text-xs text-gray-400 font-medium">Los datos de contacto del cliente se mostrarán automáticamente 24h antes del servicio.</p>
+                    </div>`;
+                rutaCompletaHTML = `
+                    <div class="space-y-1 mb-3">
+                        <p class="text-sm font-bold text-gray-900 flex items-start gap-2"><span class="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0 mt-1.5"></span><span class="dato-censurado"><i data-lucide="lock" class="w-3 h-3"></i> Dirección de recogida oculta</span></p>
+                        <p class="text-xs text-gray-400 ml-4">↓ ${t.km || '?'} km (visible para tu planificación)</p>
+                        <p class="text-sm font-bold text-gray-900 flex items-start gap-2"><span class="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0 mt-1.5"></span><span class="dato-censurado"><i data-lucide="lock" class="w-3 h-3"></i> Dirección de entrega oculta</span></p>
+                    </div>`;
+            }
+
+            let fotosHTML = '';
+            if (t.urls_fotos && t.urls_fotos.trim()) {
+                const urls = t.urls_fotos.split(',').map(u => u.trim());
+                fotosHTML = `
+                    <div class="mt-3 border-t border-gray-100 pt-3">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase mb-2">Fotos Cliente</p>
+                        <div class="flex gap-2 overflow-x-auto pb-1">
+                            ${urls.map(url => `
+                                <a href="${url}" target="_blank" class="flex-shrink-0 w-12 h-12 rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:border-blue-500 transition-all group">
+                                    <img src="${url}" alt="Foto" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
+                                </a>`).join('')}
+                        </div>
+                    </div>`;
+            }
+
+            return `
+            <div class="bg-white rounded-2xl p-5 shadow-card border border-l-4 border-l-blue-500">
+                <div class="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
+                    <div>
+                        <span class="text-xs font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">Mudanza #${t.id}</span>
+                        <span class="text-xs text-gray-400 font-semibold ml-2">📅 ${t.fecha || 'Sin fecha'}</span>
+                    </div>
+                    <button onclick="imprimirFicha(${t.id}, '${(t.origen||'').replace(/'/g,"\\'")}', '${(t.destino||'').replace(/'/g,"\\'")}', '${t.fecha||''}', '${t.km||''}', '${(t.volumen||'').replace(/'/g,"\\'")}', '${t.preciototal||''}', '${t.ascensor||''}', '${t.extras||''}')"
+                        class="flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg transition-colors no-print border border-blue-100">
+                        <i data-lucide="printer" class="w-3.5 h-3.5"></i> Ficha PDF
+                    </button>
+                </div>
+                <div class="mb-3">${tiempoRestanteHTML}</div>
+                <div class="flex flex-col md:flex-row gap-4 mb-4">
+                    <div class="flex-1">
+                        ${rutaCompletaHTML}
+                        ${datosClienteHTML}
+                        ${fotosHTML}
+                    </div>
+                    <div class="bg-green-50 border border-green-100 p-4 rounded-xl flex flex-col items-end justify-center md:min-w-[140px]">
+                        <span class="text-xs font-bold text-gray-500 uppercase mb-1 block">Cobro Neto</span>
+                        <span class="text-2xl font-black text-green-600 block">${t.preciototal || '—'}</span>
+                        <span class="text-xs text-gray-400 font-medium mt-1">A cobrar el día</span>
+                    </div>
+                </div>
+                ${t.ascensor || t.extras ? `
+                <div class="bg-gray-50 border border-gray-100 p-3 rounded-xl mb-4 text-xs space-y-1">
+                    ${t.ascensor ? `<p class="text-gray-600"><strong>Ascensores:</strong> ${t.ascensor}</p>` : ''}
+                    ${t.extras   ? `<p class="text-gray-600"><strong>Extras:</strong> ${t.extras}</p>` : ''}
+                    ${t.volumen  ? `<p class="text-gray-600"><strong>Carga:</strong> ${t.volumen}</p>` : ''}
+                </div>` : ''}
+                <button onclick="marcarCompletada(${t.id})"
+                    class="no-print w-full bg-white hover:bg-green-50 text-green-700 font-bold py-3 rounded-xl border-2 border-green-100 hover:border-green-300 transition-colors flex items-center justify-center gap-2">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i> Marcar como Finalizada
+                </button>
+            </div>`;
+        }).join('');
+
+        contenedor.innerHTML = cards;
+        lucide.createIcons();
+    }
+
+    function imprimirFicha(id, origen, destino, fecha, km, volumen, precio, ascensor, extras) {
+        const nombre = currentUserNombre || 'Transportista RODAX';
+        const fechaHoy = new Date().toLocaleDateString('es-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+        const contenido = `<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ficha Técnica — Mudanza #${id} — RODAX</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, Helvetica, sans-serif; background: white; color: #1a1a1a; padding: 30px; font-size: 14px; }
+        .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #2563eb; padding-bottom: 20px; margin-bottom: 25px; }
+        .logo { font-size: 22px; font-weight: 900; color: #1e3a5f; letter-spacing: -0.5px; }
+        .logo span { color: #2563eb; }
+        .ficha-num { text-align: right; }
+        .ficha-num h2 { font-size: 18px; font-weight: 900; color: #2563eb; }
+        .ficha-num p { color: #6b7280; font-size: 11px; margin-top: 4px; }
+        .seccion { margin-bottom: 20px; }
+        .seccion-titulo { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #6b7280; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #e5e7eb; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .dato-label { font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+        .dato-valor { font-size: 15px; font-weight: 700; color: #111827; }
+        .dato-valor.grande { font-size: 24px; font-weight: 900; color: #059669; }
+        .ruta-box { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 12px; padding: 16px; }
+        .punto { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+        .punto-circulo { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; margin-top: 2px; }
+        .punto-circulo.azul { background: #2563eb; }
+        .punto-circulo.naranja { background: #ea580c; }
+        .km-linea { font-size: 11px; color: #6b7280; margin: 4px 0 4px 22px; }
+        .precio-box { background: #f0fdf4; border: 2px solid #86efac; border-radius: 12px; padding: 16px; text-align: center; }
+        .aviso { background: #fefce8; border: 1px solid #fde047; border-radius: 8px; padding: 12px; font-size: 12px; color: #713f12; margin-bottom: 20px; }
+        .footer { border-top: 1px solid #e5e7eb; padding-top: 16px; margin-top: 30px; text-align: center; font-size: 11px; color: #9ca3af; }
+        .firma-linea { border-bottom: 1px solid #d1d5db; height: 50px; margin-bottom: 6px; }
+        .firma-texto { font-size: 10px; color: #9ca3af; text-align: center; }
+        @media print { body { padding: 20px; } .no-print { display: none !important; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <div class="logo">RODAX<span>FURGO MUDANZAS</span></div>
+            <p style="font-size:11px;color:#6b7280;margin-top:4px;">672 907 012 · rodax.furgo.mudanzas.es@gmail.com</p>
+        </div>
+        <div class="ficha-num">
+            <h2>FICHA TÉCNICA #${id}</h2>
+            <p>Generada: ${fechaHoy}</p>
+            <p>Transportista: <strong>${nombre}</strong></p>
+        </div>
+    </div>
+    <div class="aviso">⚠️ <strong>Documento confidencial.</strong> No compartir los datos del cliente con terceros. Los datos de contacto solo son accesibles 24h antes del servicio.</div>
+    <div class="grid-2" style="margin-bottom:20px;">
+        <div class="seccion">
+            <div class="seccion-titulo">📍 Ruta de la Mudanza</div>
+            <div class="ruta-box">
+                <div class="punto"><div class="punto-circulo azul"></div><div><div class="dato-label">Recogida (Origen)</div><div class="dato-valor" style="font-size:13px;">${origen || '—'}</div></div></div>
+                <div class="km-linea">↓ ${km || '?'} km en carretera</div>
+                <div class="punto"><div class="punto-circulo naranja"></div><div><div class="dato-label">Entrega (Destino)</div><div class="dato-valor" style="font-size:13px;">${destino || '—'}</div></div></div>
+            </div>
+        </div>
+        <div class="seccion">
+            <div class="seccion-titulo">📦 Detalles del Servicio</div>
+            <div style="margin-bottom:12px;"><div class="dato-label">Fecha del Servicio</div><div class="dato-valor">${fecha || '—'}</div></div>
+            <div style="margin-bottom:12px;"><div class="dato-label">Volumen / Tamaño</div><div class="dato-valor">${volumen || '—'}</div></div>
+            <div><div class="dato-label">Distancia</div><div class="dato-valor">${km || '?'} km</div></div>
+        </div>
+    </div>
+    ${ascensor ? `<div class="seccion"><div class="seccion-titulo">🛗 Accesos y Ascensores</div><div class="dato-valor" style="font-size:13px;">${ascensor}</div></div>` : ''}
+    ${extras && extras !== 'Solo transporte básico' ? `<div class="seccion"><div class="seccion-titulo">➕ Servicios Adicionales</div><div class="dato-valor" style="font-size:13px;">${extras}</div></div>` : ''}
+    <div class="precio-box" style="margin-bottom:20px;">
+        <div class="dato-label" style="text-align:center;">Precio Total del Servicio (30% ya cobrado en reserva)</div>
+        <div class="dato-valor grande">${precio || '—'}</div>
+        <p style="font-size:12px;color:#6b7280;margin-top:6px;">El cliente abona el 70% restante directamente a ti al finalizar el servicio.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:40px;">
+        <div><div class="firma-linea"></div><div class="firma-texto">Firma del Transportista</div></div>
+        <div><div class="firma-linea"></div><div class="firma-texto">Firma del Cliente (recibí conforme)</div></div>
+    </div>
+    <div class="footer">
+        <p>RODAX Furgo Mudanzas &copy; 2026 · 672 907 012 · rodax.furgo.mudanzas.es@gmail.com · España</p>
+        <p style="margin-top:4px;">Este documento tiene validez como albarán de servicio entre las partes.</p>
+    </div>
+    <button class="no-print" onclick="window.print()" style="margin-top:20px;padding:12px 24px;background:#2563eb;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:15px;">🖨️ Imprimir / Guardar PDF</button>
+    <script>window.onload = function() { setTimeout(() => window.print(), 500); };<\/script>
+</body>
+</html>`;
+
+        const ventana = window.open('', '_blank', 'width=800,height=900');
+        if (ventana) {
+            ventana.document.write(contenido);
+            ventana.document.close();
+        } else {
+            alert('Tu navegador bloqueó la ventana emergente. Permite las ventanas emergentes e inténtalo de nuevo.');
+        }
+    }
+
+    const actionModal = document.getElementById('action-modal');
+    const modalContent = document.getElementById('modal-content');
+
+    function cerrarModal() { actionModal.classList.add('hidden'); }
+
+    function confirmarAceptar(id) {
+        modalContent.innerHTML = `
+            <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="briefcase" class="w-8 h-8 text-blue-600"></i>
+            </div>
+            <h3 class="text-xl font-black text-gray-900 mb-2">¿Aceptar este trabajo?</h3>
+            <p class="text-gray-500 text-sm mb-6 leading-relaxed">Al aceptar, la mudanza pasará a "Mis Mudanzas Activas".<br>Los datos del cliente estarán disponibles <strong>24h antes</strong> del servicio.</p>
+            <div class="flex gap-3">
+                <button onclick="cerrarModal()" class="flex-1 bg-gray-100 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors">Cancelar</button>
+                <button onclick="procesarAceptacion(${id})" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md transition-colors">✅ Aceptar</button>
+            </div>`;
+        lucide.createIcons();
+        actionModal.classList.remove('hidden');
+    }
+
+    async function procesarAceptacion(id) {
+        modalContent.innerHTML = `
+            <i data-lucide="loader-2" class="w-10 h-10 animate-spin mx-auto text-blue-600 mb-3"></i>
+            <p class="text-gray-600 font-medium text-sm">Asignando mudanza...</p>`;
+        lucide.createIcons();
+
+        const { error } = await dbClient.from('mudanzas').update({ estado: 'Asignada', transportista_id: currentUserId }).eq('id', id).eq('estado', 'Disponible');
+
+        if (error) {
+            alert('No se pudo asignar. Es posible que otro transportista lo haya aceptado antes. Actualizando...');
+            cerrarModal();
+            cargarTrabajosDisponibles();
+            return;
+        }
+
+        await Promise.all([cargarTrabajosDisponibles(), cargarMisMudanzas()]);
+        cerrarModal();
+        cambiarTab('mis-mudanzas');
+    }
+
+    async function marcarCompletada(id) {
+        if (confirm('¿Confirmas que has terminado este servicio y que el cliente ha pagado el resto?\nLa mudanza desaparecerá de tu panel activo.')) {
+            await dbClient.from('mudanzas').update({ estado: 'Completada' }).eq('id', id);
+            cargarMisMudanzas();
+        }
+    }
+
+    window.onload = verificarSesion;
+</script>
+</body>
+</html>
