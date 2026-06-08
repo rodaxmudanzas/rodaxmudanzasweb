@@ -351,7 +351,7 @@ if(toggleMudanzaTotal){
     // ─── 2. REFERENCIAS UI ───────────────────────────────────────────────────
     const UI = {
         form:          document.getElementById('contact-form'),
-        btnSubmit:     document.getElementById('btn_submit'),
+        btnSubmit:     document.querySelector('#contact-form button[type="submit"]'),
         cajaPrecio:    document.getElementById('caja-precio'),
         precioTotal:   document.getElementById('precio-total'),
         precioReserva: document.getElementById('precio-reserva'),
