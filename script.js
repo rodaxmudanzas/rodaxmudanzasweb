@@ -265,8 +265,6 @@ if(toggleMudanzaTotal){
 
         console.log('CLICK');
 
-        ...
-
         mudanzaTotal = !mudanzaTotal;
 
         console.log('mudanzaTotal:', mudanzaTotal);
