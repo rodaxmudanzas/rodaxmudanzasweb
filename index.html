@@ -3008,7 +3008,10 @@ function calcularInventario() {
     document.querySelectorAll('.inventario-input').forEach(input => {
         total += (parseInt(input.value) || 0) * (parseFloat(input.dataset.precio) || 0);
     });
-    document.getElementById('totalInventario').textContent = total.toFixed(2) + ' €';
+    const totalInv = document.getElementById('totalInventario');
+
+if (totalInv) {
+    totalInv.textContent = total.toFixed(2) + ' €';
 }
 document.querySelectorAll('.inventario-input').forEach(input => {
     input.addEventListener('input', calcularInventario);
