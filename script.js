@@ -344,7 +344,8 @@ if(toggleMudanzaTotal){
 }
     
     // ─── 1. CONFIGURACIÓN SUPABASE ────────────────────────────────────────────
-    const SUPABASE_URL = 'https://defvfvyfrydopaybnisg.supabase.co';
+    const SUPABASE_URL =
+'https://defvfvfyrydopaybnisg.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_dKIRJ1_K4u1ypfCNTuylIw_AyAKeZTS';
     const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
