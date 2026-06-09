@@ -3348,7 +3348,7 @@ document.querySelectorAll('.access-card').forEach(card=>{
 
         }
 
-        calcularPrecio();
+        calcularPrecioFinal();
 
     });
 
@@ -3625,11 +3625,9 @@ function actualizarKmRuta(){
         }
 
         // recalcular precio
-        if(typeof calcularPrecio === 'function'){
-
-            calcularPrecio();
-
-        }
+        if(typeof calcularPrecioFinal === 'function'){
+    calcularPrecioFinal();
+}
 
     }
 
