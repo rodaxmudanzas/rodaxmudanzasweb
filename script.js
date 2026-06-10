@@ -270,6 +270,11 @@ if(toggleMudanzaTotal){
         console.log('CLICK');
 
         mudanzaTotal = !mudanzaTotal;
+        
+        badgeMudanzaTotal.classList.toggle(
+    'hidden',
+    !mudanzaTotal
+);
 
         console.log('mudanzaTotal:', mudanzaTotal);
 
