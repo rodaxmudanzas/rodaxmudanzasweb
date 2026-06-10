@@ -256,6 +256,10 @@ const toggleMudanzaTotal =
 document.getElementById(
 'toggle-mudanza-total'
 );
+    const badgeMudanzaTotal =
+document.getElementById(
+    'mudanza-total-badge'
+);
 
 if(toggleMudanzaTotal){
 
