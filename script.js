@@ -345,6 +345,13 @@ badgeSeguro?.classList.toggle(
 
         const seguro =
         document.getElementById('valor_seguro');
+        
+        const botonesServicios =
+document.querySelectorAll(
+    '#card-desmontar .qty-btn, \
+     #card-montar .qty-btn, \
+     #card-embalar .qty-btn'
+);
 
         if(mudanzaTotal){
 
