@@ -109,51 +109,30 @@ function actualizarBarraGlobal(){
     let progreso = 0;
 
     //////////////////////////////////////////////////
-    // DATOS PERSONALES
-    //////////////////////////////////////////////////
+// VENTANA 1
+//////////////////////////////////////////////////
 
-    const nombre =
-        document.getElementById('nombre')?.value.trim();
+let ventana1 = 0;
 
-    const telefono =
-        document.getElementById('telefono')?.value.trim();
+if(campoRelleno('nombre'))
+    ventana1++;
 
-    const email =
-        document.getElementById('email')?.value.trim();
+if(campoRelleno('telefono'))
+    ventana1++;
 
-    const fecha =
-        document.getElementById('fecha')?.value;
+if(campoRelleno('email'))
+    ventana1++;
 
-    if(nombre) progreso += 8;
-    if(telefono) progreso += 8;
-    if(email) progreso += 8;
-    if(fecha) progreso += 6;
+if(campoRelleno('fecha'))
+    ventana1++;
 
-    //////////////////////////////////////////////////
-    // DIRECCIONES
-    //////////////////////////////////////////////////
+if(campoRelleno('origen'))
+    ventana1++;
 
-    const origen =
-        document.getElementById('origen')?.value.trim();
+if(campoRelleno('destino'))
+    ventana1++;
 
-    const destino =
-        document.getElementById('destino')?.value.trim();
-
-    if(origen) progreso += 14;
-    if(destino) progreso += 14;
-
-    //////////////////////////////////////////////////
-    // KM REALES
-    //////////////////////////////////////////////////
-
-    const km =
-        parseFloat(
-            document.getElementById('km')?.value
-        ) || 0;
-
-    if(km > 0){
-        progreso += 10;
-    }
+progreso += (ventana1 / 6) * 33;
 
     //////////////////////////////////////////////////
     // INVENTARIO
