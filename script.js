@@ -260,6 +260,10 @@ document.getElementById(
 document.getElementById(
     'mudanza-total-badge'
 );
+    const ahorroMudanzaTotal =
+document.getElementById(
+    'mudanza-total-ahorro'
+);
 
 if(toggleMudanzaTotal){
 
@@ -272,6 +276,10 @@ if(toggleMudanzaTotal){
         mudanzaTotal = !mudanzaTotal;
         
         badgeMudanzaTotal.classList.toggle(
+    'hidden',
+    !mudanzaTotal
+);
+        ahorroMudanzaTotal?.classList.toggle(
     'hidden',
     !mudanzaTotal
 );
