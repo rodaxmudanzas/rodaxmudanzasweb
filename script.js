@@ -345,8 +345,40 @@ if(toggleMudanzaTotal){
     ? '✅ MUDANZA TOTAL ACTIVADA'
     : 'ACTIVAR MUDANZA TOTAL (+249 €)';
 }
+        //////////////////////////////////////////////////
+// COLOR DEL BOTÓN
+//////////////////////////////////////////////////
 
-        calcularPresupuesto();
+if(mudanzaTotal){
+
+    toggleMudanzaTotal.classList.remove(
+        'bg-violet-600'
+    );
+
+    toggleMudanzaTotal.classList.remove(
+        'hover:bg-violet-700'
+    );
+
+    toggleMudanzaTotal.classList.add(
+        'bg-green-600'
+    );
+
+}else{
+
+    toggleMudanzaTotal.classList.remove(
+        'bg-green-600'
+    );
+
+    toggleMudanzaTotal.classList.add(
+        'bg-violet-600'
+    );
+
+    toggleMudanzaTotal.classList.add(
+        'hover:bg-violet-700'
+    );
+}
+
+calcularPresupuesto();
 
     });
 
