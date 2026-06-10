@@ -91,6 +91,14 @@ if(progressText){
         }
     });
 }
+    function campoRelleno(id){
+
+    const el = document.getElementById(id);
+
+    if(!el) return false;
+
+    return el.value.trim() !== '';
+}
 
 //////////////////////////////////////////////////////
 // CALCULAR PROGRESO GLOBAL REAL
@@ -98,7 +106,7 @@ if(progressText){
 
 function actualizarBarraGlobal(){
 
-    let progreso = 8;
+    let progreso = 0;
 
     //////////////////////////////////////////////////
     // DATOS PERSONALES
