@@ -274,12 +274,51 @@ if(toggleMudanzaTotal){
         console.log('CLICK');
 
         mudanzaTotal = !mudanzaTotal;
+
+        const badgeDesmontar =
+document.getElementById(
+    'badge-desmontar'
+);
+
+const badgeMontar =
+document.getElementById(
+    'badge-montar'
+);
+
+const badgeEmbalar =
+document.getElementById(
+    'badge-embalar'
+);
+
+const badgeSeguro =
+document.getElementById(
+    'badge-seguro'
+);
         
         badgeMudanzaTotal.classList.toggle(
     'hidden',
     !mudanzaTotal
 );
         ahorroMudanzaTotal?.classList.toggle(
+    'hidden',
+    !mudanzaTotal
+);
+        badgeDesmontar?.classList.toggle(
+    'hidden',
+    !mudanzaTotal
+);
+
+badgeMontar?.classList.toggle(
+    'hidden',
+    !mudanzaTotal
+);
+
+badgeEmbalar?.classList.toggle(
+    'hidden',
+    !mudanzaTotal
+);
+
+badgeSeguro?.classList.toggle(
     'hidden',
     !mudanzaTotal
 );
