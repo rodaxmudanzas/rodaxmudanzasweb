@@ -109,33 +109,33 @@ function actualizarBarraGlobal(){
     let progreso = 0;
 
     //////////////////////////////////////////////////
-// VENTANA 1
-//////////////////////////////////////////////////
+    // VENTANA 1
+    //////////////////////////////////////////////////
 
-let ventana1 = 0;
+    let ventana1 = 0;
 
-if(campoRelleno('nombre'))
-    ventana1++;
+    if(campoRelleno('nombre'))
+        ventana1++;
 
-if(campoRelleno('telefono'))
-    ventana1++;
+    if(campoRelleno('telefono'))
+        ventana1++;
 
-if(campoRelleno('email'))
-    ventana1++;
+    if(campoRelleno('email'))
+        ventana1++;
 
-if(campoRelleno('fecha'))
-    ventana1++;
+    if(campoRelleno('fecha'))
+        ventana1++;
 
-if(campoRelleno('origen'))
-    ventana1++;
+    if(campoRelleno('origen'))
+        ventana1++;
 
-if(campoRelleno('destino'))
-    ventana1++;
+    if(campoRelleno('destino'))
+        ventana1++;
 
-progreso += (ventana1 / 6) * 33;
+    progreso += (ventana1 / 6) * 33;
 
     //////////////////////////////////////////////////
-    // INVENTARIO
+    // VENTANA 2
     //////////////////////////////////////////////////
 
     let inventarioTotal = 0;
@@ -150,41 +150,57 @@ progreso += (ventana1 / 6) * 33;
 
     if(inventarioTotal > 0){
 
-        progreso += Math.min(
-            18,
-            inventarioTotal * 1.8
-        );
+        progreso += 33;
     }
 
     //////////////////////////////////////////////////
-    // SERVICIOS
+    // MUDANZA TOTAL
     //////////////////////////////////////////////////
 
-    const desmontar =
-        parseInt(document.getElementById('cant_desmontar')?.value) || 0;
+    if(mudanzaTotal){
 
-    const montar =
-        parseInt(document.getElementById('cant_montar')?.value) || 0;
+        progreso = 100;
 
-    const embalar =
-        parseInt(document.getElementById('cant_embalar')?.value) || 0;
+    }else{
 
-    const seguro =
-        parseFloat(document.getElementById('valor_seguro')?.value) || 0;
+        //////////////////////////////////////////////////
+        // VENTANA 4
+        //////////////////////////////////////////////////
 
-    const servicios =
-        desmontar + montar + embalar;
+        let servicios = 0;
 
-    if(servicios > 0){
+        servicios +=
+            parseInt(
+                document.getElementById(
+                    'cant_desmontar'
+                )?.value
+            ) || 0;
 
-        progreso += Math.min(
-            10,
-            servicios * 1.5
-        );
-    }
+        servicios +=
+            parseInt(
+                document.getElementById(
+                    'cant_montar'
+                )?.value
+            ) || 0;
 
-    if(seguro > 0){
-        progreso += 4;
+        servicios +=
+            parseInt(
+                document.getElementById(
+                    'cant_embalar'
+                )?.value
+            ) || 0;
+
+        const seguro =
+            parseFloat(
+                document.getElementById(
+                    'valor_seguro'
+                )?.value
+            ) || 0;
+
+        if(servicios > 0 || seguro > 0){
+
+            progreso += 34;
+        }
     }
 
     //////////////////////////////////////////////////
@@ -192,18 +208,13 @@ progreso += (ventana1 / 6) * 33;
     //////////////////////////////////////////////////
 
     progreso =
-        Math.max(8, Math.min(100, progreso));
-
-    //////////////////////////////////////////////////
-    // UX PREMIUM
-    //////////////////////////////////////////////////
-
-    if(progreso > 92){
-
-        progreso = 92 + (
-            (progreso - 92) * 0.4
+        Math.max(
+            0,
+            Math.min(
+                100,
+                progreso
+            )
         );
-    }
 
     //////////////////////////////////////////////////
     // ACTUALIZAR
