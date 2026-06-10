@@ -374,6 +374,17 @@ document.querySelectorAll(
                 seguro.value = 0;
                 seguro.disabled = true;
             }
+            
+            botonesServicios.forEach(btn => {
+
+    btn.disabled = true;
+
+    btn.classList.add(
+        'opacity-40',
+        'cursor-not-allowed'
+    );
+
+});
 
         }else{
 
@@ -381,6 +392,16 @@ document.querySelectorAll(
             if(montar) montar.disabled = false;
             if(embalar) embalar.disabled = false;
             if(seguro) seguro.disabled = false;
+            botonesServicios.forEach(btn => {
+
+    btn.disabled = false;
+
+    btn.classList.remove(
+        'opacity-40',
+        'cursor-not-allowed'
+    );
+
+});
         }
 
         //////////////////////////////////////////////////
