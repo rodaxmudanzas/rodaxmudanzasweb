@@ -990,8 +990,6 @@ actualizarBarraGlobal();
 
 if(totalFinalIA > 0){
 
-    setRodaxProgress(100);
-
     setTimeout(() => {
 
         actualizarBarraGlobal();
