@@ -340,11 +340,11 @@ if(toggleMudanzaTotal){
 
         if(texto){
 
-            texto.innerHTML =
-            mudanzaTotal
-            ? '✅ Mudanza Total Activada'
-            : 'Quiero Mudanza Total';
-        }
+    texto.innerHTML =
+    mudanzaTotal
+    ? '✅ MUDANZA TOTAL ACTIVADA'
+    : 'ACTIVAR MUDANZA TOTAL (+249 €)';
+}
 
         calcularPresupuesto();
 
