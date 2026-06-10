@@ -2371,22 +2371,38 @@ class="calculo-trigger">
            shadow-xl"
 >
         
-            <div class="flex items-center gap-2 mb-4">
+            <div class="flex items-center justify-between mb-4">
 
-    <h3 class="text-lg font-black text-white">
-        Mudanza Total
-    </h3>
+    <div class="flex items-center gap-2">
+
+        <h3 class="text-lg font-black text-white">
+            Mudanza Total
+        </h3>
+
+        <span
+            class="px-2 py-1 rounded-full
+                   bg-orange-200
+                   text-orange-800
+                   text-[10px]
+                   font-bold
+                   uppercase
+                   tracking-wide"
+        >
+            LO MÁS CONTRATADO
+        </span>
+
+    </div>
 
     <span
-        class="px-2 py-1 rounded-full
-               bg-orange-100
-               text-orange-700
+        class="px-3 py-1 rounded-full
+               bg-white/20
+               text-white
                text-[10px]
                font-bold
                uppercase
-               tracking-wide"
+               tracking-wider"
     >
-        LO MÁS CONTRATADO
+        TODO INCLUIDO
     </span>
 
 </div>
@@ -2406,6 +2422,14 @@ class="calculo-trigger">
                 <li>✔ Prioridad operativa</li>
 
             </ul>
+        <div
+    class="mt-4
+           text-sm
+           text-green-200
+           font-semibold"
+>
+    ✓ Los clientes ahorran de media más de 150 € con esta opción
+</div>
 
 <div
     id="mudanza-total-badge"
@@ -2423,7 +2447,15 @@ class="calculo-trigger">
 <button
     type="button"
     id="toggle-mudanza-total"
-    class="w-full mt-6 py-4 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-lg transition-all"
+    class="w-full mt-6 py-4
+       rounded-xl
+       bg-white
+       text-blue-700
+       font-black
+       text-lg
+       hover:bg-blue-50
+       transition-all
+       shadow-lg"
 >
 
     <span id="texto-mudanza-total">
