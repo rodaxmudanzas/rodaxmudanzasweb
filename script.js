@@ -1174,26 +1174,24 @@ mudanzaTotal
 // OPENROUTESERVICE GEOCODING
 //////////////////////////////////////////////////////
 
-const res = await fetch(
-`const url =
-`https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(query)}&size=8&boundary.country=ES`;`,
-{
-    headers: {
-        Authorization: ORS_API_KEY
-    }
-}
-);
-        console.log('Buscando:', query);
+const url =
+`https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(query)}&size=8&boundary.country=ES`;
+
+const res = await fetch(url);
+
+console.log('URL:', url);
+console.log('STATUS:', res.status);
 
 if (!res.ok) {
     throw new Error('ORS HTTP ' + res.status);
 }
 
 const json = await res.json();
-        
-        console.log(json);
+
+console.log(json);
 
 const data = json.features || [];
+        
         dropdown.innerHTML = '';
 
         if (data.length > 0) {
