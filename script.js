@@ -1175,7 +1175,7 @@ mudanzaTotal
 //////////////////////////////////////////////////////
 
 const url =
-`https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(query)}&size=8&boundary.country=ES`;
+`https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(query)}&size=20&layers=address&boundary.country=ES`;
 
 const res = await fetch(url);
 
