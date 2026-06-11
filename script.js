@@ -1176,7 +1176,10 @@ mudanzaTotal
 
 let queryBusqueda = query.trim();
 
-if (!queryBusqueda.toLowerCase().includes('españa')) {
+if (
+    !queryBusqueda.toLowerCase().includes('sevilla') &&
+    !queryBusqueda.toLowerCase().includes('españa')
+) {
     queryBusqueda += ', Sevilla, España';
 }
 
@@ -1192,6 +1195,8 @@ if (!res.ok) {
 }
 
 const json = await res.json();
+        
+        console.log('RESULTADOS:', json.features);
 
 const data = json.features || [];
 
