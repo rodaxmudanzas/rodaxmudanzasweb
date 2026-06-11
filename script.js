@@ -1174,9 +1174,14 @@ mudanzaTotal
 // OPENROUTESERVICE GEOCODING
 //////////////////////////////////////////////////////
 
-const url =
-`https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(query)}&size=20&layers=address&boundary.country=ES`;
+let queryBusqueda = query.trim();
 
+if (!queryBusqueda.toLowerCase().includes('españa')) {
+    queryBusqueda += ', España';
+}
+
+const url =
+`https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(queryBusqueda)}&size=20&layers=address&boundary.country=ES`;
 const res = await fetch(url);
 
 console.log('URL:', url);
@@ -1187,6 +1192,26 @@ if (!res.ok) {
 }
 
 const json = await res.json();
+        
+        if (queryBusqueda.toLowerCase().includes('sevilla')) {
+
+    data.features.sort((a, b) => {
+
+        const aLabel =
+            (a.properties?.label || '').toLowerCase();
+
+        const bLabel =
+            (b.properties?.label || '').toLowerCase();
+
+        const aSevilla =
+            aLabel.includes('sevilla');
+
+        const bSevilla =
+            bLabel.includes('sevilla');
+
+        return bSevilla - aSevilla;
+    });
+}
 
 console.log(json);
 
