@@ -1163,7 +1163,7 @@ mudanzaTotal
      */
  async function buscarDireccion(query, dropdown, tipo) {
 
-    if (!query || query.length < 3) {
+    if (!query || query.length < 5) {
         dropdown.classList.add('hidden');
         return;
     }
@@ -1175,7 +1175,8 @@ mudanzaTotal
         //////////////////////////////////////////////////////
 
         const url =
-`https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(query)}&countrycodes=es&addressdetails=1&limit=8`;
+const url =
+`https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(query)}&addressdetails=1&limit=10`;
 
         const res = await fetch(url, {
             headers: {
@@ -1208,10 +1209,14 @@ mudanzaTotal
                 const address = item.address || {};
 
                 const calle =
-                    address.road ||
-                    address.pedestrian ||
-                    address.residential ||
-                    '';
+    address.road ||
+    address.pedestrian ||
+    address.residential ||
+    address.footway ||
+    address.path ||
+    address.cycleway ||
+    address.neighbourhood ||
+    '';
 
                 const numero =
                     address.house_number ||
@@ -1242,17 +1247,21 @@ mudanzaTotal
                     etiqueta += calle;
                 }
 
-                if (numero) {
-                    etiqueta += ' ' + numero;
-                }
+                if(numero){
+    etiqueta += ' ' + numero;
+}
 
-                if (pueblo) {
-                    etiqueta += ', ' + pueblo;
-                }
+if(cp){
+    etiqueta += ', ' + cp;
+}
 
-                if (cp) {
-                    etiqueta += ' (' + cp + ')';
-                }
+if(pueblo){
+    etiqueta += ' ' + pueblo;
+}
+
+if(provincia){
+    etiqueta += ', ' + provincia;
+}
 
                 //////////////////////////////////////////////////////
                 // FALLBACK
