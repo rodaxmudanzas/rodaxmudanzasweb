@@ -1192,10 +1192,12 @@ if (!res.ok) {
 }
 
 const json = await res.json();
-        
-        if (queryBusqueda.toLowerCase().includes('sevilla')) {
 
-    data.features.sort((a, b) => {
+const data = json.features || [];
+
+if (queryBusqueda.toLowerCase().includes('sevilla')) {
+
+    data.sort((a, b) => {
 
         const aLabel =
             (a.properties?.label || '').toLowerCase();
@@ -1212,7 +1214,6 @@ const json = await res.json();
         return bSevilla - aSevilla;
     });
 }
-
 console.log(json);
 
 const data = json.features || [];
