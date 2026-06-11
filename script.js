@@ -1220,8 +1220,6 @@ if (queryBusqueda.toLowerCase().includes('sevilla')) {
     });
 }
 console.log(json);
-
-const data = json.features || [];
         
         dropdown.innerHTML = '';
 
