@@ -1177,11 +1177,11 @@ mudanzaTotal
 let queryBusqueda = query.trim();
 
 if (!queryBusqueda.toLowerCase().includes('españa')) {
-    queryBusqueda += ', España';
+    queryBusqueda += ', Sevilla, España';
 }
 
 const url =
-`https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(queryBusqueda)}&size=20&layers=address&boundary.country=ES`;
+`https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(queryBusqueda)}&size=20&layers=address`;
 const res = await fetch(url);
 
 console.log('URL:', url);
