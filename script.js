@@ -1171,25 +1171,25 @@ mudanzaTotal
     try {
 
         //////////////////////////////////////////////////////
-        // NOMINATIM OSM
-        //////////////////////////////////////////////////////
+// OPENROUTESERVICE GEOCODING
+//////////////////////////////////////////////////////
 
-        const url =
-const url =
-`https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(query)}&addressdetails=1&limit=10`;
+const res = await fetch(
+`https://api.openrouteservice.org/geocode/autocomplete?text=${encodeURIComponent(query)}&boundary.country=ES&size=10`,
+{
+    headers: {
+        Authorization: ORS_API_KEY
+    }
+}
+);
 
-        const res = await fetch(url, {
-            headers: {
-                'Accept-Language': 'es'
-            }
-        });
+if (!res.ok) {
+    throw new Error('ORS HTTP ' + res.status);
+}
 
-        if (!res.ok) {
-            throw new Error('Nominatim HTTP ' + res.status);
-        }
+const json = await res.json();
 
-        const data = await res.json();
-
+const data = json.features || [];
         dropdown.innerHTML = '';
 
         if (data.length > 0) {
@@ -1198,148 +1198,39 @@ const url =
 
             data.forEach(item => {
 
-                const div = document.createElement('div');
+    const div = document.createElement('div');
 
-                div.className = 'dd-item';
+    div.className = 'dd-item';
 
-                //////////////////////////////////////////////////////
-                // DIRECCIÓN
-                //////////////////////////////////////////////////////
+    const etiqueta =
+        item.properties.label || '';
 
-                const address = item.address || {};
+    div.innerHTML =
+`${pinIcon}<span>${etiqueta.substring(0,120)}</span>`;
 
-                const calle =
-    address.road ||
-    address.pedestrian ||
-    address.residential ||
-    address.footway ||
-    address.path ||
-    address.cycleway ||
-    address.neighbourhood ||
-    '';
+    div.addEventListener('mousedown', (ev) => {
 
-                const numero =
-                    address.house_number ||
-                    '';
+        ev.preventDefault();
 
-                const pueblo =
-                    address.town ||
-                    address.village ||
-                    address.city ||
-                    address.municipality ||
-                    '';
+        document.getElementById(tipo).value =
+            etiqueta;
 
-                const provincia =
-                    address.state ||
-                    '';
+        coords[tipo] = {
 
-                const cp =
-                    address.postcode ||
-                    '';
+            lon: item.geometry.coordinates[0],
 
-                //////////////////////////////////////////////////////
-                // TEXTO
-                //////////////////////////////////////////////////////
+            lat: item.geometry.coordinates[1]
+        };
 
-                let etiqueta = '';
+        dropdown.classList.add('hidden');
 
-                if (calle) {
-                    etiqueta += calle;
-                }
+        if(coords.origen && coords.destino){
+            calcularRutaORS();
+        }
+    });
 
-                if(numero){
-    etiqueta += ' ' + numero;
-}
-
-if(cp){
-    etiqueta += ', ' + cp;
-}
-
-if(pueblo){
-    etiqueta += ' ' + pueblo;
-}
-
-if(provincia){
-    etiqueta += ', ' + provincia;
-}
-
-                //////////////////////////////////////////////////////
-                // FALLBACK
-                //////////////////////////////////////////////////////
-
-                if (!etiqueta.trim()) {
-                    etiqueta = item.display_name;
-                }
-
-                //////////////////////////////////////////////////////
-                // HTML
-                //////////////////////////////////////////////////////
-
-                div.innerHTML =
-`${pinIcon}<span>${etiqueta.substring(0, 120)}</span>`;
-
-                //////////////////////////////////////////////////////
-// CLICK
-//////////////////////////////////////////////////////
-
-div.addEventListener('mousedown', (ev) => {
-
-    ev.preventDefault();
-
-    //////////////////////////////////////////////////////
-    // GUARDAR TEXTO
-    //////////////////////////////////////////////////////
-
-    document.getElementById(tipo).value =
-        etiqueta;
-
-    //////////////////////////////////////////////////////
-    // GUARDAR COORDENADAS
-    //////////////////////////////////////////////////////
-
-    coords[tipo] = {
-
-        lat: parseFloat(item.lat),
-
-        lon: parseFloat(item.lon)
-    };
-
-    //////////////////////////////////////////////////////
-    // CERRAR DROPDOWN
-    //////////////////////////////////////////////////////
-
-    dropdown.classList.add('hidden');
-
-    //////////////////////////////////////////////////////
-    // DEBUG VISUAL
-    //////////////////////////////////////////////////////
-
-    console.log(
-        'Dirección seleccionada:',
-        etiqueta
-    );
-
-    console.log(
-        'Coords:',
-        coords[tipo]
-    );
-
-    //////////////////////////////////////////////////////
-    // CALCULAR RUTA
-    //////////////////////////////////////////////////////
-
-    if (coords.origen && coords.destino) {
-
-        console.log(
-            'Calculando ruta...'
-        );
-
-        calcularRutaORS();
-    }
+    dropdown.appendChild(div);
 });
-
-                dropdown.appendChild(div);
-            });
 
         } else {
 
