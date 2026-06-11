@@ -1182,12 +1182,15 @@ const res = await fetch(
     }
 }
 );
+        console.log('Buscando:', query);
 
 if (!res.ok) {
     throw new Error('ORS HTTP ' + res.status);
 }
 
 const json = await res.json();
+        
+        console.log(json);
 
 const data = json.features || [];
         dropdown.innerHTML = '';
