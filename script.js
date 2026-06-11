@@ -1212,24 +1212,39 @@ const data = json.features || [];
 
     div.addEventListener('mousedown', (ev) => {
 
-        ev.preventDefault();
+    console.log('CLICK ITEM');
 
-        document.getElementById(tipo).value =
-            etiqueta;
+    ev.preventDefault();
 
-        coords[tipo] = {
+    document.getElementById(tipo).value =
+        etiqueta;
 
-            lon: item.geometry.coordinates[0],
+    coords[tipo] = {
 
-            lat: item.geometry.coordinates[1]
-        };
+        lon: item.geometry.coordinates[0],
 
-        dropdown.classList.add('hidden');
+        lat: item.geometry.coordinates[1]
+    };
 
-        if(coords.origen && coords.destino){
-            calcularRutaORS();
-        }
-    });
+    console.log(
+        'Dirección seleccionada:',
+        etiqueta
+    );
+
+    console.log(
+        'Coords:',
+        coords[tipo]
+    );
+
+    dropdown.classList.add('hidden');
+
+    if(coords.origen && coords.destino){
+
+        console.log('CALCULANDO RUTA');
+
+        calcularRutaORS();
+    }
+});
 
     dropdown.appendChild(div);
 });
