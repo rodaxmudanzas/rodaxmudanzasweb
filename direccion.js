@@ -162,25 +162,48 @@ const url =
 
         resultados.forEach(item => {
 
-            const etiqueta =
-            item.properties.label || '';
+            const direccion = construirDireccion(item);
 
-            const div =
-            document.createElement('div');
+const div = document.createElement('div');
 
-            div.className = 'dd-item';
+div.className = 'dd-item';
 
-            div.innerHTML =
-            `${pinIcon}<span>${etiqueta}</span>`;
+div.innerHTML = `
+
+${pinIcon}
+
+<div class="dd-text">
+
+    <div class="dd-line1">
+
+        ${direccion.calle} ${direccion.numero}
+
+    </div>
+
+    <div class="dd-line2">
+
+        ${direccion.municipio}
+
+    </div>
+
+    <div class="dd-line3">
+
+        ${direccion.codigoPostal}
+
+    </div>
+
+</div>
+
+`;
 
             div.addEventListener(
                 'mousedown',
                 () => {
 
                     document.getElementById(tipo).value =
-                    etiqueta;
+    direccion.texto;
 
-                    coords[tipo] = construirDireccion(item);
+                    coords[tipo] = direccion;
 
                     dropdown.classList.add(
                         'hidden'
