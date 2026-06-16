@@ -61,6 +61,48 @@ function normalizarBusqueda(texto) {
     return q;
 }
 
+function construirDireccion(item) {
+
+    const p = item.properties || {};
+
+    return {
+
+        texto: p.label || '',
+
+        calle:
+            p.street ||
+            p.name ||
+            '',
+
+        numero:
+            p.housenumber ||
+            '',
+
+        municipio:
+            p.locality ||
+            p.city ||
+            p.county ||
+            '',
+
+        provincia:
+            p.region ||
+            p.county ||
+            '',
+
+        codigoPostal:
+            p.postalcode ||
+            '',
+
+        lat:
+            item.geometry.coordinates[1],
+
+        lon:
+            item.geometry.coordinates[0]
+
+    };
+
+}
+
 async function buscarDireccion(query, dropdown, tipo) {
 
     if (!query || query.trim().length < 3) {
