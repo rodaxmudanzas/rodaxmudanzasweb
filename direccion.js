@@ -90,6 +90,27 @@ const url =
         const resultados =
         json.features || [];
 
+        resultados.sort((a, b) => {
+
+    const aLabel =
+        (a.properties.label || '').toLowerCase();
+
+    const bLabel =
+        (b.properties.label || '').toLowerCase();
+
+    const texto =
+        busqueda.toLowerCase();
+
+    const aCoincide =
+        aLabel.includes(texto);
+
+    const bCoincide =
+        bLabel.includes(texto);
+
+    return Number(bCoincide) - Number(aCoincide);
+
+});
+
         dropdown.innerHTML = '';
 
         if (!resultados.length) {
