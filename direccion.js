@@ -191,6 +191,58 @@ const url =
     }
 }
 
+function crearAutocomplete({
+
+    input,
+    dropdown,
+    tipo
+
+}){
+
+    input.addEventListener(
+
+        'input',
+
+        (e)=>{
+
+            if(tipo==="origen"){
+
+                clearTimeout(timeoutOri);
+                coords.origen=null;
+
+                timeoutOri=setTimeout(()=>{
+
+                    buscarDireccion(
+                        e.target.value,
+                        dropdown,
+                        tipo
+                    );
+
+                },400);
+
+            }else{
+
+                clearTimeout(timeoutDes);
+                coords.destino=null;
+
+                timeoutDes=setTimeout(()=>{
+
+                    buscarDireccion(
+                        e.target.value,
+                        dropdown,
+                        tipo
+                    );
+
+                },400);
+
+            }
+
+        }
+
+    );
+
+}
+
 oriInput.addEventListener(
     'input',
     (e) => {
