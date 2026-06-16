@@ -50,3 +50,152 @@ style="color:#3b82f6;flex-shrink:0;">
 </svg>`;
 
 console.log('direccion.js cargado');
+
+async function buscarDireccion(query, dropdown, tipo) {
+
+    if (!query || query.trim().length < 3) {
+
+        dropdown.classList.add('hidden');
+        return;
+    }
+
+    try {
+
+        const url =
+        `https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(query)}&size=10&boundary.country=ES`;
+
+        const res = await fetch(url);
+
+        if (!res.ok) {
+            throw new Error('ORS ' + res.status);
+        }
+
+        const json = await res.json();
+
+        const resultados =
+        json.features || [];
+
+        dropdown.innerHTML = '';
+
+        if (!resultados.length) {
+
+            dropdown.classList.add('hidden');
+            return;
+        }
+
+        dropdown.classList.remove('hidden');
+
+        resultados.forEach(item => {
+
+            const etiqueta =
+            item.properties.label || '';
+
+            const div =
+            document.createElement('div');
+
+            div.className = 'dd-item';
+
+            div.innerHTML =
+            `${pinIcon}<span>${etiqueta}</span>`;
+
+            div.addEventListener(
+                'mousedown',
+                () => {
+
+                    document.getElementById(tipo).value =
+                    etiqueta;
+
+                    coords[tipo] = {
+
+                        lon:
+                        item.geometry.coordinates[0],
+
+                        lat:
+                        item.geometry.coordinates[1]
+                    };
+
+                    dropdown.classList.add(
+                        'hidden'
+                    );
+
+                    if (
+                        coords.origen &&
+                        coords.destino
+                    ) {
+
+                        calcularRutaORS();
+                    }
+                }
+            );
+
+            dropdown.appendChild(div);
+        });
+
+    } catch (error) {
+
+        console.error(
+            'Error geocodificando:',
+            error
+        );
+
+        dropdown.classList.add('hidden');
+    }
+}
+
+oriInput.addEventListener(
+    'input',
+    (e) => {
+
+        clearTimeout(timeoutOri);
+
+        coords.origen = null;
+
+        timeoutOri = setTimeout(
+            () => buscarDireccion(
+                e.target.value,
+                oriDropdown,
+                'origen'
+            ),
+            400
+        );
+    }
+);
+
+desInput.addEventListener(
+    'input',
+    (e) => {
+
+        clearTimeout(timeoutDes);
+
+        coords.destino = null;
+
+        timeoutDes = setTimeout(
+            () => buscarDireccion(
+                e.target.value,
+                desDropdown,
+                'destino'
+            ),
+            400
+        );
+    }
+);
+
+document.addEventListener(
+    'mousedown',
+    (e) => {
+
+        if (
+            !oriInput.contains(e.target) &&
+            !oriDropdown.contains(e.target)
+        ) {
+            oriDropdown.classList.add('hidden');
+        }
+
+        if (
+            !desInput.contains(e.target) &&
+            !desDropdown.contains(e.target)
+        ) {
+            desDropdown.classList.add('hidden');
+        }
+    }
+);
