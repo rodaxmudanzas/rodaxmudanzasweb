@@ -1141,8 +1141,7 @@ mudanzaTotal
 
 
     // ─── 8. SISTEMA DE MAPAS OSM + OSRM ──────────────────────────────────────
-    const ORS_API_KEY =
-'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjViY2ZiNmRiN2EzZDQxMzJhZDlmMmY4NGIyN2RlNzVmIiwiaCI6Im11cm11cjY0In0=';
+    
     const oriInput    = document.getElementById('origen');
     const desInput    = document.getElementById('destino');
     const oriDropdown = document.getElementById('origen-dropdown');
