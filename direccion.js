@@ -143,12 +143,25 @@ const url =
 
                     coords[tipo] = {
 
-                        lon:
-                        item.geometry.coordinates[0],
+    texto: etiqueta,
 
-                        lat:
-                        item.geometry.coordinates[1]
-                    };
+    lon: item.geometry.coordinates[0],
+
+    lat: item.geometry.coordinates[1],
+
+    municipio:
+        item.properties.locality ||
+        item.properties.city ||
+        '',
+
+    provincia:
+        item.properties.region ||
+        '',
+
+    codigoPostal:
+        item.properties.postalcode ||
+        ''
+};
 
                     dropdown.classList.add(
                         'hidden'
