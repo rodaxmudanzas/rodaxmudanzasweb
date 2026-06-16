@@ -145,9 +145,20 @@ const url =
 
     texto: etiqueta,
 
+    lat: item.geometry.coordinates[1],
+
     lon: item.geometry.coordinates[0],
 
-    lat: item.geometry.coordinates[1],
+    calle: item.properties.street || '',
+
+    numero: item.properties.housenumber || '',
+
+    municipio: item.properties.locality || '',
+
+    provincia: item.properties.region || '',
+
+    codigoPostal: item.properties.postalcode || ''
+};
 
     municipio:
         item.properties.locality ||
