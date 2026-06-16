@@ -197,49 +197,27 @@ function crearAutocomplete({
     dropdown,
     tipo
 
-}){
+}) {
 
-    input.addEventListener(
+    let timeout = null;
 
-        'input',
+    input.addEventListener('input', (e) => {
 
-        (e)=>{
+        clearTimeout(timeout);
 
-            if(tipo==="origen"){
+        coords[tipo] = null;
 
-                clearTimeout(timeoutOri);
-                coords.origen=null;
+        timeout = setTimeout(() => {
 
-                timeoutOri=setTimeout(()=>{
+            buscarDireccion(
+                e.target.value,
+                dropdown,
+                tipo
+            );
 
-                    buscarDireccion(
-                        e.target.value,
-                        dropdown,
-                        tipo
-                    );
+        }, 400);
 
-                },400);
-
-            }else{
-
-                clearTimeout(timeoutDes);
-                coords.destino=null;
-
-                timeoutDes=setTimeout(()=>{
-
-                    buscarDireccion(
-                        e.target.value,
-                        dropdown,
-                        tipo
-                    );
-
-                },400);
-
-            }
-
-        }
-
-    );
+    });
 
 }
 
