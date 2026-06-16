@@ -243,43 +243,25 @@ function crearAutocomplete({
 
 }
 
-oriInput.addEventListener(
-    'input',
-    (e) => {
+crearAutocomplete({
 
-        clearTimeout(timeoutOri);
+    input: oriInput,
 
-        coords.origen = null;
+    dropdown: oriDropdown,
 
-        timeoutOri = setTimeout(
-            () => buscarDireccion(
-                e.target.value,
-                oriDropdown,
-                'origen'
-            ),
-            400
-        );
-    }
-);
+    tipo: 'origen'
 
-desInput.addEventListener(
-    'input',
-    (e) => {
+});
 
-        clearTimeout(timeoutDes);
+crearAutocomplete({
 
-        coords.destino = null;
+    input: desInput,
 
-        timeoutDes = setTimeout(
-            () => buscarDireccion(
-                e.target.value,
-                desDropdown,
-                'destino'
-            ),
-            400
-        );
-    }
-);
+    dropdown: desDropdown,
+
+    tipo: 'destino'
+
+});
 
 document.addEventListener(
     'mousedown',
