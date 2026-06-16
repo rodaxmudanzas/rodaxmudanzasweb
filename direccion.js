@@ -180,31 +180,7 @@ const url =
                     document.getElementById(tipo).value =
                     etiqueta;
 
-                    coords[tipo] = {
-
-    texto: etiqueta,
-
-    lat: item.geometry.coordinates[1],
-
-    lon: item.geometry.coordinates[0],
-
-    calle: item.properties.street || '',
-
-    numero: item.properties.housenumber || '',
-
-    municipio:
-        item.properties.locality ||
-        item.properties.city ||
-        '',
-
-    provincia:
-        item.properties.region ||
-        '',
-
-    codigoPostal:
-        item.properties.postalcode ||
-        ''
-};
+                    coords[tipo] = construirDireccion(item);
 
                     dropdown.classList.add(
                         'hidden'
