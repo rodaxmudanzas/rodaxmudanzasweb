@@ -48,6 +48,13 @@ style="color:#3b82f6;flex-shrink:0;">
 
 console.log('direccion.js cargado');
 
+function normalizarBusqueda(texto) {
+
+    return texto
+        .trim()
+        .replace(/\s+/g, ' ');
+}
+
 async function buscarDireccion(query, dropdown, tipo) {
 
     if (!query || query.trim().length < 3) {
@@ -58,8 +65,11 @@ async function buscarDireccion(query, dropdown, tipo) {
 
     try {
 
-        const url =
-        `https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(query)}&size=10&boundary.country=ES`;
+        const consulta =
+normalizarBusqueda(query);
+
+const url =
+`https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(consulta)}&size=10&boundary.country=ES`;
 
         const res = await fetch(url);
 
