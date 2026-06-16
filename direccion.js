@@ -74,11 +74,10 @@ async function buscarDireccion(query, dropdown, tipo) {
 
     try {
 
-        const consulta =
-normalizarBusqueda(query);
+        const busqueda = normalizarBusqueda(query);
 
 const url =
-`https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(consulta)}&size=10&boundary.country=ES`;
+`https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(busqueda)}&size=20&layers=address,street,venue&boundary.country=ES`;
 
         const res = await fetch(url);
 
