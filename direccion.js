@@ -50,9 +50,18 @@ console.log('direccion.js cargado');
 
 function normalizarBusqueda(texto) {
 
-    return texto
+    let q = texto
         .trim()
         .replace(/\s+/g, ' ');
+
+    q = q.replace(/^c\//i, 'calle ');
+    q = q.replace(/^cl\b/i, 'calle');
+    q = q.replace(/^avda\b/i, 'avenida');
+    q = q.replace(/^av\b/i, 'avenida');
+    q = q.replace(/^pº\b/i, 'paseo');
+    q = q.replace(/^pto\b/i, 'puerto');
+
+    return q;
 }
 
 async function buscarDireccion(query, dropdown, tipo) {
