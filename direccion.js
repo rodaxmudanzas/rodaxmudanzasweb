@@ -28,9 +28,6 @@ const coords = {
     destino: null
 };
 
-let timeoutOri = null;
-let timeoutDes = null;
-
 const pinIcon = `
 <svg xmlns="http://www.w3.org/2000/svg"
 width="14"
