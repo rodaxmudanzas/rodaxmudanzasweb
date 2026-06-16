@@ -153,13 +153,6 @@ const url =
 
     numero: item.properties.housenumber || '',
 
-    municipio: item.properties.locality || '',
-
-    provincia: item.properties.region || '',
-
-    codigoPostal: item.properties.postalcode || ''
-};
-
     municipio:
         item.properties.locality ||
         item.properties.city ||
