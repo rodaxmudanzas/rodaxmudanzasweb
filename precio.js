@@ -339,3 +339,79 @@ items.push({
         totalFinalIA,
         metrosCubicos
     );
+    //////////////////////////////////////////////////
+    // DESGLOSE VISUAL
+    //////////////////////////////////////////////////
+
+    if (UI.desglose) {
+
+        UI.desglose.innerHTML =
+
+            items.map(d => `
+                <div class="flex justify-between items-center py-1 border-b border-white/10">
+                    <span class="text-blue-200 text-xs">
+    ${d.label}
+    ${d.tipo ? ` — ${d.tipo}` : ''}
+</span>
+                    <span class="text-white font-bold text-xs">
+                        ${d.valor > 0
+? `${d.valor.toFixed(2)} €`
+: ''}
+                    </span>
+                </div>
+            `).join('')
+
+            +
+
+            `
+            <div class="flex justify-between items-center pt-3 mt-2">
+                <span class="text-white font-black text-sm">
+                    PRECIO TOTAL CERRADO
+                </span>
+
+                <span class="text-green-400 font-black text-lg">
+                    ${totalFinalIA.toFixed(2)} €
+                </span>
+            </div>
+            `;
+    }
+
+    //////////////////////////////////////////////////
+    // MOSTRAR
+    //////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+// UX PREMIUM FINAL
+//////////////////////////////////////////////////////
+
+actualizarBarraGlobal();
+
+//////////////////////////////////////////////////////
+// CUANDO EL CÁLCULO YA ES REAL
+//////////////////////////////////////////////////////
+
+if(totalFinalIA > 0){
+
+    setTimeout(() => {
+
+        actualizarBarraGlobal();
+
+    }, 1200);
+}
+    
+    //////////////////////////////////////////////////////
+// MOSTRAR SOLO SI HAY KM
+//////////////////////////////////////////////////////
+
+if(km > 0){
+
+    UI.cajaPrecio.classList.remove('hidden');
+
+    void UI.cajaPrecio.offsetWidth;
+
+    UI.cajaPrecio.classList.add('fade-in');
+
+}else{
+
+    UI.cajaPrecio.classList.add('hidden');
+}
+};
