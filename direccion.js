@@ -311,3 +311,80 @@ document.addEventListener(
         }
     }
 );
+
+async function calcularRutaORS() {
+
+    if (!coords.origen || !coords.destino) return;
+
+    try {
+
+        const res = await fetch(
+            "https://api.openrouteservice.org/v2/directions/driving-car",
+            {
+                method: "POST",
+                headers: {
+                    "Authorization": ORS_API_KEY,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+
+                    coordinates: [
+
+                        [
+                            coords.origen.lon,
+                            coords.origen.lat
+                        ],
+
+                        [
+                            coords.destino.lon,
+                            coords.destino.lat
+                        ]
+
+                    ]
+
+                })
+
+            }
+        );
+
+        if (!res.ok) {
+
+            throw new Error(
+                "ORS Directions " + res.status
+            );
+
+        }
+
+        const data = await res.json();
+
+        const ruta = data.routes[0];
+
+        const km =
+            ruta.summary.distance / 1000;
+
+        kmInput.value =
+            km.toFixed(1);
+
+        console.log(
+            "Kilómetros:",
+            km.toFixed(1)
+        );
+
+        if (typeof calcularPresupuesto === "function") {
+
+            calcularPresupuesto();
+
+        }
+
+    }
+
+    catch (err) {
+
+        console.error(
+            "Error calculando ruta:",
+            err
+        );
+
+    }
+
+}
