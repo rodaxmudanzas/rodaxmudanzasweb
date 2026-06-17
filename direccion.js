@@ -168,34 +168,43 @@ const div = document.createElement('div');
 
 div.className = 'dd-item';
 
+const linea1 = [
+    direccion.calle,
+    direccion.numero
+].filter(Boolean).join(' ');
+
+const linea2 = [
+    direccion.municipio,
+    direccion.provincia
+].filter(Boolean).join(', ');
+
 div.innerHTML = `
 
 ${pinIcon}
 
 <div class="dd-text">
 
-    <div class="dd-line1">
+    ${
+        linea1
+            ? `<div class="dd-line1">${linea1}</div>`
+            : ''
+    }
 
-        ${direccion.calle} ${direccion.numero}
+    ${
+        linea2
+            ? `<div class="dd-line2">${linea2}</div>`
+            : ''
+    }
 
-    </div>
-
-    <div class="dd-line2">
-
-        ${direccion.municipio}
-
-    </div>
-
-    <div class="dd-line3">
-
-        ${direccion.codigoPostal}
-
-    </div>
+    ${
+        direccion.codigoPostal
+            ? `<div class="dd-line3">${direccion.codigoPostal}</div>`
+            : ''
+    }
 
 </div>
 
 `;
-
             div.addEventListener(
                 'mousedown',
                 () => {
