@@ -644,6 +644,34 @@ function actualizarResumenGlobal(total, metrosCubicos) {
                 // Subir fotos si las hay
                 const fotosString = await subirFotos(document.getElementById('fotos_upload'));
 
+                const respuestaStripe = await fetch("/api/create-checkout-session", {
+
+    method: "POST",
+
+    headers: {
+        "Content-Type": "application/json"
+    },
+
+    body: JSON.stringify({
+
+        nombre: document.getElementById("nombre").value.trim(),
+
+        email: document.getElementById("email").value.trim(),
+
+        telefono: document.getElementById("telefono").value.trim(),
+
+        importe: parseFloat(
+            UI.precioReserva.textContent
+                .replace("€", "")
+                .replace(",", ".")
+        )
+
+    })
+
+});
+
+const datosStripe = await respuestaStripe.json();
+
                 // Recopilar datos de ascensores
                 const ascOrigen  = document.getElementById('ascensor_origen')?.value  || 'si';
                 const pisoOrigen = parseInt(document.getElementById('piso_origen')?.value)  || 0;
