@@ -6,11 +6,25 @@ module.exports = async (req, res) => {
 
     try {
 
+        const {
+            nombre,
+            email,
+            telefono,
+            importe
+        } = req.body;
+
         const session = await stripe.checkout.sessions.create({
 
             payment_method_types: ["card"],
 
             mode: "payment",
+
+            customer_email: email,
+
+            metadata: {
+                nombre,
+                telefono
+            },
 
             line_items: [
 
@@ -22,11 +36,11 @@ module.exports = async (req, res) => {
 
                         product_data: {
 
-                            name: "Reserva RODAX"
+                            name: "Reserva Mudanza RODAX"
 
                         },
 
-                        unit_amount: 5000
+                        unit_amount: Math.round(importe * 100)
 
                     },
 
@@ -36,9 +50,11 @@ module.exports = async (req, res) => {
 
             ],
 
-            success_url: "https://rodaxmudanzasweb.vercel.app",
+            success_url:
+                "https://rodaxmudanzasweb.vercel.app/?pago=ok",
 
-            cancel_url: "https://rodaxmudanzasweb.vercel.app"
+            cancel_url:
+                "https://rodaxmudanzasweb.vercel.app/?pago=cancel"
 
         });
 
