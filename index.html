@@ -3285,7 +3285,9 @@ document.querySelectorAll('.access-card').forEach(card=>{
 
         }
 
-        calcularPrecioFinal();
+        if (typeof calcularPresupuesto === "function") {
+    calcularPresupuesto();
+}
 
     });
 
