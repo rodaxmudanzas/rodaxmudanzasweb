@@ -3376,45 +3376,6 @@ document.querySelectorAll('.access-card').forEach(card=>{
   <script>
 
 /* =========================================
-   CONTROL PISO + ASCENSOR
-========================================= */
-
-function togglePiso(tipo){
-
-    const ascensor =
-    document.getElementById('ascensor_' + tipo).value;
-
-    const input =
-    document.getElementById('piso_' + tipo);
-
-    const nota =
-    document.getElementById('nota_piso_' + tipo);
-
-    // SI HAY ASCENSOR
-    if(ascensor === 'si'){
-
-        input.disabled = true;
-
-        input.value = 0;
-
-        nota.innerHTML =
-        'Con ascensor el piso no afecta al precio.';
-
-    }
-
-    // SOLO ESCALERAS
-    else{
-
-        input.disabled = false;
-
-        nota.innerHTML =
-        'El piso afecta al precio por uso de escaleras.';
-
-    }
-
-}
-
-/* =========================================
    BOTONES + Y -
 ========================================= */
 
