@@ -464,16 +464,16 @@ calcularPresupuesto();
     const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
     // ─── 2. REFERENCIAS UI ───────────────────────────────────────────────────
-    const UI = {
-        form:          document.getElementById('contact-form'),
-        btnSubmit:     document.querySelector('#contact-form button[type="submit"]'),
-        cajaPrecio:    document.getElementById('caja-precio'),
-        precioTotal:   document.getElementById('precio-total'),
-        precioReserva: document.getElementById('precio-reserva'),
-        desglose:      document.getElementById('desglose-precio'),
-        successModal:  document.getElementById('success-modal'),
-        closeModal:    document.getElementById('close-modal'),
-    };
+    window.UI = {
+    form: document.getElementById('contact-form'),
+    btnSubmit: document.querySelector('#contact-form button[type="submit"]'),
+    cajaPrecio: document.getElementById('caja-precio'),
+    precioTotal: document.getElementById('precio-total'),
+    precioReserva: document.getElementById('precio-reserva'),
+    desglose: document.getElementById('desglose-precio'),
+    successModal: document.getElementById('success-modal'),
+    closeModal: document.getElementById('close-modal'),
+};
 
     // ─── 3. BANNER RGPD (solo LocalStorage, cero librerías) ─────────────────
     const cookieBanner       = document.getElementById('cookie-banner');
