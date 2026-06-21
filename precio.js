@@ -403,7 +403,7 @@ window.actualizarResumenGlobal(
 // UX PREMIUM FINAL
 //////////////////////////////////////////////////////
 
-actualizarBarraGlobal();
+// actualizarBarraGlobal();
 
 //////////////////////////////////////////////////////
 // CUANDO EL CÁLCULO YA ES REAL
@@ -411,13 +411,10 @@ actualizarBarraGlobal();
 
 if(totalFinalIA > 0){
 
-    setTimeout(() => {
-
-        actualizarBarraGlobal();
-
-    }, 1200);
+    // setTimeout(() => {
+//     actualizarBarraGlobal();
+// },1200);
 }
-    
     //////////////////////////////////////////////////////
 // MOSTRAR SOLO SI HAY KM
 //////////////////////////////////////////////////////
