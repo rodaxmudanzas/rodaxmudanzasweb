@@ -418,10 +418,13 @@ if(totalFinalIA > 0){
     //////////////////////////////////////////////////////
 // MOSTRAR SOLO SI HAY KM
 //////////////////////////////////////////////////////
-
+console.log("LLEGA AL FINAL");
+    
 if(km > 0){
 
     UI.cajaPrecio.classList.remove('hidden');
+
+    console.log(UI.cajaPrecio.className);
 
     void UI.cajaPrecio.offsetWidth;
 
