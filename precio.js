@@ -341,7 +341,12 @@ items.push({
         valor: 0
     });
 
-    console.log({
+    console.log(
+    "actualizarResumenGlobal =",
+    typeof actualizarResumenGlobal
+);
+
+console.log({
     totalBase,
     totalExtras,
     totalInventario,
@@ -350,14 +355,10 @@ items.push({
     totalFinalIA
 });
 
-    //////////////////////////////////////////////////
-    // ACTUALIZAR WEB + POPUP
-    //////////////////////////////////////////////////
-
-    actualizarResumenGlobal(
-        totalFinalIA,
-        metrosCubicos
-    );
+actualizarResumenGlobal(
+    totalFinalIA,
+    metrosCubicos
+);
     //////////////////////////////////////////////////
     // DESGLOSE VISUAL
     //////////////////////////////////////////////////
