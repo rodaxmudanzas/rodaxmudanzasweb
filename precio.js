@@ -341,6 +341,14 @@ items.push({
         valor: 0
     });
 
+    console.log({
+    totalBase,
+    totalExtras,
+    totalInventario,
+    totalServicios,
+    recargoLogistico,
+    totalFinalIA
+});
 
     //////////////////////////////////////////////////
     // ACTUALIZAR WEB + POPUP
