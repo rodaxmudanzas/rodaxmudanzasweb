@@ -596,11 +596,25 @@ function actualizarResumenGlobal(total, metrosCubicos) {
     }
 }
 
-    // Escuchar todos los inputs con clase calculo-trigger
     document.querySelectorAll('.calculo-trigger').forEach(el => {
-        el.addEventListener('input',  calcularPresupuesto);
-        el.addEventListener('change', calcularPresupuesto);
+
+    el.addEventListener('input', () => {
+
+        if (typeof window.calcularPresupuesto === "function") {
+            window.calcularPresupuesto();
+        }
+
     });
+
+    el.addEventListener('change', () => {
+
+        if (typeof window.calcularPresupuesto === "function") {
+            window.calcularPresupuesto();
+        }
+
+    });
+
+});
 
 
     // ─── 6. SUBIDA DE FOTOS A SUPABASE STORAGE ───────────────────────────────
