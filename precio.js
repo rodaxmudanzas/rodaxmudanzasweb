@@ -138,6 +138,9 @@ totalBase = km * 0.75;
         }
     });
 
+    console.log("m3 =", metrosCubicos);
+console.log("Inventario =", totalInventario);
+
     items.push({
         label: 'Inventario mudanza',
         valor: totalInventario
