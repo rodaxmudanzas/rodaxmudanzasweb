@@ -572,6 +572,8 @@ function actualizarResumenGlobal(total, metrosCubicos) {
             `${reserva30.toFixed(2)} €`;
     }
 
+    window.actualizarResumenGlobal = actualizarResumenGlobal;
+
     //////////////////////////////////////////////////
     // POPUP FLOTANTE
     //////////////////////////////////////////////////
