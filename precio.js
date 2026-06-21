@@ -35,9 +35,12 @@ const items = [];
     // VENTANA 1 — DATOS / RUTA / ACCESOS
     //////////////////////////////////////////////////
 
-    const km =
-        parseFloat(document.getElementById('km')?.value) || 0;
- //////////////////////////////////////////////////
+   const km =
+    parseFloat(document.getElementById('km')?.value) || 0;
+
+console.log("KM =", km);
+
+//////////////////////////////////////////////////
 // NO CALCULAR SIN KM REAL
 //////////////////////////////////////////////////
 
