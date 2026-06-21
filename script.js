@@ -572,8 +572,6 @@ function actualizarResumenGlobal(total, metrosCubicos) {
             `${reserva30.toFixed(2)} €`;
     }
 
-    window.actualizarResumenGlobal = actualizarResumenGlobal;
-
     //////////////////////////////////////////////////
     // POPUP FLOTANTE
     //////////////////////////////////////////////////
@@ -605,6 +603,8 @@ function actualizarResumenGlobal(total, metrosCubicos) {
             `${reserva30.toFixed(2)} €`;
     }
 }
+    
+    window.actualizarResumenGlobal = actualizarResumenGlobal;
 
     document.querySelectorAll('.calculo-trigger').forEach(el => {
 
