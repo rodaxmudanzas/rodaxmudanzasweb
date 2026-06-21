@@ -2947,7 +2947,6 @@ class="w-full bg-white text-blue-800 font-black py-5 px-6 rounded-2xl text-lg sh
 <!-- ========== SCRIPTS ========== -->
 <script src="direccion.js"></script>
 <script src="script.js"></script>
-<script src="precio.js"></script>
 <script>
     document.getElementById('menu-toggle')?.addEventListener('click', () => {
         document.getElementById('mobile-menu')?.classList.toggle('hidden');
@@ -2955,6 +2954,146 @@ class="w-full bg-white text-blue-800 font-black py-5 px-6 rounded-2xl text-lg sh
     lucide.createIcons();
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    /* =========================================
+   COORDENADAS GLOBALES
+========================================= */
+
+let origenLat = null;
+let origenLng = null;
+
+let destinoLat = null;
+let destinoLng = null;
+    const buscador = document.getElementById("buscadorInventario");
+    buscador.addEventListener("keyup", function() {
+        const texto = this.value.toLowerCase();
+        const items = document.querySelectorAll(".inventario-item");
+        const grupos = document.querySelectorAll(".grupo-inventario");
+        items.forEach(item => {
+            item.style.display = item.innerText.toLowerCase().includes(texto) ? "flex" : "none";
+        });
+        grupos.forEach(grupo => {
+            const visibles = grupo.querySelectorAll(".inventario-item:not([style*='display: none'])");
+            grupo.style.display = visibles.length > 0 ? "block" : "none";
+        });
+    });
+    /* =========================================
+   CALCULAR DISTANCIA ENTRE PUNTOS
+========================================= */
+
+function calcularDistanciaKm(lat1, lon1, lat2, lon2){
+function actualizarKmRuta(){
+
+    if(
+        origenLat &&
+        origenLng &&
+        destinoLat &&
+        destinoLng
+    ){
+
+        const km = calcularDistanciaKm(
+            origenLat,
+            origenLng,
+            destinoLat,
+            destinoLng
+        );
+
+        console.log('KM REALES:', km);
+
+        const kmInput = document.getElementById('km');
+
+        if(kmInput){
+
+            kmInput.value = km.toFixed(1);
+
+        }
+
+        calcularPrecioFinal();
+    }
+}
+    const R = 6371;
+
+    const dLat = (lat2-lat1) * Math.PI / 180;
+    const dLon = (lon2-lon1) * Math.PI / 180;
+
+    const a =
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) *
+        Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    return R * c;
+}
+});
+</script>
+
+<script>
+    function calcularPrecioFinal() {
+
+    const totalElement =
+        document.getElementById('precio-total');
+
+    const reservaElement =
+        document.getElementById('precio-reserva');
+
+    if (!totalElement || !reservaElement) {
+        return;
+    }
+
+    let total = 0;
+
+    document.querySelectorAll(
+        '.inventario-input'
+    ).forEach(input => {
+
+        total += (
+            parseFloat(input.value || 0) *
+            parseFloat(input.dataset.precio || 0)
+        );
+
+    });
+
+    const kmInput =
+        document.getElementById('km');
+
+    if (kmInput) {
+        total += parseFloat(kmInput.value || 0) * 1.2;
+    }
+
+    const reserva = total * 0.30;
+
+    totalElement.textContent =
+        total.toFixed(2) + ' €';
+
+    reservaElement.textContent =
+        reserva.toFixed(2) + ' €';
+}
+    
+function calcularInventario() {
+    let total = 0;
+
+    document.querySelectorAll('.inventario-input').forEach(input => {
+        total += (parseInt(input.value) || 0) *
+                 (parseFloat(input.dataset.precio) || 0);
+    });
+
+    const totalInv = document.getElementById('totalInventario');
+
+    if (totalInv) {
+        totalInv.textContent = total.toFixed(2) + ' €';
+    }
+
+    document.querySelectorAll('.inventario-input').forEach(input => {
+        input.addEventListener('input', calcularInventario);
+    });
+}
+
+calcularInventario();
+    
+</script>
 <!-- ========== FLOATING AI PRICE PANEL MOBILE PRO ========== -->
 
 <div id="floating-price-ai"
@@ -3159,8 +3298,179 @@ toggleBtn.addEventListener('click', () => {
 });
 
 </script>
-    
+    <script>
+
+/* =========================================
+   BOTONES + / -
+========================================= */
+
+document.addEventListener('click', function(e){
+
+    //////////////////////////////////////
+    // BOTÓN +
+    //////////////////////////////////////
+
+    if(e.target.classList.contains('plus-btn')){
+
+        const input =
+        e.target.parentElement.querySelector('input');
+
+        input.value =
+        parseInt(input.value || 0) + 1;
+
+        input.dispatchEvent(
+            new Event('input')
+        );
+
+    }
+
+    //////////////////////////////////////
+    // BOTÓN -
+    //////////////////////////////////////
+
+    if(e.target.classList.contains('minus-btn')){
+
+        const input =
+        e.target.parentElement.querySelector('input');
+
+        let current =
+        parseInt(input.value || 0);
+
+        if(current > 0){
+
+            input.value =
+            current - 1;
+
+            input.dispatchEvent(
+                new Event('input')
+            );
+
+        }
+
+    }
+
+});
+
+</script>
+    <script>
+
+/* ========= SELECTOR VOLUMEN ========= */
+
+document.querySelectorAll('.volume-card')
+
+.forEach(card => {
+
+    card.addEventListener('click', () => {
+
+        // quitar active
+        document
+        .querySelectorAll('.volume-card')
+        .forEach(c => c.classList.remove('active'));
+
+        // activar
+        card.classList.add('active');
+
+        // guardar valor
+        document
+        .getElementById('volumen')
+        .value = card.dataset.value;
+
+        // disparar cálculo
+        document
+        .getElementById('volumen')
+        .dispatchEvent(new Event('input'));
+
+    });
+
+});
+
+</script>
+<script>
+
+/* =========================================
+   ASCENSOR PREMIUM
+========================================= */
+
+document.querySelectorAll('.access-card').forEach(card=>{
+
+    card.addEventListener('click',()=>{
+
+        const target = card.dataset.target;
+
+        const value = card.dataset.value;
+
+        const hiddenInput =
+        document.getElementById(target);
+
+        hiddenInput.value = value;
+
+        const container =
+        card.parentElement;
+
+        container.querySelectorAll('.access-card')
+        .forEach(c=>c.classList.remove('active'));
+
+        card.classList.add('active');
+
+        if(target === 'ascensor_origen'){
+
+            togglePiso('origen');
+
+        }
+
+        if(target === 'ascensor_destino'){
+
+            togglePiso('destino');
+
+        }
+
+        calcularPrecioFinal();
+
+    });
+
+});
+
+</script>   
   <script>
+
+/* =========================================
+   CONTROL PISO + ASCENSOR
+========================================= */
+
+function togglePiso(tipo){
+
+    const ascensor =
+    document.getElementById('ascensor_' + tipo).value;
+
+    const input =
+    document.getElementById('piso_' + tipo);
+
+    const nota =
+    document.getElementById('nota_piso_' + tipo);
+
+    // SI HAY ASCENSOR
+    if(ascensor === 'si'){
+
+        input.disabled = true;
+
+        input.value = 0;
+
+        nota.innerHTML =
+        'Con ascensor el piso no afecta al precio.';
+
+    }
+
+    // SOLO ESCALERAS
+    else{
+
+        input.disabled = false;
+
+        nota.innerHTML =
+        'El piso afecta al precio por uso de escaleras.';
+
+    }
+
+}
 
 /* =========================================
    BOTONES + Y -
@@ -3252,7 +3562,55 @@ window.addEventListener('scroll', () => {
 });
 
 </script>
+    <script>
 
+async function calcularRutaReal(){
+
+    if(!origenCoords || !destinoCoords) return;
+
+    try{
+
+        const response = await fetch(
+        'https://api.openrouteservice.org/v2/directions/driving-car',
+
+        {
+            method:'POST',
+
+            headers:{
+                'Authorization':'TU_API_KEY',
+                'Content-Type':'application/json'
+            },
+
+            body:JSON.stringify({
+                coordinates:[
+                    origenCoords,
+                    destinoCoords
+                ]
+            })
+        });
+
+        const data = await response.json();
+
+        const summary =
+        data.features[0].properties.summary;
+
+        kmReales =
+        summary.distance / 1000;
+
+        tiempoRuta =
+        summary.duration / 3600;
+
+        actualizarPrecio();
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+</script>
     <script>
 
 /* =========================================
