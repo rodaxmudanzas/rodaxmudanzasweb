@@ -355,7 +355,7 @@ console.log({
     totalFinalIA
 });
 
-actualizarResumenGlobal(
+window.actualizarResumenGlobal(
     totalFinalIA,
     metrosCubicos
 );
