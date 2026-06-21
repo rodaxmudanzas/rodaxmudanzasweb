@@ -451,7 +451,11 @@ if(mudanzaTotal){
     );
 }
 
-calcularPresupuesto();
+if (typeof window.calcularPresupuesto === "function") {
+
+    window.calcularPresupuesto();
+
+}
 
     });
 
