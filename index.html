@@ -3362,11 +3362,14 @@ document.querySelectorAll('.access-card').forEach(card=>{
 
         if(target === 'ascensor_destino'){
 
-            togglePiso('destino');
+    togglePiso('destino');
 
-        }
+}
 
-        calcularPrecioFinal();
+// precio.js ya recalcula automáticamente
+if (window.calcularPresupuesto) {
+    calcularPresupuesto();
+}
 
     });
 
