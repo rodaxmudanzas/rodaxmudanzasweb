@@ -699,6 +699,9 @@ function actualizarResumenGlobal(total, metrosCubicos) {
 });
 
 const datosStripe = await respuestaStripe.json();
+
+console.log("Respuesta Stripe:", datosStripe);
+console.log("HTTP:", respuestaStripe.status);
 if (!respuestaStripe.ok) {
 
     throw new Error(
