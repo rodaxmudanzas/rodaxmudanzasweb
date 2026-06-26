@@ -469,6 +469,7 @@ if (typeof window.calcularPresupuesto === "function") {
     const stripe = Stripe(
 "pk_test_51Tfg4OFSVrBYF3DQje28gVz9BNoboiNfu5hoOnB8DWQ1WLXe15NoZy8uO7lz7m5IqStjvJ1ovpg0mSvfetzJTN9r005QEQmEip"
 );
+console.log("Stripe cargado:", stripe);
 
     // ─── 2. REFERENCIAS UI ───────────────────────────────────────────────────
     window.UI = {
