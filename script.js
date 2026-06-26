@@ -698,6 +698,31 @@ function actualizarResumenGlobal(total, metrosCubicos) {
 });
 
 const datosStripe = await respuestaStripe.json();
+if (!respuestaStripe.ok) {
+
+    throw new Error(
+
+        datosStripe.error ||
+
+        "Error creando la sesión Stripe."
+
+    );
+
+}
+
+const { error: stripeError } =
+
+await stripe.redirectToCheckout({
+
+    sessionId: datosStripe.id
+
+});
+
+if (stripeError) {
+
+    throw stripeError;
+
+}
 
                 // Recopilar datos de ascensores
                 const ascOrigen  = document.getElementById('ascensor_origen')?.value  || 'si';
