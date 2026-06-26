@@ -466,6 +466,9 @@ if (typeof window.calcularPresupuesto === "function") {
 'https://defvfvfyrydopaybnisg.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_dKIRJ1_K4u1ypfCNTuylIw_AyAKeZTS';
     const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    const stripe = Stripe(
+"pk_test_51Tfg4OFSVrBYF3DQje28gVz9BNoboiNfu5hoOnB8DWQ1WLXe15NoZy8uO7lz7m5IqStjvJ1ovpg0mSvfetzJTN9r005QEQmEip"
+);
 
     // ─── 2. REFERENCIAS UI ───────────────────────────────────────────────────
     window.UI = {
