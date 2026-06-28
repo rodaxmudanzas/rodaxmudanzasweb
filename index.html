@@ -2525,8 +2525,8 @@ class="calculo-trigger">
     4
 </div>
                         <div>
-                            <h3 class="text-xl font-black text-gray-900">Servicios Adicionales</h3>
-                            <p class="text-sm text-gray-400 font-medium">Artículos, montaje, embalaje y seguro — todos opcionales</p>
+                            <h3 class="text-xl font-black text-gray-900">Servicios adicionales y preparación</h3>
+                            <p class="text-sm text-gray-400 font-medium">Personaliza tu mudanza con servicios adicionales y material de preparación</p>
                         </div>
                     </div>
 
@@ -2550,7 +2550,7 @@ class="calculo-trigger">
         </i>
 
         <span class="text-sm font-bold text-red-700">
-            A Desmontar
+            Desmontaje
         </span>
 
     </div>
@@ -2612,7 +2612,7 @@ class="calculo-trigger">
         </i>
 
         <span class="text-sm font-bold text-green-700">
-            A Montar
+            Montaje
         </span>
 
     </div>
@@ -2674,7 +2674,7 @@ class="calculo-trigger">
         </i>
 
         <span class="text-sm font-bold text-yellow-700">
-            A Embalar
+            Embalaje
         </span>
 
     </div>
@@ -2721,7 +2721,9 @@ class="calculo-trigger">
 
 </div>
 
-<div class="bg-blue-50 border border-blue-100 rounded-2xl p-4">
+<div
+    id="card-empaquetar"
+    class="bg-blue-50 border border-blue-100 rounded-2xl p-4">
 
     <div class="mb-2">
 
@@ -2752,7 +2754,7 @@ class="calculo-trigger">
 
     <p class="text-xs text-blue-500 font-semibold mb-3">
 
-        8 € por caja o bolsa
+        12 € por caja o bolsa
 
     </p>
 
@@ -2784,10 +2786,69 @@ class="calculo-trigger">
     </div>
 
 </div>
+
+</div>
                         
                         </div>
 </div>
 
+<div
+    id="cajas-mudanza-total"
+    class="hidden mt-5 bg-green-50 border border-green-200 rounded-2xl p-4">
+
+    <h4 class="font-bold text-green-700 mb-3">
+    📦 Material de embalaje incluido
+    </h4>
+
+    <p class="text-sm text-gray-600 mb-4">
+        Como has contratado Mudanza Total,
+indica el número aproximado de cajas que necesitarás.
+    </p>
+
+    <div class="grid grid-cols-3 gap-3">
+
+        <div>
+            <label class="text-xs font-semibold">
+                Pequeñas
+            </label>
+
+            <input
+                id="cajas_pequenas"
+                type="number"
+                min="0"
+                value="0"
+                class="form-input">
+        </div>
+
+        <div>
+            <label class="text-xs font-semibold">
+                Medianas
+            </label>
+
+            <input
+                id="cajas_medianas"
+                type="number"
+                min="0"
+                value="0"
+                class="form-input">
+        </div>
+
+        <div>
+            <label class="text-xs font-semibold">
+                Grandes
+            </label>
+
+            <input
+                id="cajas_grandes"
+                type="number"
+                min="0"
+                value="0"
+                class="form-input">
+        </div>
+
+    </div>
+
+</div>
 <div class="mb-6">
     <p class="text-xs font-black text-gray-500 uppercase tracking-widest mb-3 flex items-center">
                             <i data-lucide="camera" class="w-3.5 h-3.5 mr-1.5"></i> Fotos de la Carga (Opcional)
