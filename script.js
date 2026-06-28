@@ -773,13 +773,17 @@ mudanzaTotal
                     precioreserva: UI.precioReserva.textContent,
                 };
 
+                /*
                 const { error } = await supabase.from('mudanzas').insert([payload]);
                 if (error) throw error;
+                */
 
                 // Éxito: mostrar modal con instrucciones de pago
+                /*
                 UI.successModal.classList.remove('hidden');
                 UI.form.reset();
                 UI.cajaPrecio.classList.add('hidden');
+                */
 
                 // Resetear estados de piso
                 ['origen', 'destino'].forEach(tipo => {
