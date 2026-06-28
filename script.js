@@ -789,6 +789,9 @@ if (stripeError) {
                     volumen:       volumenTexto,
                     ascensor:      `Recogida: ${ascOrigen === 'si' ? 'Con ascensor' : `Sin ascensor (piso ${pisoOrigen})`} | Entrega: ${ascDestino === 'si' ? 'Con ascensor' : `Sin ascensor (piso ${pisoDestino})`}`,
                     extras:        extrasArr.join(' | ') || 'Solo transporte básico',
+                    
+                    observaciones:
+document.getElementById('observaciones')?.value.trim() || '',
 
                     tipo_servicio:
 mudanzaTotal
