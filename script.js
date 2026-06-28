@@ -292,6 +292,21 @@ const badgeSeguro =
 document.getElementById(
     'badge-seguro'
 );
+
+const badgeEmpaquetar =
+document.getElementById(
+    'badge-empaquetar'
+);
+
+const beneficiosMudanzaTotal =
+document.getElementById(
+    'beneficios-mudanza-total'
+);
+
+const cajasMudanzaTotal =
+document.getElementById(
+    'cajas-mudanza-total'
+);
         
         badgeMudanzaTotal.classList.toggle(
     'hidden',
@@ -321,6 +336,21 @@ badgeSeguro?.classList.toggle(
     !mudanzaTotal
 );
 
+badgeEmpaquetar?.classList.toggle(
+    'hidden',
+    !mudanzaTotal
+);
+
+beneficiosMudanzaTotal?.classList.toggle(
+    'hidden',
+    !mudanzaTotal
+);
+
+cajasMudanzaTotal?.classList.toggle(
+    'hidden',
+    !mudanzaTotal
+);
+
         console.log('mudanzaTotal:', mudanzaTotal);
 
         mudanzaTotalCard?.classList.toggle(
@@ -343,12 +373,23 @@ badgeSeguro?.classList.toggle(
 
         const seguro =
         document.getElementById('valor_seguro');
+
+        const empaquetar =
+document.getElementById(
+    'cant_empaquetar'
+);
         
         const botonesServicios =
 document.querySelectorAll(
-    '#card-desmontar .qty-btn, \
-     #card-montar .qty-btn, \
-     #card-embalar .qty-btn'
+
+'#card-desmontar .qty-btn,
+
+#card-montar .qty-btn,
+
+#card-embalar .qty-btn,
+
+#card-empaquetar .qty-btn'
+
 );
 
         if(mudanzaTotal){
@@ -372,6 +413,14 @@ document.querySelectorAll(
                 seguro.value = 0;
                 seguro.disabled = true;
             }
+
+            if(empaquetar){
+
+    empaquetar.value = 0;
+
+    empaquetar.disabled = true;
+
+}
             
             botonesServicios.forEach(btn => {
 
@@ -390,6 +439,8 @@ document.querySelectorAll(
             if(montar) montar.disabled = false;
             if(embalar) embalar.disabled = false;
             if(seguro) seguro.disabled = false;
+            if(empaquetar)
+    empaquetar.disabled = false;
             botonesServicios.forEach(btn => {
 
     btn.disabled = false;
