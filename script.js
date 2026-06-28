@@ -278,15 +278,17 @@ document.getElementById(
     'badge-desmontar'
 );
 
-const badgeMontar =
-document.getElementById(
-    'badge-montar'
-);
-
 const badgeEmbalar =
-document.getElementById(
-    'badge-embalar'
-);
+document.getElementById('badge-embalar');
+
+const badgeEmpaquetar =
+document.getElementById('badge-empaquetar');
+
+const badgeSeguro =
+document.getElementById('badge-seguro');
+
+const beneficiosMudanzaTotal =
+document.getElementById('beneficios-mudanza-total');
 
 const badgeSeguro =
 document.getElementById(
@@ -331,12 +333,12 @@ badgeEmbalar?.classList.toggle(
     !mudanzaTotal
 );
 
-badgeSeguro?.classList.toggle(
+badgeEmpaquetar?.classList.toggle(
     'hidden',
     !mudanzaTotal
 );
 
-badgeEmpaquetar?.classList.toggle(
+badgeSeguro?.classList.toggle(
     'hidden',
     !mudanzaTotal
 );
