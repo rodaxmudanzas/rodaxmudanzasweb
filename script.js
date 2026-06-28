@@ -12,6 +12,14 @@ let reserva30 = 0;
 
 let mudanzaTotal = false;
 
+//////////////////////////////////////////////////////
+// LÍMITES DE CAJAS
+//////////////////////////////////////////////////////
+
+let maxCajasPequenas = 0;
+let maxCajasMedianas = 0;
+let maxCajasGrandes = 0;
+
 document.addEventListener('DOMContentLoaded', () => {
     
 let origenCoords = null;
@@ -705,6 +713,16 @@ function actualizarCajasRecomendadas(){
     document.getElementById("cajas_medianas").value = medianas;
 
     document.getElementById("cajas_grandes").value = grandes;
+
+    //////////////////////////////////////////////////////
+// GUARDAR LÍMITES (+20%)
+//////////////////////////////////////////////////////
+
+maxCajasPequenas = Math.ceil(pequenas * 1.20);
+
+maxCajasMedianas = Math.ceil(medianas * 1.20);
+
+maxCajasGrandes = Math.ceil(grandes * 1.20);
 
 }
     
