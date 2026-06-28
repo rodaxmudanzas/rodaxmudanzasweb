@@ -379,17 +379,8 @@ document.getElementById(
     'cant_empaquetar'
 );
         
-        const botonesServicios =
-document.querySelectorAll(
-
-'#card-desmontar .qty-btn,
-
-#card-montar .qty-btn,
-
-#card-embalar .qty-btn,
-
-#card-empaquetar .qty-btn'
-
+        const botonesServicios = document.querySelectorAll(
+'#card-desmontar .qty-btn, #card-montar .qty-btn, #card-embalar .qty-btn, #card-empaquetar .qty-btn'
 );
 
         if(mudanzaTotal){
