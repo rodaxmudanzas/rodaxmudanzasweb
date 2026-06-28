@@ -835,6 +835,27 @@ mudanzaTotal
     }
 
     UI.closeModal?.addEventListener('click', () => UI.successModal.classList.add('hidden'));
+
+    //////////////////////////////////////////////////////
+// CONTADOR DE OBSERVACIONES
+//////////////////////////////////////////////////////
+
+const observaciones =
+document.getElementById("observaciones");
+
+const contadorObservaciones =
+document.getElementById("contador-observaciones");
+
+if(observaciones && contadorObservaciones){
+
+    observaciones.addEventListener("input",()=>{
+
+        contadorObservaciones.textContent =
+        observaciones.value.length;
+
+    });
+
+}
     
 window.addEventListener('scroll', () => {
 
