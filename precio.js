@@ -159,6 +159,9 @@ console.log("Inventario =", totalInventario);
     const cantEmbalar =
         parseInt(document.getElementById('cant_embalar')?.value) || 0;
 
+        const cantEmpaquetar =
+    parseInt(document.getElementById('cant_empaquetar')?.value) || 0;
+
    if (!mudanzaTotal && cantDesmontar > 0) {
 
         const totalDesmontaje =
@@ -197,6 +200,20 @@ console.log("Inventario =", totalInventario);
             valor: totalEmbalar
         });
     }
+
+    if (!mudanzaTotal && cantEmpaquetar > 0) {
+
+    const totalEmpaquetado =
+        cantEmpaquetar * 12;
+
+    totalServicios += totalEmpaquetado;
+
+    items.push({
+        label: `Empaquetado (${cantEmpaquetar})`,
+        valor: totalEmpaquetado
+    });
+
+}
 
     //////////////////////////////////////////////////
     // SEGURO
