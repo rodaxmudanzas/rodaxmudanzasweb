@@ -485,6 +485,8 @@ if (typeof window.calcularPresupuesto === "function") {
 
 }
 
+actualizarCajasRecomendadas();
+
     });
 
 }
@@ -634,6 +636,76 @@ function actualizarResumenGlobal(total, metrosCubicos) {
         floatingReserva.textContent =
             `${reserva30.toFixed(2)} €`;
     }
+}
+
+//////////////////////////////////////////////////////
+// CAJAS RECOMENDADAS IA
+//////////////////////////////////////////////////////
+
+function actualizarCajasRecomendadas(){
+
+    if(!mudanzaTotal) return;
+
+    const m3 = metrosCubicosTotales;
+
+    let pequenas = 6;
+    let medianas = 3;
+    let grandes = 1;
+
+    if(m3 > 5){
+
+        pequenas = 10;
+        medianas = 5;
+        grandes = 2;
+
+    }
+
+    if(m3 > 10){
+
+        pequenas = 15;
+        medianas = 8;
+        grandes = 3;
+
+    }
+
+    if(m3 > 15){
+
+        pequenas = 20;
+        medianas = 10;
+        grandes = 4;
+
+    }
+
+    if(m3 > 20){
+
+        pequenas = 25;
+        medianas = 12;
+        grandes = 6;
+
+    }
+
+    if(m3 > 25){
+
+        pequenas = 30;
+        medianas = 15;
+        grandes = 8;
+
+    }
+
+    if(m3 > 30){
+
+        pequenas = 35;
+        medianas = 18;
+        grandes = 10;
+
+    }
+
+    document.getElementById("cajas_pequenas").value = pequenas;
+
+    document.getElementById("cajas_medianas").value = medianas;
+
+    document.getElementById("cajas_grandes").value = grandes;
+
 }
     
     window.actualizarResumenGlobal = actualizarResumenGlobal;
