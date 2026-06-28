@@ -48,9 +48,11 @@ const session = await stripe.checkout.sessions.create({
             customer_email: email,
 
             metadata: {
-                nombre,
-                telefono
-            },
+    nombre,
+    email,
+    telefono,
+    importe: importe.toString()
+},
 
             line_items: [
 
