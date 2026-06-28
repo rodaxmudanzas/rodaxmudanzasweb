@@ -345,7 +345,7 @@ badgeSeguro?.classList.toggle(
 
 beneficiosMudanzaTotal?.classList.toggle(
     'hidden',
-    !mudanzaTotal
+    !mudanzatotal
 );
 
 cajasMudanzaTotal?.classList.toggle(
