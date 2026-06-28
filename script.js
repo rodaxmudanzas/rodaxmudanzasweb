@@ -273,10 +273,11 @@ if(toggleMudanzaTotal){
 
         mudanzaTotal = !mudanzaTotal;
 
-        const badgeDesmontar =
-document.getElementById(
-    'badge-desmontar'
-);
+       const badgeDesmontar =
+document.getElementById('badge-desmontar');
+
+const badgeMontar =
+document.getElementById('badge-montar');
 
 const badgeEmbalar =
 document.getElementById('badge-embalar');
@@ -290,25 +291,8 @@ document.getElementById('badge-seguro');
 const beneficiosMudanzaTotal =
 document.getElementById('beneficios-mudanza-total');
 
-const badgeSeguro =
-document.getElementById(
-    'badge-seguro'
-);
-
-const badgeEmpaquetar =
-document.getElementById(
-    'badge-empaquetar'
-);
-
-const beneficiosMudanzaTotal =
-document.getElementById(
-    'beneficios-mudanza-total'
-);
-
 const cajasMudanzaTotal =
-document.getElementById(
-    'cajas-mudanza-total'
-);
+document.getElementById('cajas-mudanza-total');
         
         badgeMudanzaTotal.classList.toggle(
     'hidden',
@@ -345,7 +329,7 @@ badgeSeguro?.classList.toggle(
 
 beneficiosMudanzaTotal?.classList.toggle(
     'hidden',
-    !mudanzatotal
+    !mudanzaTotal
 );
 
 cajasMudanzaTotal?.classList.toggle(
