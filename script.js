@@ -789,7 +789,7 @@ if (stripeError) {
                     volumen:       volumenTexto,
                     ascensor:      `Recogida: ${ascOrigen === 'si' ? 'Con ascensor' : `Sin ascensor (piso ${pisoOrigen})`} | Entrega: ${ascDestino === 'si' ? 'Con ascensor' : `Sin ascensor (piso ${pisoDestino})`}`,
                     extras:        extrasArr.join(' | ') || 'Solo transporte básico',
-                    
+
                     observaciones:
 document.getElementById('observaciones')?.value.trim() || '',
 
@@ -853,8 +853,41 @@ if(observaciones && contadorObservaciones){
 
     observaciones.addEventListener("input",()=>{
 
-        contadorObservaciones.textContent =
+        const caracteres =
         observaciones.value.length;
+
+        contadorObservaciones.textContent =
+        caracteres;
+
+        contadorObservaciones.classList.remove(
+            "text-gray-400",
+            "text-orange-500",
+            "text-red-600"
+        );
+
+        if(caracteres >= 450){
+
+            contadorObservaciones.classList.add(
+                "text-red-600"
+            );
+
+        }
+
+        else if(caracteres >= 400){
+
+            contadorObservaciones.classList.add(
+                "text-orange-500"
+            );
+
+        }
+
+        else{
+
+            contadorObservaciones.classList.add(
+                "text-gray-400"
+            );
+
+        }
 
     });
 
