@@ -642,7 +642,7 @@ function actualizarResumenGlobal(total, metrosCubicos) {
     if (floatingReserva) {
 
     floatingReserva.textContent =
-        `${reserva30.toFixed(2)} €";
+        `${reserva30.toFixed(2)} €`;
 
 }
 
@@ -651,6 +651,8 @@ if(mudanzaTotal){
     actualizarCajasRecomendadas();
 
 }
+
+}   // ← ESTA LLAVE FALTABA
 
 //////////////////////////////////////////////////////
 // CAJAS RECOMENDADAS IA
