@@ -859,6 +859,42 @@ function cambiarCantidad(inputId, cambio, minimo = 0, maximo = Infinity){
     );
 
 }
+
+//////////////////////////////////////////////////////
+// EVENTOS CAJA PEQUEÑA
+//////////////////////////////////////////////////////
+
+const btnMenosPequenas =
+document.getElementById("menos-cajas-pequenas");
+
+const btnMasPequenas =
+document.getElementById("mas-cajas-pequenas");
+
+btnMenosPequenas?.addEventListener("click",()=>{
+
+    cambiarCantidad(
+        "cajas_pequenas",
+        -1,
+        0,
+        maxCajasPequenas
+    );
+
+    actualizarEstadoCajas();
+
+});
+
+btnMasPequenas?.addEventListener("click",()=>{
+
+    cambiarCantidad(
+        "cajas_pequenas",
+        1,
+        0,
+        maxCajasPequenas
+    );
+
+    actualizarEstadoCajas();
+
+});
     
     window.actualizarResumenGlobal = actualizarResumenGlobal;
 
