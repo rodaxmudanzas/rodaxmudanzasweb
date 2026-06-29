@@ -641,9 +641,15 @@ function actualizarResumenGlobal(total, metrosCubicos) {
 
     if (floatingReserva) {
 
-        floatingReserva.textContent =
-            `${reserva30.toFixed(2)} €`;
-    }
+    floatingReserva.textContent =
+        `${reserva30.toFixed(2)} €";
+
+}
+
+if(mudanzaTotal){
+
+    actualizarCajasRecomendadas();
+
 }
 
 //////////////////////////////////////////////////////
@@ -890,6 +896,78 @@ btnMasPequenas?.addEventListener("click",()=>{
         1,
         0,
         maxCajasPequenas
+    );
+
+    actualizarEstadoCajas();
+
+});
+
+//////////////////////////////////////////////////////
+// EVENTOS CAJA MEDIANA
+//////////////////////////////////////////////////////
+
+const btnMenosMedianas =
+document.getElementById("menos-cajas-medianas");
+
+const btnMasMedianas =
+document.getElementById("mas-cajas-medianas");
+
+btnMenosMedianas?.addEventListener("click",()=>{
+
+    cambiarCantidad(
+        "cajas_medianas",
+        -1,
+        0,
+        maxCajasMedianas
+    );
+
+    actualizarEstadoCajas();
+
+});
+
+btnMasMedianas?.addEventListener("click",()=>{
+
+    cambiarCantidad(
+        "cajas_medianas",
+        1,
+        0,
+        maxCajasMedianas
+    );
+
+    actualizarEstadoCajas();
+
+});
+
+//////////////////////////////////////////////////////
+// EVENTOS CAJA GRANDE
+//////////////////////////////////////////////////////
+
+const btnMenosGrandes =
+document.getElementById("menos-cajas-grandes");
+
+const btnMasGrandes =
+document.getElementById("mas-cajas-grandes");
+
+btnMenosGrandes?.addEventListener("click",()=>{
+
+    cambiarCantidad(
+        "cajas_grandes",
+        -1,
+        0,
+        maxCajasGrandes
+    );
+
+    actualizarEstadoCajas();
+
+});
+
+btnMasGrandes?.addEventListener("click",()=>{
+
+    cambiarCantidad(
+        "cajas_grandes",
+        1,
+        0,
+        maxCajasGrandes
     );
 
     actualizarEstadoCajas();
