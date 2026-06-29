@@ -724,6 +724,140 @@ maxCajasMedianas = Math.ceil(medianas * 1.20);
 
 maxCajasGrandes = Math.ceil(grandes * 1.20);
 
+actualizarEstadoCajas();
+
+}
+
+//////////////////////////////////////////////////////
+// CONTROL DE LÍMITES DE CAJAS
+//////////////////////////////////////////////////////
+
+function actualizarEstadoCajas(){
+
+    const configuracion = [
+
+        {
+            input:"cajas_pequenas",
+            info:"info-cajas-pequenas",
+            boton:"mas-cajas-pequenas",
+            max: maxCajasPequenas
+        },
+
+        {
+            input:"cajas_medianas",
+            info:"info-cajas-medianas",
+            boton:"mas-cajas-medianas",
+            max: maxCajasMedianas
+        },
+
+        {
+            input:"cajas_grandes",
+            info:"info-cajas-grandes",
+            boton:"mas-cajas-grandes",
+            max: maxCajasGrandes
+        }
+
+    ];
+
+    configuracion.forEach(caja=>{
+
+        const input =
+        document.getElementById(caja.input);
+
+        const info =
+        document.getElementById(caja.info);
+
+        const boton =
+        document.getElementById(caja.boton);
+
+        if(!input || !info || !boton) return;
+
+        const valor =
+        parseInt(input.value)||0;
+
+        info.textContent =
+        valor + " / " + caja.max;
+
+        if(valor>=caja.max){
+
+            boton.disabled = true;
+
+            boton.classList.add(
+                "opacity-40",
+                "cursor-not-allowed"
+            );
+
+            info.classList.remove(
+                "text-gray-500"
+            );
+
+            info.classList.add(
+                "text-red-600",
+                "font-bold"
+            );
+
+        }else{
+
+            boton.disabled = false;
+
+            boton.classList.remove(
+                "opacity-40",
+                "cursor-not-allowed"
+            );
+
+            info.classList.remove(
+                "text-red-600",
+                "font-bold"
+            );
+
+            info.classList.add(
+                "text-gray-500"
+            );
+
+        }
+
+    });
+
+}
+
+//////////////////////////////////////////////////////
+// MOTOR UNIVERSAL DE CANTIDADES
+//////////////////////////////////////////////////////
+
+function cambiarCantidad(inputId, cambio, minimo = 0, maximo = Infinity){
+
+    const input =
+    document.getElementById(inputId);
+
+    if(!input) return;
+
+    let valor =
+    parseInt(input.value) || 0;
+
+    valor += cambio;
+
+    if(valor < minimo){
+
+        valor = minimo;
+
+    }
+
+    if(valor > maximo){
+
+        valor = maximo;
+
+    }
+
+    input.value = valor;
+
+    input.dispatchEvent(
+        new Event("input")
+    );
+
+    input.dispatchEvent(
+        new Event("change")
+    );
+
 }
     
     window.actualizarResumenGlobal = actualizarResumenGlobal;
