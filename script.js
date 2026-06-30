@@ -1038,35 +1038,39 @@ btnMasGrandes?.addEventListener("click",()=>{
 
             try {
                 // Subir fotos si las hay
+            
                 const fotosString = await subirFotos(document.getElementById('fotos_upload'));
 
-                const respuestaStripe = await fetch("/api/create-checkout-session", {
+                const respuestaStripe = await fetch("/api/create-checkout-session",{
 
-    method: "POST",
+    method:"POST",
 
-    headers: {
-        "Content-Type": "application/json"
+    headers:{
+        "Content-Type":"application/json"
     },
 
-    body: JSON.stringify({
-
-        nombre: document.getElementById("nombre").value.trim(),
-
-        email: document.getElementById("email").value.trim(),
-
-        telefono: document.getElementById("telefono").value.trim(),
-
-        importe: parseFloat(
+    body:JSON.stringify({
+        nombre:document.getElementById("nombre").value.trim(),
+        email:document.getElementById("email").value.trim(),
+        telefono:document.getElementById("telefono").value.trim(),
+        importe:parseFloat(
             UI.precioReserva.textContent
-                .replace("€", "")
-                .replace(",", ".")
+            .replace("€","")
+            .replace(",",".")
         )
-
     })
 
 });
 
-const datosStripe = await respuestaStripe.json();
+console.log("STATUS:",respuestaStripe.status);
+
+const texto = await respuestaStripe.text();
+
+console.log("RESPUESTA SERVIDOR:");
+
+console.log(texto);
+
+return;
 
 console.log("Respuesta Stripe:", datosStripe);
 console.log("HTTP:", respuestaStripe.status);
