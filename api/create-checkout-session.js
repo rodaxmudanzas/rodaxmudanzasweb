@@ -144,9 +144,11 @@ const session = await stripe.checkout.sessions.create({
 
         res.status(200).json({
 
-            id: session.id
+    id: session.id,
 
-        });
+    numeroReserva
+
+});
 
     }
 
