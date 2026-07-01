@@ -512,7 +512,7 @@ console.log("Stripe cargado:", stripe);
     // ─── 2. REFERENCIAS UI ───────────────────────────────────────────────────
     window.UI = {
     form: document.getElementById('contact-form'),
-    btnSubmit: document.querySelector('#contact-form button[type="submit"]'),
+    btnSubmit: document.getElementById('btn_submit'),
     cajaPrecio: document.getElementById('caja-precio'),
     precioTotal: document.getElementById('precio-total'),
     precioReserva: document.getElementById('precio-reserva'),
@@ -522,8 +522,8 @@ console.log("Stripe cargado:", stripe);
 };
 
 // 👇 PÉGALOS AQUÍ
-console.log("FORM", window.UI.form);
-console.log("BOTON", window.UI.btnSubmit);
+console.log("FORM:", document.getElementById("contact-form"));
+console.log("BTN:", document.getElementById("btn_submit"));
 
 // ─── 3. BANNER RGPD ─────────────────────────────────────────
 const cookieBanner = document.getElementById('cookie-banner');
