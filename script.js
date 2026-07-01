@@ -521,8 +521,12 @@ console.log("Stripe cargado:", stripe);
     closeModal: document.getElementById('close-modal'),
 };
 
-    // ─── 3. BANNER RGPD (solo LocalStorage, cero librerías) ─────────────────
-    const cookieBanner       = document.getElementById('cookie-banner');
+// 👇 PÉGALOS AQUÍ
+console.log("FORM", window.UI.form);
+console.log("BOTON", window.UI.btnSubmit);
+
+// ─── 3. BANNER RGPD ─────────────────────────────────────────
+const cookieBanner = document.getElementById('cookie-banner');
     const btnCookiesAceptar  = document.getElementById('btn-cookies-aceptar');
     const btnCookiesEsencial = document.getElementById('btn-cookies-esenciales');
 
@@ -1022,18 +1026,18 @@ btnMasGrandes?.addEventListener("click",()=>{
 
 
     // ─── 7. ENVÍO DEL FORMULARIO ─────────────────────────────────────────────
-    if (UI.form) {
-        UI.form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+    if (window.UI.form) {
 
-            if (!supabase) {
-                alert('Error: Sin conexión con la base de datos. Contacta con soporte.');
-                return;
-            }
+    window.UI.form.addEventListener('submit', async (e) => {
 
-            const btnOriginal = UI.btnSubmit.innerHTML;
-            UI.btnSubmit.disabled = true;
-            UI.btnSubmit.innerHTML = `<i data-lucide="loader-2" class="w-6 h-6 mr-3 animate-spin"></i> Procesando tu reserva...`;
+        e.preventDefault();
+
+        const btnOriginal = window.UI.btnSubmit.innerHTML;
+
+        window.UI.btnSubmit.disabled = true;
+
+        window.UI.btnSubmit.innerHTML =
+            `<i data-lucide="loader-2" class="w-6 h-6 mr-3 animate-spin"></i> Procesando tu reserva...`;
             if (window.lucide) lucide.createIcons();
 
             try {
