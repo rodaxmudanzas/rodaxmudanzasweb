@@ -45,6 +45,9 @@ module.exports = async (req, res) => {
 
 } = req.body;
 
+const numeroReserva =
+generarNumeroReserva();
+
 //////////////////////////////////////////////////////
 // VALIDACIONES
 //////////////////////////////////////////////////////
@@ -77,7 +80,9 @@ const session = await stripe.checkout.sessions.create({
 
             customer_email: email,
 
-            metadata: {
+           metadata: {
+
+    numero_reserva: numeroReserva,
 
     nombre,
 
@@ -86,8 +91,6 @@ const session = await stripe.checkout.sessions.create({
     telefono,
 
     importe: importe.toString(),
-
-    numero_reserva: req.body.numero_reserva || "",
 
     origen: req.body.origen || "",
 
