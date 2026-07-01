@@ -98,7 +98,15 @@ const session = await stripe.checkout.sessions.create({
 
     fecha: req.body.fecha || "",
 
-    tipo_servicio: req.body.tipo_servicio || ""
+    tipo_servicio: req.body.tipo_servicio || "",
+
+    km: req.body.km || "",
+
+    volumen: req.body.volumen || "",
+
+    extras: req.body.extras || "",
+
+    observaciones: req.body.observaciones || ""
 
 },
 
