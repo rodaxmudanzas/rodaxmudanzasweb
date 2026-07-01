@@ -1058,7 +1058,7 @@ btnMasGrandes?.addEventListener("click",()=>{
         email:document.getElementById("email").value.trim(),
         telefono:document.getElementById("telefono").value.trim(),
         importe:parseFloat(
-            UI.precioReserva.textContent
+            window.UI.precioReserva.textContent
             .replace("€","")
             .replace(",",".")
         )
@@ -1066,18 +1066,10 @@ btnMasGrandes?.addEventListener("click",()=>{
 
 });
 
-console.log("STATUS:",respuestaStripe.status);
+const datosStripe = await respuestaStripe.json();
 
-const texto = await respuestaStripe.text();
+console.log("Stripe:", datosStripe);
 
-console.log("RESPUESTA SERVIDOR:");
-
-console.log(texto);
-
-return;
-
-console.log("Respuesta Stripe:", datosStripe);
-console.log("HTTP:", respuestaStripe.status);
 if (!respuestaStripe.ok) {
 
     throw new Error(
@@ -1090,8 +1082,7 @@ if (!respuestaStripe.ok) {
 
 }
 
-const { error: stripeError } =
-
+const stripeResult =
 await stripe.redirectToCheckout({
 
     sessionId: datosStripe.id
@@ -1148,8 +1139,8 @@ mudanzaTotal
                     
                     estado:        'Pendiente de Pago',
                     urls_fotos:    fotosString,
-                    preciototal:   UI.precioTotal.textContent,
-                    precioreserva: UI.precioReserva.textContent,
+                    preciototal: window.UI.precioTotal.textContent,
+precioreserva: window.UI.precioReserva.textContent,
                 };
 
                 /*
@@ -1178,14 +1169,19 @@ mudanzaTotal
                 console.error('Error al enviar:', err);
                 alert('Error al procesar la reserva: ' + (err.message || 'Comprueba tu conexión a internet.'));
             } finally {
-                UI.btnSubmit.disabled = false;
-                UI.btnSubmit.innerHTML = btnOriginal;
+                window.UI.btnSubmit.disabled = false;
+
+window.UI.btnSubmit.innerHTML = btnOriginal;
                 if (window.lucide) lucide.createIcons();
             }
         });
     }
 
-    UI.closeModal?.addEventListener('click', () => UI.successModal.classList.add('hidden'));
+    window.UI.closeModal?.addEventListener('click', () => {
+
+    window.UI.successModal.classList.add('hidden');
+
+});
 
     //////////////////////////////////////////////////////
 // CONTADOR DE OBSERVACIONES
