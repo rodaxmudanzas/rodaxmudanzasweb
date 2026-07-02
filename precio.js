@@ -1,11 +1,16 @@
 window.calcularPresupuesto = function calcularPresupuesto() {
 
+    const UI = window.UI;
+
     console.log("UI =", UI);
 
-if (!UI.cajaPrecio){
-    console.log("NO EXISTE cajaPrecio");
-    return;
-}
+    if (!UI || !UI.cajaPrecio) {
+
+        console.log("NO EXISTE cajaPrecio");
+
+        return;
+
+    }
 
     //////////////////////////////////////////////////
 // VARIABLES PRINCIPALES
