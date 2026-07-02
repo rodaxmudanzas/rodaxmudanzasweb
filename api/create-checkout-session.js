@@ -85,28 +85,32 @@ const session = await stripe.checkout.sessions.create({
     numero_reserva: numeroReserva,
 
     nombre,
-
     email,
-
     telefono,
 
     importe: importe.toString(),
 
     origen: req.body.origen || "",
-
     destino: req.body.destino || "",
+    km: (req.body.km || "").toString(),
 
     fecha: req.body.fecha || "",
 
-    tipo_servicio: req.body.tipo_servicio || "",
-
-    km: req.body.km || "",
-
     volumen: req.body.volumen || "",
+
+    ascensor: req.body.ascensor || "",
 
     extras: req.body.extras || "",
 
-    observaciones: req.body.observaciones || ""
+    observaciones: req.body.observaciones || "",
+
+    tipo_servicio: req.body.tipo_servicio || "",
+
+    preciototal: req.body.preciototal || "",
+
+    precioreserva: req.body.precioreserva || "",
+
+    urls_fotos: req.body.urls_fotos || ""
 
 },
 
