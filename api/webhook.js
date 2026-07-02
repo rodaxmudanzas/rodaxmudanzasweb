@@ -30,11 +30,34 @@ module.exports = async (req, res) => {
 
         if (event.type === "checkout.session.completed") {
 
-            console.log("✅ Pago recibido");
+    console.log("✅ Pago recibido");
 
-            console.log(event.data.object);
+    console.log(event.data.object);
 
-        }
+    const session = event.data.object;
+
+    const data = session.metadata;
+
+    const importeTotal = parseFloat(
+        data.preciototal.replace("€", "").replace(",", ".")
+    );
+
+    const importeReserva = parseFloat(
+        data.precioreserva.replace("€", "").replace(",", ".")
+    );
+
+    const importeRestante =
+        importeTotal - importeReserva;
+
+    const fechaPago = new Date();
+
+    const fechaCobro70 = new Date(data.fecha);
+
+    fechaCobro70.setHours(7);
+    fechaCobro70.setMinutes(0);
+    fechaCobro70.setSeconds(0);
+
+}
 
         return res.json({
             received: true
