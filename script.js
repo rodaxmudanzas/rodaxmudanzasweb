@@ -1061,33 +1061,50 @@ btnMasGrandes?.addEventListener("click",()=>{
 
     telefono: document.getElementById("telefono").value.trim(),
 
-    origen: document.getElementById("origen").value.trim(),
-
-    destino: document.getElementById("destino").value.trim(),
-
-    fecha: document.getElementById("fecha").value,
-
-    tipo_servicio: mudanzaTotal
-        ? "Mudanza Total"
-        : "Mudanza Estándar",
-
-    km: parseFloat(document.getElementById("km")?.value) || 0,
-
-    volumen:
-        document.getElementById("volumen")
-        ?.options[
-            document.getElementById("volumen").selectedIndex
-        ]?.text || "",
-
     importe: parseFloat(
         window.UI.precioReserva.textContent
             .replace("€","")
             .replace(",",".")
-    )
+    ),
+
+    origen: document.getElementById("origen").value.trim(),
+
+    destino: document.getElementById("destino").value.trim(),
+
+    km: parseFloat(document.getElementById("km")?.value) || 0,
+
+    fecha: document.getElementById("fecha").value,
+
+    volumen: volumenTexto,
+
+    ascensor:
+        `Recogida: ${
+            ascOrigen === "si"
+                ? "Con ascensor"
+                : `Sin ascensor (piso ${pisoOrigen})`
+        } | Entrega: ${
+            ascDestino === "si"
+                ? "Con ascensor"
+                : `Sin ascensor (piso ${pisoDestino})`
+        }`,
+
+    extras: extrasArr.join(" | ") || "Solo transporte básico",
+
+    observaciones:
+        document.getElementById("observaciones")?.value.trim() || "",
+
+    tipo_servicio:
+        mudanzaTotal
+            ? "Mudanza Total"
+            : "Mudanza Estándar",
+
+    preciototal: window.UI.precioTotal.textContent,
+
+    precioreserva: window.UI.precioReserva.textContent,
+
+    urls_fotos: fotosString
 
 })
-
-});
 
 const datosStripe = await respuestaStripe.json();
 
