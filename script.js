@@ -1045,66 +1045,68 @@ btnMasGrandes?.addEventListener("click",()=>{
             
                 const fotosString = await subirFotos(document.getElementById('fotos_upload'));
 
-                const respuestaStripe = await fetch("/api/create-checkout-session",{
+                const respuestaStripe = await fetch("/api/create-checkout-session", {
 
-    method:"POST",
+    method: "POST",
 
-    headers:{
-        "Content-Type":"application/json"
+    headers: {
+        "Content-Type": "application/json"
     },
 
     body: JSON.stringify({
 
-    nombre: document.getElementById("nombre").value.trim(),
+        nombre: document.getElementById("nombre").value.trim(),
 
-    email: document.getElementById("email").value.trim(),
+        email: document.getElementById("email").value.trim(),
 
-    telefono: document.getElementById("telefono").value.trim(),
+        telefono: document.getElementById("telefono").value.trim(),
 
-    importe: parseFloat(
-        window.UI.precioReserva.textContent
-            .replace("€","")
-            .replace(",",".")
-    ),
+        importe: parseFloat(
+            window.UI.precioReserva.textContent
+                .replace("€", "")
+                .replace(",", ".")
+        ),
 
-    origen: document.getElementById("origen").value.trim(),
+        origen: document.getElementById("origen").value.trim(),
 
-    destino: document.getElementById("destino").value.trim(),
+        destino: document.getElementById("destino").value.trim(),
 
-    km: parseFloat(document.getElementById("km")?.value) || 0,
+        km: parseFloat(document.getElementById("km")?.value) || 0,
 
-    fecha: document.getElementById("fecha").value,
+        fecha: document.getElementById("fecha").value,
 
-    volumen: volumenTexto,
+        volumen: volumenTexto,
 
-    ascensor:
-        `Recogida: ${
-            ascOrigen === "si"
-                ? "Con ascensor"
-                : `Sin ascensor (piso ${pisoOrigen})`
-        } | Entrega: ${
-            ascDestino === "si"
-                ? "Con ascensor"
-                : `Sin ascensor (piso ${pisoDestino})`
-        }`,
+        ascensor:
+            `Recogida: ${
+                ascOrigen === "si"
+                    ? "Con ascensor"
+                    : `Sin ascensor (piso ${pisoOrigen})`
+            } | Entrega: ${
+                ascDestino === "si"
+                    ? "Con ascensor"
+                    : `Sin ascensor (piso ${pisoDestino})`
+            }`,
 
-    extras: extrasArr.join(" | ") || "Solo transporte básico",
+        extras: extrasArr.join(" | ") || "Solo transporte básico",
 
-    observaciones:
-        document.getElementById("observaciones")?.value.trim() || "",
+        observaciones:
+            document.getElementById("observaciones")?.value.trim() || "",
 
-    tipo_servicio:
-        mudanzaTotal
-            ? "Mudanza Total"
-            : "Mudanza Estándar",
+        tipo_servicio:
+            mudanzaTotal
+                ? "Mudanza Total"
+                : "Mudanza Estándar",
 
-    preciototal: window.UI.precioTotal.textContent,
+        preciototal: window.UI.precioTotal.textContent,
 
-    precioreserva: window.UI.precioReserva.textContent,
+        precioreserva: window.UI.precioReserva.textContent,
 
-    urls_fotos: fotosString
+        urls_fotos: fotosString
 
-})
+    })
+
+});   // ← ESTA LÍNEA FALTABA
 
 const datosStripe = await respuestaStripe.json();
 
