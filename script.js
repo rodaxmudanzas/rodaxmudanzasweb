@@ -1053,16 +1053,39 @@ btnMasGrandes?.addEventListener("click",()=>{
         "Content-Type":"application/json"
     },
 
-    body:JSON.stringify({
-        nombre:document.getElementById("nombre").value.trim(),
-        email:document.getElementById("email").value.trim(),
-        telefono:document.getElementById("telefono").value.trim(),
-        importe:parseFloat(
-            window.UI.precioReserva.textContent
+    body: JSON.stringify({
+
+    nombre: document.getElementById("nombre").value.trim(),
+
+    email: document.getElementById("email").value.trim(),
+
+    telefono: document.getElementById("telefono").value.trim(),
+
+    origen: document.getElementById("origen").value.trim(),
+
+    destino: document.getElementById("destino").value.trim(),
+
+    fecha: document.getElementById("fecha").value,
+
+    tipo_servicio: mudanzaTotal
+        ? "Mudanza Total"
+        : "Mudanza Estándar",
+
+    km: parseFloat(document.getElementById("km")?.value) || 0,
+
+    volumen:
+        document.getElementById("volumen")
+        ?.options[
+            document.getElementById("volumen").selectedIndex
+        ]?.text || "",
+
+    importe: parseFloat(
+        window.UI.precioReserva.textContent
             .replace("€","")
             .replace(",",".")
-        )
-    })
+    )
+
+})
 
 });
 
@@ -1089,9 +1112,9 @@ await stripe.redirectToCheckout({
 
 });
 
-if (stripeError) {
+if (stripeResult.error) {
 
-    throw stripeError;
+    throw stripeResult.error;
 
 }
 
