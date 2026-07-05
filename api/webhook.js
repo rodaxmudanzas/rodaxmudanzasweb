@@ -1,4 +1,5 @@
 const Stripe = require("stripe");
+const { buffer } = require("micro");
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
