@@ -1198,7 +1198,9 @@ if (!respuestaReserva.ok) {
 
         precioreserva: window.UI.precioReserva.textContent,
 
-        urls_fotos: fotosString
+        urls_fotos: fotosString,
+
+numero_reserva: datosReserva.numero_reserva
 
     })
 
