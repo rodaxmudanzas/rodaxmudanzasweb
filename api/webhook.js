@@ -90,7 +90,7 @@ if (error) {
 
 }
 
-console.log("✅ Reserva guardada correctamente");
+console.log("✅ Reserva actualizada correctamente");
 
 }
 
