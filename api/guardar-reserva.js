@@ -1,0 +1,117 @@
+const { createClient } = require("@supabase/supabase-js");
+
+const supabase = createClient(
+
+    process.env.SUPABASE_URL,
+
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+
+);
+
+//////////////////////////////////////////////////////
+// GENERADOR DE NÚMERO DE RESERVA
+//////////////////////////////////////////////////////
+
+function generarNumeroReserva(){
+
+    const año = new Date().getFullYear().toString().slice(-2);
+
+    const caracteres =
+    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+    let codigo = "";
+
+    for(let i=0;i<6;i++){
+
+        codigo += caracteres.charAt(
+
+            Math.floor(
+                Math.random()*caracteres.length
+            )
+
+        );
+
+    }
+
+    return `RDX-${año}-${codigo}`;
+
+}   // ← ESTA LLAVE FALTABA
+
+module.exports = async (req,res)=>{
+
+    if(req.method!=="POST"){
+
+        return res.status(405).json({
+
+            error:"Método no permitido."
+
+        });
+
+    }
+
+    try{
+
+        const datos = req.body;
+
+        //////////////////////////////////////////////////////
+// VALIDACIONES
+//////////////////////////////////////////////////////
+
+if(
+
+    !datos.nombre ||
+
+    !datos.email ||
+
+    !datos.telefono ||
+
+    !datos.origen ||
+
+    !datos.destino ||
+
+    !datos.fecha ||
+
+    !datos.preciototal ||
+
+    !datos.precioreserva
+
+){
+
+    return res.status(400).json({
+
+        error:"Faltan datos obligatorios."
+
+    });
+
+}
+
+//////////////////////////////////////////////////////
+// NÚMERO DE RESERVA
+//////////////////////////////////////////////////////
+
+const numeroReserva =
+generarNumeroReserva();
+
+//////////////////////////////////////////////////////
+// COMPROBAR SI YA EXISTE
+//////////////////////////////////////////////////////
+
+const { data: existe } = await supabase
+
+.from("mudanzas")
+
+.select("numero_reserva")
+
+.eq("numero_reserva", numeroReserva)
+
+.maybeSingle();
+
+if(existe){
+
+    return res.status(409).json({
+
+        error:"Número de reserva duplicado."
+
+    });
+
+}
