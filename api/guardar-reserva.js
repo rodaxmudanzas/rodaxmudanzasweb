@@ -160,7 +160,9 @@ const { data, error } = await supabase
 
     estado: "Pendiente de pago",
 
-    estado_pago: "Pendiente",
+    estado_pago: "Checkout iniciado",
+
+    fecha_creacion: new Date(),
 
     transportista_id: null,
 
