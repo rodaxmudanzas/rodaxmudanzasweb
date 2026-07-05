@@ -2,36 +2,6 @@ const Stripe = require("stripe");
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-//////////////////////////////////////////////////////
-// GENERADOR DE NÚMERO DE RESERVA
-//////////////////////////////////////////////////////
-
-function generarNumeroReserva(){
-
-    const año =
-    new Date().getFullYear().toString().slice(-2);
-
-    const caracteres =
-    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-
-    let codigo = "";
-
-    for(let i=0;i<6;i++){
-
-        codigo += caracteres.charAt(
-
-            Math.floor(
-                Math.random()*caracteres.length
-            )
-
-        );
-
-    }
-
-    return `RDX-${año}-${codigo}`;
-
-}
-
 module.exports = async (req, res) => {
 
     try {
@@ -41,12 +11,10 @@ module.exports = async (req, res) => {
     nombre,
     email,
     telefono,
-    importe
+    importe,
+    numero_reserva
 
 } = req.body;
-
-const numeroReserva =
-generarNumeroReserva();
 
 //////////////////////////////////////////////////////
 // VALIDACIONES
@@ -82,7 +50,7 @@ const session = await stripe.checkout.sessions.create({
 
            metadata: {
 
-    numero_reserva: numeroReserva,
+    numero_reserva: numero_reserva,
 
     nombre,
     email,
