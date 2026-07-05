@@ -1045,6 +1045,27 @@ btnMasGrandes?.addEventListener("click",()=>{
             
                 const fotosString = await subirFotos(document.getElementById('fotos_upload'));
 
+                // Recopilar datos de ascensores
+                const ascOrigen  = document.getElementById('ascensor_origen')?.value  || 'si';
+                const pisoOrigen = parseInt(document.getElementById('piso_origen')?.value)  || 0;
+                const ascDestino = document.getElementById('ascensor_destino')?.value || 'si';
+                const pisoDestino= parseInt(document.getElementById('piso_destino')?.value) || 0;
+
+                // Recopilar extras para el campo texto
+                const extrasArr = [];
+                const cantD = parseInt(document.getElementById('cant_desmontar')?.value) || 0;
+                const cantM = parseInt(document.getElementById('cant_montar')?.value)    || 0;
+                const cantE = parseInt(document.getElementById('cant_embalar')?.value)   || 0;
+                const seguro= parseFloat(document.getElementById('valor_seguro')?.value) || 0;
+
+                if (cantD > 0) extrasArr.push(`Desmontaje ×${cantD}`);
+                if (cantM > 0) extrasArr.push(`Montaje ×${cantM}`);
+                if (cantE > 0) extrasArr.push(`Embalaje ×${cantE}`);
+                if (seguro > 0) extrasArr.push(`Seguro: ${seguro} €`);
+
+                const volumenSelect = document.getElementById('volumen');
+                const volumenTexto  = volumenSelect?.options[volumenSelect.selectedIndex]?.text || '';
+
                 const respuestaStripe = await fetch("/api/create-checkout-session", {
 
     method: "POST",
@@ -1137,26 +1158,6 @@ if (stripeResult.error) {
 
 }
 
-                // Recopilar datos de ascensores
-                const ascOrigen  = document.getElementById('ascensor_origen')?.value  || 'si';
-                const pisoOrigen = parseInt(document.getElementById('piso_origen')?.value)  || 0;
-                const ascDestino = document.getElementById('ascensor_destino')?.value || 'si';
-                const pisoDestino= parseInt(document.getElementById('piso_destino')?.value) || 0;
-
-                // Recopilar extras para el campo texto
-                const extrasArr = [];
-                const cantD = parseInt(document.getElementById('cant_desmontar')?.value) || 0;
-                const cantM = parseInt(document.getElementById('cant_montar')?.value)    || 0;
-                const cantE = parseInt(document.getElementById('cant_embalar')?.value)   || 0;
-                const seguro= parseFloat(document.getElementById('valor_seguro')?.value) || 0;
-
-                if (cantD > 0) extrasArr.push(`Desmontaje ×${cantD}`);
-                if (cantM > 0) extrasArr.push(`Montaje ×${cantM}`);
-                if (cantE > 0) extrasArr.push(`Embalaje ×${cantE}`);
-                if (seguro > 0) extrasArr.push(`Seguro: ${seguro} €`);
-
-                const volumenSelect = document.getElementById('volumen');
-                const volumenTexto  = volumenSelect?.options[volumenSelect.selectedIndex]?.text || '';
 
                 // Payload completo para Supabase
                 const payload = {
