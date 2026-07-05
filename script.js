@@ -1066,6 +1066,81 @@ btnMasGrandes?.addEventListener("click",()=>{
                 const volumenSelect = document.getElementById('volumen');
                 const volumenTexto  = volumenSelect?.options[volumenSelect.selectedIndex]?.text || '';
 
+                //////////////////////////////////////////////////////
+// GUARDAR RESERVA EN SUPABASE
+//////////////////////////////////////////////////////
+
+const respuestaReserva = await fetch("/api/guardar-reserva", {
+
+    method: "POST",
+
+    headers: {
+        "Content-Type": "application/json"
+    },
+
+    body: JSON.stringify({
+
+        nombre: document.getElementById("nombre").value.trim(),
+
+        telefono: document.getElementById("telefono").value.trim(),
+
+        email: document.getElementById("email").value.trim(),
+
+        origen: document.getElementById("origen").value.trim(),
+
+        destino: document.getElementById("destino").value.trim(),
+
+        km: parseFloat(document.getElementById("km")?.value) || 0,
+
+        fecha: document.getElementById("fecha").value,
+
+        volumen: volumenTexto,
+
+        ascensor:
+            `Recogida: ${
+                ascOrigen === "si"
+                    ? "Con ascensor"
+                    : `Sin ascensor (piso ${pisoOrigen})`
+            } | Entrega: ${
+                ascDestino === "si"
+                    ? "Con ascensor"
+                    : `Sin ascensor (piso ${pisoDestino})`
+            }`,
+
+        extras: extrasArr.join(" | ") || "Solo transporte básico",
+
+        observaciones:
+            document.getElementById("observaciones")?.value.trim() || "",
+
+        tipo_servicio:
+            mudanzaTotal
+                ? "Mudanza Total"
+                : "Mudanza Estándar",
+
+        preciototal: window.UI.precioTotal.textContent,
+
+        precioreserva: window.UI.precioReserva.textContent,
+
+        urls_fotos: fotosString
+
+    })
+
+});
+
+const datosReserva = await respuestaReserva.json();
+
+if (!respuestaReserva.ok) {
+
+    throw new Error(
+
+        datosReserva.error ||
+
+        "No se pudo guardar la reserva."
+
+    );
+
+}
+
                 const respuestaStripe = await fetch("/api/create-checkout-session", {
 
     method: "POST",
