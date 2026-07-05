@@ -13,6 +13,12 @@ const supabase = createClient(
 
 );
 
+module.exports.config = {
+    api: {
+        bodyParser: false
+    }
+};
+
 module.exports = async (req, res) => {
 
     if (req.method !== "POST") {
