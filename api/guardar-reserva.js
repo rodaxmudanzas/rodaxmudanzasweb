@@ -115,3 +115,95 @@ if(existe){
     });
 
 }
+
+//////////////////////////////////////////////////////
+// GUARDAR RESERVA
+//////////////////////////////////////////////////////
+
+const { data, error } = await supabase
+
+.from("mudanzas")
+
+.insert({
+
+    numero_reserva: numeroReserva,
+
+    nombre: datos.nombre,
+
+    telefono: datos.telefono,
+
+    email: datos.email,
+
+    origen: datos.origen,
+
+    destino: datos.destino,
+
+    km: Number(datos.km) || 0,
+
+    fecha: datos.fecha,
+
+    volumen: datos.volumen,
+
+    ascensor: datos.ascensor,
+
+    extras: datos.extras,
+
+    observaciones: datos.observaciones,
+
+    tipo_servicio: datos.tipo_servicio,
+
+    preciototal: datos.preciototal,
+
+    precioreserva: datos.precioreserva,
+
+    urls_fotos: datos.urls_fotos,
+
+    estado: "Pendiente de pago",
+
+    estado_pago: "Pendiente",
+
+    transportista_id: null,
+
+    version_presupuesto: 1
+
+})
+
+.select()
+
+.single();
+
+if(error){
+
+    throw error;
+
+}
+
+//////////////////////////////////////////////////////
+// RESPUESTA
+//////////////////////////////////////////////////////
+
+return res.status(200).json({
+
+    ok: true,
+
+    id: data.id,
+
+    numero_reserva: numeroReserva
+
+});
+
+    }
+
+    catch(err){
+
+        console.error(err);
+
+        return res.status(500).json({
+
+            error: err.message
+
+        });
+
+    }
+
+};
