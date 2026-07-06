@@ -21,6 +21,9 @@ module.exports.config = {
 
 module.exports = async (req, res) => {
 
+    console.log("======== WEBHOOK NUEVO =========");
+    console.log(typeof req.body);
+
     if (req.method !== "POST") {
         return res.status(405).send("Método no permitido");
     }
