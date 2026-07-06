@@ -40,6 +40,12 @@ try {
             process.env.STRIPE_WEBHOOK_SECRET
         );
 
+        console.log("EVENTO RECIBIDO");
+
+console.log(event.type);
+
+console.log(event.data.object.metadata);
+
         if (event.type === "checkout.session.completed") {
 
     console.log("✅ Pago recibido");
@@ -49,6 +55,17 @@ try {
     const session = event.data.object;
 
     const data = session.metadata;
+
+    if (!data) {
+
+    console.log("NO HAY METADATA");
+
+    return res.json({
+        ok: false,
+        mensaje: "Sin metadata"
+    });
+
+}
 
     const importeTotal = parseFloat(
         data.preciototal.replace("€", "").replace(",", ".")
