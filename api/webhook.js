@@ -13,10 +13,10 @@ const supabase = createClient(
 
 );
 
-module.exports.config = {
+export const config = {
     api: {
-        bodyParser: false
-    }
+        bodyParser: false,
+    },
 };
 
 module.exports = async (req, res) => {
