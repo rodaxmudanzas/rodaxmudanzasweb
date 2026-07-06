@@ -1,137 +1,191 @@
 const Stripe = require("stripe");
 const { buffer } = require("micro");
+const { createClient } = require("@supabase/supabase-js");
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-const { createClient } = require("@supabase/supabase-js");
-
 const supabase = createClient(
-
     process.env.SUPABASE_URL,
-
     process.env.SUPABASE_SERVICE_ROLE_KEY
-
 );
 
-export const config = {
+module.exports.config = {
     api: {
         bodyParser: false,
     },
 };
 
-module.exports = async (req, res) => {
+module.exports = async function (req, res) {
 
-    console.log("======== WEBHOOK NUEVO =========");
-    console.log(typeof req.body);
+    console.log("========================================");
+    console.log("WEBHOOK INICIADO");
+    console.log("Método:", req.method);
+    console.log("========================================");
 
     if (req.method !== "POST") {
+        console.log("Método no permitido");
         return res.status(405).send("Método no permitido");
     }
 
-    const signature = req.headers["stripe-signature"];
+    try {
 
-const buf = await buffer(req);
+        const signature = req.headers["stripe-signature"];
 
-try {
+        if (!signature) {
+            console.error("Falta Stripe-Signature");
+            return res.status(400).send("Sin firma Stripe");
+        }
 
-    const event = stripe.webhooks.constructEvent(
+        const buf = await buffer(req);
+
+        console.log("Body recibido");
+
+        const event = stripe.webhooks.constructEvent(
             buf,
             signature,
             process.env.STRIPE_WEBHOOK_SECRET
         );
 
-        console.log("EVENTO RECIBIDO");
+        console.log("Evento verificado correctamente");
+        console.log("Tipo:", event.type);
 
-console.log(event.type);
+        if (event.type !== "checkout.session.completed") {
 
-console.log(event.data.object.metadata);
+            console.log("Evento ignorado");
 
-        if (event.type === "checkout.session.completed") {
+            return res.json({
+                received: true
+            });
 
-    console.log("✅ Pago recibido");
+        }
 
-    console.log(event.data.object);
+        console.log("Pago completado");
 
-    const session = event.data.object;
+        const session = event.data.object;
 
-    const data = session.metadata;
+        console.log("SESSION ID:", session.id);
 
-    if (!data) {
+        console.log("Metadata:");
+        console.log(session.metadata);
 
-    console.log("NO HAY METADATA");
+        if (!session.metadata) {
 
-    return res.json({
-        ok: false,
-        mensaje: "Sin metadata"
-    });
+            console.error("La metadata viene vacía");
 
-}
+            return res.status(400).json({
+                error: "Metadata vacía"
+            });
 
-    const importeTotal = parseFloat(
-        data.preciototal.replace("€", "").replace(",", ".")
-    );
+        }
 
-    const importeReserva = parseFloat(
-        data.precioreserva.replace("€", "").replace(",", ".")
-    );
+        const data = session.metadata;
 
-    const importeRestante =
-        importeTotal - importeReserva;
+        const numeroReserva = data.numero_reserva;
 
-    const fechaPago = new Date();
+        if (!numeroReserva) {
 
-    const fechaCobro70 = new Date(data.fecha);
+            console.error("numero_reserva no existe");
 
-    fechaCobro70.setHours(7);
-    fechaCobro70.setMinutes(0);
-    fechaCobro70.setSeconds(0);
+            return res.status(400).json({
+                error: "numero_reserva inexistente"
+            });
 
-    const { error } = await supabase
-.from("mudanzas")
-.update({
+        }
 
-    stripe_session_id: session.id,
+        console.log("Reserva:", numeroReserva);
 
-    stripe_payment_intent: session.payment_intent,
+        const importeTotal = Number(
+            String(data.preciototal)
+                .replace("€", "")
+                .replace(",", ".")
+                .trim()
+        );
 
-    estado: "Pendiente de asignación",
+        const importeReserva = Number(
+            String(data.precioreserva)
+                .replace("€", "")
+                .replace(",", ".")
+                .trim()
+        );
 
-    estado_pago: "Pagado 30 % - Pendiente 70 %",
+        const importeRestante = importeTotal - importeReserva;
 
-    fecha_pago_30: fechaPago,
+        console.log("Importe total:", importeTotal);
+        console.log("Reserva:", importeReserva);
+        console.log("Pendiente:", importeRestante);
 
-    fecha_cobro_70: fechaCobro70,
+        const fechaPago = new Date();
 
-    importe_total: importeTotal,
+        const fechaCobro70 = new Date(data.fecha);
 
-    importe_reserva: importeReserva,
+        fechaCobro70.setHours(7);
+        fechaCobro70.setMinutes(0);
+        fechaCobro70.setSeconds(0);
+        fechaCobro70.setMilliseconds(0);
 
-    importe_restante: importeRestante
+        console.log("Actualizando Supabase...");
 
-})
-.eq("numero_reserva", data.numero_reserva);
+        const { data: updateData, error } = await supabase
+            .from("mudanzas")
+            .update({
 
-if (error) {
+                stripe_session_id: session.id,
 
-    console.error("Error Supabase:", error);
+                stripe_payment_intent: session.payment_intent,
 
-    throw error;
+                estado: "Pendiente de asignación",
 
-}
+                estado_pago: "Pagado 30 % - Pendiente 70 %",
 
-console.log("✅ Reserva actualizada correctamente");
+                fecha_pago_30: fechaPago,
 
-}
+                fecha_cobro_70: fechaCobro70,
 
-        return res.json({
+                importe_total: importeTotal,
+
+                importe_reserva: importeReserva,
+
+                importe_restante: importeRestante
+
+            })
+            .eq("numero_reserva", numeroReserva)
+            .select();
+
+        if (error) {
+
+            console.error("ERROR SUPABASE:");
+
+            console.error(error);
+
+            throw error;
+
+        }
+
+        console.log("Resultado actualización:");
+
+        console.log(updateData);
+
+        console.log("WEBHOOK FINALIZADO CORRECTAMENTE");
+
+        return res.status(200).json({
             received: true
         });
 
     } catch (err) {
 
-        console.error(err.message);
+        console.error("================================");
+        console.error("ERROR EN WEBHOOK");
+        console.error(err);
+        console.error(err.stack);
+        console.error("================================");
 
-        return res.status(400).send(`Webhook Error: ${err.message}`);
+        return res.status(500).json({
+
+            error: err.message,
+
+            stack: err.stack
+
+        });
 
     }
 
