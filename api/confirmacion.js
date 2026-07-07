@@ -4,7 +4,7 @@ async function cargarReserva() {
 
         const params = new URLSearchParams(window.location.search);
 
-        const sessionId = params.get("session_id");
+        const numeroReserva = params.get("reserva");
 
         if (!sessionId) {
 
@@ -15,9 +15,9 @@ async function cargarReserva() {
 
         }
 
-        const res = await fetch(
-            `/api/obtener-reserva?session_id=${encodeURIComponent(sessionId)}`
-        );
+       const res = await fetch(
+    `/api/obtener-reserva?reserva=${encodeURIComponent(numeroReserva)}`
+);
 
         const datos = await res.json();
 
