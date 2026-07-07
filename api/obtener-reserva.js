@@ -18,7 +18,15 @@ module.exports = async (req, res) => {
 
     try {
 
-        const sessionId = req.query.session_id;
+        const numeroReserva = req.query.reserva;
+
+if (!numeroReserva) {
+
+    return res.status(400).json({
+        error: "Falta el número de reserva."
+    });
+
+}
 
         if (!sessionId) {
 
@@ -27,22 +35,6 @@ module.exports = async (req, res) => {
             });
 
         }
-
-        // Obtener la sesión de Stripe
-
-        const session =
-            await stripe.checkout.sessions.retrieve(sessionId);
-
-        if (!session.metadata || !session.metadata.numero_reserva) {
-
-            return res.status(404).json({
-                error: "La sesión no contiene número de reserva."
-            });
-
-        }
-
-        const numeroReserva =
-            session.metadata.numero_reserva;
 
         // Buscar la reserva
 
