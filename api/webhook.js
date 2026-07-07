@@ -63,6 +63,9 @@ module.exports = async function (req, res) {
 
         const session = event.data.object;
 
+        console.log("SESSION COMPLETA");
+console.log(session);
+
         console.log("SESSION ID:", session.id);
 
         console.log("Metadata:");
@@ -125,7 +128,16 @@ module.exports = async function (req, res) {
 
         console.log("Actualizando Supabase...");
 
-        const { data: updateData, error } = await supabase
+        console.log("================================");
+
+console.log("numeroReserva:", numeroReserva);
+console.log("session.id:", session.id);
+console.log("payment_intent:", session.payment_intent);
+console.log("metadata completa:");
+console.log(session.metadata);
+console.log("================================");
+
+const { data: updateData, error } = await supabase
             .from("mudanzas")
             .update({
 
@@ -150,6 +162,11 @@ module.exports = async function (req, res) {
             })
             .eq("numero_reserva", numeroReserva)
             .select();
+
+            console.log("Filas actualizadas:");
+console.log(updateData);
+console.log("Cantidad:");
+console.log(updateData.length);
 
         if (error) {
 
