@@ -107,7 +107,7 @@ const session = await stripe.checkout.sessions.create({
             ],
 
             success_url:
-                "https://rodaxmudanzasweb.vercel.app/?pago=ok",
+"https://rodaxmudanzasweb.vercel.app/confirmacion.html?session_id={CHECKOUT_SESSION_ID}",
 
             cancel_url:
                 "https://rodaxmudanzasweb.vercel.app/?pago=cancel"
