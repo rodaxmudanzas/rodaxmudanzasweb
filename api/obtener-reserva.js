@@ -16,12 +16,12 @@ module.exports = async (req, res) => {
 
     try {
 
-        const numeroReserva = req.query.reserva;
+        const sessionId = req.query.session_id;
 
-if (!numeroReserva) {
+if (!sessionId) {
 
     return res.status(400).json({
-        error: "Falta el número de reserva."
+        error: "Falta session_id."
     });
 
 }
@@ -30,13 +30,13 @@ if (!numeroReserva) {
 
         const { data, error } = await supabase
 
-            .from("mudanzas")
+    .from("mudanzas")
 
-            .select("*")
+    .select("*")
 
-            .eq("numero_reserva", numeroReserva)
+    .eq("stripe_session_id", sessionId)
 
-            .single();
+    .single();
 
         if (error) throw error;
 
