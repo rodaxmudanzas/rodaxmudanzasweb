@@ -4,19 +4,19 @@ async function cargarReserva() {
 
         const params = new URLSearchParams(window.location.search);
 
-        const numeroReserva = params.get("reserva");
+const sessionId = params.get("session_id");
 
-if (!numeroReserva) {
+if (!sessionId) {
 
     document.getElementById("numeroReserva").textContent =
-        "No se recibió el número de reserva.";
+        "No se recibió el identificador del pago.";
 
     return;
 
 }
 
        const res = await fetch(
-    `/api/obtener-reserva?reserva=${encodeURIComponent(numeroReserva)}`
+    `/api/obtener-reserva?session_id=${encodeURIComponent(sessionId)}`
 );
 
         const datos = await res.json();
@@ -58,7 +58,7 @@ renderEstadoReserva(
 
     document.getElementById("estadoReserva"),
 
-    "pendiente_asignacion"
+    datos.estado
 
 );
 
