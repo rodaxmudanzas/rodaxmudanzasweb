@@ -1,7 +1,5 @@
-const Stripe = require("stripe");
-const { createClient } = require("@supabase/supabase-js");
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const { createClient } = require("@supabase/supabase-js");
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -27,14 +25,6 @@ if (!numeroReserva) {
     });
 
 }
-
-        if (!sessionId) {
-
-            return res.status(400).json({
-                error: "Falta session_id."
-            });
-
-        }
 
         // Buscar la reserva
 
