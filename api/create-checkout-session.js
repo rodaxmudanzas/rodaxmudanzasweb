@@ -40,6 +40,14 @@ if (!importe || importe <= 0) {
 
 }
 
+console.log("================================");
+console.log("CREATE CHECKOUT");
+console.log("SUCCESS URL:");
+console.log(
+"https://rodaxmudanzasweb.vercel.app/confirmacion.html?session_id={CHECKOUT_SESSION_ID}"
+);
+console.log("================================");
+
 const session = await stripe.checkout.sessions.create({
 
             payment_method_types: ["card"],
@@ -113,6 +121,14 @@ const session = await stripe.checkout.sessions.create({
                 "https://rodaxmudanzasweb.vercel.app/?pago=cancel"
 
         });
+
+        console.log("SESSION CREADA");
+
+console.log(session.id);
+
+console.log(session.success_url);
+
+console.log(session.cancel_url);
 
         res.status(200).json({
 
