@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Reserva confirmada | RODAX</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+
+font-family:Inter,sans-serif;
+
+background:#f8fafc;
+
+}
+
+.card{
+
+background:white;
+
+border-radius:20px;
+
+box-shadow:0 15px 40px rgba(0,0,0,.08);
+
+}
+
+.valor{
+
+font-weight:700;
+
+color:#111827;
+
+}
+
+.titulo{
+
+font-size:14px;
+
+color:#6b7280;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="min-h-screen flex items-center justify-center p-6">
+
+<div class="card max-w-3xl w-full p-10">
+
+<div class="text-center">
+
+<div class="text-6xl mb-4">
+✅
+</div>
+
+<h1 class="text-4xl font-extrabold text-green-600">
+
+Pago realizado correctamente
+
+</h1>
+
+<p class="text-gray-500 mt-2">
+
+Tu reserva ha quedado registrada.
+
+</p>
+
+</div>
+
+<hr class="my-8">
+
+<div class="grid md:grid-cols-2 gap-6">
+
+<div>
+
+<div class="titulo">Número de reserva</div>
+
+<div id="numeroReserva" class="valor text-xl">
+Cargando...
+</div>
+
+</div>
+
+<!-- NUEVO -->
+
+<div id="estadoReserva" class="mt-8"></div>
+
+<div>
+
+<div class="titulo">Estado</div>
+
+<div id="estado" class="valor">
+Cargando...
+</div>
+
+</div>
+
+<div>
+
+<div class="titulo">Cliente</div>
+
+<div id="nombre" class="valor">
+</div>
+
+</div>
+
+<div>
+
+<div class="titulo">Fecha de la mudanza</div>
+
+<div id="fecha" class="valor">
+</div>
+
+</div>
+
+<div>
+
+<div class="titulo">Origen</div>
+
+<div id="origen" class="valor">
+</div>
+
+</div>
+
+<div>
+
+<div class="titulo">Destino</div>
+
+<div id="destino" class="valor">
+</div>
+
+</div>
+
+<div>
+
+<div class="titulo">Importe total</div>
+
+<div id="importeTotal" class="valor">
+</div>
+
+</div>
+
+<div>
+
+<div class="titulo">Reserva pagada</div>
+
+<div id="importeReserva" class="valor text-green-600">
+</div>
+
+</div>
+
+<div>
+
+<div class="titulo">Pendiente</div>
+
+<div id="importePendiente" class="valor text-red-500">
+</div>
+
+</div>
+
+</div>
+
+<div class="mt-10 flex justify-center gap-4">
+
+<button
+
+onclick="window.location='index.html'"
+
+class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl">
+
+Volver al inicio
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="js/estados.js"></script>
+
+<script src="js/estadoReserva.js"></script>
+
+<script src="confirmacion.js"></script>
+
+</body>
+
+</html>
