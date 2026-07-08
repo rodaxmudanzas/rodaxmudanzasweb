@@ -6,14 +6,14 @@ async function cargarReserva() {
 
         const numeroReserva = params.get("reserva");
 
-        if (!sessionId) {
+if (!numeroReserva) {
 
-            document.getElementById("numeroReserva").textContent =
-                "No se recibió el identificador del pago.";
+    document.getElementById("numeroReserva").textContent =
+        "No se recibió el número de reserva.";
 
-            return;
+    return;
 
-        }
+}
 
        const res = await fetch(
     `/api/obtener-reserva?reserva=${encodeURIComponent(numeroReserva)}`
@@ -52,18 +52,24 @@ async function cargarReserva() {
             datos.importe_reserva + " €";
 
         document.getElementById("importePendiente").textContent =
-            datos.importe_restante + " €";
+    datos.importe_restante + " €";
 
-    }
+renderEstadoReserva(
 
-    catch (err) {
+    document.getElementById("estadoReserva"),
 
-        console.error(err);
+    "pendiente_asignacion"
 
-        document.getElementById("numeroReserva").textContent =
-            err.message;
+);
 
-    }
+} catch (err) {
+
+    console.error(err);
+
+    document.getElementById("numeroReserva").textContent =
+        err.message;
+
+}
 
 }
 
