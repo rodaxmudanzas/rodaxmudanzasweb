@@ -33,6 +33,45 @@ if (!sessionId) {
         document.getElementById("estado").textContent =
             datos.estado || "";
 
+            const estado = document.getElementById("estado");
+
+switch (datos.estado) {
+
+    case "Pendiente de asignación":
+
+        estado.className =
+        "font-bold text-green-600";
+
+        break;
+
+    case "Transportista asignado":
+
+        estado.className =
+        "font-bold text-blue-600";
+
+        break;
+
+    case "En curso":
+
+        estado.className =
+        "font-bold text-orange-500";
+
+        break;
+
+    case "Finalizada":
+
+        estado.className =
+        "font-bold text-gray-600";
+
+        break;
+
+    default:
+
+        estado.className =
+        "font-bold";
+
+}
+
         document.getElementById("nombre").textContent =
             datos.nombre || "";
 
