@@ -43,7 +43,7 @@ if (!sessionId) {
         return res.status(200).json(data);
 
     }
-
+    
     catch (err) {
 
         console.error(err);
