@@ -52,13 +52,26 @@ document.getElementById("fecha").textContent =
             datos.destino || "";
 
         document.getElementById("importeTotal").textContent =
-            datos.importe_total + " €";
+Number(datos.importe_total).toLocaleString("es-ES",{
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
+}) + " €";
 
         document.getElementById("importeReserva").textContent =
-            datos.importe_reserva + " €";
+Number(datos.importe_reserva).toLocaleString("es-ES",{
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
+}) + " €";
 
         document.getElementById("importePendiente").textContent =
-    datos.importe_restante + " €";
+    Number(datos.importe_restante)
+.toLocaleString("es-ES", {
+
+minimumFractionDigits:2,
+
+maximumFractionDigits:2
+
+}) + " €";
 
 renderEstadoReserva(
 
