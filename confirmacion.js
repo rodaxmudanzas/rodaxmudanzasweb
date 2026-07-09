@@ -85,15 +85,25 @@ fecha.toLocaleDateString("es-ES", {
 });
 
         document.getElementById("ruta").innerHTML = `
-📍 <strong>${datos.origen}</strong>
-<br>
+<div class="space-y-2">
 
-<div style="margin-left:20px;font-size:26px;color:#2563eb;">
-│<br>
-▼
+<div>
+📍 <strong>${datos.origen}</strong>
 </div>
 
+<div class="text-center text-blue-600 text-3xl">
+
+↓
+
+</div>
+
+<div>
+
 📍 <strong>${datos.destino}</strong>
+
+</div>
+
+</div>
 `;
 
         document.getElementById("importeTotal").textContent =
