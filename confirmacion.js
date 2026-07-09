@@ -84,11 +84,16 @@ fecha.toLocaleDateString("es-ES", {
     year: "numeric"
 });
 
-        document.getElementById("ruta").innerHTML =
-`
-📍 ${datos.origen}<br>
-<span style="padding-left:18px;">↓</span><br>
-📍 ${datos.destino}
+        document.getElementById("ruta").innerHTML = `
+📍 <strong>${datos.origen}</strong>
+<br>
+
+<div style="margin-left:20px;font-size:26px;color:#2563eb;">
+│<br>
+▼
+</div>
+
+📍 <strong>${datos.destino}</strong>
 `;
 
         document.getElementById("importeTotal").textContent =
