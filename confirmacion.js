@@ -39,17 +39,18 @@ if (!sessionId) {
         const fecha = new Date(datos.fecha);
 
 document.getElementById("fecha").textContent =
-    fecha.toLocaleDateString("es-ES", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric"
-    });
+fecha.toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+});
 
-        document.getElementById("origen").textContent =
-            datos.origen || "";
-
-        document.getElementById("destino").textContent =
-            datos.destino || "";
+        document.getElementById("ruta").innerHTML =
+`
+📍 ${datos.origen}<br>
+<span style="padding-left:18px;">↓</span><br>
+📍 ${datos.destino}
+`;
 
         document.getElementById("importeTotal").textContent =
 Number(datos.importe_total).toLocaleString("es-ES",{
