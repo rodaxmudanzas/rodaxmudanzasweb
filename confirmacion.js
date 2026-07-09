@@ -85,22 +85,22 @@ fecha.toLocaleDateString("es-ES", {
 });
 
         document.getElementById("ruta").innerHTML = `
-<div class="space-y-2">
+<div class="flex flex-col">
 
-<div>
-📍 <strong>${datos.origen}</strong>
+<div class="font-semibold">
+📍 ${datos.origen}
 </div>
 
-<div class="text-center text-blue-600 text-3xl">
+<div class="flex justify-center py-3">
 
+<span class="text-blue-600 text-4xl leading-none">
 ↓
+</span>
 
 </div>
 
-<div>
-
-📍 <strong>${datos.destino}</strong>
-
+<div class="font-semibold">
+📍 ${datos.destino}
 </div>
 
 </div>
