@@ -97,80 +97,59 @@ Cargando...
 
 <!-- NUEVO -->
 
-<div id="estadoReserva" class="mt-8"></div>
+<div class="space-y-6">
 
-<div>
+    <div>
+        <p class="text-sm text-gray-500">Nº Reserva</p>
+        <p id="numeroReserva" class="text-2xl font-bold"></p>
+    </div>
 
-<div class="titulo">Estado</div>
+    <div>
+        <p class="text-sm text-gray-500">Estado</p>
+        <p id="estado" class="font-semibold"></p>
+    </div>
 
-<div id="estado" class="valor">
-Cargando...
-</div>
+    <div>
+        <p class="text-sm text-gray-500">Cliente</p>
+        <p id="nombre" class="font-semibold"></p>
+    </div>
 
-</div>
+    <div>
+        <p class="text-sm text-gray-500">Fecha</p>
+        <p id="fecha" class="font-semibold"></p>
+    </div>
 
-<div>
+    <div>
+        <p class="text-sm text-gray-500">Ruta</p>
 
-<div class="titulo">Cliente</div>
+        <p id="ruta" class="leading-8"></p>
+    </div>
 
-<div id="nombre" class="valor">
-</div>
+    <hr>
 
-</div>
+    <div class="grid grid-cols-2 gap-y-4">
 
-<div>
+        <div>
+            <p class="text-sm text-gray-500">Importe total</p>
+            <p id="importeTotal" class="font-bold"></p>
+        </div>
 
-<div class="titulo">Fecha de la mudanza</div>
+        <div>
+            <p class="text-sm text-gray-500">Reserva pagada</p>
+            <p id="importeReserva"
+               class="font-bold text-green-600"></p>
+        </div>
 
-<div id="fecha" class="valor">
-</div>
+        <div>
+            <p class="text-sm text-gray-500">
+                Pendiente de pago
+            </p>
 
-</div>
+            <p id="importePendiente"
+               class="font-bold text-red-600"></p>
+        </div>
 
-<div>
-
-<div class="titulo">Origen</div>
-
-<div id="origen" class="valor">
-</div>
-
-</div>
-
-<div>
-
-<div class="titulo">Destino</div>
-
-<div id="destino" class="valor">
-</div>
-
-</div>
-
-<div>
-
-<div class="titulo">Importe total</div>
-
-<div id="importeTotal" class="valor">
-</div>
-
-</div>
-
-<div>
-
-<div class="titulo">Reserva pagada</div>
-
-<div id="importeReserva" class="valor text-green-600">
-</div>
-
-</div>
-
-<div>
-
-<div class="titulo">Pendiente</div>
-
-<div id="importePendiente" class="valor text-red-500">
-</div>
-
-</div>
+    </div>
 
 </div>
 
