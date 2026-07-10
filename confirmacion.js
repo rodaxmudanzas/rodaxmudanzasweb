@@ -30,10 +30,22 @@ if (!sessionId) {
         document.getElementById("numeroReserva").textContent =
             datos.numero_reserva || "";
 
-        document.getElementById("estado").textContent =
-            datos.estado || "";
-
             const estado = document.getElementById("estado");
+
+            const iconosEstado = {
+
+    "Pendiente de asignación":"🟢",
+
+    "Transportista asignado":"🔵",
+
+    "En curso":"🟠",
+
+    "Finalizada":"⚪"
+
+};
+
+estado.textContent =
+`${iconosEstado[datos.estado] || "⚪"} ${datos.estado}`;
 
 switch (datos.estado) {
 
