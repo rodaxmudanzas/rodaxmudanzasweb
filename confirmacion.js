@@ -140,14 +140,6 @@ maximumFractionDigits:2
 
 }) + " €";
 
-renderEstadoReserva(
-
-    document.getElementById("estadoReserva"),
-
-    datos.estado
-
-);
-
 } catch (err) {
 
     console.error(err);
