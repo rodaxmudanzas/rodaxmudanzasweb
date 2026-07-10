@@ -103,10 +103,12 @@ fecha.toLocaleDateString("es-ES", {
 📍 ${datos.origen}
 </div>
 
-<div class="flex justify-center py-3">
+<div class="flex justify-center items-center py-3">
 
-<span class="text-blue-600 text-4xl leading-none">
+<span class="text-blue-600 text-5xl leading-none">
+
 ↓
+
 </span>
 
 </div>
