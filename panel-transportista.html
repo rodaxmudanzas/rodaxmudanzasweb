@@ -199,7 +199,18 @@
     async function verificarSesion() {
         try {
             const { data: { session }, error } = await dbClient.auth.getSession();
-            if (error || !session) { window.location.replace('transportistas.html'); return; }
+
+console.log("=== DIAGNÓSTICO RODAX ===");
+console.log("Sesión:", session);
+console.log("Error de sesión:", error);
+console.log("Usuario:", session?.user);
+console.log("========================");
+
+if (error || !session) {
+    console.error("NO SE DETECTÓ SESIÓN. No redirigimos para poder revisar el error.");
+    alert("Diagnóstico: el panel no ha detectado una sesión activa. Abre la consola F12 para revisar el resultado.");
+    return;
+}
             currentUserId = session.user.id;
             document.getElementById('loading-text').textContent = 'Cargando tu panel...';
             await cargarDatosPerfil();
