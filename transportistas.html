@@ -615,9 +615,52 @@ const dbClient = window.supabase.createClient(URL_DB, KEY_DB);
                     loginError.classList.add('hidden');
 
                     try {
-                        const { data, error } = await dbClient.auth.signInWithPassword({ email, password });
-                        if (error) throw error;
-                        window.location.href = "panel-transportista.html";
+    // 1. Iniciar sesión con Supabase Auth
+    const { data, error } = await dbClient.auth.signInWithPassword({
+        email,
+        password
+    });
+
+    if (error) throw error;
+
+    // 2. Obtener el usuario autenticado
+    const usuario = data.user;
+
+    if (!usuario) {
+        throw new Error("No se pudo obtener el usuario autenticado.");
+    }
+
+    // 3. Comprobar si el transportista ya existe en el ERP
+    const { data: perfilExistente, error: errorConsulta } = await dbClient
+        .from('transportistas')
+        .select('id')
+        .eq('id', usuario.id)
+        .maybeSingle();
+
+    if (errorConsulta) throw errorConsulta;
+
+    // 4. Si es su primer acceso, crear automáticamente su perfil
+    if (!perfilExistente) {
+
+        const metadata = usuario.user_metadata || {};
+
+        const { error: errorPerfil } = await dbClient
+            .from('transportistas')
+            .insert([{
+                id: usuario.id,
+                email: usuario.email,
+                nombre: metadata.nombre || '',
+                telefono: metadata.telefono || null,
+                ciudad: metadata.ciudad || null,
+                vehiculo: metadata.vehiculo || null,
+                estado: metadata.estado || 'Activo'
+            }]);
+
+        if (errorPerfil) throw errorPerfil;
+    }
+
+    // 5. Entrar en el panel del transportista
+    window.location.href = "panel-transportista.html";
                     } catch (error) {
                         console.error("Error Login:", error);
                         loginError.classList.remove('hidden');
