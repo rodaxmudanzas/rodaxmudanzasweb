@@ -229,14 +229,41 @@ if (error || !session) {
     }
 
     async function cargarDatosPerfil() {
-        const { data } = await dbClient.from('transportistas').select('nombre').eq('id', currentUserId).single();
-        if (data) {
-            currentUserNombre = data.nombre;
-            document.getElementById('profile-name').textContent = data.nombre;
-            document.getElementById('profile-img').src =
-                `https://ui-avatars.com/api/?name=${encodeURIComponent(data.nombre)}&background=1d4ed8&color=fff&bold=true`;
+    try {
+        console.log("Buscando perfil del transportista:", currentUserId);
+
+        const { data, error } = await dbClient
+            .from('transportistas')
+            .select('nombre')
+            .eq('id', currentUserId)
+            .maybeSingle();
+
+        console.log("Perfil transportista:", data);
+        console.log("Error perfil:", error);
+
+        if (error) {
+            console.error("Error al cargar el perfil:", error);
+            return;
         }
+
+        if (data) {
+            currentUserNombre = data.nombre || 'Transportista';
+
+            document.getElementById('profile-name').textContent =
+                currentUserNombre;
+
+            document.getElementById('profile-img').src =
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUserNombre)}&background=1d4ed8&color=fff&bold=true`;
+        } else {
+            console.warn("No existe perfil para este usuario.");
+            document.getElementById('profile-name').textContent =
+                'Transportista';
+        }
+
+    } catch (err) {
+        console.error("Error inesperado cargando perfil:", err);
     }
+}
 
     async function cerrarSesion() {
         await dbClient.auth.signOut();
