@@ -646,19 +646,20 @@ const dbClient = window.supabase.createClient(URL_DB, KEY_DB);
                     const vehiculo = document.getElementById('tipo_vehiculo').value;
 
                     try {
-    const { data: authData, error: authError } = await dbClient.auth.signUp({
-        email,
-        password,
-        options: {
-            data: {
-                nombre,
-                telefono,
-                ciudad,
-                vehiculo,
-                estado: 'Activo'
-            }
+   const { data: authData, error: authError } = await dbClient.auth.signUp({
+    email,
+    password,
+    options: {
+        emailRedirectTo: 'https://rodaxmudanzasweb.vercel.app/transportistas.html#login',
+        data: {
+            nombre,
+            telefono,
+            ciudad,
+            vehiculo,
+            estado: 'Activo'
         }
-    });
+    }
+});
 
     if (authError) throw authError;
 
