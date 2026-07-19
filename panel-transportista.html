@@ -289,9 +289,25 @@ if (error || !session) {
     }
 
     async function cargarTrabajosDisponibles() {
-        const { data } = await dbClient.from('mudanzas').select('*').eq('estado', 'Disponible').order('id', { ascending: false });
-        if (data) { state.disponibles = data; renderizarDisponibles(); }
+    const { data, error } = await dbClient
+        .from('mudanzas')
+        .select('*')
+        .eq('estado', 'Pendiente de asignación')
+        .eq('publicada_marketplace', true)
+        .eq('bloqueada', false)
+        .is('transportista_id', null)
+        .order('id', { ascending: false });
+
+    if (error) {
+        console.error('Error cargando trabajos disponibles:', error);
+        return;
     }
+
+    console.log('Trabajos disponibles encontrados:', data);
+
+    state.disponibles = data || [];
+    renderizarDisponibles();
+}
 
     async function cargarMisMudanzas() {
         const { data } = await dbClient.from('mudanzas').select('*').eq('estado', 'Asignada').eq('transportista_id', currentUserId).order('id', { ascending: false });
