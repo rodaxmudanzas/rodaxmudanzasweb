@@ -682,26 +682,66 @@ if (error || !session) {
     }
 
     async function procesarAceptacion(id) {
-        modalContent.innerHTML = `
-            <i data-lucide="loader-2" class="w-10 h-10 animate-spin mx-auto text-blue-600 mb-3"></i>
-            <p class="text-gray-600 font-medium text-sm">Asignando mudanza...</p>`;
-        lucide.createIcons();
+    modalContent.innerHTML = `
+        <i data-lucide="loader-2" class="w-10 h-10 animate-spin mx-auto text-blue-600 mb-3"></i>
+        <p class="text-gray-600 font-medium text-sm">Asignando mudanza...</p>`;
+    lucide.createIcons();
 
-        const { error } = await dbClient.from('mudanzas').update({ estado: 'Asignada', transportista_id: currentUserId }).eq('id', id).eq('estado', 'Disponible');
+    console.log("Intentando aceptar mudanza:", id);
+    console.log("Transportista:", currentUserId);
 
-        if (error) {
-            alert('No se pudo asignar. Es posible que otro transportista lo haya aceptado antes. Actualizando...');
-            cerrarModal();
-            cargarTrabajosDisponibles();
-            return;
-        }
+    const { data, error } = await dbClient
+        .from('mudanzas')
+        .update({
+            estado: 'Transportista asignado',
+            transportista_id: currentUserId,
+            bloqueada: true,
+            fecha_asignacion: new Date().toISOString()
+        })
+        .eq('id', id)
+        .eq('estado', 'Pendiente de asignación')
+        .eq('publicada_marketplace', true)
+        .eq('bloqueada', false)
+        .is('transportista_id', null)
+        .select();
 
-        await Promise.all([cargarTrabajosDisponibles(), cargarMisMudanzas()]);
+    console.log("Resultado aceptación:", data);
+    console.log("Error aceptación:", error);
+
+    if (error) {
+        console.error("Error al aceptar:", error);
+
+        alert(
+            'No se pudo asignar la mudanza.\n\n' +
+            'Puede que otro transportista la haya aceptado antes.'
+        );
+
         cerrarModal();
-        cambiarTab('mis-mudanzas');
+        await cargarTrabajosDisponibles();
+        return;
     }
 
-    async function marcarCompletada(id) {
+    if (!data || data.length === 0) {
+        alert(
+            'Esta mudanza ya no está disponible.\n\n' +
+            'Es posible que otro transportista la haya aceptado.'
+        );
+
+        cerrarModal();
+        await cargarTrabajosDisponibles();
+        return;
+    }
+
+    console.log("Mudanza asignada correctamente:", data[0]);
+
+    await Promise.all([
+        cargarTrabajosDisponibles(),
+        cargarMisMudanzas()
+    ]);
+
+    cerrarModal();
+    cambiarTab('mis-mudanzas');
+}
         if (confirm('¿Confirmas que has terminado este servicio y que el cliente ha pagado el resto?\nLa mudanza desaparecerá de tu panel activo.')) {
             await dbClient.from('mudanzas').update({ estado: 'Completada' }).eq('id', id);
             cargarMisMudanzas();
