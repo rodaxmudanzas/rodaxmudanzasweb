@@ -739,16 +739,31 @@ if (error || !session) {
         cargarMisMudanzas()
     ]);
 
-    cerrarModal();
+        cerrarModal();
     cambiarTab('mis-mudanzas');
 }
-        if (confirm('¿Confirmas que has terminado este servicio y que el cliente ha pagado el resto?\nLa mudanza desaparecerá de tu panel activo.')) {
-            await dbClient.from('mudanzas').update({ estado: 'Completada' }).eq('id', id);
-            cargarMisMudanzas();
-        }
-    }
 
-    window.onload = verificarSesion;
+async function marcarCompletada(id) {
+    if (confirm(
+        '¿Confirmas que has terminado este servicio y que el cliente ha pagado el resto?\n' +
+        'La mudanza desaparecerá de tu panel activo.'
+    )) {
+        const { error } = await dbClient
+            .from('mudanzas')
+            .update({ estado: 'Completada' })
+            .eq('id', id);
+
+        if (error) {
+            console.error('Error al marcar la mudanza como completada:', error);
+            alert('No se pudo marcar la mudanza como completada.');
+            return;
+        }
+
+        await cargarMisMudanzas();
+    }
+}
+
+window.onload = verificarSesion;
 </script>
 </body>
 </html>

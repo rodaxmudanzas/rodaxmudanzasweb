@@ -46,6 +46,12 @@ module.exports = async function (req, res) {
             process.env.STRIPE_WEBHOOK_SECRET
         );
 
+        console.log("EVENTO RECIBIDO");
+
+console.log(event.type);
+
+console.log(event.data.object.metadata);
+
         console.log("Evento verificado correctamente");
         console.log("Tipo:", event.type);
 
@@ -63,39 +69,39 @@ module.exports = async function (req, res) {
 
         const session = event.data.object;
 
-        console.log("SESSION COMPLETA");
+console.log("SESSION COMPLETA");
 console.log(session);
 
-        console.log("SESSION ID:", session.id);
+console.log("SESSION ID:", session.id);
 
-        console.log("Metadata:");
-        console.log(session.metadata);
+console.log("Metadata:");
+console.log(session.metadata);
 
-        if (!session.metadata) {
+if (!session.metadata) {
 
-            console.error("La metadata viene vacía");
+    console.error("La metadata viene vacía");
 
-            return res.status(400).json({
-                error: "Metadata vacía"
-            });
+    return res.status(400).json({
+        error: "Metadata vacía"
+    });
 
-        }
+}
 
-        const data = session.metadata;
+const data = session.metadata;
 
-        const numeroReserva = data.numero_reserva;
+const numeroReserva = data.numero_reserva;
 
-        if (!numeroReserva) {
+if (!numeroReserva) {
 
-            console.error("numero_reserva no existe");
+    console.error("numero_reserva no existe");
 
-            return res.status(400).json({
-                error: "numero_reserva inexistente"
-            });
+    return res.status(400).json({
+        error: "numero_reserva inexistente"
+    });
 
-        }
+}
 
-        console.log("Reserva:", numeroReserva);
+console.log("Reserva:", numeroReserva);
 
         const importeTotal = Number(
             String(data.preciototal)
