@@ -791,23 +791,65 @@ if (error || !session) {
 }
 
 async function marcarCompletada(id) {
-    if (confirm(
-        '¿Confirmas que has terminado este servicio y que el cliente ha pagado el resto?\n' +
+
+    const confirmar = confirm(
+        '¿Confirmas que has terminado este servicio y que el cliente ha pagado el resto?\n\n' +
         'La mudanza desaparecerá de tu panel activo.'
-    )) {
-        const { error } = await dbClient
-            .from('mudanzas')
-            .update({ estado: 'Completada' })
-            .eq('id', id);
+    );
 
-        if (error) {
-            console.error('Error al marcar la mudanza como completada:', error);
-            alert('No se pudo marcar la mudanza como completada.');
-            return;
-        }
+    if (!confirmar) return;
 
-        await cargarMisMudanzas();
+    console.log('====================================');
+    console.log('FINALIZANDO MUDANZA:', id);
+    console.log('TRANSPORTISTA:', currentUserId);
+
+    const { data, error } = await dbClient
+        .from('mudanzas')
+        .update({
+            estado: 'Completada'
+        })
+        .eq('id', id)
+        .eq('transportista_id', currentUserId)
+        .select();
+
+    console.log('RESULTADO UPDATE:', data);
+    console.log('ERROR UPDATE:', error);
+    console.log('====================================');
+
+    if (error) {
+        console.error('Error al finalizar:', error);
+
+        alert(
+            'No se pudo marcar la mudanza como completada.\n\n' +
+            error.message
+        );
+
+        return;
     }
+
+    if (!data || data.length === 0) {
+        console.error('El UPDATE no modificó ninguna fila.');
+
+        alert(
+            'Supabase no ha actualizado la mudanza.\n\n' +
+            'Posible causa: una política RLS está bloqueando la actualización.'
+        );
+
+        return;
+    }
+
+    // Eliminar inmediatamente la mudanza del estado local
+    state.activas = state.activas.filter(
+        mudanza => Number(mudanza.id) !== Number(id)
+    );
+
+    // Redibujar inmediatamente el panel
+    renderizarActivas();
+
+    // Comprobar nuevamente los datos reales de Supabase
+    await cargarMisMudanzas();
+
+    console.log('Mudanza finalizada correctamente:', id);
 }
 
 window.onload = verificarSesion;
