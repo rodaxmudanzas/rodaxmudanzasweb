@@ -345,9 +345,30 @@ if (error || !session) {
 }
 
     async function cargarMisMudanzas() {
-        const { data } = await dbClient.from('mudanzas').select('*').eq('estado', 'Asignada').eq('transportista_id', currentUserId).order('id', { ascending: false });
-        if (data) { state.activas = data; renderizarActivas(); }
+
+    console.log("Cargando Mis Mudanzas Activas...");
+    console.log("Transportista:", currentUserId);
+
+    const { data, error } = await dbClient
+        .from('mudanzas')
+        .select('*')
+        .eq('estado', 'Transportista asignado')
+        .eq('transportista_id', currentUserId)
+        .order('id', { ascending: false });
+
+    console.log("Mis Mudanzas Activas:", data);
+    console.log("Error Mis Mudanzas Activas:", error);
+
+    if (error) {
+        console.error("Error cargando Mis Mudanzas Activas:", error);
+        state.activas = [];
+        renderizarActivas();
+        return;
     }
+
+    state.activas = data || [];
+    renderizarActivas();
+}
 
     function renderizarDisponibles() {
         const contenedor = document.getElementById('contenedor-disponibles');
