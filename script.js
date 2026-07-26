@@ -1045,6 +1045,11 @@ btnMasGrandes?.addEventListener("click",()=>{
             
                 const fotosString = await subirFotos(document.getElementById('fotos_upload'));
 
+                console.log("================================");
+console.log("RESULTADO SUBIRFOTOS");
+console.log(fotosString);
+console.log("================================");
+
                 console.log("FOTOS SUBIDAS:");
 console.log(fotosString);
 
