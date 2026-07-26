@@ -1283,27 +1283,41 @@ async function marcarCompletada(id) {
 
 function verDetalleMudanza(id){
 
-    // Abrimos el drawer
+    // Buscar la mudanza en memoria
+    const mudanza = state.disponibles.find(
+        m => Number(m.id) === Number(id)
+    );
+
+    if(!mudanza){
+        alert("No se ha encontrado la mudanza.");
+        return;
+    }
+
     abrirDrawer();
 
-    // Temporal (en la siguiente entrega vendrán de Supabase)
+    // Nº de reserva
     document.getElementById("drawerReserva").textContent =
-        "RDX-26-483921";
+        mudanza.numero_reserva || `RDX-26-${mudanza.id}`;
 
+    // Ruta
     document.getElementById("drawerOrigen").textContent =
-        "Madrid";
+        mudanza.origen || "—";
 
     document.getElementById("drawerDestino").textContent =
-        "Valencia";
+        mudanza.destino || "—";
 
+    // Fecha
     document.getElementById("drawerFecha").textContent =
-        "21 Julio 2026 - 09:00";
+        mudanza.fecha || "—";
 
+    // Precio
     document.getElementById("drawerPrecio").innerHTML =
-        '473,42 € <span class="text-xs font-normal">IVA incl.</span>';
+        `${mudanza.preciototal || "—"} <span class="text-xs font-normal">IVA incl.</span>`;
 
+    // Observaciones
     document.getElementById("drawerObservaciones").textContent =
-        "Aquí aparecerán las observaciones escritas por el cliente.";
+        mudanza.observaciones ||
+        "El cliente no ha añadido observaciones.";
 }
 
 window.onload = verificarSesion;
