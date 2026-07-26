@@ -1054,6 +1054,17 @@ console.log(fotosString);
                 const ascDestino = document.getElementById('ascensor_destino')?.value || 'si';
                 const pisoDestino= parseInt(document.getElementById('piso_destino')?.value) || 0;
 
+                console.log("DESMONTAJE",
+document.getElementById("cant_desmontar")?.value);
+
+console.log("MONTAJE",
+document.getElementById("cant_montar")?.value);
+
+console.log("EMBALAJE",
+document.getElementById("cant_embalar")?.value);
+
+console.log("EMPAQUETADO",
+document.getElementById("cant_empaquetar")?.value);
                 // Recopilar extras para el campo texto
                 const extrasArr = [];
                 const cantD = parseInt(document.getElementById('cant_desmontar')?.value) || 0;
