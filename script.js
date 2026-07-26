@@ -1059,11 +1059,13 @@ console.log(fotosString);
                 const cantD = parseInt(document.getElementById('cant_desmontar')?.value) || 0;
                 const cantM = parseInt(document.getElementById('cant_montar')?.value)    || 0;
                 const cantE = parseInt(document.getElementById('cant_embalar')?.value)   || 0;
+                const cantP = parseInt(document.getElementById('cant_empaquetar')?.value) || 0;
                 const seguro= parseFloat(document.getElementById('valor_seguro')?.value) || 0;
 
                 if (cantD > 0) extrasArr.push(`Desmontaje ×${cantD}`);
                 if (cantM > 0) extrasArr.push(`Montaje ×${cantM}`);
                 if (cantE > 0) extrasArr.push(`Embalaje ×${cantE}`);
+                if (cantP > 0) extrasArr.push(`Empaquetado ×${cantP}`);
                 if (seguro > 0) extrasArr.push(`Seguro: ${seguro} €`);
 
                 const volumenSelect = document.getElementById('volumen');
