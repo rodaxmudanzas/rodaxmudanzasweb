@@ -49,6 +49,66 @@
                 box-shadow: none !important;
             }
             aside, header, .no-print { display: none !important; }
+
+           <style>
+
+...
+
+/* Última regla CSS que ya tienes */
+
+.menu-title{
+    margin-top:22px;
+    margin-bottom:8px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.08em;
+    color:#94A3B8;
+    text-transform:uppercase;
+}
+
+.nav-item{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 14px;
+    border-radius:14px;
+    color:#334155;
+    transition:.20s;
+    font-weight:600;
+}
+
+.nav-item:hover{
+    background:#E8F1FF;
+    color:#0B63CE;
+}
+
+.nav-item.active{
+    background:#0B63CE;
+    color:white;
+}
+
+.nav-item.disabled{
+    opacity:.75;
+}
+
+.nav-item small{
+    margin-left:auto;
+    color:#94A3B8;
+    font-size:10px;
+}
+
+.badge-menu{
+    background:#0B63CE;
+    color:white;
+    border-radius:999px;
+    min-width:24px;
+    text-align:center;
+    font-size:10px;
+    padding:2px 6px;
+}
+
+</style> 
         }
     </style>
 </head>
@@ -57,55 +117,245 @@
 <div id="mobile-overlay" class="fixed inset-0 bg-gray-900/60 z-40 hidden md:hidden backdrop-blur-sm"
      onclick="cerrarMenuMovil()"></div>
 
-<!-- SIDEBAR -->
-<aside id="sidebar" class="w-64 bg-gray-900 text-white flex-shrink-0 fixed md:relative h-full z-50
-    transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col">
+<aside id="sidebar"
+class="w-72 bg-[#F8FAFC] border-r border-slate-200 flex-shrink-0 fixed md:relative h-full z-50
+transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col shadow-sm">
 
-    <div class="h-20 flex items-center justify-between px-4 border-b border-gray-800 flex-shrink-0">
-        <img src="images/logo-rodax.png" alt="RODAX" class="h-10 object-contain">
-        <button onclick="cerrarMenuMovil()" class="md:hidden text-gray-400 hover:text-white p-1 rounded-lg bg-gray-800">
-            <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+    <!-- CABECERA -->
+    <div class="px-6 py-5 border-b border-slate-200">
+
+        <img src="images/logo-rodax.png"
+             id="logoRodax"
+             alt="RODAX"
+             class="h-16 object-contain mx-auto">
+
     </div>
 
-    <div class="p-5 border-b border-gray-800 flex-shrink-0">
-        <div class="flex items-center space-x-3">
-            <div class="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center border-2 border-blue-500 overflow-hidden flex-shrink-0">
-                <img id="profile-img" src="https://ui-avatars.com/api/?name=U&background=1d4ed8&color=fff" alt="Perfil">
+    <!-- PERFIL -->
+    <div class="px-5 py-5 border-b border-slate-200">
+
+        <div class="flex items-center gap-3">
+
+            <div
+            class="w-14 h-14 rounded-2xl overflow-hidden border-2 border-[#0B63CE] bg-white">
+
+                <img id="profile-img"
+                src="https://ui-avatars.com/api/?name=U&background=1d4ed8&color=fff"
+                class="w-full h-full object-cover">
+
             </div>
-            <div class="overflow-hidden">
-                <p class="text-sm font-bold truncate text-white" id="profile-name">Cargando...</p>
-                <p class="text-xs text-green-400 font-semibold flex items-center">
-                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5"></span> Conectado
-                </p>
+
+            <div class="flex-1 min-w-0">
+
+                <div
+                id="profile-name"
+                class="font-bold text-slate-800 truncate">
+
+                    Cargando...
+
+                </div>
+
+                <div
+                class="text-xs text-emerald-600 font-semibold mt-1">
+
+                    ● Transportista activo
+
+                </div>
+
             </div>
+
         </div>
+
     </div>
 
-    <nav class="flex-1 overflow-y-auto py-4">
-        <ul class="space-y-0.5">
-            <li>
-                <button onclick="cambiarTab('disponibles')" class="nav-item active" id="nav-disponibles">
-                    <i data-lucide="search" class="w-5 h-5 mr-3 flex-shrink-0"></i>
-                    Trabajos Disponibles
-                    <span class="ml-auto bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full min-w-[22px] text-center" id="badge-disponibles">0</span>
-                </button>
-            </li>
-            <li>
-                <button onclick="cambiarTab('mis-mudanzas')" class="nav-item" id="nav-mis-mudanzas">
-                    <i data-lucide="truck" class="w-5 h-5 mr-3 flex-shrink-0"></i>
-                    Mis Mudanzas Activas
-                    <span class="ml-auto bg-green-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full min-w-[22px] text-center hidden" id="badge-activas">0</span>
-                </button>
-            </li>
-        </ul>
+    <!-- MENÚ -->
+
+    <nav class="flex-1 overflow-y-auto py-5">
+
+        <div class="px-5">
+
+            <div
+            class="text-[11px] uppercase tracking-wider text-slate-400 font-bold mb-2">
+
+                Marketplace
+
+            </div>
+
+            <button onclick="cambiarTab('disponibles')"
+            class="nav-item active"
+            id="nav-disponibles">
+
+                <i data-lucide="search"></i>
+
+                <span>Trabajos disponibles</span>
+
+                <span
+                id="badge-disponibles"
+                class="ml-auto badge-menu">
+
+                    0
+
+                </span>
+
+            </button>
+
+            <button onclick="cambiarTab('mis-mudanzas')"
+            class="nav-item"
+            id="nav-mis-mudanzas">
+
+                <i data-lucide="truck"></i>
+
+                <span>Mis mudanzas</span>
+
+                <span
+                id="badge-activas"
+                class="ml-auto badge-menu hidden">
+
+                    0
+
+                </span>
+
+            </button>
+
+            <div class="menu-title">
+
+                Operaciones
+
+            </div>
+
+            <button class="nav-item disabled">
+
+                <i data-lucide="calendar-days"></i>
+
+                <span>Mi agenda</span>
+
+                <small>Próximamente</small>
+
+            </button>
+
+            <button class="nav-item disabled">
+
+                <i data-lucide="route"></i>
+
+                <span>Mis rutas</span>
+
+                <small>Próximamente</small>
+
+            </button>
+
+            <div class="menu-title">
+
+                Finanzas
+
+            </div>
+
+            <button class="nav-item disabled">
+
+                <i data-lucide="wallet"></i>
+
+                <span>Pagos</span>
+
+                <small>Próximamente</small>
+
+            </button>
+
+            <button class="nav-item disabled">
+
+                <i data-lucide="receipt"></i>
+
+                <span>Facturación</span>
+
+                <small>Próximamente</small>
+
+            </button>
+
+            <div class="menu-title">
+
+                Mi negocio
+
+            </div>
+
+            <button class="nav-item disabled">
+
+                <i data-lucide="van"></i>
+
+                <span>Mis vehículos</span>
+
+                <small>Próximamente</small>
+
+            </button>
+
+            <button class="nav-item disabled">
+
+                <i data-lucide="users"></i>
+
+                <span>Equipo</span>
+
+                <small>Próximamente</small>
+
+            </button>
+
+            <div class="menu-title">
+
+                Mi cuenta
+
+            </div>
+
+            <button class="nav-item disabled">
+
+                <i data-lucide="user"></i>
+
+                <span>Mi perfil</span>
+
+            </button>
+
+            <button class="nav-item disabled">
+
+                <i data-lucide="bell"></i>
+
+                <span>Notificaciones</span>
+
+            </button>
+
+            <button class="nav-item disabled">
+
+                <i data-lucide="settings"></i>
+
+                <span>Configuración</span>
+
+            </button>
+
+            <div class="menu-title">
+
+                Ayuda
+
+            </div>
+
+            <button class="nav-item disabled">
+
+                <i data-lucide="headphones"></i>
+
+                <span>Soporte</span>
+
+            </button>
+
+        </div>
+
     </nav>
 
-    <div class="p-4 border-t border-gray-800 flex-shrink-0">
-        <button onclick="cerrarSesion()" class="flex items-center px-4 py-3 text-sm font-semibold text-gray-400 hover:text-red-400 hover:bg-gray-800 rounded-xl transition-colors w-full">
-            <i data-lucide="log-out" class="w-5 h-5 mr-3"></i> Cerrar Sesión
+    <div class="border-t border-slate-200 p-4">
+
+        <button onclick="cerrarSesion()"
+        class="nav-item">
+
+            <i data-lucide="log-out"></i>
+
+            <span>Cerrar sesión</span>
+
         </button>
+
     </div>
+
 </aside>
 
 <!-- CONTENIDO PRINCIPAL -->
@@ -696,6 +946,64 @@ if (error || !session) {
     </div>
     <button class="no-print" onclick="window.print()" style="margin-top:20px;padding:12px 24px;background:#2563eb;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:15px;">🖨️ Imprimir / Guardar PDF</button>
     <script>window.onload = function() { setTimeout(() => window.print(), 500); };<\/script>
+
+    <!-- =========================
+     DRAWER DETALLE MUDANZA
+========================== -->
+
+<div id="drawerOverlay"
+     class="fixed inset-0 bg-black/40 hidden z-40">
+
+</div>
+
+<aside id="drawerMudanza"
+class="fixed top-0 right-0 h-full w-[680px] max-w-full bg-white shadow-2xl
+translate-x-full transition-transform duration-300 z-50 flex flex-col">
+
+    <div class="flex items-center justify-between px-6 py-5 border-b">
+
+        <div>
+
+            <div class="text-xs uppercase tracking-wider text-slate-400">
+
+                Expediente de la mudanza
+
+            </div>
+
+            <h2 id="drawerReserva"
+
+            class="text-xl font-bold text-slate-800">
+
+                RDX-26-000001
+
+            </h2>
+
+        </div>
+
+        <button
+        onclick="cerrarDrawer()"
+        class="rounded-xl p-2 hover:bg-slate-100">
+
+            ✕
+
+        </button>
+
+    </div>
+
+    <div id="drawerContenido"
+
+    class="flex-1 overflow-y-auto p-6">
+
+        <div
+        class="text-slate-400">
+
+            Selecciona una mudanza para ver toda la información.
+
+        </div>
+
+    </div>
+
+</aside>
 </body>
 </html>`;
 
@@ -853,6 +1161,34 @@ async function marcarCompletada(id) {
 }
 
 window.onload = verificarSesion;
+
+function abrirDrawer(){
+
+    document
+        .getElementById("drawerOverlay")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("drawerMudanza")
+        .classList.remove("translate-x-full");
+
+}
+
+function cerrarDrawer(){
+
+    document
+        .getElementById("drawerOverlay")
+        .classList.add("hidden");
+
+    document
+        .getElementById("drawerMudanza")
+        .classList.add("translate-x-full");
+
+}
+
+document
+.getElementById("drawerOverlay")
+.addEventListener("click",cerrarDrawer);
 </script>
 </body>
 </html>
