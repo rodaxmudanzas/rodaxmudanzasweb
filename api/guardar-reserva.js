@@ -14,28 +14,20 @@ const supabase = createClient(
 
 function generarNumeroReserva(){
 
-    const año = new Date().getFullYear().toString().slice(-2);
+    const año =
+    new Date()
+    .getFullYear()
+    .toString()
+    .slice(-2);
 
-    const caracteres =
-    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    const numero =
+    Math.floor(
+        100000 + Math.random()*900000
+    );
 
-    let codigo = "";
+    return `RDX-${año}-${numero}`;
 
-    for(let i=0;i<6;i++){
-
-        codigo += caracteres.charAt(
-
-            Math.floor(
-                Math.random()*caracteres.length
-            )
-
-        );
-
-    }
-
-    return `RDX-${año}-${codigo}`;
-
-}   // ← ESTA LLAVE FALTABA
+}
 
 module.exports = async (req,res)=>{
 
