@@ -562,6 +562,97 @@ class="flex-1 overflow-y-auto p-6 space-y-6">
 
     </section>
 
+    <section>
+
+    <h3 class="text-sm font-bold text-slate-500 uppercase mb-3">
+
+        Detalles de la mudanza
+
+    </h3>
+
+    <div class="grid grid-cols-2 gap-4">
+
+        <div class="bg-slate-50 rounded-xl p-4 border">
+
+            <div class="text-xs text-slate-400">
+                Distancia
+            </div>
+
+            <div id="drawerKm"
+                 class="font-bold">
+
+                —
+
+            </div>
+
+        </div>
+
+        <div class="bg-slate-50 rounded-xl p-4 border">
+
+            <div class="text-xs text-slate-400">
+                Tipo de vivienda
+            </div>
+
+            <div id="drawerVolumen"
+                 class="font-bold">
+
+                —
+
+            </div>
+
+        </div>
+
+        <div class="bg-slate-50 rounded-xl p-4 border">
+
+            <div class="text-xs text-slate-400">
+                Tipo de servicio
+            </div>
+
+            <div id="drawerServicio"
+                 class="font-bold">
+
+                —
+
+            </div>
+
+        </div>
+
+        <div class="bg-slate-50 rounded-xl p-4 border">
+
+            <div class="text-xs text-slate-400">
+                Accesos
+            </div>
+
+            <div id="drawerAscensor"
+                 class="font-bold">
+
+                —
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section>
+
+    <h3 class="text-sm font-bold text-slate-500 uppercase mb-3">
+
+        Servicios contratados
+
+    </h3>
+
+    <div id="drawerExtras"
+         class="bg-slate-50 rounded-xl border p-4">
+
+        —
+
+    </div>
+
+</section>
+
     <!-- OBSERVACIONES -->
 
     <section>
@@ -1313,6 +1404,26 @@ function verDetalleMudanza(id){
     // Precio
     document.getElementById("drawerPrecio").innerHTML =
         `${mudanza.preciototal || "—"} <span class="text-xs font-normal">IVA incl.</span>`;
+
+        // Distancia
+document.getElementById("drawerKm").textContent =
+    (mudanza.km || "—") + " km";
+
+// Tipo de vivienda
+document.getElementById("drawerVolumen").textContent =
+    mudanza.volumen || "—";
+
+// Tipo de servicio
+document.getElementById("drawerServicio").textContent =
+    mudanza.tipo_servicio || "—";
+
+// Accesos
+document.getElementById("drawerAscensor").textContent =
+    mudanza.ascensor || "—";
+
+// Extras
+document.getElementById("drawerExtras").textContent =
+    mudanza.extras || "Solo transporte básico";
 
     // Observaciones
     document.getElementById("drawerObservaciones").textContent =
