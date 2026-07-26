@@ -1045,6 +1045,9 @@ btnMasGrandes?.addEventListener("click",()=>{
             
                 const fotosString = await subirFotos(document.getElementById('fotos_upload'));
 
+                console.log("FOTOS SUBIDAS:");
+console.log(fotosString);
+
                 // Recopilar datos de ascensores
                 const ascOrigen  = document.getElementById('ascensor_origen')?.value  || 'si';
                 const pisoOrigen = parseInt(document.getElementById('piso_origen')?.value)  || 0;
