@@ -1012,14 +1012,27 @@ btnMasGrandes?.addEventListener("click",()=>{
             const ext  = file.name.split('.').pop().toLowerCase();
             const path = `fotos-mudanzas/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${ext}`;
             try {
-                const { error } = await supabase.storage.from('documentos').upload(path, file);
+                const { data, error } =
+await supabase.storage
+.from('documentos')
+.upload(path, file);
+
+console.log("UPLOAD");
+console.log(data);
+console.log(error);
+
                 if (error) throw error;
                 const { data: { publicUrl } } = supabase.storage.from('documentos').getPublicUrl(path);
+                console.log("PUBLIC URL");
+console.log(publicUrl);
                 urls.push(publicUrl);
             } catch (err) {
                 console.error('Error subiendo foto:', err.message);
             }
         }
+
+        console.log("URLS FINALES");
+console.log(urls);
 
         return urls.length ? urls.join(', ') : null;
     }
