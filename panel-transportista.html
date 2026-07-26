@@ -858,10 +858,13 @@ if (error || !session) {
                         <span class="block text-[10px] font-bold text-gray-400 uppercase mb-0.5">Precio total</span>
                         <span class="text-2xl font-black text-blue-600">${t.preciototal || 'Consultar'}</span>
                     </div>
-                    <button onclick="confirmarAceptar(${t.id})"
-                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-5 rounded-xl shadow-md transition-all transform hover:-translate-y-0.5">
-                        Aceptar trabajo
-                    </button>
+                    <button
+    onclick="verDetalleMudanza('${mudanza.id}')"
+    class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition">
+
+    Ver detalle
+
+</button>
                 </div>
             </div>`;
         }).join('');
@@ -1276,6 +1279,31 @@ async function marcarCompletada(id) {
     await cargarMisMudanzas();
 
     console.log('Mudanza finalizada correctamente:', id);
+}
+
+function verDetalleMudanza(id){
+
+    // Abrimos el drawer
+    abrirDrawer();
+
+    // Temporal (en la siguiente entrega vendrán de Supabase)
+    document.getElementById("drawerReserva").textContent =
+        "RDX-26-483921";
+
+    document.getElementById("drawerOrigen").textContent =
+        "Madrid";
+
+    document.getElementById("drawerDestino").textContent =
+        "Valencia";
+
+    document.getElementById("drawerFecha").textContent =
+        "21 Julio 2026 - 09:00";
+
+    document.getElementById("drawerPrecio").innerHTML =
+        '473,42 € <span class="text-xs font-normal">IVA incl.</span>';
+
+    document.getElementById("drawerObservaciones").textContent =
+        "Aquí aparecerán las observaciones escritas por el cliente.";
 }
 
 window.onload = verificarSesion;
