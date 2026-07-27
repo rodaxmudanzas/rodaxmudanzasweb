@@ -710,9 +710,17 @@ class="flex-1 overflow-y-auto p-6 space-y-6">
 const KEY_DB = 'sb_publishable_dKIRJ1_K4u1ypfCNTuylIw_AyAKeZTS';
 const dbClient = window.supabase.createClient(URL_DB, KEY_DB);
 
-    let currentUserId = null;
-    let currentUserNombre = '';
-    const state = { disponibles: [], activas: [] };
+let currentUserId = null;
+let currentUserNombre = '';
+
+const state = {
+    disponibles: [],
+    activas: []
+};
+
+Transportista.dbClient = dbClient;
+Transportista.state = state;
+Transportista.currentUserId = currentUserId;
 
     const UI_TABS = {
         tabs: ['disponibles', 'mis-mudanzas'],
@@ -744,7 +752,11 @@ if (error || !session) {
     return;
 }
             currentUserId = session.user.id;
-            document.getElementById('loading-text').textContent = 'Cargando tu panel...';
+
+Transportista.currentUserId = currentUserId;
+
+document.getElementById('loading-text').textContent =
+    'Cargando tu panel...';
             await cargarDatosPerfil();
             document.getElementById('loading-screen').classList.add('hidden');
             cargarTrabajosDisponibles();
