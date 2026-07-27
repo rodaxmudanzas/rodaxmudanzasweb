@@ -1056,9 +1056,7 @@ function obtenerInventario() {
         inventario.push({
 
             nombre:
-                item?.dataset.nombre ||
-                input.dataset.nombre ||
-                "",
+                item.querySelector("span")?.textContent.trim() || "",
 
             cantidad,
 
@@ -1069,7 +1067,7 @@ function obtenerInventario() {
                 parseFloat(input.dataset.m3) || 0,
 
             fragil:
-                input.dataset.fragil === "true"
+                input.dataset.fragil === "si"
 
         });
 
@@ -1144,6 +1142,8 @@ document.getElementById("cant_empaquetar")?.value);
 // GUARDAR RESERVA EN SUPABASE
 //////////////////////////////////////////////////////
 const inventario = obtenerInventario();
+
+console.log(inventario);
 
 const respuestaReserva = await fetch("/api/guardar-reserva", {
 
