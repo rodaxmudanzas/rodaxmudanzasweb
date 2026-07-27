@@ -1252,6 +1252,26 @@ const inventario = obtenerInventario();
 
 console.log(inventario);
 
+const datosFormulario = obtenerDatosFormulario({
+
+    fotosString,
+
+    inventario,
+
+    volumenTexto,
+
+    ascOrigen,
+
+    ascDestino,
+
+    pisoOrigen,
+
+    pisoDestino,
+
+    extrasArr
+
+});
+
 const respuestaReserva = await fetch("/api/guardar-reserva", {
 
     method: "POST",
@@ -1260,54 +1280,7 @@ const respuestaReserva = await fetch("/api/guardar-reserva", {
         "Content-Type": "application/json"
     },
 
-    body: JSON.stringify({
-
-        nombre: document.getElementById("nombre").value.trim(),
-
-        telefono: document.getElementById("telefono").value.trim(),
-
-        email: document.getElementById("email").value.trim(),
-
-        origen: document.getElementById("origen").value.trim(),
-
-        destino: document.getElementById("destino").value.trim(),
-
-        km: parseFloat(document.getElementById("km")?.value) || 0,
-
-        fecha: document.getElementById("fecha").value,
-
-        volumen: volumenTexto,
-
-        ascensor:
-            `Recogida: ${
-                ascOrigen === "si"
-                    ? "Con ascensor"
-                    : `Sin ascensor (piso ${pisoOrigen})`
-            } | Entrega: ${
-                ascDestino === "si"
-                    ? "Con ascensor"
-                    : `Sin ascensor (piso ${pisoDestino})`
-            }`,
-
-        extras: extrasArr.join(" | ") || "Solo transporte básico",
-
-        observaciones:
-            document.getElementById("observaciones")?.value.trim() || "",
-
-        tipo_servicio:
-            mudanzaTotal
-                ? "Mudanza Total"
-                : "Mudanza Estándar",
-
-        preciototal: window.UI.precioTotal.textContent,
-
-        precioreserva: window.UI.precioReserva.textContent,
-
-        urls_fotos: fotosString,
-
-    inventario
-
-    })
+    body: JSON.stringify(datosFormulario)
 
 });
 
