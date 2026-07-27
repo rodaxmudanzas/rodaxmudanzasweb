@@ -1527,34 +1527,8 @@ console.log(mudanza.urls_fotos);
 
 window.onload = verificarSesion;
 
-function abrirDrawer(){
-
-    document
-        .getElementById("drawerOverlay")
-        .classList.remove("hidden");
-
-    document
-        .getElementById("drawerMudanza")
-        .classList.remove("translate-x-full");
-
-}
-
-function cerrarDrawer(){
-
-    document
-        .getElementById("drawerOverlay")
-        .classList.add("hidden");
-
-    document
-        .getElementById("drawerMudanza")
-        .classList.add("translate-x-full");
-
-}
-
-document
-.getElementById("drawerOverlay")
-.addEventListener("click",cerrarDrawer);
 </script>
+
 <script src="js/transportista/utils.js"></script>
 
 <script src="js/transportista/tarjetas.js"></script>
