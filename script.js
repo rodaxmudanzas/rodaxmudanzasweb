@@ -1037,7 +1037,47 @@ console.log(urls);
         return urls.length ? urls.join(', ') : null;
     }
 
+//////////////////////////////////////////////////////
+// OBTENER INVENTARIO COMPLETO
+//////////////////////////////////////////////////////
 
+function obtenerInventario() {
+
+    const inventario = [];
+
+    document.querySelectorAll(".inventario-input").forEach(input => {
+
+        const cantidad = parseInt(input.value) || 0;
+
+        if (cantidad <= 0) return;
+
+        const item = input.closest(".inventario-item");
+
+        inventario.push({
+
+            nombre:
+                item?.dataset.nombre ||
+                input.dataset.nombre ||
+                "",
+
+            cantidad,
+
+            precio:
+                parseFloat(input.dataset.precio) || 0,
+
+            metrosCubicos:
+                parseFloat(input.dataset.m3) || 0,
+
+            fragil:
+                input.dataset.fragil === "true"
+
+        });
+
+    });
+
+    return inventario;
+
+}
     // ─── 7. ENVÍO DEL FORMULARIO ─────────────────────────────────────────────
     if (window.UI.form) {
 
@@ -1103,6 +1143,7 @@ document.getElementById("cant_empaquetar")?.value);
                 //////////////////////////////////////////////////////
 // GUARDAR RESERVA EN SUPABASE
 //////////////////////////////////////////////////////
+const inventario = obtenerInventario();
 
 const respuestaReserva = await fetch("/api/guardar-reserva", {
 
@@ -1155,7 +1196,9 @@ const respuestaReserva = await fetch("/api/guardar-reserva", {
 
         precioreserva: window.UI.precioReserva.textContent,
 
-        urls_fotos: fotosString
+        urls_fotos: fotosString,
+
+    inventario
 
     })
 
