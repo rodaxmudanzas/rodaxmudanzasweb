@@ -36,61 +36,12 @@ document.getElementById("drawerVolumen").textContent =
 
     renderServiciosDrawer(mudanza);
 
-// ===========================
-// FOTOGRAFÍAS
-// ===========================
-
-const contenedorFotos = document.getElementById("drawerFotos");
-
-contenedorFotos.innerHTML = "";
-
-if (mudanza.urls_fotos) {
-
-    const fotos = mudanza.urls_fotos
-        .split(",")
-        .map(f => f.trim())
-        .filter(f => f !== "");
-
-    if (fotos.length > 0) {
-
-        fotos.forEach(url => {
-
-            contenedorFotos.innerHTML += `
-                <img
-                    src="${url}"
-                    class="rounded-xl border shadow-sm w-full h-36 object-cover cursor-pointer hover:scale-105 transition"
-                    onclick="window.open('${url}','_blank')"
-                >
-            `;
-
-        });
-
-    } else {
-
-        contenedorFotos.innerHTML = `
-            <div class="text-slate-400 text-sm">
-                No hay fotografías.
-            </div>
-        `;
-
-    }
-
-} else {
-
-    contenedorFotos.innerHTML = `
-        <div class="text-slate-400 text-sm">
-            No hay fotografías.
-        </div>
-    `;
-
-}
+renderFotosDrawer(mudanza);
 
 console.log("URLS FOTOS:");
 console.log(mudanza.urls_fotos);
-    // Observaciones
-    document.getElementById("drawerObservaciones").textContent =
-        mudanza.observaciones ||
-        "El cliente no ha añadido observaciones.";
+
+    renderIndicacionesDrawer(mudanza);
 }
 
 window.onload = verificarSesion;
