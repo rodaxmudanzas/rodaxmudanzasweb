@@ -15,9 +15,15 @@
 
         const accesos = (mudanza.ascensor || "").split("|");
 
-const recogida = accesos[0]?.trim() || "—";
+const recogida =
+    (accesos[0] || "")
+        .replace(/^Recogida:\s*/i, "")
+        .trim() || "—";
 
-const entrega = accesos[1]?.trim() || "—";
+const entrega =
+    (accesos[1] || "")
+        .replace(/^Entrega:\s*/i, "")
+        .trim() || "—";
 
 document.getElementById("drawerAscensor").innerHTML = `
 <div class="flex flex-col gap-2">
@@ -32,7 +38,7 @@ document.getElementById("drawerAscensor").innerHTML = `
 
     </div>
 
-    <div class="border-l-2 border-blue-200 pl-3">
+    <div>
 
         <span class="font-semibold text-slate-700">
             Entrega:
