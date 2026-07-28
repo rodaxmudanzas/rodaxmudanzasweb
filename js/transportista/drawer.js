@@ -16,16 +16,11 @@
 
     abrirDrawer();
 
+    renderRutaDrawer(mudanza);
+
     // Nº de reserva
     document.getElementById("drawerReserva").textContent =
         mudanza.numero_reserva || `RDX-26-${mudanza.id}`;
-
-    // Ruta
-    document.getElementById("drawerOrigen").textContent =
-        mudanza.origen || "—";
-
-    document.getElementById("drawerDestino").textContent =
-        mudanza.destino || "—";
 
     // Fecha
     document.getElementById("drawerFecha").textContent =
@@ -35,40 +30,11 @@
     document.getElementById("drawerPrecio").innerHTML =
         `${mudanza.preciototal || "—"} <span class="text-xs font-normal">IVA incl.</span>`;
 
-        // Distancia
-document.getElementById("drawerKm").textContent =
-    (mudanza.km || "—") + " km";
-
 // Tipo de vivienda
 document.getElementById("drawerVolumen").textContent =
     mudanza.volumen || "—";
 
-// Tipo de servicio
-document.getElementById("drawerServicio").textContent =
-    mudanza.tipo_servicio || "—";
-
-// Accesos
-document.getElementById("drawerAscensor").textContent =
-    mudanza.ascensor || "—";
-
-// Extras
-if (mudanza.tipo_servicio === "Mudanza Total") {
-
-    document.getElementById("drawerExtras").innerHTML = `
-        ✓ Desmontaje ilimitado<br>
-        ✓ Montaje ilimitado<br>
-        ✓ Embalaje ilimitado<br>
-        ✓ Empaquetado ilimitado<br>
-        ✓ Cajas incluidas<br>
-        ✓ Seguro Premium
-    `;
-
-} else {
-
-    document.getElementById("drawerExtras").textContent =
-        mudanza.extras || "Solo transporte básico";
-
-}
+    renderServiciosDrawer(mudanza);
 
 // ===========================
 // FOTOGRAFÍAS
