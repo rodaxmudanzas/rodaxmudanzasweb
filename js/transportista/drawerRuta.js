@@ -22,8 +22,8 @@ const recogida =
 
 const entrega =
     (accesos[1] || "")
-        .replace(/^Entrega:\s*/i, "")
-        .trim() || "—";
+        .trim()
+        .replace(/^Entrega:\s*/i, "") || "—";
 
 document.getElementById("drawerAscensor").innerHTML = `
 <div class="flex flex-col gap-2">
