@@ -1,17 +1,9 @@
-(function () {
+window.renderInventarioDrawer = function (mudanza) {
 
-    "use strict";
+    console.log("RECIBIDO EN drawerInventario");
 
-    console.log("drawerInventario.js cargado");
+    console.log(mudanza);
 
-    window.renderInventarioDrawer = function (mudanza) {
+    console.log("inventario =", mudanza.inventario);
 
-        console.log("renderInventarioDrawer ejecutado");
-
-        console.log(mudanza);
-
-        console.log("Inventario:", mudanza.inventario);
-
-    };
-
-})();
+};
