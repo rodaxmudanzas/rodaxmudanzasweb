@@ -9,6 +9,11 @@
         m => Number(m.id) === Number(id)
     );
 
+    console.log("=========== MUDANZA COMPLETA ===========");
+console.log(mudanza);
+console.table(mudanza);
+console.log("========================================");
+
     if(!mudanza){
         alert("No se ha encontrado la mudanza.");
         return;
@@ -34,14 +39,17 @@
 document.getElementById("drawerVolumen").textContent =
     mudanza.volumen || "—";
 
-    renderServiciosDrawer(mudanza);
+renderServiciosDrawer(mudanza);
+
+renderInventarioDrawer(mudanza);
 
 renderFotosDrawer(mudanza);
+
+renderIndicacionesDrawer(mudanza);
 
 console.log("URLS FOTOS:");
 console.log(mudanza.urls_fotos);
 
-    renderIndicacionesDrawer(mudanza);
 }
 
 window.onload = verificarSesion;
