@@ -41,6 +41,9 @@ document.getElementById("drawerVolumen").textContent =
 
 renderServiciosDrawer(mudanza);
 
+console.log("ANTES DE ENVIAR A INVENTARIO");
+console.log(mudanza);
+
 renderInventarioDrawer(mudanza);
 
 renderFotosDrawer(mudanza);
