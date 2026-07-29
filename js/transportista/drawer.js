@@ -44,6 +44,12 @@ renderServiciosDrawer(mudanza);
 console.log("ANTES DE ENVIAR A INVENTARIO");
 console.log(mudanza);
 
+console.log("inventario:");
+console.log(mudanza.inventario);
+
+console.log("urls_fotos:");
+console.log(mudanza.urls_fotos);
+
 renderInventarioDrawer(mudanza);
 
 renderFotosDrawer(mudanza);
