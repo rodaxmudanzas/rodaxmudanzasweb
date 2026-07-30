@@ -89,6 +89,18 @@ if (!session.metadata) {
 
 const data = session.metadata;
 
+let inventario = [];
+
+try{
+
+    inventario = JSON.parse(data.inventario || "[]");
+
+}catch{
+
+    inventario = [];
+
+}
+
 const numeroReserva = data.numero_reserva;
 
 if (!numeroReserva) {
@@ -163,9 +175,11 @@ const { data: updateData, error } = await supabase
 
                 importe_reserva: importeReserva,
 
-                importe_restante: importeRestante
+                importe_restante: importeRestante,
 
-            })
+inventario: inventario
+
+})
             .eq("numero_reserva", numeroReserva)
             .select();
 
