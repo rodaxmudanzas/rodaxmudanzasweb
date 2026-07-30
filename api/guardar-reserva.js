@@ -156,13 +156,11 @@ estado: "Pendiente de pago",
 
 estado_pago: "Checkout iniciado",
 
-    inventario: datos.inventario,
+fecha_creacion: new Date(),
 
-    fecha_creacion: new Date(),
+transportista_id: null,
 
-    transportista_id: null,
-
-    version_presupuesto: 1
+version_presupuesto: 1
 
 })
 
