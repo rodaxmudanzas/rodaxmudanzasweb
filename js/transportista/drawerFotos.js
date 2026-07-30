@@ -1,34 +1,59 @@
-const contenedor =
-document.getElementById("drawerFotos");
+console.log("drawerFotos cargado");
 
-contenedor.innerHTML="";
+(function () {
 
-let fotos=[];
+    "use strict";
 
-if(Array.isArray(mudanza.urls_fotos)){
+    window.renderFotosDrawer = function (mudanza) {
 
-    fotos=mudanza.urls_fotos;
+        const contenedor = document.getElementById("drawerFotos");
 
-}else{
+        if (!contenedor) return;
 
-    fotos=(mudanza.urls_fotos||"")
+        contenedor.innerHTML = "";
 
-        .split(",")
+        let fotos = [];
 
-        .map(f=>f.trim())
+        if (Array.isArray(mudanza.urls_fotos)) {
 
-        .filter(Boolean);
+            fotos = mudanza.urls_fotos;
 
-}
+        } else if (typeof mudanza.urls_fotos === "string") {
 
-if(fotos.length===0){
+            fotos = mudanza.urls_fotos
+                .split(",")
+                .map(f => f.trim())
+                .filter(Boolean);
 
-    contenedor.innerHTML=`
-        <div class="text-slate-400 text-sm">
-            No hay fotografías.
-        </div>
-    `;
+        }
 
-    return;
+        if (fotos.length === 0) {
 
-}
+            contenedor.innerHTML = `
+                <div class="col-span-2 text-slate-400 text-sm italic">
+                    No hay fotografías.
+                </div>
+            `;
+
+            return;
+
+        }
+
+        fotos.forEach(url => {
+
+            const img = document.createElement("img");
+
+            img.src = url;
+
+            img.className =
+                "rounded-xl border shadow cursor-pointer hover:scale-105 transition";
+
+            img.onclick = () => window.open(url, "_blank");
+
+            contenedor.appendChild(img);
+
+        });
+
+    };
+
+})();
