@@ -1,54 +1,34 @@
-(function () {
+const contenedor =
+document.getElementById("drawerFotos");
 
-    "use strict";
+contenedor.innerHTML="";
 
-    window.renderFotosDrawer = function (mudanza) {
+let fotos=[];
 
-        const contenedor = document.getElementById("drawerFotos");
+if(Array.isArray(mudanza.urls_fotos)){
 
-        contenedor.innerHTML = "";
+    fotos=mudanza.urls_fotos;
 
-        if (!mudanza.urls_fotos) {
+}else{
 
-            contenedor.innerHTML = `
-                <div class="text-slate-400 text-sm">
-                    No hay fotografías.
-                </div>
-            `;
+    fotos=(mudanza.urls_fotos||"")
 
-            return;
+        .split(",")
 
-        }
+        .map(f=>f.trim())
 
-        const fotos = mudanza.urls_fotos
-            .split(",")
-            .map(f => f.trim())
-            .filter(Boolean);
+        .filter(Boolean);
 
-        if (!fotos.length) {
+}
 
-            contenedor.innerHTML = `
-                <div class="text-slate-400 text-sm">
-                    No hay fotografías.
-                </div>
-            `;
+if(fotos.length===0){
 
-            return;
+    contenedor.innerHTML=`
+        <div class="text-slate-400 text-sm">
+            No hay fotografías.
+        </div>
+    `;
 
-        }
+    return;
 
-        fotos.forEach(url => {
-
-            contenedor.innerHTML += `
-                <img
-                    src="${url}"
-                    class="rounded-xl border shadow-sm w-full h-36 object-cover cursor-pointer hover:scale-105 transition"
-                    onclick="window.open('${url}','_blank')"
-                >
-            `;
-
-        });
-
-    };
-
-})();
+}
