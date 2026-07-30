@@ -150,11 +150,13 @@ const { data, error } = await supabase
 
     urls_fotos: datos.urls_fotos,
 
+inventario: datos.inventario,
+
+estado: "Pendiente de pago",
+
+estado_pago: "Checkout iniciado",
+
     inventario: datos.inventario,
-
-    estado: "Pendiente de pago",
-
-    estado_pago: "Checkout iniciado",
 
     fecha_creacion: new Date(),
 
