@@ -1382,37 +1382,19 @@ console.log("Stripe:", datosStripe);
 if (!respuestaStripe.ok) {
 
     throw new Error(
-
         datosStripe.error ||
-
         "Error creando la sesión Stripe."
-
     );
 
 }
 
-const stripeResult =
-
-console.log("===== DATOS FORMULARIO =====");
-console.log(datosFormulario);
-
-console.log("===== INVENTARIO =====");
-console.log(datosFormulario.inventario);
-
-console.log("===== URLS FOTOS =====");
-console.log(datosFormulario.urls_fotos);
-
-return;
-// await stripe.redirectToCheckout({
-//     sessionId: datosStripe.id
-// });
+const stripeResult = await stripe.redirectToCheckout({
+    sessionId: datosStripe.id
+});
 
 if (stripeResult.error) {
-
     throw stripeResult.error;
-
 }
-
 
                 // Payload completo para Supabase
                 const payload = {
