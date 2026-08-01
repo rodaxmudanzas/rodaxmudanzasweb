@@ -168,9 +168,13 @@ version_presupuesto: 1
 
 .single();
 
-if(error){
+if (error) {
 
-    throw error;
+    console.error("ERROR INSERT SUPABASE");
+
+    console.error(error);
+
+    return res.status(500).json(error);
 
 }
 
