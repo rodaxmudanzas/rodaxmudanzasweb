@@ -1256,6 +1256,7 @@ const inventario = obtenerInventario();
 
 console.log("INVENTARIO COMPLETO");
 console.log(inventario);
+alert(JSON.stringify(inventario));
 console.log("Cantidad de objetos:", inventario.length);
 
 const datosFormulario = obtenerDatosFormulario({
