@@ -1203,6 +1203,10 @@ function obtenerDatosFormulario({
             
                 const fotosString = await subirFotos(document.getElementById('fotos_upload'));
 
+                console.log("FOTOS DEVUELTAS");
+console.log(fotosString);
+console.log(typeof fotosString);
+
                 console.log("================================");
 console.log("RESULTADO SUBIRFOTOS");
 console.log(fotosString);
@@ -1250,7 +1254,9 @@ document.getElementById("cant_empaquetar")?.value);
 //////////////////////////////////////////////////////
 const inventario = obtenerInventario();
 
+console.log("INVENTARIO COMPLETO");
 console.log(inventario);
+console.log("Cantidad de objetos:", inventario.length);
 
 const datosFormulario = obtenerDatosFormulario({
 
@@ -1271,6 +1277,11 @@ const datosFormulario = obtenerDatosFormulario({
     extrasArr
 
 });
+
+console.log("DATOS QUE SE ENVÍAN");
+console.log(datosFormulario);
+console.log("inventario:", datosFormulario.inventario);
+console.log("urls_fotos:", datosFormulario.urls_fotos);
 
 const respuestaReserva = await fetch("/api/guardar-reserva", {
 
