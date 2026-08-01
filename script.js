@@ -1391,11 +1391,20 @@ if (!respuestaStripe.ok) {
 }
 
 const stripeResult =
-await stripe.redirectToCheckout({
 
-    sessionId: datosStripe.id
+console.log("===== DATOS FORMULARIO =====");
+console.log(datosFormulario);
 
-});
+console.log("===== INVENTARIO =====");
+console.log(datosFormulario.inventario);
+
+console.log("===== URLS FOTOS =====");
+console.log(datosFormulario.urls_fotos);
+
+return;
+// await stripe.redirectToCheckout({
+//     sessionId: datosStripe.id
+// });
 
 if (stripeResult.error) {
 
