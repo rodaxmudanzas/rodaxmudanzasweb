@@ -1374,11 +1374,6 @@ const datosStripe = await respuestaStripe.json();
 console.log("ID DEVUELTO:", datosStripe.id);
 console.log("Stripe object:", stripe);
 
-const datosStripe = await respuestaStripe.json();
-
-console.log("ID DEVUELTO:", datosStripe.id);
-console.log("Stripe object:", stripe);
-
 if (!respuestaStripe.ok) {
 
     throw new Error(
