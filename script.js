@@ -1363,9 +1363,11 @@ if (!respuestaReserva.ok) {
 
         urls_fotos: fotosString,
 
-numero_reserva: datosReserva.numero_reserva
+    inventario: inventario,
 
-    })
+    numero_reserva: datosReserva.numero_reserva
+
+})
 
 });   // ← ESTA LÍNEA FALTABA
 
