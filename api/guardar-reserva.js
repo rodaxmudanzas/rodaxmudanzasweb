@@ -45,6 +45,15 @@ module.exports = async (req,res)=>{
 
         const datos = req.body;
 
+console.log("=================================");
+console.log("BODY RECIBIDO EN guardar-reserva");
+console.log(datos);
+console.log("Inventario:", datos.inventario);
+console.log("Fotos:", datos.urls_fotos);
+console.log("=================================");
+
+        
+
         //////////////////////////////////////////////////////
 // VALIDACIONES
 //////////////////////////////////////////////////////
