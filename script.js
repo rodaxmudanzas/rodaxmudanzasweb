@@ -1278,6 +1278,18 @@ const datosFormulario = obtenerDatosFormulario({
 
 });
 
+console.log("================================");
+console.log("DATOS QUE SE VAN A ENVIAR");
+console.log(datosFormulario);
+
+console.log("Inventario:");
+console.log(datosFormulario.inventario);
+
+console.log("Fotos:");
+console.log(datosFormulario.urls_fotos);
+
+console.log("================================");
+
 const respuestaReserva = await fetch("/api/guardar-reserva", {
 
     method: "POST",
