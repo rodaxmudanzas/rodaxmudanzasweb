@@ -1377,6 +1377,15 @@ numero_reserva: datosReserva.numero_reserva
 
 const datosStripe = await respuestaStripe.json();
 
+console.log("ID DEVUELTO:", datosStripe.id);
+console.log("Stripe object:", stripe);
+
+const stripeResult = await stripe.redirectToCheckout({
+    sessionId: datosStripe.id
+});
+
+console.log("Resultado redirect:", stripeResult);
+
 console.log("Stripe:", datosStripe);
 
 if (!respuestaStripe.ok) {
