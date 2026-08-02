@@ -1256,7 +1256,6 @@ const inventario = obtenerInventario();
 
 console.log("INVENTARIO COMPLETO");
 console.log(inventario);
-alert(JSON.stringify(inventario));
 console.log("Cantidad de objetos:", inventario.length);
 
 const datosFormulario = obtenerDatosFormulario({
@@ -1278,11 +1277,6 @@ const datosFormulario = obtenerDatosFormulario({
     extrasArr
 
 });
-
-console.log("DATOS QUE SE ENVÍAN");
-console.log(datosFormulario);
-console.log("inventario:", datosFormulario.inventario);
-console.log("urls_fotos:", datosFormulario.urls_fotos);
 
 const respuestaReserva = await fetch("/api/guardar-reserva", {
 
@@ -1380,13 +1374,10 @@ const datosStripe = await respuestaStripe.json();
 console.log("ID DEVUELTO:", datosStripe.id);
 console.log("Stripe object:", stripe);
 
-const stripeResult = await stripe.redirectToCheckout({
-    sessionId: datosStripe.id
-});
+const datosStripe = await respuestaStripe.json();
 
-console.log("Resultado redirect:", stripeResult);
-
-console.log("Stripe:", datosStripe);
+console.log("ID DEVUELTO:", datosStripe.id);
+console.log("Stripe object:", stripe);
 
 if (!respuestaStripe.ok) {
 
@@ -1402,7 +1393,9 @@ const stripeResult = await stripe.redirectToCheckout({
 });
 
 if (stripeResult.error) {
+
     throw stripeResult.error;
+
 }
 
                 // Payload completo para Supabase
