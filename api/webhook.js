@@ -156,32 +156,31 @@ console.log(session.metadata);
 console.log("================================");
 
 const { data: updateData, error } = await supabase
-            .from("mudanzas")
-            .update({
+.from("mudanzas")
+.update({
 
-                stripe_session_id: session.id,
-
-                stripe_payment_intent: session.payment_intent,
-
-                estado: "Pendiente de asignación",
-
-                estado_pago: "Pagado 30 % - Pendiente 70 %",
-
-                fecha_pago_30: fechaPago,
-
-                fecha_cobro_70: fechaCobro70,
-
-                importe_total: importeTotal,
-
-                importe_reserva: importeReserva,
-
-                importe_restante: importeRestante,
-
-inventario: inventario
+    stripe_session_id: session.id,
+    stripe_payment_intent: session.payment_intent,
+    estado: "Pendiente de asignación",
+    estado_pago: "Pagado 30 % - Pendiente 70 %",
+    fecha_pago_30: fechaPago,
+    fecha_cobro_70: fechaCobro70,
+    importe_total: importeTotal,
+    importe_reserva: importeReserva,
+    importe_restante: importeRestante,
+    inventario: inventario
 
 })
-            .eq("numero_reserva", numeroReserva)
-            .select();
+.eq("numero_reserva", numeroReserva)
+.select();
+
+console.log("ERROR:", error);
+
+console.log("UPDATE:", updateData);
+
+if(updateData){
+    console.log("FILAS:", updateData.length);
+}
 
             console.log("Filas actualizadas:");
 console.log(updateData);
