@@ -2,6 +2,35 @@
 
     "use strict";
 
+    // Función auxiliar para extraer de forma segura Ciudad y Código Postal
+    function extraerCiudadYCP(direccionCompleta) {
+        if (!direccionCompleta || direccionCompleta.trim() === "") return "—";
+        
+        // Expresión regular común para detectar códigos postales de 5 dígitos en España (ej: 46001, 28001)
+        const regexCP = /\b\d{5}\b/;
+        const matchCP = direccionCompleta.match(regexCP);
+        const cp = matchCP ? matchCP[0] : "";
+
+        // Dividimos por comas para intentar capturar la ciudad y provincia
+        const partes = direccionCompleta.split(',');
+        let ciudad = "";
+
+        if (partes.length >= 2) {
+            // Normalmente la estructura es: Calle Número, Ciudad, Código Postal Provincia, País
+            // Buscamos una parte intermedia limpia que no contenga el país ni números de calle
+            ciudad = partes[1].trim();
+        } else {
+            // Si no tiene comas, tomamos el texto entero eliminando espacios extras
+            ciudad = direccionCompleta.trim();
+        }
+
+        // Devolvemos el formato compacto solicitado
+        if (cp !== "") {
+            return `${ciudad}, ${cp}`;
+        }
+        return ciudad;
+    }
+
     function verDetalleMudanza(id){
 
         // Buscar la mudanza en memoria dentro de disponibles o activas
@@ -15,13 +44,13 @@
 
         abrirDrawer();
 
-        // Código Identificador del expediente
+        // Número o ID de reserva
         const elReserva = document.getElementById("drawerReserva") || document.getElementById("drawerIdTexto");
         if(elReserva) {
             elReserva.textContent = mudanza.numero_reserva || `RDX-26-${mudanza.id}`;
         }
 
-        // Configuración visual del Badge de Servicio
+        // Configuración del Badge de Servicio
         const elServicio = document.getElementById("drawerServicioBadge");
         const esMudanzaTotal = (mudanza.tipo_servicio || "").toLowerCase().includes("total");
         
@@ -35,12 +64,7 @@
             }
         }
 
-        // Tipo de vivienda / Volumen text
-        const tipoVivienda = mudanza.volumen || "—";
-        const elTipoVivResumen = document.getElementById("drawerTipoViviendaResumen");
-        if(elTipoVivResumen) elTipoVivResumen.textContent = tipoVivienda;
-
-        // Metros Cúbicos (m³) en azul
+        // Extraer y colocar metros cúbicos (m³) de forma limpia
         let valorM3 = "0.0 m³";
         if (mudanza.volumen) {
             const matchM3 = mudanza.volumen.match(/([0-9.,]+)\s*m³/i);
@@ -61,7 +85,7 @@
         if(document.getElementById("drawerObservaciones")) document.getElementById("drawerObservaciones").textContent = mudanza.observaciones || "Sin observaciones preliminares.";
 
         // ==========================================
-        // 🔐 REGLA DE PRIVACIDAD: RESTRICCIÓN HORARIA (Problema 3)
+        // 🔐 REGLA DE PRIVACIDAD AVANZADA (Corrección 3)
         // ==========================================
         let mostrarDatosSensibles = false;
         if (mudanza.fecha) {
@@ -80,13 +104,17 @@
             }
         }
 
-        const direccionOrigenFinal = mostrarDatosSensibles ? (mudanza.origen || "—") : "Dirección oculta por seguridad (Visible el día del servicio a partir de las 6:00 AM)";
-        const direccionDestinoFinal = mostrarDatosSensibles ? (mudanza.destino || "—") : "Dirección oculta por seguridad (Visible el día del servicio a partir de las 6:00 AM)";
+        // Extracción parcial para seguridad (Solo Ciudad y CP)
+        const direccionOrigenCompacta = extraerCiudadYCP(mudanza.origen);
+        const direccionDestinoCompacta = extraerCiudadYCP(mudanza.destino);
 
-        if(document.getElementById("drawerOrigenResumen")) document.getElementById("drawerOrigenResumen").textContent = direccionOrigenFinal;
-        if(document.getElementById("drawerDestinoResumen")) document.getElementById("drawerDestinoResumen").textContent = direccionDestinoFinal;
+        const direccionOrigenFinal = mostrarDatosSensibles ? (mudanza.origen || "—") : direccionOrigenCompacta;
+        const direccionDestinoFinal = mostrarDatosSensibles ? (mudanza.destino || "—") : direccionDestinoCompacta;
 
-        // Separación Correcta de los Accesos (Sintaxis sin errores de Array)
+        document.getElementById("drawerOrigenResumen").textContent = direccionOrigenFinal;
+        document.getElementById("drawerDestinoResumen").textContent = direccionDestinoFinal;
+
+        // Separación Correcta de los Accesos
         let txtOrig = "—", txtDest = "—";
         if (mudanza.ascensor && mudanza.ascensor.includes('|')) {
             const partes = mudanza.ascensor.split('|');
@@ -141,18 +169,17 @@
                             <p class="text-slate-700 font-medium"><strong>Nombre:</strong> ${mudanza.nombre || '—'}</p>
                             <p class="text-slate-700 font-medium"><strong>Teléfono:</strong> <a href="tel:${mudanza.telefono}" class="text-blue-600 font-bold hover:underline">${mudanza.telefono}</a></p>
                             <p class="text-slate-700 font-medium"><strong>Email:</strong> ${mudanza.email || '—'}</p>
-                        ` : `
-                            <p class="text-slate-400 italic flex items-center gap-1.5">🔒 Los datos de contacto se revelarán el día de la mudanza.</p>
+                                                ` : `
+                            <p class="text-slate-500 font-medium bg-amber-50 border border-amber-100 p-2.5 rounded-xl text-amber-700 flex items-center gap-1.5">
+                                🔒 Los datos completos de contacto y la calle exacta se revelarán el día de la mudanza a partir de las 06:00 AM.
+                            </p>
                         `}
                     </div>
                 </div>`;
         }
 
-                // ========================================================
-        // 6. INYECTAR BENEFICIOS O SERVICIOS SEGÚN EL MODELO
-        // ========================================================
-        const elExtras = document.getElementById("drawerExtras") || document.getElementById("drawerServiciosLista");
-        
+        // 6. Inyectar Servicios Contratados Dinámicos
+        const elExtras = document.getElementById("drawerServiciosLista");
         if (elExtras) {
             if (esMudanzaTotal) {
                 elExtras.innerHTML = `
@@ -174,22 +201,34 @@
             }
         }
 
-        // ========================================================
-        // 7. LANZAR LOS RENDERIZADORES EXTERNOS DE INVENTARIO Y FOTOS
-        // ========================================================
+        // 7. Calcular Conteo Real de Artículos para el título del Resumen (Corrección 1)
+        let totalArticulosCount = 0;
+        if (mudanza.inventario) {
+            let invParsed = typeof mudanza.inventario === "string" ? JSON.parse(mudanza.inventario) : mudanza.inventario;
+            if (Array.isArray(invParsed)) {
+                totalArticulosCount = invParsed.reduce((acc, item) => acc + (parseInt(item.cantidad, 10) || 0), 0);
+            }
+        }
+
+        // Inyección limpia del Título Único (Corrección 1: Sin duplicaciones del Piso de habitaciones)
+        const elTotalArticulos = document.getElementById("drawerTotalArticulos");
+        if (elTotalArticulos) {
+            elTotalArticulos.innerHTML = `${totalArticulosCount} ART.`;
+        }
+
+        // 8. Lanzar los renderizadores externos de Inventario y Fotos pasándole el tipo de servicio
         if (typeof renderInventarioDrawer === "function") {
-            renderInventarioDrawer(mudanza.inventario);
+            renderInventarioDrawer(mudanza.inventario, mudanza.tipo_servicio);
         }
         if (typeof renderFotosDrawer === "function") {
             renderFotosDrawer(mudanza.urls_fotos);
         }
 
         const elIndicaciones = document.getElementById("drawerIndicacionesContenedor");
-        if (elIndicaciones) {
+        if(elIndicaciones) {
             elIndicaciones.textContent = mudanza.observaciones || "Sin indicaciones adicionales.";
         }
 
-        // Forzar a abrir la pestaña de 'Resumen' por defecto
         cambiarDrawerTab('resumen');
     }
 
@@ -205,10 +244,8 @@
         document.getElementById("drawerMudanza").classList.add("translate-x-full");
     }
 
-    // CONTROLADOR DE PESTAÑAS (Maneja la visibilidad e inyección en cada Tab)
     function cambiarDrawerTab(tabName) {
         const tabs = ['resumen', 'ruta', 'inventario', 'servicios', 'fotos', 'indicaciones'];
-        
         tabs.forEach(t => {
             const btn = document.getElementById(`tab-d-${t}`);
             const pane = document.getElementById(`pane-d-${t}`);
@@ -229,7 +266,6 @@
         });
     }
 
-    // Evento para cerrar haciendo clic fuera en el fondo oscuro
     document.getElementById("drawerOverlay")?.addEventListener("click", cerrarDrawer);
 
     window.verDetalleMudanza = verDetalleMudanza;
