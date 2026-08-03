@@ -7,11 +7,12 @@
         // Buscar la mudanza en memoria
         const mudanza = state.disponibles.find(
             m => Number(m.id) === Number(id)
+        ) || state.activas.find(
+            m => Number(m.id) === Number(id)
         );
 
         console.log("=========== MUDANZA COMPLETA ===========");
         console.log(mudanza);
-        console.table(mudanza);
         console.log("========================================");
 
         if(!mudanza){
@@ -21,16 +22,15 @@
 
         abrirDrawer();
 
-        renderRutaDrawer(mudanza);
-
-        // ==========================================
-        // 🛠️ PASO 3: ADAPTAR VARIABLES AL NUEVO DISEÑO
-        // ==========================================
-        // ID de reserva y Badge del tipo de servicio
+        // 1. Rellenar ID, Badges y Datos Fijos de la Cabecera
         document.getElementById("drawerIdTexto").textContent = mudanza.numero_reserva || `#RDX-26-${mudanza.id}`;
         document.getElementById("drawerServicioBadge").textContent = (mudanza.tipo_servicio || "MUDANZA ESTÁNDAR").toUpperCase();
 
-        // Separación inteligente de los accesos (Origen | Destino)
+        // 2. Direcciones de la Ruta (Línea de tiempo)
+        document.getElementById("drawerOrigen").textContent = mudanza.origen || "—";
+        document.getElementById("drawerDestino").textContent = mudanza.destino || "—";
+
+        // 3. Separación inteligente de los accesos (Origen | Destino) sin errores de sintaxis
         if (mudanza.ascensor && mudanza.ascensor.includes('|')) {
             const partesAccesos = mudanza.ascensor.split('|');
             document.getElementById("drawerOrigenAcceso").textContent = partesAccesos[0].replace('Recogida:', '').trim();
@@ -40,40 +40,40 @@
             document.getElementById("drawerDestinoAcceso").textContent = "—";
         }
 
-        // Fecha
-        document.getElementById("drawerFecha").textContent =
-            mudanza.fecha || "—";
+        // 4. Bloques de Logística (Distancia y Volumen)
+        document.getElementById("drawerKm").textContent = mudanza.km ? `${mudanza.km} km` : "—";
+        document.getElementById("drawerVolumen").textContent = mudanza.volumen || "—";
 
-        // Precio
-        document.getElementById("drawerPrecio").innerHTML =
-            `${mudanza.preciototal || "—"} <span class="text-xs font-normal">IVA incl.</span>`;
+        // 5. Servicios Contratados (Extras)
+        document.getElementById("drawerExtras").textContent = mudanza.extras || "Solo transporte básico";
 
-        // Tipo de vivienda
-        document.getElementById("drawerVolumen").textContent =
-            mudanza.volumen || "—";
+        // 6. Observaciones
+        document.getElementById("drawerObservaciones").textContent = mudanza.observaciones && mudanza.observaciones.trim() !== "" 
+            ? mudanza.observaciones 
+            : "Sin observaciones.";
 
-        renderServiciosDrawer(mudanza);
+        // 7. Precios y Cobros (Tu Cobro)
+        document.getElementById("drawerPrecio").innerHTML = `${mudanza.preciototal || "—"}`;
 
-        console.log("ANTES DE ENVIAR A INVENTARIO");
-        console.log(mudanza);
+        // 8. Contador de artículos en el título de Inventario
+        let totalArticulos = 0;
+        if (mudanza.inventario) {
+            let invObj = typeof mudanza.inventario === "string" ? JSON.parse(mudanza.inventario) : mudanza.inventario;
+            if (Array.isArray(invObj)) {
+                totalArticulos = invObj.reduce((acc, item) => acc + (parseInt(item.cantidad, 10) || 0), 0);
+            }
+        }
+        document.getElementById("drawerTotalArticulos").textContent = totalArticulos;
 
-        console.log("inventario:");
-        console.log(mudanza.inventario);
+        // 9. Ejecutar los renderizadores externos de Inventario y Fotografías
+        if (typeof renderInventarioDrawer === "function") {
+            renderInventarioDrawer(mudanza.inventario);
+        }
+        if (typeof renderFotosDrawer === "function") {
+            renderFotosDrawer(mudanza.urls_fotos);
+        }
 
-        console.log("urls_fotos:");
-        console.log(mudanza.urls_fotos);
-
-        // Envío de propiedades específicas a los renderizadores
-        renderInventarioDrawer(mudanza.inventario);
-
-        renderFotosDrawer(mudanza.urls_fotos);
-
-        renderIndicacionesDrawer(mudanza);
-
-        console.log("URLS FOTOS:");
-        console.log(mudanza.urls_fotos);
-
-        // Resetear la pestaña activa visualmente a 'Resumen' cada vez que abres una mudanza
+        // Obligar a que el Drawer siempre se abra en la pestaña 'Resumen'
         cambiarDrawerTab('resumen');
     }
 
@@ -99,9 +99,7 @@
             .classList.add("translate-x-full");
     }
 
-    // ========================================================
-    // 🛠️ PASO 2: CONTROLADOR DE PESTAÑAS (DENTRO DEL CONTENEDOR)
-    // ========================================================
+    // CONTROLADOR DE PESTAÑAS (Maneja el color visual de los botones)
     function cambiarDrawerTab(tabName) {
         const tabs = ['resumen', 'ruta', 'inventario', 'servicios', 'fotos', 'indicaciones'];
         
@@ -110,23 +108,23 @@
             if (!btn) return;
             
             if (t === tabName) {
-                // Estilos activos (Azul)
+                // Pestaña Activa: Texto azul y línea azul inferior
                 btn.className = "px-3 py-3 text-xs font-semibold border-b-2 border-blue-600 text-blue-600 whitespace-nowrap transition-colors";
             } else {
-                // Estilos inactivos (Gris)
+                // Pestaña Inactiva: Texto gris sin línea
                 btn.className = "px-3 py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-colors";
             }
         });
 
-        console.log(`Cambiando pestaña del detalle a: ${tabName}`);
+        console.log(`Pestaña del detalle cambiada a: ${tabName}`);
     }
 
-    // Vinculación de eventos y registro en el objeto Window global
+    // Escuchadores de eventos globales
     document
         .getElementById("drawerOverlay")
         .addEventListener("click", cerrarDrawer);
 
     window.verDetalleMudanza = verDetalleMudanza;
-    window.cambiarDrawerTab = cambiarDrawerTab; // Hace accesible la función desde el HTML
+    window.cambiarDrawerTab = cambiarDrawerTab;
 
 })();
