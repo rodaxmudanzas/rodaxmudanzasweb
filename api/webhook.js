@@ -155,10 +155,21 @@ console.log("metadata completa:");
 console.log(session.metadata);
 console.log("================================");
 
+const { data: reserva, error: errorReserva } = await supabase
+    .from("mudanzas")
+    .select("*")
+    .eq("numero_reserva", numeroReserva);
+
+console.log("================================");
+console.log("RESERVA ENCONTRADA:");
+console.log(reserva);
+console.log("ERROR BUSCANDO RESERVA:");
+console.log(errorReserva);
+console.log("================================");
+
 const { data: updateData, error } = await supabase
 .from("mudanzas")
 .update({
-
     stripe_session_id: session.id,
     stripe_payment_intent: session.payment_intent,
     estado: "Pendiente de asignación",
@@ -167,9 +178,7 @@ const { data: updateData, error } = await supabase
     fecha_cobro_70: fechaCobro70,
     importe_total: importeTotal,
     importe_reserva: importeReserva,
-    importe_restante: importeRestante,
-    inventario: inventario
-
+    importe_restante: importeRestante
 })
 .eq("numero_reserva", numeroReserva)
 .select();
