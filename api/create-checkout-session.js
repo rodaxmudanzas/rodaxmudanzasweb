@@ -86,7 +86,9 @@ const session = await stripe.checkout.sessions.create({
 
     precioreserva: req.body.precioreserva || "",
 
-    urls_fotos: req.body.urls_fotos || ""
+    urls_fotos: req.body.urls_fotos || "",
+
+inventario: JSON.stringify(req.body.inventario || []),
 
 },
 
