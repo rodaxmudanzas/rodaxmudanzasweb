@@ -444,76 +444,87 @@ transform -translate-x-full md:translate-x-0 transition-transform duration-300 f
     </div>
 
     <!-- CONTENIDO DINÁMICO CON SCROLL -->
+        <!-- CONTENIDO DINÁMICO SEGMENTADO POR PESTAÑAS -->
     <div class="flex-1 overflow-y-auto p-6 space-y-5">
         
-        <!-- SUB-CABECERA: TIPO E ID -->
+        <!-- SUB-CABECERA GLOBAL (Siempre visible en la parte superior) -->
         <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-            <span id="drawerServicioBadge" class="text-[10px] uppercase font-bold tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">MUDANZA TOTAL</span>
-            <span class="text-xs font-medium text-slate-400">ID: <strong id="drawerIdTexto" class="text-slate-600 font-semibold">#MT-250721-001</strong></span>
+            <span id="drawerServicioBadge" class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md border">—</span>
+            <span class="text-xs font-medium text-slate-400">ID: <strong id="drawerIdTexto" class="text-slate-600 font-semibold">—</strong></span>
         </div>
 
-        <!-- SECCIÓN 1: LÍNEA DE TIEMPO / RUTA COMPACTA -->
-        <div class="relative pl-6 border-l-2 border-dashed border-slate-200 ml-2 space-y-6 my-2">
-            <!-- Origen -->
-            <div class="relative">
-                <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-blue-600 border-4 border-white shadow-sm"></div>
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p id="drawerOrigen" class="text-sm font-bold text-slate-800 leading-tight">—</p>
-                        <p id="drawerOrigenAcceso" class="text-xs text-slate-400 mt-0.5">C/ascensor</p>
-                    </div>
-                    <span class="text-xs font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded">09:00</span>
+        <!-- 📑 PESTAÑA: RESUMEN -->
+        <div id="pane-d-resumen" class="drawer-pane space-y-5">
+            <!-- Ruta Compacta -->
+            <div class="relative pl-6 border-l-2 border-dashed border-slate-200 ml-2 space-y-6 my-2">
+                <div class="relative">
+                    <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-blue-600 border-4 border-white shadow-sm"></div>
+                    <p id="drawerOrigenResumen" class="text-sm font-bold text-slate-800 leading-tight">—</p>
+                    <p id="drawerOrigenAcceso" class="text-xs text-slate-400 mt-0.5">—</p>
+                </div>
+                <div class="relative">
+                    <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-orange-500 border-4 border-white shadow-sm"></div>
+                    <p id="drawerDestinoResumen" class="text-sm font-bold text-slate-800 leading-tight">—</p>
+                    <p id="drawerDestinoAcceso" class="text-xs text-slate-400 mt-0.5">—</p>
                 </div>
             </div>
-            <!-- Destino -->
-            <div class="relative">
-                <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-orange-500 border-4 border-white shadow-sm"></div>
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p id="drawerDestino" class="text-sm font-bold text-slate-800 leading-tight">—</p>
-                        <p id="drawerDestinoAcceso" class="text-xs text-red-500 font-medium mt-0.5">S/ascensor · Piso 4</p>
-                    </div>
-                    <span class="text-xs font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded">12:30</span>
+
+            <!-- Resumen Inventario Compacto -->
+            <div class="pt-2 border-t border-slate-100">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+                    Inventario (<span id="drawerTotalArticulos" class="text-blue-600 font-bold">0</span> <span id="drawerM3Texto" class="text-blue-600 font-bold">0.0 m³</span>)
+                </h3>
+                <div id="drawerInventarioResumen" class="space-y-1"></div>
+            </div>
+
+            <!-- Caja de Datos de Logística -->
+            <div class="grid grid-cols-2 gap-3 pt-1">
+                <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+                    <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Distancia</span>
+                    <span id="drawerKm" class="font-bold text-slate-800 text-sm">—</span>
+                </div>
+                <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+                    <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Fecha del Servicio</span>
+                    <span id="drawerFecha" class="font-bold text-slate-800 text-sm">—</span>
                 </div>
             </div>
-        </div>
-
-        <!-- SECCIÓN 2: BLOQUE DE INVENTARIO CON FILAS DESPLEGABLES -->
-        <div class="pt-2 border-t border-slate-100">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Inventario (<span id="drawerTotalArticulos">0</span> artículos)</h3>
-                <button onclick="cambiarDrawerTab('inventario')" class="text-xs font-bold text-blue-600 hover:underline">Ver todo</button>
-            </div>
-            <!-- Aquí se inyectan los acordiones dinámicos -->
-            <div id="drawerInventario" class="space-y-1 w-full"></div>
-        </div>
-
-        <!-- SECCIÓN 3: DETALLES DE LOGÍSTICA (KM, EXTRA, OBS) -->
-        <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100">
-            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
-                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Distancia</span>
-                <span id="drawerKm" class="font-bold text-slate-800 text-sm">—</span>
-            </div>
-            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
-                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Volumen</span>
-                <span id="drawerVolumen" class="font-bold text-slate-800 text-sm">—</span>
+            
+            <div class="bg-yellow-50/60 border border-yellow-100 rounded-xl p-3 text-xs">
+                <span class="block text-[10px] font-bold text-amber-600 uppercase tracking-wider mb-1">Observaciones preliminares</span>
+                <p id="drawerObservaciones" class="text-slate-600 leading-relaxed">—</p>
             </div>
         </div>
 
-        <div class="bg-slate-50 rounded-xl p-3 border border-slate-100 text-xs">
-            <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Servicios Contratados</span>
-            <p id="drawerExtras" class="text-slate-700 font-medium">—</p>
+        <!-- 📑 PESTAÑA: RUTA DETALLADA -->
+        <div id="pane-d-ruta" class="drawer-pane space-y-4 hidden">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Itinerario y Accesos</h3>
+            <div id="drawerRutaDetalleContenedor"></div>
         </div>
 
-        <div class="bg-yellow-50/60 border border-yellow-100 rounded-xl p-3 text-xs">
-            <span class="block text-[10px] font-bold text-amber-600 uppercase tracking-wider mb-1">Observaciones</span>
-            <p id="drawerObservaciones" class="text-slate-600 leading-relaxed">Sin observaciones.</p>
+        <!-- 📑 PESTAÑA: INVENTARIO COMPLETO -->
+        <div id="pane-d-inventario" class="drawer-pane space-y-4 hidden">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+                Desglose de Carga (<span id="drawerM3Badge" class="text-blue-600 font-bold">0.0 m³</span>)
+            </h3>
+            <div id="drawerInventarioFull" class="space-y-1 w-full"></div>
         </div>
 
-        <!-- SECCIÓN 4: FOTOGRAFÍAS (VISTA PREVIA COMPACTA) -->
-        <div class="pt-2 border-t border-slate-100">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Fotografías</h3>
-            <div id="drawerFotos"></div>
+        <!-- 📑 PESTAÑA: SERVICIOS CONTRATADOS -->
+        <div id="pane-d-servicios" class="drawer-pane space-y-4 hidden">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Garantías y Extras Incluidos</h3>
+            <div id="drawerServiciosLista" class="space-y-2"></div>
+        </div>
+
+        <!-- 📑 PESTAÑA: FOTOS -->
+        <div id="pane-d-fotos" class="drawer-pane space-y-4 hidden">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Registro Fotográfico del Cliente</h3>
+            <div id="drawerFotosFull"></div>
+        </div>
+
+        <!-- 📑 PESTAÑA: INDICACIONES -->
+        <div id="pane-d-indicaciones" class="drawer-pane space-y-4 hidden">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Indicaciones Operativas</h3>
+            <div id="drawerIndicacionesContenedor" class="text-sm text-slate-600 leading-relaxed"></div>
         </div>
 
     </div>
