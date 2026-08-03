@@ -1409,35 +1409,30 @@ if (stripeResult.error) {
 
                 // Payload completo para Supabase
                 const payload = {
-                    nombre:        document.getElementById('nombre').value.trim(),
-                    telefono:      document.getElementById('telefono').value.trim(),
-                    email:         document.getElementById('email').value.trim(),
-                    origen:        document.getElementById('origen').value.trim(),
-                    destino:       document.getElementById('destino').value.trim(),
-                    km:            parseFloat(document.getElementById('km')?.value) || 0,
-                    fecha:         document.getElementById('fecha').value,
-                    volumen:       volumenTexto,
-                    ascensor:      `Recogida: ${ascOrigen === 'si' ? 'Con ascensor' : `Sin ascensor (piso ${pisoOrigen})`} | Entrega: ${ascDestino === 'si' ? 'Con ascensor' : `Sin ascensor (piso ${pisoDestino})`}`,
-                    extras:        extrasArr.join(' | ') || 'Solo transporte básico',
+    nombre:        document.getElementById('nombre').value.trim(),
+    telefono:      document.getElementById('telefono').value.trim(),
+    email:         document.getElementById('email').value.trim(),
+    origen:        document.getElementById('origen').value.trim(),
+    destino:       document.getElementById('destino').value.trim(),
+    km:            parseFloat(document.getElementById('km')?.value) || 0,
+    fecha:         document.getElementById('fecha').value,
+    volumen:       volumenTexto,
+    ascensor:      `Recogida: ${ascOrigen === 'si' ? 'Con ascensor' : `Sin ascensor (piso ${pisoOrigen})`} | Entrega: ${ascDestino === 'si' ? 'Con ascensor' : `Sin ascensor (piso ${pisoDestino})`}`,
+    extras:        extrasArr.join(' | ') || 'Solo transporte básico',
+    observaciones: document.getElementById('observaciones')?.value.trim() || '',
+    tipo_servicio: mudanzaTotal ? 'Mudanza Total' : 'Mudanza Estándar',
+    estado:        'Pendiente de Pago',
+    urls_fotos:    fotosString,
+    inventario:    JSON.stringify(inventario), // 👈 AGREGA ESTA LÍNEA (Guardamos el inventario como texto JSON)
+    preciototal:   window.UI.precioTotal.textContent,
+    precioreserva: window.UI.precioReserva.textContent,
+};
 
-                    observaciones:
-document.getElementById('observaciones')?.value.trim() || '',
 
-                    tipo_servicio:
-mudanzaTotal
-? 'Mudanza Total'
-: 'Mudanza Estándar',
-                    
-                    estado:        'Pendiente de Pago',
-                    urls_fotos:    fotosString,
-                    preciototal: window.UI.precioTotal.textContent,
-precioreserva: window.UI.precioReserva.textContent,
-                };
-
-                /*
+                
                 const { error } = await supabase.from('mudanzas').insert([payload]);
                 if (error) throw error;
-                */
+            
 
                 // Éxito: mostrar modal con instrucciones de pago
                 /*
