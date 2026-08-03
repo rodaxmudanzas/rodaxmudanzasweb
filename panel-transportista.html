@@ -417,34 +417,10 @@ transform -translate-x-full md:translate-x-0 transition-transform duration-300 f
      DRAWER DETALLE MUDANZA
 ========================== -->
 
-<!-- 1. CORRECCIÓN DEL CLICK FUERA: Añadimos z-40 para que capture el click antes que el panel -->
+<!-- Capa de fondo oscuro corregida con z-40 para capturar el clic fuera del panel -->
 <div id="drawerOverlay" class="fixed inset-0 bg-black/40 hidden z-40 backdrop-blur-sm cursor-pointer"></div>
 
-<!-- 2. CORRECCIÓN DEL PANEL: Le ponemos z-50 para que quede por encima del fondo oscuro -->
-<aside id="drawerMudanza" class="fixed top-0 right-0 h-full w-[450px] max-w-full bg-white shadow-2xl translate-x-full transition-transform duration-300 z-50 flex flex-col border-l border-slate-100">
-    
-    <!-- ... Cabecera y pestañas existentes ... -->
-
-    <!-- 3. PESTAÑA RESUMEN (Búsquela dentro de drawerMudanza) -->
-    <div id="pane-d-resumen" class="drawer-pane space-y-5">
-        <!-- ... Ruta compacta existente ... -->
-
-        <!-- REEMPLAZA EL BLOQUE DE INVENTARIO POR ESTE (Añade Tipo de Vivienda): -->
-        <div class="pt-2 border-t border-slate-100">
-            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                INVENTARIO (<span id="drawerTotalArticulos">0</span> art.) — <span id="drawerTipoViviendaResumen" class="text-slate-700 font-semibold">—</span> — <span id="drawerM3Texto" class="text-blue-600 font-bold">0.0 m³</span>
-            </h3>
-            <div id="drawerInventarioResumen" class="space-y-2"></div>
-        </div>
-        
-        <!-- ... Resto de la pestaña resumen ... -->
-    </div>
-</aside>
-
-
-<!-- =========================
-     DRAWER DETALLE MUDANZA (DISEÑO PREMIUM CORREGIDO)
-========================== -->
+<!-- Panel Lateral Derecho (Drawer) con z-50 para quedar siempre por encima de la capa oscura -->
 <aside id="drawerMudanza" class="fixed top-0 right-0 h-full w-[450px] max-w-full bg-white shadow-2xl translate-x-full transition-transform duration-300 z-50 flex flex-col border-l border-slate-100">
     
     <!-- CABECERA PRINCIPAL -->
@@ -464,16 +440,15 @@ transform -translate-x-full md:translate-x-0 transition-transform duration-300 f
     </div>
 
     <!-- CONTENIDO DINÁMICO CON SCROLL -->
-        <!-- CONTENIDO DINÁMICO SEGMENTADO POR PESTAÑAS -->
     <div class="flex-1 overflow-y-auto p-6 space-y-5">
         
-        <!-- SUB-CABECERA GLOBAL (Siempre visible en la parte superior) -->
+        <!-- SUB-CABECERA GLOBAL (Siempre visible) -->
         <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-            <span id="drawerServicioBadge" class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md border">—</span>
+            <span id="drawerServicioBadge" class="text-[10px] uppercase font-bold tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">—</span>
             <span class="text-xs font-medium text-slate-400">ID: <strong id="drawerIdTexto" class="text-slate-600 font-semibold">—</strong></span>
         </div>
 
-        <!-- 📑 PESTAÑA: RESUMEN -->
+        <!-- 📑 PANEL: RESUMEN -->
         <div id="pane-d-resumen" class="drawer-pane space-y-5">
             <!-- Ruta Compacta -->
             <div class="relative pl-6 border-l-2 border-dashed border-slate-200 ml-2 space-y-6 my-2">
@@ -489,12 +464,12 @@ transform -translate-x-full md:translate-x-0 transition-transform duration-300 f
                 </div>
             </div>
 
-            <!-- Resumen Inventario Compacto -->
+            <!-- Título de Inventario corregido (Problema 2: Incluye Artículos, Vivienda y metros cúbicos) -->
             <div class="pt-2 border-t border-slate-100">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
-                    Inventario (<span id="drawerTotalArticulos" class="text-blue-600 font-bold">0</span> <span id="drawerM3Texto" class="text-blue-600 font-bold">0.0 m³</span>)
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                    INVENTARIO (<span id="drawerTotalArticulos" class="font-bold">0</span> art.) — <span id="drawerTipoViviendaResumen" class="text-slate-700 font-semibold">—</span> — <span id="drawerM3Texto" class="text-blue-600 font-bold">0.0 m³</span>
                 </h3>
-                <div id="drawerInventarioResumen" class="space-y-1"></div>
+                <div id="drawerInventarioResumen" class="space-y-2"></div>
             </div>
 
             <!-- Caja de Datos de Logística -->
@@ -515,33 +490,33 @@ transform -translate-x-full md:translate-x-0 transition-transform duration-300 f
             </div>
         </div>
 
-        <!-- 📑 PESTAÑA: RUTA DETALLADA -->
+        <!-- 📑 PANEL: RUTA DETALLADA -->
         <div id="pane-d-ruta" class="drawer-pane space-y-4 hidden">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Itinerario y Accesos</h3>
             <div id="drawerRutaDetalleContenedor"></div>
         </div>
 
-        <!-- 📑 PESTAÑA: INVENTARIO COMPLETO -->
+        <!-- 📑 PANEL: INVENTARIO DESGLOSADO -->
         <div id="pane-d-inventario" class="drawer-pane space-y-4 hidden">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
-                Desglose de Carga (<span id="drawerM3Badge" class="text-blue-600 font-bold">0.0 m³</span>)
+                Desglose Completo de Carga (<span id="drawerM3Badge" class="text-blue-600 font-bold">0.0 m³</span>)
             </h3>
             <div id="drawerInventarioFull" class="space-y-1 w-full"></div>
         </div>
 
-        <!-- 📑 PESTAÑA: SERVICIOS CONTRATADOS -->
+        <!-- 📑 PANEL: SERVICIOS -->
         <div id="pane-d-servicios" class="drawer-pane space-y-4 hidden">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Garantías y Extras Incluidos</h3>
             <div id="drawerServiciosLista" class="space-y-2"></div>
         </div>
 
-        <!-- 📑 PESTAÑA: FOTOS -->
+        <!-- 📑 PANEL: FOTOS -->
         <div id="pane-d-fotos" class="drawer-pane space-y-4 hidden">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Registro Fotográfico del Cliente</h3>
-            <div id="drawerFotosFull"></div>
+            <div id="drawerFotosFull" class="w-full"></div>
         </div>
 
-        <!-- 📑 PESTAÑA: INDICACIONES -->
+        <!-- 📑 PANEL: INDICACIONES -->
         <div id="pane-d-indicaciones" class="drawer-pane space-y-4 hidden">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Indicaciones Operativas</h3>
             <div id="drawerIndicacionesContenedor" class="text-sm text-slate-600 leading-relaxed"></div>
@@ -549,24 +524,22 @@ transform -translate-x-full md:translate-x-0 transition-transform duration-300 f
 
     </div>
 
-    <!-- SECCIÓN FIJA INFERIOR: COBRO Y ACCIÓN -->
-    <div class="p-4 border-t border-slate-100 bg-slate-50/50 flex flex-col gap-3">
+    <!-- SECCIÓN FIJA INFERIOR -->
+    <div class="p-4 border-t border-slate-100 bg-slate-50/50 flex flex-col gap-3 flex-shrink-0">
         <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-200/60 shadow-sm">
             <div>
-                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">TU COBRO</span>
+                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">TU COBRO NETO</span>
                 <span id="drawerPrecio" class="text-xl font-black text-blue-600 leading-none">—</span>
                 <span class="text-[10px] text-slate-400 block mt-0.5">IVA incl.</span>
             </div>
             <div class="text-right">
-                <span class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold px-2 py-1 rounded-md block">Pago estimado</span>
-                <span class="text-[10px] text-slate-400 font-medium block mt-1">en 48 horas</span>
+                <span class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold px-2 py-1 rounded-md block">Pago Garantizado</span>
+                <span class="text-[10px] text-slate-400 font-medium block mt-1">Directo en mano</span>
             </div>
         </div>
-        
-        <button id="btnAceptarDrawer" class="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3.5 font-bold text-sm shadow-md shadow-blue-500/10 transition-all active:scale-[0.99]">
+        <button id="btnAceptarDrawer" class="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3.5 font-bold text-sm shadow-md transition-all active:scale-[0.99]">
             Aceptar trabajo
         </button>
-        <p class="text-[10px] text-slate-400 text-center px-4 leading-normal">Al aceptar, confirmas haber revisado todos los detalles.</p>
     </div>
 
 </aside>
