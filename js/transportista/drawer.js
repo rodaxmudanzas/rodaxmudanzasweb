@@ -4,7 +4,7 @@
 
     function verDetalleMudanza(id){
 
-        // Buscar la mudanza en memoria de forma segura
+        // Buscar la mudanza en memoria dentro de disponibles o activas
         const mudanza = state.disponibles.find(m => Number(m.id) === Number(id)) || 
                         state.activas.find(m => Number(m.id) === Number(id));
 
@@ -15,14 +15,14 @@
 
         abrirDrawer();
 
-        // Número o ID de reserva
+        // Código Identificador del expediente
         const elReserva = document.getElementById("drawerReserva") || document.getElementById("drawerIdTexto");
         if(elReserva) {
             elReserva.textContent = mudanza.numero_reserva || `RDX-26-${mudanza.id}`;
         }
 
-        // Tipo de Servicio (Mudanza Total o Estándar)
-        const elServicio = document.getElementById("drawerServicio") || document.getElementById("drawerServicioBadge");
+        // Configuración visual del Badge de Servicio
+        const elServicio = document.getElementById("drawerServicioBadge");
         const esMudanzaTotal = (mudanza.tipo_servicio || "").toLowerCase().includes("total");
         
         if(elServicio) {
@@ -35,12 +35,12 @@
             }
         }
 
-        // Tipo de vivienda e inyección en el título resumido
+        // Tipo de vivienda / Volumen text
         const tipoVivienda = mudanza.volumen || "—";
         const elTipoVivResumen = document.getElementById("drawerTipoViviendaResumen");
         if(elTipoVivResumen) elTipoVivResumen.textContent = tipoVivienda;
 
-        // Extraer y colocar metros cúbicos (m³)
+        // Metros Cúbicos (m³) en azul
         let valorM3 = "0.0 m³";
         if (mudanza.volumen) {
             const matchM3 = mudanza.volumen.match(/([0-9.,]+)\s*m³/i);
@@ -54,14 +54,14 @@
         if(elM3Badge) elM3Badge.textContent = valorM3;
         if(elVolumen) elVolumen.innerHTML = `<span class="text-blue-600 font-bold">${valorM3}</span>`;
 
-        // Datos Logísticos
-        document.getElementById("drawerKm").textContent = mudanza.km ? `${mudanza.km} km` : "—";
-        document.getElementById("drawerFecha").textContent = mudanza.fecha || "—";
-        document.getElementById("drawerPrecio").innerHTML = `${mudanza.preciototal || "—"}`;
-        document.getElementById("drawerObservaciones").textContent = mudanza.observaciones || "Sin observaciones.";
+        // Datos Logísticos fijos
+        if(document.getElementById("drawerKm")) document.getElementById("drawerKm").textContent = mudanza.km ? `${mudanza.km} km` : "—";
+        if(document.getElementById("drawerFecha")) document.getElementById("drawerFecha").textContent = mudanza.fecha || "—";
+        if(document.getElementById("drawerPrecio")) document.getElementById("drawerPrecio").innerHTML = `${mudanza.preciototal || "—"}`;
+        if(document.getElementById("drawerObservaciones")) document.getElementById("drawerObservaciones").textContent = mudanza.observaciones || "Sin observaciones preliminares.";
 
         // ==========================================
-        // 🔐 REGLA DE PRIVACIDAD: OCULTAR DATOS SENSIBLES
+        // 🔐 REGLA DE PRIVACIDAD: RESTRICCIÓN HORARIA (Problema 3)
         // ==========================================
         let mostrarDatosSensibles = false;
         if (mudanza.fecha) {
@@ -74,20 +74,19 @@
                                
             const horaActual = hoy.getHours();
             
-            // Solo se activa si es el mismo día y ya son las 6:00 AM o más tarde
+            // Filtro estricto: Mismo día a partir de las 6:00 AM
             if (esMismoDia && horaActual >= 6) {
                 mostrarDatosSensibles = true;
             }
         }
 
-        // Filtrado de las direcciones de las calles
         const direccionOrigenFinal = mostrarDatosSensibles ? (mudanza.origen || "—") : "Dirección oculta por seguridad (Visible el día del servicio a partir de las 6:00 AM)";
         const direccionDestinoFinal = mostrarDatosSensibles ? (mudanza.destino || "—") : "Dirección oculta por seguridad (Visible el día del servicio a partir de las 6:00 AM)";
 
-        document.getElementById("drawerOrigenResumen").textContent = direccionOrigenFinal;
-        document.getElementById("drawerDestinoResumen").textContent = direccionDestinoFinal;
+        if(document.getElementById("drawerOrigenResumen")) document.getElementById("drawerOrigenResumen").textContent = direccionOrigenFinal;
+        if(document.getElementById("drawerDestinoResumen")) document.getElementById("drawerDestinoResumen").textContent = direccionDestinoFinal;
 
-        // Separación de Accesos CORREGIDA (Evita fallos de sintaxis de Array)
+        // Separación Correcta de los Accesos (Sintaxis sin errores de Array)
         let txtOrig = "—", txtDest = "—";
         if (mudanza.ascensor && mudanza.ascensor.includes('|')) {
             const partes = mudanza.ascensor.split('|');
@@ -96,8 +95,8 @@
         } else {
             txtOrig = mudanza.ascensor || "C/ascensor";
         }
-        document.getElementById("drawerOrigenAcceso").textContent = txtOrig;
-        document.getElementById("drawerDestinoAcceso").textContent = txtDest;
+        if(document.getElementById("drawerOrigenAcceso")) document.getElementById("drawerOrigenAcceso").textContent = txtOrig;
+        if(document.getElementById("drawerDestinoAcceso")) document.getElementById("drawerDestinoAcceso").textContent = txtDest;
 
         // ==========================================
         // 🎨 DISEÑO CREATIVO DE LA PESTAÑA RUTA
@@ -137,85 +136,103 @@
                     </div>
 
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/60 mt-2 space-y-2 text-xs">
-                        <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Información del Cliente</span>
+                        <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Información Confidencial del Cliente</span>
                         ${mostrarDatosSensibles ? `
                             <p class="text-slate-700 font-medium"><strong>Nombre:</strong> ${mudanza.nombre || '—'}</p>
                             <p class="text-slate-700 font-medium"><strong>Teléfono:</strong> <a href="tel:${mudanza.telefono}" class="text-blue-600 font-bold hover:underline">${mudanza.telefono}</a></p>
                             <p class="text-slate-700 font-medium"><strong>Email:</strong> ${mudanza.email || '—'}</p>
                         ` : `
-                            <p class="text-slate-400 italic flex items-center gap-1.5">🔒 Datos de contacto protegidos por privacidad.</p>
+                            <p class="text-slate-400 italic flex items-center gap-1.5">🔒 Los datos de contacto se revelarán el día de la mudanza.</p>
                         `}
                     </div>
                 </div>`;
         }
 
-        // 6. Inyectar Servicios Contratados
-        const elExtras = document.getElementById("drawerServiciosLista");
+                // ========================================================
+        // 6. INYECTAR BENEFICIOS O SERVICIOS SEGÚN EL MODELO
+        // ========================================================
+        const elExtras = document.getElementById("drawerExtras") || document.getElementById("drawerServiciosLista");
+        
         if (elExtras) {
             if (esMudanzaTotal) {
                 elExtras.innerHTML = `
-                    <div class="space-y-1.5 bg-emerald-50/60 p-4 rounded-xl border border-emerald-100 text-xs text-emerald-800 font-semibold leading-relaxed">
-                        <p class="flex items-center gap-2">✔ Desmontaje ilimitado</p>
-                        <p class="flex items-center gap-2">✔ Montaje ilimitado</p>
-                        <p class="flex items-center gap-2">✔ Embalaje ilimitado</p>
-                        <p class="flex items-center gap-2">✔ Empaquetado y cajas Ilimitado</p>
-                        <p class="flex items-center gap-2">✔ Seguro premium hasta 50.000€</p>
-                        <p class="flex items-center gap-2">✔ Prioridad operativa</p>
+                    <div class="space-y-1.5 bg-emerald-50/60 p-4 rounded-xl border border-emerald-100 text-xs text-emerald-800 font-semibold leading-relaxed font-sans shadow-sm">
+                        <p class="flex items-center gap-2 text-emerald-700">✔ Desmontaje ilimitado</p>
+                        <p class="flex items-center gap-2 text-emerald-700">✔ Montaje ilimitado</p>
+                        <p class="flex items-center gap-2 text-emerald-700">✔ Embalaje ilimitado</p>
+                        <p class="flex items-center gap-2 text-emerald-700">✔ Empaquetado y cajas Ilimitado</p>
+                        <p class="flex items-center gap-2 text-emerald-700">✔ Seguro premium hasta 50.000€</p>
+                        <p class="flex items-center gap-2 text-emerald-700">✔ Prioridad operativa</p>
                     </div>`;
             } else {
                 elExtras.innerHTML = `
-                    <div class="space-y-1.5 bg-blue-50/40 p-4 rounded-xl border border-blue-100 text-xs text-blue-800 font-semibold">
-                        <p class="flex items-center gap-2">✔ Transporte Estándar Básico</p>
-Servicios adicionales seleccionados:
-${mudanza.extras || 'Solo transporte básico'}
-`;
-}
-}
-// 7. Renderizadores externos
-if (typeof renderInventarioDrawer === "function") {
-    renderInventarioDrawer(mudanza.inventario);
-    }
-    if (typeof renderFotosDrawer === "function") {
-        renderFotosDrawer(mudanza.urls_fotos);
-    }
+                    <div class="space-y-1.5 bg-blue-50/40 p-4 rounded-xl border border-blue-100 text-xs text-blue-800 font-semibold shadow-sm">
+                        <p class="flex items-center gap-2 text-blue-700">✔ Transporte Estándar Básico</p>
+                        <p class="text-[10px] text-slate-400 font-normal mt-1">Servicios adicionales seleccionados:</p>
+                        <p class="font-bold text-slate-700 mt-0.5">${mudanza.extras || 'Solo transporte básico'}</p>
+                    </div>`;
+            }
+        }
 
-    const elIndicaciones = document.getElementById("drawerIndicacionesContenedor");
-    if(elIndicaciones) elIndicaciones.textContent = mudanza.observaciones || "Sin
-    indicaciones adicionales.";
+        // ========================================================
+        // 7. LANZAR LOS RENDERIZADORES EXTERNOS DE INVENTARIO Y FOTOS
+        // ========================================================
+        if (typeof renderInventarioDrawer === "function") {
+            renderInventarioDrawer(mudanza.inventario);
+        }
+        if (typeof renderFotosDrawer === "function") {
+            renderFotosDrawer(mudanza.urls_fotos);
+        }
 
-    cambiarDrawerTab('resumen');
+        const elIndicaciones = document.getElementById("drawerIndicacionesContenedor");
+        if (elIndicaciones) {
+            elIndicaciones.textContent = mudanza.observaciones || "Sin indicaciones adicionales.";
+        }
+
+        // Forzar a abrir la pestaña de 'Resumen' por defecto
+        cambiarDrawerTab('resumen');
     }
 
     window.onload = verificarSesion;
 
     function abrirDrawer(){
-    document.getElementById("drawerOverlay").classList.remove("hidden");   
-    document.getElementById("drawerMudanza").classList.remove("translate-x-full");
+        document.getElementById("drawerOverlay").classList.remove("hidden");
+        document.getElementById("drawerMudanza").classList.remove("translate-x-full");
     }
-    
+
     function cerrarDrawer(){
         document.getElementById("drawerOverlay").classList.add("hidden");
         document.getElementById("drawerMudanza").classList.add("translate-x-full");
     }
 
+    // CONTROLADOR DE PESTAÑAS (Maneja la visibilidad e inyección en cada Tab)
     function cambiarDrawerTab(tabName) {
         const tabs = ['resumen', 'ruta', 'inventario', 'servicios', 'fotos', 'indicaciones'];
+        
         tabs.forEach(t => {
-            const btn = document.getElementById(tab-d-${t});
-            const pane = document.getElementById(pane-d-${t});
-            if (btn) btn.className = t === tabName ? "px-3 py-3 text-xs font-semibold border-b-2
-            border-blue-600 text-blue-600 whitespace-nowrap transition-colors" : "px-3 py-3 text-
-            xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800
-            whitespace-nowrap transition-colors";
-            if (pane) if (t === tabName) pane.classList.remove("hidden"); else
-             pane.classList.add("hidden");
-             });
-            }  
-
-            document.getElementById("drawerOverlay")?.addEventListener("click",
-                cerrarDrawer);
-
-             window.verDetalleMudanza = verDetalleMudanza;
-             window.cambiarDrawerTab = cambiarDrawerTab;
+            const btn = document.getElementById(`tab-d-${t}`);
+            const pane = document.getElementById(`pane-d-${t}`);
             
-            })();   
+            if (btn) {
+                btn.className = t === tabName 
+                    ? "px-3 py-3 text-xs font-semibold border-b-2 border-blue-600 text-blue-600 whitespace-nowrap transition-colors" 
+                    : "px-3 py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-colors";
+            }
+            
+            if (pane) {
+                if (t === tabName) {
+                    pane.classList.remove("hidden");
+                } else {
+                    pane.classList.add("hidden");
+                }
+            }
+        });
+    }
+
+    // Evento para cerrar haciendo clic fuera en el fondo oscuro
+    document.getElementById("drawerOverlay")?.addEventListener("click", cerrarDrawer);
+
+    window.verDetalleMudanza = verDetalleMudanza;
+    window.cambiarDrawerTab = cambiarDrawerTab;
+
+})();
