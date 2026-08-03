@@ -1,6 +1,6 @@
 // js/transportista/drawerInventario.js
 
-function renderInventarioDrawer(datosInventario) {
+function renderInventarioDrawer(datosInventario, tipoServicioText) {
     const contenedorResumen = document.getElementById("drawerInventarioResumen");
     const contenedorFull = document.getElementById("drawerInventarioFull");
     
@@ -22,20 +22,23 @@ function renderInventarioDrawer(datosInventario) {
         return;
     }
 
-    const cajasEncontradas = [];
-    let totalArticulosCount = 0;
+    // Comprobamos de forma segura si se trata de una Mudanza Total
+    const esMudanzaTotal = (tipoServicioText || "").toLowerCase().includes("total");
 
-    const mapeoCategorias = {
-        "Salón y Estancia": ["Sofá 2 plazas", "Sofá 3 plazas", "Sofá chaise longue", "Butaca", "Mueble TV", "Estantería"],
-        "Electrodomésticos": ["Nevera", "Frigorífico americano", "Congelador", "Microondas", "Horno", "Lavadora", "Lavavajillas"],
-        "Comedor y Mesas": ["Mesa comedor pequeña", "Mesa comedor grande", "Mesa extensible", "Silla comedor", "Aparador"],
+    const cajasExtrasList = [];
+    
+    // Mapeo estructurado con los nombres idénticos de las zonas de tu Home (Ventana 2)
+    const mapeoCategoriasHome = {
+        "Salón": ["Sofá 2 plazas", "Sofá 3 plazas", "Sofá chaise longue", "Butaca", "Mueble TV", "Estantería"],
+        "Cocina": ["Nevera", "Frigorífico americano", "Congelador", "Microondas", "Horno", "Lavadora", "Lavavajillas"],
+        "Comedor": ["Mesa comedor pequeña", "Mesa comedor grande", "Mesa extensible", "Silla comedor", "Aparador"],
         "Dormitorio": ["Cama Individual", "Cama Doble", "Cama king size", "Colchón", "Armario", "Mesita de noche", "Cómoda"],
-        "Baño e Higiene": ["Mueble Baño", "Lavabo auxiliar", "Espejo baño", "Mampara"],
-        "Otros Enseres": ["Maleta", "Bici", "Planta", "Espejo grande"]
+        "Baño": ["Mueble Baño", "Lavabo auxiliar", "Espejo baño", "Mampara"],
+        "Otros": ["Maleta", "Bici", "Planta", "Espejo grande"]
     };
 
-    const categoriesConItems = {
-        "Salón y Estancia": [], "Electrodomésticos": [], "Comedor y Mesas": [], "Dormitorio": [], "Baño e Higiene": [], "Otros Enseres": []
+    const categoriasConItems = {
+        "Salón": [], "Cocina": [], "Comedor": [], "Dormitorio": [], "Baño": [], "Otros": []
     };
 
     inventarioArray.forEach(item => {
@@ -43,41 +46,42 @@ function renderInventarioDrawer(datosInventario) {
         const cantidad = parseInt(item.cantidad, 10) || 0;
 
         if (cantidad > 0) {
-            totalArticulosCount += cantidad;
-
-            // Extraemos las cajas prioritarias del cliente (Problema 4)
+            // Evaluamos si el elemento es una caja
             if (nombre.toLowerCase().includes("caja")) {
-                cajasEncontradas.push({ nombre, cantidad });
+                if (esMudanzaTotal) {
+                    // Sí y solo sí es Mudanza Total, separamos las cajas para el cuadro de Cajas Extras
+                    cajasExtrasList.push({ nombre, cantidad });
+                } else {
+                    // Si es Mudanza Estándar, las cajas se listan de forma regular en la zona de "Otros"
+                    categoriasConItems["Otros"].push({ nombre, cantidad });
+                }
             } else {
                 let clasificado = false;
-                for (const [categoria, listaMuebles] of Object.entries(mapeoCategorias)) {
+                for (const [categoria, listaMuebles] of Object.entries(mapeoCategoriasHome)) {
                     if (listaMuebles.includes(nombre)) {
-                        categoriesConItems[categoria].push({ nombre, cantidad });
+                        categoriasConItems[categoria].push({ nombre, cantidad });
                         clasificado = true;
                         break;
                     }
                 }
+                // Si el mueble no está en el mapa base, se aloja en "Otros" automáticamente
                 if (!clasificado) {
-                    categoriesConItems["Otros Enseres"].push({ nombre, canvas: cantidad });
+                    categoriasConItems["Otros"].push({ nombre, cantidad });
                 }
             }
         }
     });
 
-    // Inyectar el número real en la etiqueta de cantidad de artículos
-    const elContador = document.getElementById("drawerTotalArticulos");
-    if(elContador) elContador.textContent = totalArticulosCount;
-
-    // --- HTML BLOQUE DE CAJAS SELECCIONADAS (Problema 4) ---
-    let htmlCajas = "";
-    if (cajasEncontradas.length > 0) {
-        htmlCajas = `
-            <div class="bg-blue-50/60 border border-blue-100 rounded-xl p-3 mb-2 w-full text-left">
-                <span class="block text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-1.5 flex items-center gap-1">📦 Cajas de mudanza incluidas</span>
+    // --- GENERACIÓN DEL CUADRO: CAJAS EXTRAS (Sí y solo sí es Mudanza Total) ---
+    let htmlCajasExtras = "";
+    if (esMudanzaTotal && cajasExtrasList.length > 0) {
+        htmlCajasExtras = `
+            <div class="bg-blue-50/60 border border-blue-100 rounded-xl p-3 mb-3 w-full text-left">
+                <span class="block text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-1.5 flex items-center gap-1">📦 CAJAS EXTRAS</span>
                 <div class="grid grid-cols-1 gap-1.5">
-                    ${cajasEncontradas.map(c => `
+                    ${cajasExtrasList.map(c => `
                         <div class="flex justify-between items-center text-xs">
-                            <span class="font-medium text-slate-700">${c.nombre}</span>
+                            <span class="font-semibold text-slate-700">${c.nombre}</span>
                             <span class="bg-blue-600 text-white px-2 py-0.5 rounded-md font-black text-[10px]">x${c.cantidad}</span>
                         </div>
                     `).join('')}
@@ -85,13 +89,13 @@ function renderInventarioDrawer(datosInventario) {
             </div>`;
     }
 
-    // --- HTML GRUPOS DESPLEGABLES DE MUEBLES (Problema 2) ---
+    // --- GENERACIÓN DE LOS ACORDEONES: ZONAS DE LA VIVIENDA ---
     let htmlAcordeon = `<div class="space-y-1 w-full text-left">`;
-    let tieneMuebles = false;
+    let tieneMueblesOEnseres = false;
 
-    for (const [categoria, items] of Object.entries(categoriesConItems)) {
+    for (const [categoria, items] of Object.entries(categoriasConItems)) {
         if (items.length === 0) continue;
-        tieneMuebles = true;
+        tieneMueblesOEnseres = true;
         const totalCategoria = items.reduce((acc, curr) => acc + curr.cantidad, 0);
 
         htmlAcordeon += `
@@ -119,14 +123,15 @@ function renderInventarioDrawer(datosInventario) {
     }
     htmlAcordeon += `</div>`;
 
-    if (cajasEncontradas.length === 0 && !tieneMuebles) {
+    // Si el registro está totalmente vacío de carga
+    if (cajasExtrasList.length === 0 && !tieneMueblesOEnseres) {
         const msg = `<p class="text-sm text-gray-400 italic">No se especificó inventario detallado.</p>`;
         contenedorResumen.innerHTML = msg;
         contenedorFull.innerHTML = msg;
         return;
     }
 
-    // Inyectamos el bloque combinado en las dos vistas simultáneamente
-    contenedorResumen.innerHTML = htmlCajas + htmlAcordeon;
-    contenedorFull.innerHTML = htmlCajas + htmlAcordeon;
-    }
+    // Inyectamos el resultado limpio combinado de forma idéntica en el Resumen y en la pestaña de Inventario
+    contenedorResumen.innerHTML = htmlCajasExtras + htmlAcordeon;
+    contenedorFull.innerHTML = htmlCajasExtras + htmlAcordeon;
+}
