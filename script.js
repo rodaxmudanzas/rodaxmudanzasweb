@@ -1373,7 +1373,8 @@ if (!respuestaReserva.ok) {
 
         precioreserva: window.UI.precioReserva.textContent,
 
-        urls_fotos: fotosString,
+urls_fotos: "Consultar en Panel Rodax",
+
 
     inventario: inventario,
 
