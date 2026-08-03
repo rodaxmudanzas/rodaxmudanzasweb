@@ -1,59 +1,31 @@
-console.log("drawerFotos cargado");
+// js/transportista/drawerFotos.js
 
-(function () {
+function renderFotosDrawer(urlsFotosString) {
+    const contenedorFotos = document.getElementById("drawerFotos");
+    if (!contenedorFotos) return;
 
-    "use strict";
+    contenedorFotos.innerHTML = ""; // Limpiar fotos de cargas previas
 
-    window.renderFotosDrawer = function (mudanza) {
-
-        const contenedor = document.getElementById("drawerFotos");
-
-        if (!contenedor) return;
-
-        contenedor.innerHTML = "";
-
-        let fotos = [];
-
-        if (Array.isArray(mudanza.urls_fotos)) {
-
-            fotos = mudanza.urls_fotos;
-
-        } else if (typeof mudanza.urls_fotos === "string") {
-
-            fotos = mudanza.urls_fotos
-                .split(",")
-                .map(f => f.trim())
-                .filter(Boolean);
-
-        }
-
-        if (fotos.length === 0) {
-
-            contenedor.innerHTML = `
-                <div class="col-span-2 text-slate-400 text-sm italic">
-                    No hay fotografías.
-                </div>
-            `;
-
-            return;
-
-        }
-
-        fotos.forEach(url => {
-
-            const img = document.createElement("img");
-
-            img.src = url;
-
-            img.className =
-                "rounded-xl border shadow cursor-pointer hover:scale-105 transition";
-
-            img.onclick = () => window.open(url, "_blank");
-
-            contenedor.appendChild(img);
-
+    if (urlsFotosString && urlsFotosString.trim() !== "") {
+        // Separamos las URLs ya vengan unidas por comas (,) o por barras ( | )
+        const arrayFotos = urlsFotosString.split(/,|\s*\|\s*/);
+        
+        arrayFotos.forEach(url => {
+            const urlLimpia = url.trim();
+            if (urlLimpia !== "") {
+                contenedorFotos.innerHTML += `
+                    <a href="${urlLimpia}" target="_blank" class="aspect-square rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shadow-sm block group relative">
+                        <img src="${urlLimpia}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" alt="Foto de inventario">
+                        <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <i data-lucide="eye" class="text-white w-4 h-4"></i>
+                        </div>
+                    </a>`;
+            }
         });
+    } else {
+        // Si no hay fotos, mostramos el aviso centrado abarcando las 2 columnas del grid
+        contenedorFotos.innerHTML = `<div class="col-span-2 text-center text-gray-400 text-xs py-2 italic">El cliente no adjuntó fotografías.</div>`;
+    }
 
-    };
-
-})();
+    if (window.lucide) window.lucide.createIcons();
+}
