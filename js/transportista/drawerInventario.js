@@ -1,4 +1,3 @@
-```javascript
 // js/transportista/drawerInventario.js
 
 function renderInventarioDrawer(datosInventario) {
@@ -35,7 +34,7 @@ function renderInventarioDrawer(datosInventario) {
         "Otros Enseres": ["Maleta", "Bici", "Planta", "Espejo grande"]
     };
 
-    const categoriasConItems = {
+    const categoriesConItems = {
         "Salón y Estancia": [], "Electrodomésticos": [], "Comedor y Mesas": [], "Dormitorio": [], "Baño e Higiene": [], "Otros Enseres": []
     };
 
@@ -46,32 +45,34 @@ function renderInventarioDrawer(datosInventario) {
         if (cantidad > 0) {
             totalArticulosCount += cantidad;
 
+            // Extraemos las cajas prioritarias del cliente (Problema 4)
             if (nombre.toLowerCase().includes("caja")) {
                 cajasEncontradas.push({ nombre, cantidad });
             } else {
                 let clasificado = false;
                 for (const [categoria, listaMuebles] of Object.entries(mapeoCategorias)) {
                     if (listaMuebles.includes(nombre)) {
-                        categoriasConItems[categoria].push({ nombre, cantidad });
+                        categoriesConItems[categoria].push({ nombre, cantidad });
                         clasificado = true;
                         break;
                     }
                 }
                 if (!clasificado) {
-                    categoriasConItems["Otros Enseres"].push({ nombre, cantidad });
+                    categoriesConItems["Otros Enseres"].push({ nombre, canvas: cantidad });
                 }
             }
         }
     });
 
+    // Inyectar el número real en la etiqueta de cantidad de artículos
     const elContador = document.getElementById("drawerTotalArticulos");
     if(elContador) elContador.textContent = totalArticulosCount;
 
-    // Caja de obsequio destacada para Mudanza Total
+    // --- HTML BLOQUE DE CAJAS SELECCIONADAS (Problema 4) ---
     let htmlCajas = "";
     if (cajasEncontradas.length > 0) {
         htmlCajas = `
-            <div class="bg-blue-50/60 border border-blue-100 rounded-xl p-3 mb-2">
+            <div class="bg-blue-50/60 border border-blue-100 rounded-xl p-3 mb-2 w-full text-left">
                 <span class="block text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-1.5 flex items-center gap-1">📦 Cajas de mudanza incluidas</span>
                 <div class="grid grid-cols-1 gap-1.5">
                     ${cajasEncontradas.map(c => `
@@ -84,10 +85,11 @@ function renderInventarioDrawer(datosInventario) {
             </div>`;
     }
 
-    let htmlAcordeon = `<div class="space-y-1 w-full">`;
+    // --- HTML GRUPOS DESPLEGABLES DE MUEBLES (Problema 2) ---
+    let htmlAcordeon = `<div class="space-y-1 w-full text-left">`;
     let tieneMuebles = false;
 
-    for (const [categoria, items] of Object.entries(categoriasConItems)) {
+    for (const [categoria, items] of Object.entries(categoriesConItems)) {
         if (items.length === 0) continue;
         tieneMuebles = true;
         const totalCategoria = items.reduce((acc, curr) => acc + curr.cantidad, 0);
@@ -124,6 +126,7 @@ function renderInventarioDrawer(datosInventario) {
         return;
     }
 
+    // Inyectamos el bloque combinado en las dos vistas simultáneamente
     contenedorResumen.innerHTML = htmlCajas + htmlAcordeon;
     contenedorFull.innerHTML = htmlCajas + htmlAcordeon;
-}
+    }
