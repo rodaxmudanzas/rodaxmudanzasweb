@@ -10,9 +10,9 @@
     );
 
     console.log("=========== MUDANZA COMPLETA ===========");
-console.log(mudanza);
-console.table(mudanza);
-console.log("========================================");
+    console.log(mudanza);
+    console.table(mudanza);
+    console.log("========================================");
 
     if(!mudanza){
         alert("No se ha encontrado la mudanza.");
@@ -35,29 +35,30 @@ console.log("========================================");
     document.getElementById("drawerPrecio").innerHTML =
         `${mudanza.preciototal || "—"} <span class="text-xs font-normal">IVA incl.</span>`;
 
-// Tipo de vivienda
-document.getElementById("drawerVolumen").textContent =
-    mudanza.volumen || "—";
+    // Tipo de vivienda
+    document.getElementById("drawerVolumen").textContent =
+        mudanza.volumen || "—";
 
-renderServiciosDrawer(mudanza);
+    renderServiciosDrawer(mudanza);
 
-console.log("ANTES DE ENVIAR A INVENTARIO");
-console.log(mudanza);
+    console.log("ANTES DE ENVIAR A INVENTARIO");
+    console.log(mudanza);
 
-console.log("inventario:");
-console.log(mudanza.inventario);
+    console.log("inventario:");
+    console.log(mudanza.inventario);
 
-console.log("urls_fotos:");
-console.log(mudanza.urls_fotos);
+    console.log("urls_fotos:");
+    console.log(mudanza.urls_fotos);
 
-renderInventarioDrawer(mudanza);
+    // 👇 AQUÍ ESTÁ EL CAMBIO CRÍTICO: Pasamos las propiedades específicas del objeto
+    renderInventarioDrawer(mudanza.inventario);
 
-renderFotosDrawer(mudanza);
+    renderFotosDrawer(mudanza.urls_fotos);
 
-renderIndicacionesDrawer(mudanza);
+    renderIndicacionesDrawer(mudanza);
 
-console.log("URLS FOTOS:");
-console.log(mudanza.urls_fotos);
+    console.log("URLS FOTOS:");
+    console.log(mudanza.urls_fotos);
 
 }
 
