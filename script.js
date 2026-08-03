@@ -1369,20 +1369,19 @@ if (!respuestaReserva.ok) {
                 ? "Mudanza Total"
                 : "Mudanza Estándar",
 
-        preciototal: window.UI.precioTotal.textContent,
+                preciototal: window.UI.precioTotal.textContent,
 
         precioreserva: window.UI.precioReserva.textContent,
 
-urls_fotos: "Consultar en Panel Rodax",
+        urls_fotos: "Consultar en Panel Rodax",
 
+        inventario: "Consultar en Panel Rodax", // 👈 Cambiado a texto corto para proteger Stripe
 
-    inventario: inventario,
+        numero_reserva: datosReserva.numero_reserva
 
-    numero_reserva: datosReserva.numero_reserva
+    })
 
-})
-
-});   // ← ESTA LÍNEA FALTABA
+});
 
 const datosStripe = await respuestaStripe.json();
 
