@@ -7,7 +7,7 @@
         if (!direccionCompleta || direccionCompleta.trim() === "") return "—";
         const regexCP = /\b\d{5}\b/;
         const matchCP = direccionCompleta.match(regexCP);
-        const cp = matchCP ? matchCP[0] : "";
+        const cp = matchCP ? matchCP : "";
 
         const partes = direccionCompleta.split(',');
         let ciudad = partes.length >= 2 ? partes[1].trim() : direccionCompleta.trim();
@@ -21,6 +21,7 @@
 
     function verDetalleMudanza(id){
 
+        // Buscar la mudanza en memoria dentro de disponibles o activas
         const mudanza = state.disponibles.find(m => Number(m.id) === Number(id)) || 
                         state.activas.find(m => Number(m.id) === Number(id));
 
@@ -42,20 +43,26 @@
         if(elServicio) {
             elServicio.textContent = esMudanzaTotal ? "MUDANZA TOTAL" : "MUDANZA ESTÁNDAR";
             elServicio.className = esMudanzaTotal 
-                ? "text-[10px] uppercase font-bold tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100"
-                : "text-[10px] uppercase font-bold tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100";
+                ? "text-[10px] uppercase font-bold tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100 font-sans"
+                : "text-[10px] uppercase font-bold tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100 font-sans";
         }
 
-        // Tipo de vivienda
-        const tipoVivienda = mudanza.volumen || "—";
+        // Tipo de vivienda (Corrección 1: Se extrae limpio)
+        let tipoVivienda = "Estudio / Loft";
+        if (mudanza.volumen) {
+            // Eliminamos la palabra m3 del texto de la vivienda para que no se duplique
+            tipoVivienda = mudanza.volumen.replace(/([0-9.,]+)\s*m³/i, '').replace(/—/g, '').trim();
+            if (tipoVivienda === "") tipoVivienda = mudanza.volumen;
+        }
         const elTipoVivResumen = document.getElementById("drawerTipoViviendaResumen");
-        if(elTipoVivResumen) elTipoVivResumen.textContent = tipoVivienda;
+        if(elTipoVivResumen) elTipoVivResumen.textContent = tipoVivienda.toUpperCase();
 
         // Extraer Metros Cúbicos (m³)
         let valorM3 = "0.0 m³";
         if (mudanza.volumen) {
             const matchM3 = mudanza.volumen.match(/([0-9.,]+)\s*m³/i);
-            valorM3 = matchM3 ? `${matchM3[0]}` : `${mudanza.volumen} m³`;
+            valorM3 = matchM3 ? `${matchM3[0]}` : `${mudanza.volumen}`;
+            if (!valorM3.includes("m³")) valorM3 += " m³";
         }
         
         if(document.getElementById("drawerM3Texto")) document.getElementById("drawerM3Texto").textContent = valorM3;
@@ -64,14 +71,16 @@
         const elVolumen = document.getElementById("drawerVolumen");
         if(elVolumen) elVolumen.innerHTML = `<span class="text-blue-600 font-bold">${valorM3}</span>`;
 
-        // Datos Logísticos
+        // Datos Logísticos fijos
         if(document.getElementById("drawerKm")) document.getElementById("drawerKm").textContent = mudanza.km ? `${mudanza.km} km` : "—";
         if(document.getElementById("drawerFecha")) document.getElementById("drawerFecha").textContent = mudanza.fecha || "—";
+        
+        // Inyectar el precio total (Corrección 2)
         if(document.getElementById("drawerPrecio")) document.getElementById("drawerPrecio").innerHTML = `${mudanza.preciototal || "—"}`;
         if(document.getElementById("drawerObservaciones")) document.getElementById("drawerObservaciones").textContent = mudanza.observaciones || "Sin observaciones.";
 
         // ==========================================
-        // 🔐 REGLAS CRÍTICAS DE TIEMPO Y PRIVACIDAD
+        // 🔐 REGLAS CRÍTICAS DE PRIVACIDAD AVANZADAS
         // ==========================================
         let mostrarDireccionCompleta = false;
         let mostrarContactoCompleto = false;
@@ -80,13 +89,13 @@
             const ahora = new Date();
             const fechaServicio = new Date(mudanza.fecha);
             
-            // RegalaDirecciones: Menos de 24 horas antes del servicio
+            // Regla de Direcciones: Menos de 24 horas antes del servicio
             const diferenciaHoras = (fechaServicio - ahora) / (1000 * 60 * 60);
             if (diferenciaHoras <= 24 && diferenciaHoras >= -48) {
                 mostrarDireccionCompleta = true;
             }
 
-            // RegalaContacto: Mismo día a partir de las 6:00 AM
+            // Regla de Contacto: Mismo día a partir de las 6:00 AM
             const esMismoDia = ahora.getFullYear() === fechaServicio.getFullYear() &&
                                ahora.getMonth() === fechaServicio.getMonth() &&
                                ahora.getDate() === fechaServicio.getDate();
@@ -95,26 +104,25 @@
             }
         }
 
-        // Aplicación del filtro de direcciones
         const direccionOrigenFinal = mostrarDireccionCompleta ? (mudanza.origen || "—") : extraerCiudadYCP(mudanza.origen);
         const direccionDestinoFinal = mostrarDireccionCompleta ? (mudanza.destino || "—") : extraerCiudadYCP(mudanza.destino);
 
-        document.getElementById("drawerOrigenResumen").textContent = direccionOrigenFinal;
-        document.getElementById("drawerDestinoResumen").textContent = direccionDestinoFinal;
+        if(document.getElementById("drawerOrigenResumen")) document.getElementById("drawerOrigenResumen").textContent = direccionOrigenFinal;
+        if(document.getElementById("drawerDestinoResumen")) document.getElementById("drawerDestinoResumen").textContent = direccionDestinoFinal;
 
         // Formateo de los accesos
         let txtOrig = "—", txtDest = "—";
         if (mudanza.ascensor && mudanza.ascensor.includes('|')) {
             const partes = mudanza.ascensor.split('|');
-            txtOrig = partes[0].replace('Recogida:', '').trim();
-            txtDest = partes[1].replace('Entrega:', '').trim();
+            txtOrig = partes[0] ? partes[0].replace('Recogida:', '').trim() : "—";
+            txtDest = partes[1] ? partes[1].replace('Entrega:', '').trim() : "—";
         } else {
             txtOrig = mudanza.ascensor || "C/ascensor";
         }
         if(document.getElementById("drawerOrigenAcceso")) document.getElementById("drawerOrigenAcceso").textContent = txtOrig;
         if(document.getElementById("drawerDestinoAcceso")) document.getElementById("drawerDestinoAcceso").textContent = txtDest;
 
-        // Renderizado del Tab de Ruta Avanzada
+        // Renderizado de la pestaña Ruta
         const elRutaDetalle = document.getElementById("drawerRutaDetalleContenedor");
         if(elRutaDetalle) {
             elRutaDetalle.innerHTML = `
@@ -151,7 +159,7 @@
                             <p class="text-slate-700 font-medium"><strong>Email:</strong> ${mudanza.email || '—'}</p>
                         ` : `
                             <p class="text-slate-500 font-medium bg-amber-50 border border-amber-100 p-2.5 rounded-xl text-amber-700 flex items-center gap-1.5">
-                                🔒 Los teléfonos y correos se revelarán de forma automática el mismo día del servicio a partir de las 06:00 AM.
+                                🔒 Los teléfonos y correos se revelarán el mismo día de la mudanza a partir de las 06:00 AM.
                             </p>
                         `}
                     </div>
@@ -165,7 +173,7 @@
         if (elExtras) {
             if (esMudanzaTotal) {
                 elExtras.innerHTML = `
-                    <div class="space-y-1.5 bg-emerald-50/60 p-4 rounded-xl border border-emerald-100 text-xs text-emerald-800 font-semibold leading-relaxed font-sans shadow-sm">
+                    <div class="space-y-1.5 bg-emerald-50/60 p-4 rounded-xl border border-emerald-100 text-xs text-emerald-800 font-semibold leading-relaxed font-sans shadow-sm w-full text-left">
                         <p class="flex items-center gap-2 text-emerald-700">✔ Desmontaje ilimitado</p>
                         <p class="flex items-center gap-2 text-emerald-700">✔ Montaje ilimitado</p>
                         <p class="flex items-center gap-2 text-emerald-700">✔ Embalaje ilimitado</p>
@@ -175,9 +183,9 @@
                     </div>`;
             } else {
                 elExtras.innerHTML = `
-                    <div class="space-y-1.5 bg-blue-50/40 p-4 rounded-xl border border-blue-100 text-xs text-blue-800 font-semibold shadow-sm">
+                    <div class="space-y-1.5 bg-blue-50/40 p-4 rounded-xl border border-blue-100 text-xs text-blue-800 font-semibold shadow-sm w-full text-left">
                         <p class="flex items-center gap-2 text-blue-700">✔ Transporte Estándar Básico</p>
-                        <p class="text-[10px] text-slate-400 font-normal mt-1">Servicios extras seleccionados:</p>
+                        <p class="text-[10px] text-slate-400 font-normal mt-1">Servicios extras seleccionados por el cliente:</p>
                         <p class="font-bold text-slate-700 mt-0.5">${mudanza.extras || 'Solo transporte básico'}</p>
                     </div>`;
             }
@@ -229,7 +237,7 @@
         document.getElementById("drawerMudanza").classList.add("translate-x-full");
     }
 
-    // CONTROLADOR DE PESTAÑAS (Intercambia la visibilidad de los paneles de forma simétrica)
+    // CONTROLADOR DE PESTAÑAS (Maneja la visibilidad e inyección de clases CSS de forma fija y simétrica)
     function cambiarDrawerTab(tabName) {
         const tabs = ['resumen', 'ruta', 'inventario', 'servicios', 'fotos', 'indicaciones'];
         
@@ -239,8 +247,8 @@
             
             if (btn) {
                 btn.className = t === tabName 
-                    ? "px-3 py-3 text-xs font-semibold border-b-2 border-blue-600 text-blue-600 whitespace-nowrap transition-colors flex-1 text-center" 
-                    : "px-3 py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-colors flex-1 text-center";
+                    ? "px-3 py-3 text-xs font-semibold border-b-2 border-blue-600 text-blue-600 transition-colors flex-1 text-center" 
+                    : "px-3 py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors flex-1 text-center";
             }
             
             if (pane) {
