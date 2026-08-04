@@ -13,339 +13,237 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-    <style>
-        * { box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #111827; }
-        h1, h2, h3, h4, h5 { font-family: 'Poppins', sans-serif; }
-        .shadow-card { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+   <style>
+    /* Estilos Premium para la Barra Lateral Izquierda */
+    .sidebar-container {
+        background-color: #0F172A; /* Slate 900: Fondo oscuro premium de alta gama */
+    }
+    
+    .menu-title {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: #64748B; /* Slate 500: Texto secundario sutil */
+        text-transform: uppercase;
+        margin-top: 24px;
+        margin-bottom: 8px;
+        padding-left: 12px;
+    }
 
-        .nav-item { display: flex; align-items: center; width: 100%; padding: 12px 24px; font-size: 0.875rem; font-weight: 600; color: #9ca3af; transition: background 0.15s, color 0.15s; border-right: 3px solid transparent; }
-        .nav-item:hover { background: #1f2937; color: #fff; }
-        .nav-item.active { background: rgba(59,130,246,0.12); color: #60a5fa; border-right-color: #3b82f6; }
+    .nav-item-premium {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        border-radius: 12px;
+        color: #94A3B8; /* Slate 400 */
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        position: relative;
+    }
 
-        .fade-in { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .nav-item-premium i, .nav-item-premium svg {
+        width: 18px;
+        height: 18px;
+        color: #64748B;
+        transition: color 0.2s ease;
+    }
 
-        .dato-censurado {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: #fef3c7; color: #92400e; font-weight: 700;
-            font-size: 0.75rem; padding: 4px 10px; border-radius: 8px;
-            border: 1px solid #fde68a; letter-spacing: 0.025em;
-        }
+    /* Efecto Hover Inteligente */
+    .nav-item-premium:hover:not(.disabled) {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: #F1F5F9;
+    }
+    
+    .nav-item-premium:hover:not(.disabled) i {
+        color: #3B82F6; /* Icono se ilumina en azul al pasar el mouse */
+    }
 
-        .menu-title{
-    margin-top:22px;
-    margin-bottom:8px;
-    font-size:11px;
-    font-weight:700;
-    letter-spacing:.08em;
-    color:#94A3B8;
-    text-transform:uppercase;
-}
+    /* Estado Activo (Pestaña Seleccionada) */
+    .nav-item-premium.active {
+        background: linear-gradient(90deg, rgba(37, 99, 235, 0.15) 0%, rgba(37, 99, 235, 0.03) 100%);
+        color: #3B82F6; /* Azul Rodax */
+    }
 
-.nav-item{
-    width:100%;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:12px 14px;
-    border-radius:14px;
-    color:#334155;
-    transition:.20s;
-    font-weight:600;
-}
+    .nav-item-premium.active::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 20%;
+        height: 60%;
+        width: 3px;
+        background-color: #3B82F6;
+        border-radius: 0 4px 4px 0;
+    }
 
-.nav-item:hover{
-    background:#E8F1FF;
-    color:#0B63CE;
-}
+    .nav-item-premium.active i, .nav-item-premium.active svg {
+        color: #3B82F6;
+    }
 
-.nav-item.active{
-    background:#0B63CE;
-    color:white;
-}
+    /* Elementos bloqueados o Próximamente */
+    .nav-item-premium.disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
 
-.nav-item.disabled{
-    opacity:.75;
-}
+    .badge-menu-premium {
+        background-color: #2563EB;
+        color: #FFFFFF;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 8px;
+        margin-left: auto;
+        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    }
 
-.nav-item small{
-    margin-left:auto;
-    color:#94A3B8;
-    font-size:10px;
-}
+    .badge-menu-alert {
+        background-color: #EF4444;
+        color: #FFFFFF;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 8px;
+        margin-left: auto;
+        animation: pulse-soft 2s infinite;
+    }
 
-.badge-menu{
-    background:#0B63CE;
-    color:white;
-    border-radius:999px;
-    min-width:24px;
-    text-align:center;
-    font-size:10px;
-    padding:2px 6px;
-}
+    @keyframes pulse-soft {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); box-shadow: 0 0 8px rgba(239, 68, 68, 0.4); }
+        100% { transform: scale(1); }
+    }
+</style>
 
-        @media print{
-            body * { visibility: hidden !important; }
-            #ficha-print-zone, #ficha-print-zone * { visibility: visible !important; }
-            #ficha-print-zone {
-                position: fixed !important;
-                top: 0; left: 0;
-                width: 100vw; height: auto;
-                background: white !important;
-                z-index: 99999;
-                padding: 30px;
-                border: none !important;
-                box-shadow: none !important;
-            }
-            aside, header, .no-print { display: none !important; }
-        }
-    </style>
 </head>
 <body class="flex h-screen overflow-hidden">
 
 <div id="mobile-overlay" class="fixed inset-0 bg-gray-900/60 z-40 hidden md:hidden backdrop-blur-sm"
      onclick="cerrarMenuMovil()"></div>
 
-<aside id="sidebar"
-class="w-72 bg-[#F8FAFC] border-r border-slate-200 flex-shrink-0 fixed md:relative h-full z-50
-transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col shadow-sm">
+<aside id="sidebar" class="w-64 sidebar-container border-r border-slate-800 flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col shadow-lg">
 
-    <!-- CABECERA -->
-    <div class="px-6 py-5 border-b border-slate-200">
-
-        <img src="images/logo-rodax.png"
-             id="logoRodax"
-             alt="RODAX"
-             class="h-16 object-contain mx-auto">
-
+    <!-- LOGO CORPORATIVO -->
+    <div class="px-6 py-5 border-b border-slate-800/60 flex items-center justify-center">
+        <img src="images/logo-rodax.png" id="logoRodax" alt="RODAX" class="h-10 object-contain brightness-0 invert">
     </div>
 
-    <!-- PERFIL -->
-    <div class="px-5 py-5 border-b border-slate-200">
-
+    <!-- PERFIL DEL TRANSPORTISTA -->
+    <div class="px-5 py-4 border-b border-slate-800/60">
         <div class="flex items-center gap-3">
-
-            <div
-            class="w-14 h-14 rounded-2xl overflow-hidden border-2 border-[#0B63CE] bg-white">
-
-                <img id="profile-img"
-                src="https://ui-avatars.com/api/?name=U&background=1d4ed8&color=fff"
-                class="w-full h-full object-cover">
-
+            <div class="w-11 h-11 rounded-xl overflow-hidden border border-slate-700 bg-slate-800">
+                <img id="profile-img" src="https://ui-avatars.com" class="w-full h-full object-cover">
             </div>
-
             <div class="flex-1 min-w-0">
-
-                <div
-                id="profile-name"
-                class="font-bold text-slate-800 truncate">
-
-                    Cargando...
-
+                <div id="profile-name" class="font-bold text-slate-100 text-sm truncate">Cargando...</div>
+                <div class="flex items-center gap-1.5 text-[11px] text-emerald-400 font-medium mt-0.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Transportista activo
                 </div>
-
-                <div
-                class="text-xs text-emerald-600 font-semibold mt-1">
-
-                    ● Transportista activo
-
-                </div>
-
             </div>
-
         </div>
-
     </div>
 
-    <!-- MENÚ -->
-
-    <nav class="flex-1 overflow-y-auto py-5">
-
-        <div class="px-5">
-
-            <div
-            class="text-[11px] uppercase tracking-wider text-slate-400 font-bold mb-2">
-
-                Marketplace
-
-            </div>
-
-            <button onclick="cambiarTab('disponibles')"
-            class="nav-item active"
-            id="nav-disponibles">
-
-                <i data-lucide="search"></i>
-
-                <span>Trabajos disponibles</span>
-
-                <span
-                id="badge-disponibles"
-                class="ml-auto badge-menu">
-
-                    0
-
-                </span>
-
-            </button>
-
-            <button onclick="cambiarTab('mis-mudanzas')"
-            class="nav-item"
-            id="nav-mis-mudanzas">
-
-                <i data-lucide="truck"></i>
-
-                <span>Mis mudanzas</span>
-
-                <span
-                id="badge-activas"
-                class="ml-auto badge-menu hidden">
-
-                    0
-
-                </span>
-
-            </button>
-
-            <div class="menu-title">
-
-                Operaciones
-
-            </div>
-
-            <button class="nav-item disabled">
-
-                <i data-lucide="calendar-days"></i>
-
-                <span>Mi agenda</span>
-
-                <small>Próximamente</small>
-
-            </button>
-
-            <button class="nav-item disabled">
-
-                <i data-lucide="route"></i>
-
-                <span>Mis rutas</span>
-
-                <small>Próximamente</small>
-
-            </button>
-
-            <div class="menu-title">
-
-                Finanzas
-
-            </div>
-
-            <button class="nav-item disabled">
-
-                <i data-lucide="wallet"></i>
-
-                <span>Pagos</span>
-
-                <small>Próximamente</small>
-
-            </button>
-
-            <button class="nav-item disabled">
-
-                <i data-lucide="receipt"></i>
-
-                <span>Facturación</span>
-
-                <small>Próximamente</small>
-
-            </button>
-
-            <div class="menu-title">
-
-                Mi negocio
-
-            </div>
-
-            <button class="nav-item disabled">
-
-                <i data-lucide="van"></i>
-
-                <span>Mis vehículos</span>
-
-                <small>Próximamente</small>
-
-            </button>
-
-            <button class="nav-item disabled">
-
-                <i data-lucide="users"></i>
-
-                <span>Equipo</span>
-
-                <small>Próximamente</small>
-
-            </button>
-
-            <div class="menu-title">
-
-                Mi cuenta
-
-            </div>
-
-            <button class="nav-item disabled">
-
-                <i data-lucide="user"></i>
-
-                <span>Mi perfil</span>
-
-            </button>
-
-            <button class="nav-item disabled">
-
-                <i data-lucide="bell"></i>
-
-                <span>Notificaciones</span>
-
-            </button>
-
-            <button class="nav-item disabled">
-
-                <i data-lucide="settings"></i>
-
-                <span>Configuración</span>
-
-            </button>
-
-            <div class="menu-title">
-
-                Ayuda
-
-            </div>
-
-            <button class="nav-item disabled">
-
-                <i data-lucide="headphones"></i>
-
-                <span>Soporte</span>
-
-            </button>
-
-        </div>
+    <!-- NAVEGACIÓN PRINCIPAL -->
+    <nav class="flex-1 overflow-y-auto px-4 py-4 space-y-1">
+
+        <!-- CATEGORÍA: MARKETPLACE -->
+        <div class="menu-title">Marketplace</div>
+        
+        <button onclick="cambiarTab('disponibles')" class="nav-item-premium active" id="nav-disponibles">
+            <i data-lucide="search"></i>
+            <span>Trabajos disponibles</span>
+            <span id="badge-disponibles" class="badge-menu-premium">0</span>
+        </button>
+
+        <button onclick="cambiarTab('mis-mudanzas')" class="nav-item-premium" id="nav-mis-mudanzas">
+            <i data-lucide="truck"></i>
+            <span>Mis mudanzas activas</span>
+            <span id="badge-activas" class="badge-menu-premium hidden">0</span>
+        </button>
+
+        <!-- CATEGORÍA: OPERACIONES -->
+        <div class="menu-title">Operaciones</div>
+        
+        <button class="nav-item-premium disabled" title="Próximamente">
+            <i data-lucide="calendar-days"></i>
+            <span>Mi agenda</span>
+            <i data-lucide="lock" class="ml-auto opacity-40" style="width:12px; height:12px;"></i>
+        </button>
+
+        <button class="nav-item-premium disabled" title="Próximamente">
+            <i data-lucide="route"></i>
+            <span>Mis rutas</span>
+            <i data-lucide="lock" class="ml-auto opacity-40" style="width:12px; height:12px;"></i>
+        </button>
+
+        <!-- CATEGORÍA: FINANZAS -->
+        <div class="menu-title">Finanzas</div>
+        
+        <button class="nav-item-premium disabled" title="Próximamente">
+            <i data-lucide="wallet"></i>
+            <span>Pagos</span>
+            <i data-lucide="lock" class="ml-auto opacity-40" style="width:12px; height:12px;"></i>
+        </button>
+
+        <button class="nav-item-premium disabled" title="Próximamente">
+            <i data-lucide="receipt"></i>
+            <span>Facturación</span>
+            <i data-lucide="lock" class="ml-auto opacity-40" style="width:12px; height:12px;"></i>
+        </button>
+
+        <!-- CATEGORÍA: MI NEGOCIO -->
+        <div class="menu-title">Mi negocio</div>
+        
+        <button class="nav-item-premium disabled" title="Próximamente">
+            <i data-lucide="package"></i>
+            <span>Mis vehículos</span>
+            <i data-lucide="lock" class="ml-auto opacity-40" style="width:12px; height:12px;"></i>
+        </button>
+
+        <button class="nav-item-premium disabled" title="Próximamente">
+            <i data-lucide="users"></i>
+            <span>Equipo / Operarios</span>
+            <i data-lucide="lock" class="ml-auto opacity-40" style="width:12px; height:12px;"></i>
+        </button>
+
+        <!-- CATEGORÍA: MI CUENTA -->
+        <div class="menu-title">Mi cuenta</div>
+        
+        <button class="nav-item-premium disabled">
+            <i data-lucide="user"></i>
+            <span>Mi perfil</span>
+        </button>
+
+        <button class="nav-item-premium disabled flex items-center w-full">
+            <i data-lucide="bell"></i>
+            <span>Notificaciones</span>
+            <span class="badge-menu-alert">3</span>
+        </button>
+
+        <button class="nav-item-premium disabled">
+            <i data-lucide="settings"></i>
+            <span>Configuración</span>
+        </button>
+
+        <!-- CATEGORÍA: AYUDA -->
+        <div class="menu-title">Ayuda</div>
+        
+        <button class="nav-item-premium disabled">
+            <i data-lucide="headphones"></i>
+            <span>Soporte</span>
+        </button>
 
     </nav>
 
-    <div class="border-t border-slate-200 p-4">
-
-        <button onclick="cerrarSesion()"
-        class="nav-item">
-
-            <i data-lucide="log-out"></i>
-
+    <!-- BOTÓN CERRAR SESIÓN -->
+    <div class="p-4 border-t border-slate-800/60 flex-shrink-0">
+        <button onclick="cerrarSesion()" class="nav-item-premium text-rose-400 hover:bg-rose-500/10 hover:text-rose-300">
+            <i data-lucide="log-out" class="text-rose-400"></i>
             <span>Cerrar sesión</span>
-
         </button>
-
     </div>
 
 </aside>
@@ -664,17 +562,35 @@ document.getElementById('loading-text').textContent =
     }
 
     function cambiarTab(tabId) {
-        UI_TABS.tabs.forEach(t => {
-            document.getElementById(`tab-${t}`).classList.add('hidden');
-            const nav = document.getElementById(`nav-${t}`);
-            if (nav) nav.classList.remove('active');
-        });
-        document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-        document.getElementById('header-title').textContent = UI_TABS.titles[tabId];
-        const navActivo = document.getElementById(`nav-${tabId}`);
-        if (navActivo) navActivo.classList.add('active');
-        cerrarMenuMovil();
+    // Lista de tus pestañas reales del Marketplace
+    const tabs = ['disponibles', 'mis-mudanzas'];
+    
+    tabs.forEach(t => {
+        // Ocultamos las secciones de contenido
+        const pane = document.getElementById(`tab-${t}`);
+        if(pane) pane.classList.add('hidden');
+        
+        // Removemos el estado activo del botón
+        const nav = document.getElementById(`nav-${t}`);
+        if (nav) nav.classList.remove('active');
+    });
+    
+    // Mostramos la pestaña seleccionada
+    const paneActivo = document.getElementById(`tab-${tabId}`);
+    if(paneActivo) paneActivo.classList.remove('hidden');
+    
+    // Iluminamos el botón en el menú izquierdo
+    const navActivo = document.getElementById(`nav-${tabId}`);
+    if (navActivo) navActivo.classList.add('active');
+    
+    // Actualizamos el título del header de la página
+    const titles = { 'disponibles': 'Trabajos Disponibles', 'mis-mudanzas': 'Mis Mudanzas Activas' };
+    if(document.getElementById('header-title')) {
+        document.getElementById('header-title').textContent = titles[tabId];
     }
+    
+    cerrarMenuMovil();
+}
 
     async function cargarTrabajosDisponibles() {
 
