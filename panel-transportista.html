@@ -756,7 +756,8 @@ document.getElementById('loading-text').textContent =
     if (badge) badge.textContent = state.disponibles.length;
     
     // 👇 TU NUEVO CÓDIGO PEGADO AQUÍ:
-    const elContadorBanner = document.getElementById('banner-contador-trabajos');
+   const elContadorBanner = document.getElementById('banner-contador-trabajos');
+
     if (elContadorBanner) elContadorBanner.textContent = state.disponibles.length;
 
     if (!contenedor) return;
