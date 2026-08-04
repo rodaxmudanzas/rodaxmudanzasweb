@@ -14,89 +14,90 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
 
    <style>
-    /* Estilos Premium para la Barra Lateral Izquierda */
+    /* ========================================================
+       BARRA LATERAL IZQUIERDA: COLOR SINK CORPORATIVO Y ALTO CONTRASTE
+       ======================================================== --> */
+    
+    /* Primero y Cuarto: Fondo azul idéntico al de la barra superior */
     .sidebar-container {
-        background-color: #0F172A; /* Slate 900: Fondo oscuro premium de alta gama */
+        background-color: #0B3CC1 !important; 
     }
     
+    /* Separadores de categoría legibles */
     .menu-title {
-        font-size: 10px;
-        font-weight: 700;
+        font-size: 11px;
+        font-weight: 800;
         letter-spacing: 0.08em;
-        color: #64748B; /* Slate 500: Texto secundario sutil */
+        color: rgba(255, 255, 255, 0.65); /* Blanco con opacidad suave para títulos */
         text-transform: uppercase;
         margin-top: 24px;
         margin-bottom: 8px;
-        padding-left: 12px;
+        padding-left: 14px;
     }
 
+    /* Segundo: Letras, palabras e iconos que resaltan mucho más (Alto contraste) */
     .nav-item-premium {
         width: 100%;
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 10px 14px;
+        padding: 11px 14px;
         border-radius: 12px;
-        color: #94A3B8; /* Slate 400 */
+        color: #FFFFFF !important; /* Texto en blanco puro para máxima legibilidad */
         font-size: 13px;
-        font-weight: 600;
-        transition: all 0.2s ease;
+        font-weight: 700; /* Letras más gruesas para que resalten */
+        transition: all 0.2s ease-in-out;
         position: relative;
+        background: transparent;
     }
 
     .nav-item-premium i, .nav-item-premium svg {
         width: 18px;
         height: 18px;
-        color: #64748B;
-        transition: color 0.2s ease;
+        color: rgba(255, 255, 255, 0.85) !important; /* Iconos brillantes */
+        transition: transform 0.2s ease;
     }
 
-    /* Efecto Hover Inteligente */
+    /* Tercero: Efecto interactivo premium al pasar el cursor (Hover) */
     .nav-item-premium:hover:not(.disabled) {
-        background-color: rgba(255, 255, 255, 0.05);
-        color: #F1F5F9;
+        background-color: rgba(255, 255, 255, 0.15) !important; /* Fondo sutilmente más claro */
+        color: #FFFFFF !important;
+        transform: translateX(4px); /* Pequeño desplazamiento hacia la derecha */
     }
     
-    .nav-item-premium:hover:not(.disabled) i {
-        color: #3B82F6; /* Icono se ilumina en azul al pasar el mouse */
+    .nav-item-premium:hover:not(.disabled) i, 
+    .nav-item-premium:hover:not(.disabled) svg {
+        color: #FFFFFF !important;
+        transform: scale(1.1); /* El icono se agranda ligeramente */
     }
 
-    /* Estado Activo (Pestaña Seleccionada) */
+    /* Tercero: Efecto activo al hacer CLICK o estar seleccionado */
     .nav-item-premium.active {
-        background: linear-gradient(90deg, rgba(37, 99, 235, 0.15) 0%, rgba(37, 99, 235, 0.03) 100%);
-        color: #3B82F6; /* Azul Rodax */
-    }
-
-    .nav-item-premium.active::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 20%;
-        height: 60%;
-        width: 3px;
-        background-color: #3B82F6;
-        border-radius: 0 4px 4px 0;
+        background-color: rgba(255, 255, 255, 0.25) !important; /* Resalte fuerte en blanco/transparente */
+        color: #FFFFFF !important;
+        box-shadow: inset 4px 0 0 0 #FFFFFF; /* Línea indicadora izquierda en blanco puro */
     }
 
     .nav-item-premium.active i, .nav-item-premium.active svg {
-        color: #3B82F6;
+        color: #FFFFFF !important;
     }
 
-    /* Elementos bloqueados o Próximamente */
+    /* Elementos bloqueados sutiles */
     .nav-item-premium.disabled {
-        opacity: 0.4;
+        opacity: 0.55;
         cursor: not-allowed;
     }
 
+    /* Badges de notificación premium adaptados al fondo azul */
     .badge-menu-premium {
-        background-color: #2563EB;
-        color: #FFFFFF;
-        font-size: 10px;
-        font-weight: 700;
-        padding: 2px 7px;
+        background-color: #FFFFFF !important;
+        color: #0B3CC1 !important; /* El número va en color azul para contrastar */
+        font-size: 11px;
+        font-weight: 900;
+        padding: 1px 7px;
         border-radius: 8px;
         margin-left: auto;
-        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .badge-menu-alert {
@@ -107,13 +108,7 @@
         padding: 2px 7px;
         border-radius: 8px;
         margin-left: auto;
-        animation: pulse-soft 2s infinite;
-    }
-
-    @keyframes pulse-soft {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); box-shadow: 0 0 8px rgba(239, 68, 68, 0.4); }
-        100% { transform: scale(1); }
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
 </style>
 
@@ -123,33 +118,41 @@
 <div id="mobile-overlay" class="fixed inset-0 bg-gray-900/60 z-40 hidden md:hidden backdrop-blur-sm"
      onclick="cerrarMenuMovil()"></div>
 
-<aside id="sidebar" class="w-64 sidebar-container border-r border-slate-800 flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col shadow-lg">
+<!-- REEMPLAZAR BARRA LATERAL COMPLETA -->
+<aside id="sidebar" class="w-64 sidebar-container border-r border-blue-700/30 flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col shadow-xl">
 
-    <!-- LOGO CORPORATIVO -->
-    <div class="px-6 py-5 border-b border-slate-800/60 flex items-center justify-center">
-        <img src="images/logo-rodax.png" id="logoRodax" alt="RODAX" class="h-10 object-contain brightness-0 invert">
+    <!-- ========================================================
+         Quinto: LOGO DE LA PARTE IZQUIERDA SUPERIOR (CÓDIGO ABIERTO)
+         Modifica el atributo src="..." de abajo cuando quieras cambiar el logo.
+         ======================================================== -->
+    <div class="px-6 py-5 border-b border-white/10 flex items-center justify-center bg-white/5">
+        
+        <img src="images/logo-rodax.png" 
+             id="logoRodaxSide" 
+             alt="RODAX MUDANZAS" 
+             class="h-10 object-contain brightness-0 invert transition-transform duration-200 hover:scale-105">
+             
     </div>
 
     <!-- PERFIL DEL TRANSPORTISTA -->
-    <div class="px-5 py-4 border-b border-slate-800/60">
+    <div class="px-5 py-4 border-b border-white/10 bg-white/5">
         <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-xl overflow-hidden border border-slate-700 bg-slate-800">
+            <div class="w-11 h-11 rounded-xl overflow-hidden border border-white/20 bg-white/10">
                 <img id="profile-img" src="https://ui-avatars.com" class="w-full h-full object-cover">
             </div>
             <div class="flex-1 min-w-0">
-                <div id="profile-name" class="font-bold text-slate-100 text-sm truncate">Cargando...</div>
-                <div class="flex items-center gap-1.5 text-[11px] text-emerald-400 font-medium mt-0.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    Transportista activo
+                <div id="profile-name" class="font-bold text-white text-sm truncate">Cargando...</div>
+                <div class="flex items-center gap-1.5 text-[11px] text-emerald-300 font-bold mt-0.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
+                    Conectado
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- NAVEGACIÓN PRINCIPAL -->
-    <nav class="flex-1 overflow-y-auto px-4 py-4 space-y-1">
+    <!-- NAVEGACIÓN PRINCIPAL CON ALTO CONTRASTE -->
+    <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-1">
 
-        <!-- CATEGORÍA: MARKETPLACE -->
         <div class="menu-title">Marketplace</div>
         
         <button onclick="cambiarTab('disponibles')" class="nav-item-premium active" id="nav-disponibles">
@@ -164,52 +167,48 @@
             <span id="badge-activas" class="badge-menu-premium hidden">0</span>
         </button>
 
-        <!-- CATEGORÍA: OPERACIONES -->
         <div class="menu-title">Operaciones</div>
         
         <button class="nav-item-premium disabled" title="Próximamente">
             <i data-lucide="calendar-days"></i>
             <span>Mi agenda</span>
-            <i data-lucide="lock" class="ml-auto opacity-40" style="width:12px; height:12px;"></i>
+            <i data-lucide="lock" class="ml-auto opacity-50" style="width:12px; height:12px;"></i>
         </button>
 
         <button class="nav-item-premium disabled" title="Próximamente">
             <i data-lucide="route"></i>
             <span>Mis rutas</span>
-            <i data-lucide="lock" class="ml-auto opacity-40" style="width:12px; height:12px;"></i>
+            <i data-lucide="lock" class="ml-auto opacity-50" style="width:12px; height:12px;"></i>
         </button>
 
-        <!-- CATEGORÍA: FINANZAS -->
         <div class="menu-title">Finanzas</div>
         
         <button class="nav-item-premium disabled" title="Próximamente">
             <i data-lucide="wallet"></i>
             <span>Pagos</span>
-            <i data-lucide="lock" class="ml-auto opacity-40" style="width:12px; height:12px;"></i>
+            <i data-lucide="lock" class="ml-auto opacity-50" style="width:12px; height:12px;"></i>
         </button>
 
         <button class="nav-item-premium disabled" title="Próximamente">
             <i data-lucide="receipt"></i>
             <span>Facturación</span>
-            <i data-lucide="lock" class="ml-auto opacity-40" style="width:12px; height:12px;"></i>
+            <i data-lucide="lock" class="ml-auto opacity-50" style="width:12px; height:12px;"></i>
         </button>
 
-        <!-- CATEGORÍA: MI NEGOCIO -->
         <div class="menu-title">Mi negocio</div>
         
         <button class="nav-item-premium disabled" title="Próximamente">
             <i data-lucide="package"></i>
             <span>Mis vehículos</span>
-            <i data-lucide="lock" class="ml-auto opacity-40" style="width:12px; height:12px;"></i>
+            <i data-lucide="lock" class="ml-auto opacity-50" style="width:12px; height:12px;"></i>
         </button>
 
         <button class="nav-item-premium disabled" title="Próximamente">
             <i data-lucide="users"></i>
             <span>Equipo / Operarios</span>
-            <i data-lucide="lock" class="ml-auto opacity-40" style="width:12px; height:12px;"></i>
+            <i data-lucide="lock" class="ml-auto opacity-50" style="width:12px; height:12px;"></i>
         </button>
 
-        <!-- CATEGORÍA: MI CUENTA -->
         <div class="menu-title">Mi cuenta</div>
         
         <button class="nav-item-premium disabled">
@@ -228,7 +227,6 @@
             <span>Configuración</span>
         </button>
 
-        <!-- CATEGORÍA: AYUDA -->
         <div class="menu-title">Ayuda</div>
         
         <button class="nav-item-premium disabled">
@@ -238,10 +236,10 @@
 
     </nav>
 
-    <!-- BOTÓN CERRAR SESIÓN -->
-    <div class="p-4 border-t border-slate-800/60 flex-shrink-0">
-        <button onclick="cerrarSesion()" class="nav-item-premium text-rose-400 hover:bg-rose-500/10 hover:text-rose-300">
-            <i data-lucide="log-out" class="text-rose-400"></i>
+    <!-- CERRAR SESIÓN -->
+    <div class="p-4 border-t border-white/10 bg-white/5 flex-shrink-0">
+        <button onclick="cerrarSesion()" class="nav-item-premium text-red-200 hover:bg-red-500/20 hover:text-white transition-colors">
+            <i data-lucide="log-out" class="text-white/80"></i>
             <span>Cerrar sesión</span>
         </button>
     </div>
