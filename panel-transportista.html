@@ -553,39 +553,49 @@ Transportista.currentUserId = currentUserId;
         document.getElementById('mobile-overlay').classList.add('hidden');
     }
 
-    async function verificarSesion() {
+        async function verificarSesion() {
         try {
             const { data: { session }, error } = await dbClient.auth.getSession();
 
-console.log("=== DIAGNÓSTICO RODAX ===");
-console.log("Sesión:", session);
-console.log("Error de sesión:", error);
-console.log("Usuario:", session?.user);
-console.log("========================");
+            console.log("=== DIAGNÓSTICO RODAX ===");
+            console.log("Sesión:", session);
+            console.log("Usuario:", session?.user);
+            console.log("========================");
 
-if (error || !session) {
-    console.error("NO SE DETECTÓ SESIÓN. No redirigimos para poder revisar el error.");
-    alert("Diagnóstico: el panel no ha detectado una sesión activa. Abre la consola F12 para revisar el resultado.");
-    return;
-}
+            if (error || !session) {
+                console.error("NO SE DETECTÓ SESIÓN ACTIVA.");
+                // Comentamos la expulsión para que no te saque si el token tarda un segundo en cargar
+                // window.location.replace('transportistas.html');
+                return;
+            }
+            
             currentUserId = session.user.id;
+            Transportista.currentUserId = currentUserId;
 
-Transportista.currentUserId = currentUserId;
-
-document.getElementById('loading-text').textContent =
-    'Cargando tu panel...';
+            // Protegemos con condicionales para que no falle si el ID cambió de nombre
+            const elLoadingText = document.getElementById('loading-text');
+            if (elLoadingText) elLoadingText.textContent = 'Cargando tu panel...';
+            
             await cargarDatosPerfil();
-            document.getElementById('loading-screen').classList.add('hidden');
+            
+            const elLoadingScreen = document.getElementById('loading-screen');
+            if (elLoadingScreen) elLoadingScreen.classList.add('hidden');
+            
+            // Cargamos datos del marketplace
             cargarTrabajosDisponibles();
             cargarMisMudanzas();
+            
             setInterval(() => {
-                if (!document.getElementById('tab-disponibles').classList.contains('hidden')) {
+                const tabDisp = document.getElementById('tab-disponibles');
+                if (tabDisp && !tabDisp.classList.contains('hidden')) {
                     cargarTrabajosDisponibles();
                 }
             }, 30000);
+            
         } catch (err) {
-            console.error('Error de sesión:', err);
-            window.location.replace('transportistas.html');
+            console.error('Error controlado en verificación:', err);
+            // Esto obligará a la web a mostrarte en un cuadro qué elemento HTML está roto
+            alert("Detalle del error en la sesión: " + err.message);
         }
     }
 
