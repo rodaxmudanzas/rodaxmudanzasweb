@@ -22,12 +22,12 @@ function renderInventarioDrawer(datosInventario, tipoServicioText) {
         return;
     }
 
-    // Comprobamos de forma segura si se trata de una Mudanza Total
+    // Identificar si es Mudanza Total de forma estricta
     const esMudanzaTotal = (tipoServicioText || "").toLowerCase().includes("total");
 
     const cajasExtrasList = [];
     
-    // Mapeo estructurado con los nombres idénticos de las zonas de tu Home (Ventana 2)
+    // Mapeo de categorías con los nombres idénticos de las zonas de tu Home (Ventana 2)
     const mapeoCategoriasHome = {
         "Salón": ["Sofá 2 plazas", "Sofá 3 plazas", "Sofá chaise longue", "Butaca", "Mueble TV", "Estantería"],
         "Cocina": ["Nevera", "Frigorífico americano", "Congelador", "Microondas", "Horno", "Lavadora", "Lavavajillas"],
@@ -37,22 +37,27 @@ function renderInventarioDrawer(datosInventario, tipoServicioText) {
         "Otros": ["Maleta", "Bici", "Planta", "Espejo grande"]
     };
 
+    // Inicializamos todas las categorías limpias para garantizar que "Otros" exista
     const categoriasConItems = {
         "Salón": [], "Cocina": [], "Comedor": [], "Dormitorio": [], "Baño": [], "Otros": []
     };
+
+    let totalArticulosCount = 0;
 
     inventarioArray.forEach(item => {
         const nombre = item.nombre || item.mueble || "Mueble sin nombre";
         const cantidad = parseInt(item.cantidad, 10) || 0;
 
         if (cantidad > 0) {
-            // Evaluamos si el elemento es una caja
+            totalArticulosCount += cantidad;
+
+            // Tratamiento específico de Cajas para Mudanza Total (Corrección 2)
             if (nombre.toLowerCase().includes("caja")) {
                 if (esMudanzaTotal) {
-                    // Sí y solo sí es Mudanza Total, separamos las cajas para el cuadro de Cajas Extras
+                    // Sí y solo sí es Mudanza Total, van al recuadro superior destacado
                     cajasExtrasList.push({ nombre, cantidad });
                 } else {
-                    // Si es Mudanza Estándar, las cajas se listan de forma regular en la zona de "Otros"
+                    // Si es Mudanza Estándar, se inyectan regularmente dentro de "Otros"
                     categoriasConItems["Otros"].push({ nombre, cantidad });
                 }
             } else {
@@ -64,7 +69,7 @@ function renderInventarioDrawer(datosInventario, tipoServicioText) {
                         break;
                     }
                 }
-                // Si el mueble no está en el mapa base, se aloja en "Otros" automáticamente
+                // Si el artículo no coincide con el mapeo base de muebles, va a la sección "Otros"
                 if (!clasificado) {
                     categoriasConItems["Otros"].push({ nombre, cantidad });
                 }
@@ -72,7 +77,11 @@ function renderInventarioDrawer(datosInventario, tipoServicioText) {
         }
     });
 
-    // --- GENERACIÓN DEL CUADRO: CAJAS EXTRAS (Sí y solo sí es Mudanza Total) ---
+    // Actualizar el número dinámico de artículos de la cabecera
+    const elContador = document.getElementById("drawerTotalArticulos");
+    if(elContador) elContador.textContent = totalArticulosCount;
+
+    // --- HTML GENERACIÓN DEL BLOQUE: CAJAS EXTRAS (Exclusivo Mudanza Total) ---
     let htmlCajasExtras = "";
     if (esMudanzaTotal && cajasExtrasList.length > 0) {
         htmlCajasExtras = `
@@ -89,13 +98,13 @@ function renderInventarioDrawer(datosInventario, tipoServicioText) {
             </div>`;
     }
 
-    // --- GENERACIÓN DE LOS ACORDEONES: ZONAS DE LA VIVIENDA ---
+    // --- HTML GENERACIÓN DE LOS ACORDEONES DESPLEGABLES ---
     let htmlAcordeon = `<div class="space-y-1 w-full text-left">`;
-    let tieneMueblesOEnseres = false;
+    let tieneElementosVisibles = false;
 
     for (const [categoria, items] of Object.entries(categoriasConItems)) {
-        if (items.length === 0) continue;
-        tieneMueblesOEnseres = true;
+        if (items.length === 0) continue; // Si la categoría no tiene bultos asignados, se salta
+        tieneElementosVisibles = true;
         const totalCategoria = items.reduce((acc, curr) => acc + curr.cantidad, 0);
 
         htmlAcordeon += `
@@ -123,15 +132,14 @@ function renderInventarioDrawer(datosInventario, tipoServicioText) {
     }
     htmlAcordeon += `</div>`;
 
-    // Si el registro está totalmente vacío de carga
-    if (cajasExtrasList.length === 0 && !tieneMueblesOEnseres) {
+    if (cajasExtrasList.length === 0 && !tieneElementosVisibles) {
         const msg = `<p class="text-sm text-gray-400 italic">No se especificó inventario detallado.</p>`;
         contenedorResumen.innerHTML = msg;
         contenedorFull.innerHTML = msg;
         return;
     }
 
-    // Inyectamos el resultado limpio combinado de forma idéntica en el Resumen y en la pestaña de Inventario
+    // Inyección sincronizada en ambos paneles
     contenedorResumen.innerHTML = htmlCajasExtras + htmlAcordeon;
     contenedorFull.innerHTML = htmlCajasExtras + htmlAcordeon;
 }
