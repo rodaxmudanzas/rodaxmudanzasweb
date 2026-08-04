@@ -15,113 +15,121 @@
 
 <style>
     /* ========================================================
-       DISEÑO DE ALTA FIDELIDAD: AZUL NOCHE Y MENÚ MINIMALISTA COMPACTO
+       DISEÑO DE ALTA FIDELIDAD: PARCHE INTEGRAL DE ERRORES UI/UX
        ======================================================== */
     
-    /* Ambos bloques con el mismo tono exacto de azul oscuro premium */
-    .theme-azul-oscuro-rodax {
-        background-color: #0B1E5B !important; /* Azul marino oscuro idéntico al diseño */
-    }
-
-    .sidebar-container-compact {
-        width: 72px !important; /* Menú lateral súper estrecho centrado en los iconos */
+    /* Error 1 y 4: Color Azul Noche Corporativo para el Menú y la Barra Superior */
+    .sidebar-azul-rodax {
         background-color: #0B1E5B !important;
-        display: flex;
-        flex-col: flex-col;
-        align-items: center;
-    }
-    
-    /* Ocultamos las etiquetas de texto de categoría para mantenerlo limpio */
-    .menu-title-compact {
-        display: none; 
+        width: 256px !important; /* Ancho completo original para ver botones y palabras completas */
     }
 
-    /* Iconos y botones del menú de alto contraste y centrados */
-    .nav-item-compact {
-        width: 48px;
-        height: 48px;
+    .banner-azul-rodax {
+        background-color: #0B1E5B !important;
+    }
+
+    /* Error 3: Área del logo con fondo estrictamente BLANCO */
+    .logo-container-blanco {
+        background-color: #FFFFFF !important;
+        height: 64px; /* Alineado exacto con la barra superior de perfil */
+        border-bottom: 1px solid #E2E8F0;
+        border-right: 1px solid #E2E8F0;
+    }
+
+    /* Error 4: Fila superior blanca de Perfil y Conectividad */
+    .top-profile-bar-blanca {
+        background-color: #FFFFFF !important;
+        height: 64px;
+        border-bottom: 1px solid #E2E8F0;
+        width: 100%;
+    }
+
+    /* Error 1: Botones y palabras completas en la barra lateral */
+    .nav-item-premium {
+        width: 100%;
         display: flex;
         align-items: center;
-        justify-content: center;
+        gap: 12px;
+        padding: 11px 16px;
         border-radius: 12px;
-        color: rgba(255, 255, 255, 0.85) !important;
+        color: rgba(255, 255, 255, 0.9) !important; /* Texto muy claro para resaltar */
+        font-size: 13px;
+        font-weight: 700; /* Error 5: Letras con más fuerza */
         transition: all 0.2s ease-in-out;
-        position: relative;
-        margin: 4px auto;
+        background: transparent;
     }
 
-    .nav-item-compact i, .nav-item-compact svg {
-        width: 20px;
-        height: 20px;
-        color: rgba(255, 255, 255, 0.85) !important;
-        transition: transform 0.2s ease;
+    .nav-item-premium i, .nav-item-premium svg {
+        width: 18px;
+        height: 18px;
+        color: rgba(255, 255, 255, 0.75) !important;
     }
 
-    /* Texto flotante sutil al pasar el mouse por si olvidan qué significa el icono */
-    .nav-item-compact:hover::after {
-        content: attr(data-title);
-        position: absolute;
-        left: 62px;
-        top: 50%;
-        transform: translateY(-50%);
-        background-color: #1E293B;
-        color: #FFFFFF;
-        font-size: 11px;
-        font-weight: 600;
-        padding: 4px 8px;
-        border-radius: 6px;
-        white-space: nowrap;
-        z-index: 100;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
-
-    /* Efectos Interactivos (Hover y Click) */
-    .nav-item-compact:hover:not(.disabled) {
-        background-color: rgba(255, 255, 255, 0.15) !important;
+    /* Efectos hover/click interactivos premium */
+    .nav-item-premium:hover:not(.disabled) {
+        background-color: rgba(255, 255, 255, 0.12) !important;
         color: #FFFFFF !important;
-    }
-    
-    .nav-item-compact:hover:not(.disabled) i {
-        transform: scale(1.08);
+        padding-left: 20px; /* Sutil desplazamiento dinámico */
     }
 
-    .nav-item-compact.active {
-        background-color: rgba(255, 255, 255, 0.25) !important;
+    .nav-item-premium.active {
+        background-color: rgba(255, 255, 255, 0.22) !important;
         color: #FFFFFF !important;
-        box-shadow: inset 3px 0 0 0 #FFFFFF; /* Marca blanca lateral */
+        box-shadow: inset 4px 0 0 0 #FFFFFF; /* Barra indicadora blanca */
     }
 
-    .nav-item-compact.disabled {
-        opacity: 0.35;
+    .nav-item-premium.disabled {
+        opacity: 0.45;
         cursor: not-allowed;
     }
 
-    /* Pequeños globos contadores sobre los iconos */
-    .badge-menu-compact {
-        position: absolute;
-        top: 2px;
-        right: 2px;
-        background-color: #FFFFFF;
-        color: #0B1E5B;
-        font-size: 9px;
-        font-weight: 900;
-        padding: 1px 4px;
-        border-radius: 6px;
-        line-height: 1;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    .menu-title {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        color: rgba(255, 255, 255, 0.55);
+        text-transform: uppercase;
+        margin-top: 20px;
+        margin-bottom: 6px;
+        padding-left: 16px;
     }
 
-    .badge-menu-alert-compact {
-        position: absolute;
-        top: 2px;
-        right: 2px;
-        background-color: #EF4444;
-        color: #FFFFFF;
-        font-size: 9px;
-        font-weight: 700;
-        padding: 1px 4px;
-        border-radius: 6px;
-        line-height: 1;
+    .badge-menu-premium {
+        background-color: #FFFFFF !important;
+        color: #0B1E5B !important;
+        font-size: 11px;
+        font-weight: 900;
+        padding: 1px 7px;
+        border-radius: 8px;
+        margin-left: auto;
+    }
+
+    /* Error 5: Refuerzo de tipografía y fuerza en inputs, filtros y botones del panel */
+    input, select, button, span, p, h1, h2, h3, h4, h5 {
+        font-weight: 600 !important; /* Elimina el aspecto tenue de las letras */
+    }
+    
+    .font-bold-premium {
+        font-weight: 700 !important;
+    }
+
+    .font-black-premium {
+        font-weight: 900 !important;
+    }
+
+    /* Error 6: Tarjetas del Marketplace con separación evidente y sombras marcadas */
+    .tarjeta-mudanza-premium {
+        background-color: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        box-shadow: 0 4px 12px -1px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04) !important;
+        margin-bottom: 12px !important; /* Espaciado extra de separación entre ofertas */
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .tarjeta-mudanza-premium:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 20px -3px rgba(15, 23, 42, 0.12), 0 4px 12px -2px rgba(15, 23, 42, 0.06) !important;
+        border-color: #CBD5E1 !important;
     }
 </style>
 
@@ -131,183 +139,229 @@
 <div id="mobile-overlay" class="fixed inset-0 bg-gray-900/60 z-40 hidden md:hidden backdrop-blur-sm"
      onclick="cerrarMenuMovil()"></div>
 
-<!-- BARRA LATERAL ULTRA COMPACTA (DISEÑO EXACTO CORREGIDO) -->
-<aside id="sidebar" class="sidebar-container-compact border-r border-white/5 flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col py-4 shadow-xl">
+<!-- ========================================================
+     BARRA LATERAL DE MENÚS (CORREGIDA: PALABRAS COMPLETAS Y ALTO CONTRASTE)
+     ======================================================== -->
+<aside id="sidebar" class="w-64 sidebar-azul-rodax flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col shadow-xl">
 
-    <!-- LOGO ABIERTO (Para modificar cuando quieras) -->
-    <div class="w-full flex items-center justify-center pb-5 border-b border-white/10 mb-4 px-2">
-        <img src="images/logo-rodax.png" id="logoRodaxSide" alt="RODAX" class="h-6 object-contain brightness-0 invert">
+    <!-- Error 3: Contenedor del LOGO CORPORATIVO con fondo BLANCO (CÓDIGO ABIERTO) -->
+    <!-- Puedes modificar o cambiar el atributo src de la etiqueta img cuando lo desees -->
+    <div class="w-full logo-container-blanco flex items-center justify-center px-6 flex-shrink-0">
+        
+        <img src="images/logo-rodax.png" 
+             id="logoRodaxSide" 
+             alt="RODAX MUDANZAS" 
+             class="h-10 object-contain transition-transform duration-200 hover:scale-105">
+             
     </div>
 
-    <!-- ICONOS DE ACCESO DIRECTO CON TEXTO HOVER FLOTANTE -->
-    <nav class="flex-1 w-full flex flex-col items-center gap-1">
+    <!-- Error 1 y 2: Cuerpo del menú dinámico con palabras completas -->
+    <nav class="flex-1 overflow-y-auto px-4 py-4 space-y-1">
 
-        <button onclick="cambiarTab('disponibles')" class="nav-item-compact active" id="nav-disponibles" data-title="Trabajos disponibles">
+        <div class="menu-title">Marketplace</div>
+        
+        <button onclick="cambiarTab('disponibles')" class="nav-item-premium active" id="nav-disponibles">
             <i data-lucide="search"></i>
-            <span id="badge-disponibles" class="badge-menu-compact">0</span>
+            <span>Trabajos disponibles</span>
+            <span id="badge-disponibles" class="badge-menu-premium">0</span>
         </button>
 
-        <button onclick="cambiarTab('mis-mudanzas')" class="nav-item-compact" id="nav-mis-mudanzas" data-title="Mis mudanzas activas">
+        <button onclick="cambiarTab('mis-mudanzas')" class="nav-item-premium" id="nav-mis-mudanzas">
             <i data-lucide="truck"></i>
-            <span id="badge-activas" class="badge-menu-compact hidden">0</span>
+            <span>Mis mudanzas activas</span>
+            <span id="badge-activas" class="badge-menu-premium hidden">0</span>
         </button>
 
-        <div class="w-8 border-t border-white/10 my-3"></div>
-
-        <button class="nav-item-compact disabled" data-title="Mi agenda (Próximamente)">
+        <div class="menu-title">Operaciones</div>
+        
+        <button class="nav-item-premium disabled" title="Próximamente">
             <i data-lucide="calendar-days"></i>
+            <span>Mi agenda</span>
         </button>
 
-        <button class="nav-item-compact disabled" data-title="Mis rutas (Próximamente)">
+        <button class="nav-item-premium disabled" title="Próximamente">
             <i data-lucide="route"></i>
+            <span>Mis rutas</span>
         </button>
 
-        <button class="nav-item-compact disabled" data-title="Pagos (Próximamente)">
+        <div class="menu-title">Finanzas</div>
+        
+        <button class="nav-item-premium disabled" title="Próximamente">
             <i data-lucide="wallet"></i>
+            <span>Pagos</span>
         </button>
 
-        <button class="nav-item-compact disabled" data-title="Facturación (Próximamente)">
+        <button class="nav-item-premium disabled" title="Próximamente">
             <i data-lucide="receipt"></i>
+            <span>Facturación</span>
         </button>
 
-        <button class="nav-item-compact disabled" data-title="Mis vehículos (Próximamente)">
+        <div class="menu-title">Mi negocio</div>
+        
+        <button class="nav-item-premium disabled" title="Próximamente">
             <i data-lucide="package"></i>
+            <span>Mis vehículos</span>
         </button>
 
-        <button class="nav-item-compact disabled" data-title="Equipo (Próximamente)">
+        <button class="nav-item-premium disabled" title="Próximamente">
             <i data-lucide="users"></i>
+            <span>Equipo / Operarios</span>
         </button>
 
-        <button class="nav-item-compact disabled" data-title="Mi perfil">
+        <div class="menu-title">Mi cuenta</div>
+        
+        <button class="nav-item-premium disabled">
             <i data-lucide="user"></i>
+            <span>Mi perfil</span>
         </button>
 
-        <button class="nav-item-compact disabled" data-title="Notificaciones">
+        <button class="nav-item-premium disabled flex items-center w-full">
             <i data-lucide="bell"></i>
-            <span class="badge-menu-alert-compact">3</span>
+            <span>Notificaciones</span>
+            <span class="badge-menu-premium bg-red-500 !text-white text-[10px] px-2 py-0.5 rounded-md ml-auto">3</span>
         </button>
 
-        <button class="nav-item-compact disabled" data-title="Configuración">
+        <button class="nav-item-premium disabled">
             <i data-lucide="settings"></i>
+            <span>Configuración</span>
+        </button>
+
+        <div class="menu-title">Ayuda</div>
+        
+        <button class="nav-item-premium disabled">
+            <i data-lucide="headphones"></i>
+            <span>Soporte</span>
         </button>
 
     </nav>
 
-    <!-- CERRAR SESIÓN INFERIOR -->
-    <div class="w-full pt-4 border-t border-white/10 flex items-center justify-center">
-        <button onclick="cerrarSesion()" class="nav-item-compact text-rose-300 hover:bg-rose-500/20" data-title="Cerrar sesión">
-            <i data-lucide="log-out" class="text-rose-300"></i>
+    <!-- BOTÓN DE CIERRE DE SESIÓN -->
+    <div class="p-4 border-t border-white/10 flex-shrink-0 bg-black/10">
+        <button onclick="cerrarSesion()" class="nav-item-premium text-rose-300 hover:text-white transition-colors">
+            <i data-lucide="log-out"></i>
+            <span>Cerrar sesión</span>
         </button>
     </div>
 
 </aside>
 
-<!-- CONTENIDO PRINCIPAL -->
+<!-- CONTENIDO CENTRAL DE LA PLATAFORMA -->
 <main class="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50 relative w-full">
 
-       <!-- ========================================================
-         BARRA SUPERIOR AZUL OSCURO CON INTEGRACIÓN DE PERFIL (CORREGIDO)
+    <!-- ========================================================
+         Error 4: FILA SUPERIOR BLANCA DE PERFIL Y CONECTIVIDAD (SIEMPRE VISIBLE)
          ======================================================== -->
-    <div class="px-6 pt-5 pb-3 no-print flex-shrink-0">
-        <div class="theme-azul-oscuro-rodax text-white rounded-2xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-md">
-            
-            <!-- Bloque Izquierdo: Título y Datos Logísticos Compactos -->
-            <div class="flex items-center gap-5">
-                <div class="flex flex-col">
-                    <h1 class="text-xl font-bold tracking-tight">Trabajos Disponibles</h1>
-                    <div class="flex items-center gap-4 mt-2 text-xs text-white/70 font-medium">
-                        <span class="flex items-center gap-1"><i data-lucide="box" class="w-3.5 h-3.5 text-white/50"></i> <strong id="banner-contador-trabajos" class="text-white">0</strong> disponibles</span>
-                        <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-white/50"></i> Madrid, España</span>
-                        <span onclick="recargarDatos()" class="flex items-center gap-1 cursor-pointer hover:text-white"><i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-white/50"></i> Actualizar</span>
+    <header class="top-profile-bar-blanca px-6 flex items-center justify-between flex-shrink-0 no-print">
+        <!-- Espacio izquierdo o botón móvil -->
+        <button onclick="abrirMenuMovil()" class="md:hidden text-slate-600 p-2 bg-slate-100 rounded-lg">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        
+        <!-- Bloque de información del transportista alineado a la derecha sobre fondo blanco puro -->
+        <div class="flex items-center gap-4 ml-auto">
+            <div class="text-right">
+                <div id="profile-name-top" class="font-bold-premium text-sm text-slate-800 leading-tight">Cargando...</div>
+                <div class="flex items-center justify-end gap-1.5 text-[11px] text-emerald-600 font-bold-premium mt-0.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Conectado
+                </div>
+            </div>
+
+            <!-- Avatar Redondo con Iniciales -->
+            <div class="w-10 h-10 rounded-full overflow-hidden border border-slate-200 bg-slate-100 shadow-sm flex items-center justify-center font-bold-premium text-xs text-slate-700">
+                <img id="profile-img-top" src="" class="w-full h-full object-cover">
+            </div>
+        </div>
+    </header>
+
+    <!-- ========================================================
+         BARRA SUPERIOR CENTRAL AZUL OSCURO (TRABAJOS DISPONIBLES)
+         ======================================================== -->
+    <div class="px-6 pt-4 pb-2 no-print flex-shrink-0">
+        <div class="banner-azul-rodax text-white rounded-2xl p-5 flex items-center justify-between shadow-md">
+            <div class="flex items-center gap-4">
+                <div class="w-11 h-11 bg-white/10 rounded-xl flex items-center justify-center text-white">
+                    <i data-lucide="truck" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-black-premium tracking-tight">Trabajos Disponibles</h1>
+                    <div class="flex items-center gap-4 mt-1.5 text-xs text-white/70 font-medium">
+                        <span class="flex items-center gap-1"><i data-lucide="box" class="w-3.5 h-3.5 text-white/40"></i> <strong id="banner-contador-trabajos" class="text-white">0</strong> disponibles</span>
+                        <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-white/40"></i> Madrid, España</span>
+                        <span onclick="recargarDatos()" class="flex items-center gap-1 cursor-pointer hover:text-white"><i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-white/40"></i> Sincronizar</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Bloque Derecho: Perfil del Transportista (Alineado e idéntico al diseño original) -->
-            <div class="flex items-center gap-4 ml-auto md:ml-0 flex-shrink-0">
-                <!-- Estado Conectado e Información -->
-                <div class="text-right hidden sm:block">
-                    <div id="profile-name-top" class="font-bold text-sm text-slate-100 leading-tight">Cargando...</div>
-                    <div class="flex items-center justify-end gap-1.5 text-[11px] text-emerald-400 font-semibold mt-0.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                        Conectado
-                    </div>
-                </div>
-
-                <!-- Avatar Redondo con Iniciales (Sustituye la caja RF antigua) -->
-                <div class="w-11 h-11 rounded-full overflow-hidden border-2 border-white/20 bg-white/10 shadow-sm flex items-center justify-center font-bold text-sm text-white select-none">
-                    <img id="profile-img-top" src="https://ui-avatars.com" class="w-full h-full object-cover">
-                </div>
-
-                <!-- Dropdown de Disponibilidad Operativa -->
-                <div class="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-xl border border-white/10 text-xs font-semibold">
-                    <span class="font-bold text-slate-100">Disponible</span>
-                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-white/60"></i>
-                </div>
+            <div class="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-xl border border-white/10 text-xs font-bold-premium">
+                <span class="text-slate-100">Marketplace Abierto</span>
+                <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-white/60"></i>
             </div>
-
         </div>
     </div>
 
     <!-- ========================================================
-         BARRA SUPERIOR 2: FILTROS AVANZADOS (CUADRO BLANCO)
+         FILTROS AVANZADOS (CUADRO BLANCO CON TEXTOS CON FUERZA)
          ======================================================== -->
-    <div class="px-6 pb-2 no-print flex-shrink-0">
+    <div class="px-6 pb-3 no-print flex-shrink-0">
         <div class="bg-white rounded-2xl p-3 border border-slate-200/60 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-3 w-full">
             
-            <!-- Buscador por Texto -->
             <div class="relative w-full lg:w-72">
-                <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4"></i>
+                <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4"></i>
                 <input type="text" id="filtro-buscador-texto" placeholder="Buscar origen o destino..." 
-                       class="w-full bg-slate-50 border border-slate-200/60 rounded-xl pl-10 pr-4 py-2.5 text-xs font-medium text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:bg-white transition-all">
+                       class="w-full bg-slate-50 border border-slate-200/60 rounded-xl pl-10 pr-4 py-2.5 text-xs font-bold-premium text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:bg-white transition-all">
             </div>
 
-            <!-- Selectores de Filtro en Rejilla Responsiva -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full flex-1">
-                <!-- Filtro Fecha -->
                 <div class="relative">
-                    <i data-lucide="calendar" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-3.5 h-3.5"></i>
-                    <select id="filtro-fecha" class="w-full bg-slate-50 border border-slate-200/60 rounded-xl pl-8 pr-8 py-2.5 text-xs font-semibold text-slate-700 appearance-none focus:outline-none">
+                    <i data-lucide="calendar" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5"></i>
+                    <select id="filtro-fecha" class="w-full bg-slate-50 border border-slate-200/60 rounded-xl pl-8 pr-8 py-2.5 text-xs font-bold-premium text-slate-800 appearance-none focus:outline-none cursor-pointer">
                         <option value="">Cualquier fecha</option>
                         <option value="hoy">Hoy mismo</option>
                         <option value="mañana">Mañana</option>
                     </select>
-                    <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 w-3.5 h-3.5 pointer-events-none"></i>
+                    <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5 pointer-events-none"></i>
                 </div>
 
-                <!-- Filtro Zona -->
                 <div class="relative">
-                    <i data-lucide="map" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-3.5 h-3.5"></i>
-                    <select id="filtro-zona" class="w-full bg-slate-50 border border-slate-200/60 rounded-xl pl-8 pr-8 py-2.5 text-xs font-semibold text-slate-700 appearance-none focus:outline-none">
+                    <i data-lucide="map" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5"></i>
+                    <select id="filtro-zona" class="w-full bg-slate-50 border border-slate-200/60 rounded-xl pl-8 pr-8 py-2.5 text-xs font-bold-premium text-slate-800 appearance-none focus:outline-none cursor-pointer">
                         <option value="">Todas las zonas</option>
                         <option value="madrid">Madrid Centro</option>
                         <option value="periferia">Periferia</option>
                     </select>
-                    <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 w-3.5 h-3.5 pointer-events-none"></i>
+                    <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5 pointer-events-none"></i>
                 </div>
 
-                <!-- Filtro Distancia -->
                 <div class="relative">
-                    <i data-lucide="navigation" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-3.5 h-3.5"></i>
-                    <select id="filtro-distancia" class="w-full bg-slate-50 border border-slate-200/60 rounded-xl pl-8 pr-8 py-2.5 text-xs font-semibold text-slate-700 appearance-none focus:outline-none">
+                    <i data-lucide="navigation" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5"></i>
+                    <select id="filtro-distancia" class="w-full bg-slate-50 border border-slate-200/60 rounded-xl pl-8 pr-8 py-2.5 text-xs font-bold-premium text-slate-800 appearance-none focus:outline-none cursor-pointer">
+                        <option value="all">Cualquier distancia</option>
                         <option value="100">Hasta 100 km</option>
                         <option value="200">Hasta 200 km</option>
-                        <option value="all">Cualquier distancia</option>
                     </select>
-                    <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 w-3.5 h-3.5 pointer-events-none"></i>
+                    <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5 pointer-events-none"></i>
                 </div>
 
-                <!-- Filtro Vehículo -->
                 <div class="relative">
-                    <i data-lucide="car" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-3.5 h-3.5"></i>
-                    <select id="filtro-vehiculo" class="w-full bg-slate-50 border border-slate-200/60 rounded-xl pl-8 pr-8 py-2.5 text-xs font-semibold text-slate-700 appearance-none focus:outline-none">
+                    <i data-lucide="car" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5"></i>
+                    <select id="filtro-vehiculo" class="w-full bg-slate-50 border border-slate-200/60 rounded-xl pl-8 pr-8 py-2.5 text-xs font-bold-premium text-slate-800 appearance-none focus:outline-none cursor-pointer">
                         <option value="">Cualquier vehículo</option>
                         <option value="furgoneta">Furgoneta Estándar</option>
                         <option value="camion">Camión Ligero</option>
                     </select>
-                    <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 w-3.5 h-3.5 pointer-events-none"></i>
+                    <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5 pointer-events-none"></i>
                 </div>
             </div>
+
+            <button class="flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200/60 rounded-xl px-4 py-2.5 text-xs font-bold-premium text-slate-800 transition-colors w-full lg:w-auto flex-shrink-0">
+                <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-slate-600"></i>
+                <span>Más filtros</span>
+                <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5 pointer-events-none"></i>
+            </button>
+
+        </div>
+    </div>
 
             <!-- Botón Más Filtros Derecho -->
             <button class="flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200/60 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 transition-colors w-full lg:w-auto flex-shrink-0">
@@ -837,7 +891,7 @@ Transportista.currentUserId = currentUserId;
                 txtOrigAcceso = t.ascensor;
             }
 
-            // Bloque de fecha lateral izquierdo
+                        // Bloque de fecha lateral izquierdo
             const fechaObjeto = new Date(t.fecha);
             const diaNumero = fechaObjeto.getDate() || "21";
             const mesesCortos = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
@@ -845,10 +899,11 @@ Transportista.currentUserId = currentUserId;
 
             // Estructura de Rejilla por Columnas (Alineación horizontal perfecta)
             htmlFinal += `
-                <div onclick="verDetalleMudanza(${t.id})" class="col-span-1 lg:col-span-2 bg-white rounded-2xl p-5 border border-slate-100 shadow-card hover:shadow-md hover:border-blue-500/20 transition-all duration-200 cursor-pointer flex flex-col md:flex-row items-center gap-6 relative group">
+                <div onclick="verDetalleMudanza(${t.id})" class="tarjeta-mudanza-premium col-span-1 lg:col-span-2 rounded-2xl p-5 flex flex-col md:flex-row items-center gap-6 relative group">
                     
                     <!-- COLUMNA 1: BLOQUE DE TIEMPO FIJO -->
                     <div class="flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-slate-100 pb-4 md:pb-0 md:pr-6 min-w-[75px] flex-shrink-0 select-none">
+
                         <span class="text-3xl font-black text-slate-800 leading-none tracking-tight">${diaNumero}</span>
                         <span class="text-[10px] font-bold text-slate-400 uppercase mt-1 tracking-wider">${mesTexto}</span>
                         <span class="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md mt-3.5 font-mono">${horaServicio}</span>
