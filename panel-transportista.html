@@ -379,6 +379,31 @@
         </div>
     </div>
 
+        <!-- ========================================================
+         ZONA CENTRAL DE TRABAJOS (CONTENEDORES DINÁMICOS)
+         ======================================================== -->
+    <div class="flex-1 overflow-y-auto p-6">
+
+        <!-- 📑 VISTA 1: TRABAJOS DISPONIBLES (MARKETPLACE) -->
+        <div id="tab-disponibles" class="fade-in">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5" id="contenedor-disponibles">
+                <!-- Aquí JavaScript inyectará dinámicamente las mudanzas -->
+            </div>
+        </div>
+
+        <!-- 📑 VISTA 2: MIS MUDANZAS ACTIVAS -->
+        <div id="tab-mis-mudanzas" class="hidden fade-in">
+            <div id="contenedor-activas" class="space-y-5">
+                <div id="empty-activas" class="text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300">
+                    <i data-lucide="inbox" class="w-12 h-12 text-gray-300 mx-auto mb-3"></i>
+                    <p class="text-gray-500 font-semibold">No tienes ninguna mudanza asignada actualmente.</p>
+                    <p class="text-gray-400 text-sm mt-1">Busca trabajos en la pestaña "Trabajos Disponibles".</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 <!-- MODAL DE ACCIÓN -->
 <div id="action-modal" class="fixed inset-0 bg-gray-900/80 z-[100] flex items-center justify-center p-4 hidden backdrop-blur-sm">
     <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 text-center" id="modal-content"></div>
