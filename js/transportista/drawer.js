@@ -210,16 +210,20 @@
             }
         }
 
-        // Inyección limpia del Título Único (Corrección 1: Sin duplicaciones del Piso de habitaciones)
+                // ========================================================
+        // CORRECCIÓN 1: INYECTAR TÍTULO DE INVENTARIO LIMPIO Y SIN DUPLICADOS
+        // ========================================================
         const elTotalArticulos = document.getElementById("drawerTotalArticulos");
         if (elTotalArticulos) {
-            elTotalArticulos.innerHTML = `${totalArticulosCount} ART.`;
+            // Dejamos un solo guion medio corto y una sola vez la palabra ART.
+            elTotalArticulos.innerHTML = `${totalItemsContados} ART.`;
         }
 
         // 8. Lanzar los renderizadores externos de Inventario y Fotos pasándole el tipo de servicio
         if (typeof renderInventarioDrawer === "function") {
             renderInventarioDrawer(mudanza.inventario, mudanza.tipo_servicio);
         }
+
         if (typeof renderFotosDrawer === "function") {
             renderFotosDrawer(mudanza.urls_fotos);
         }
