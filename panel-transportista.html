@@ -755,13 +755,11 @@ document.getElementById('loading-text').textContent =
     
     if (badge) badge.textContent = state.disponibles.length;
     
-    // 👇 TU NUEVO CÓDIGO PEGADO AQUÍ:
-   const elContadorBanner = document.getElementById('banner-contador-trabajos');
-
+    // Aquí está la línea corregida sin la letra 't':
+    const elContadorBanner = document.getElementById('banner-contador-trabajos');
     if (elContadorBanner) elContadorBanner.textContent = state.disponibles.length;
 
     if (!contenedor) return;
-
 
     if (state.disponibles.length === 0) {
         contenedor.innerHTML = `
