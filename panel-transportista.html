@@ -425,8 +425,8 @@ transform -translate-x-full md:translate-x-0 transition-transform duration-300 f
         <button onclick="cerrarDrawer()" class="rounded-xl p-2 text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-colors text-sm font-medium">✕</button>
     </div>
 
-    <!-- MENÚ DE PESTAÑAS (TABS) - CORREGIDO: Pestañas fijas sin barra de scroll horizontal -->
-    <div class="px-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center w-full no-print">
+    <!-- MENÚ DE PESTAÑAS (TABS) - Fijas y distribuidas de forma simétrica -->
+    <div class="px-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center w-full no-print flex-shrink-0">
         <button onclick="cambiarDrawerTab('resumen')" id="tab-d-resumen" class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-blue-600 text-blue-600 transition-colors">Resumen</button>
         <button onclick="cambiarDrawerTab('ruta')" id="tab-d-ruta" class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">Ruta</button>
         <button onclick="cambiarDrawerTab('inventario')" id="tab-d-inventario" class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">Inventario</button>
@@ -435,16 +435,16 @@ transform -translate-x-full md:translate-x-0 transition-transform duration-300 f
         <button onclick="cambiarDrawerTab('indicaciones')" id="tab-d-indicaciones" class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">Indicaciones</button>
     </div>
 
-    <!-- CONTENIDO DINÁMICO CON SCROLL -->
+        <!-- CONTENIDO DINÁMICO CON SCROLL (UNIFICADO Y VISIBLE) -->
     <div class="flex-1 overflow-y-auto p-6 space-y-5">
         
-        <!-- SUB-CABECERA GLOBAL (Siempre visible) -->
+        <!-- SUB-CABECERA GLOBAL (Siempre visible en la parte superior) -->
         <div class="flex justify-between items-center border-b border-slate-100 pb-3">
             <span id="drawerServicioBadge" class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md border">—</span>
             <span class="text-xs font-medium text-slate-400">ID: <strong id="drawerIdTexto" class="text-slate-600 font-semibold">—</strong></span>
         </div>
 
-        <!-- 📑 PANEL: RESUMEN -->
+        <!-- 📑 PESTAÑA 1: RESUMEN -->
         <div id="pane-d-resumen" class="drawer-pane space-y-5">
             <!-- Ruta Compacta -->
             <div class="relative pl-6 border-l-2 border-dashed border-slate-200 ml-2 space-y-6 my-2">
@@ -460,7 +460,7 @@ transform -translate-x-full md:translate-x-0 transition-transform duration-300 f
                 </div>
             </div>
 
-            <!-- Título de Inventario corregido (Elimina líneas duplicadas e incluye metros cúbicos y volumen) -->
+            <!-- Título de Inventario Resumido -->
             <div class="pt-2 border-t border-slate-100">
                 <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center justify-between w-full">
                     <span>INVENTARIO (<span id="drawerTotalArticulos" class="font-bold">0</span> ART.) — <span id="drawerTipoViviendaResumen" class="text-slate-700 font-semibold">—</span></span>
@@ -487,23 +487,62 @@ transform -translate-x-full md:translate-x-0 transition-transform duration-300 f
             </div>
         </div>
 
-        <!-- 📑 PANEL: RUTA DETALLADA -->
+        <!-- 📑 PESTAÑA 2: RUTA DETALLADA -->
         <div id="pane-d-ruta" class="drawer-pane space-y-4 hidden">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Itinerario y Accesos</h3>
-            <div id="drawerRutaDetalleContenedor"></div>
+            <div id="drawerRutaDetalleContenedor" class="w-full"></div>
         </div>
 
-        <!-- 📑 PANEL: INVENTARIO DESGLOSADO -->
+        <!-- 📑 PESTAÑA 3: INVENTARIO COMPLETO -->
         <div id="pane-d-inventario" class="drawer-pane space-y-4 hidden">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between w-full">
                 <span>Desglose Completo de Carga</span>
                 <span id="drawerM3Badge" class="text-blue-600 font-bold">0.0 m³</span>
             </h3>
             <div id="drawerInventarioFull" class="space-y-1 w-full"></div>
         </div>
 
-        <!-- ... Resto de los paneles fijos (servicios, fotos, indicaciones) que ya tenías ... -->
+        <!-- 📑 PESTAÑA 4: SERVICIOS CONTRATADOS -->
+        <div id="pane-d-servicios" class="drawer-pane space-y-4 hidden">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Garantías y Extras Incluidos</h3>
+            <!-- Contenedor nativo donde el script inyectará los checks -->
+            <div id="drawerServiciosLista" class="w-full"></div>
+        </div>
+
+        <!-- 📑 PESTAÑA 5: FOTOS -->
+        <div id="pane-d-fotos" class="drawer-pane space-y-4 hidden">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Registro Fotográfico del Cliente</h3>
+            <!-- Contenedor nativo para la galería e inyección de miniaturas -->
+            <div id="drawerFotosFull" class="w-full"></div>
+        </div>
+
+        <!-- 📑 PESTAÑA 6: INDICACIONES -->
+        <div id="pane-d-indicaciones" class="drawer-pane space-y-4 hidden">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Indicaciones Operativas</h3>
+            <!-- Contenedor nativo para las observaciones completas -->
+            <div id="drawerIndicacionesContenedor" class="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border"></div>
+        </div>
+
     </div>
+
+    <!-- SECCIÓN FIJA INFERIOR - CORREGIDA (Corrección 2: Muestra Precio Total y pago en 48h) -->
+    <div class="p-4 border-t border-slate-100 bg-slate-50/50 flex flex-col gap-3 flex-shrink-0">
+        <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-200/60 shadow-sm">
+            <div>
+                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">PRECIO TOTAL A PAGAR</span>
+                <span id="drawerPrecio" class="text-xl font-black text-blue-600 leading-none">—</span>
+                <span class="text-[10px] text-slate-400 block mt-0.5">IVA incl.</span>
+            </div>
+            <div class="text-right">
+                <span class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold px-2 py-1 rounded-md block">Pago Garantizado</span>
+                <span class="text-[10px] text-slate-400 font-medium block mt-1">en 48 horas</span>
+            </div>
+        </div>
+        <button id="btnAceptarDrawer" class="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3.5 font-bold text-sm shadow-md transition-all active:scale-[0.99]">
+            Aceptar trabajo
+        </button>
+    </div>
+
 </aside>
 
 <script>
