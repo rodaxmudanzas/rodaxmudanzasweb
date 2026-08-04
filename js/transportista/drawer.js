@@ -6,25 +6,19 @@
     function extraerCiudadYCP(direccionCompleta) {
         if (!direccionCompleta || direccionCompleta.trim() === "") return "—";
         
-        // Expresión regular común para detectar códigos postales de 5 dígitos en España (ej: 46001, 28001)
         const regexCP = /\b\d{5}\b/;
         const matchCP = direccionCompleta.match(regexCP);
         const cp = matchCP ? matchCP[0] : "";
 
-        // Dividimos por comas para intentar capturar la ciudad y provincia
         const partes = direccionCompleta.split(',');
         let ciudad = "";
 
         if (partes.length >= 2) {
-            // Normalmente la estructura es: Calle Número, Ciudad, Código Postal Provincia, País
-            // Buscamos una parte intermedia limpia que no contenga el país ni números de calle
             ciudad = partes[1].trim();
         } else {
-            // Si no tiene comas, tomamos el texto entero eliminando espacios extras
             ciudad = direccionCompleta.trim();
         }
 
-        // Devolvemos el formato compacto solicitado
         if (cp !== "") {
             return `${ciudad}, ${cp}`;
         }
@@ -98,13 +92,11 @@
                                
             const horaActual = hoy.getHours();
             
-            // Filtro estricto: Mismo día a partir de las 6:00 AM
             if (esMismoDia && horaActual >= 6) {
                 mostrarDatosSensibles = true;
             }
         }
 
-        // Extracción parcial para seguridad (Solo Ciudad y CP)
         const direccionOrigenCompacta = extraerCiudadYCP(mudanza.origen);
         const direccionDestinoCompacta = extraerCiudadYCP(mudanza.destino);
 
@@ -169,7 +161,7 @@
                             <p class="text-slate-700 font-medium"><strong>Nombre:</strong> ${mudanza.nombre || '—'}</p>
                             <p class="text-slate-700 font-medium"><strong>Teléfono:</strong> <a href="tel:${mudanza.telefono}" class="text-blue-600 font-bold hover:underline">${mudanza.telefono}</a></p>
                             <p class="text-slate-700 font-medium"><strong>Email:</strong> ${mudanza.email || '—'}</p>
-                                                ` : `
+                        ` : `
                             <p class="text-slate-500 font-medium bg-amber-50 border border-amber-100 p-2.5 rounded-xl text-amber-700 flex items-center gap-1.5">
                                 🔒 Los datos completos de contacto y la calle exacta se revelarán el día de la mudanza a partir de las 06:00 AM.
                             </p>
@@ -178,7 +170,9 @@
                 </div>`;
         }
 
-        // 6. Inyectar Servicios Contratados Dinámicos
+                // ========================================================
+        // 6. INYECTAR SERVICIOS CONTRATADOS DINÁMICOS
+        // ========================================================
         const elExtras = document.getElementById("drawerServiciosLista");
         if (elExtras) {
             if (esMudanzaTotal) {
@@ -201,7 +195,9 @@
             }
         }
 
-        // 7. Calcular Conteo Real de Artículos para el título del Resumen (Corrección 1)
+        // ========================================================
+        // 7. CALCULAR CONTEO REAL DE ARTÍCULOS PARA EL TÍTULO
+        // ========================================================
         let totalArticulosCount = 0;
         if (mudanza.inventario) {
             let invParsed = typeof mudanza.inventario === "string" ? JSON.parse(mudanza.inventario) : mudanza.inventario;
@@ -210,26 +206,24 @@
             }
         }
 
-                // ========================================================
-        // CORRECCIÓN 1: INYECTAR TÍTULO DE INVENTARIO LIMPIO Y SIN DUPLICADOS
-        // ========================================================
+        // Sincronizamos la inyección limpia del total de artículos
         const elTotalArticulos = document.getElementById("drawerTotalArticulos");
         if (elTotalArticulos) {
-            // Dejamos un solo guion medio corto y una sola vez la palabra ART.
-            elTotalArticulos.innerHTML = `${totalItemsContados} ART.`;
+            elTotalArticulos.innerHTML = `${totalArticulosCount} ART.`;
         }
 
-        // 8. Lanzar los renderizadores externos de Inventario y Fotos pasándole el tipo de servicio
+        // ========================================================
+        // 8. LANZAR LOS RENDERIZADORES EXTERNOS DE INVENTARIO Y FOTOS
+        // ========================================================
         if (typeof renderInventarioDrawer === "function") {
             renderInventarioDrawer(mudanza.inventario, mudanza.tipo_servicio);
         }
-
         if (typeof renderFotosDrawer === "function") {
             renderFotosDrawer(mudanza.urls_fotos);
         }
 
         const elIndicaciones = document.getElementById("drawerIndicacionesContenedor");
-        if(elIndicaciones) {
+        if (elIndicaciones) {
             elIndicaciones.textContent = mudanza.observaciones || "Sin indicaciones adicionales.";
         }
 
@@ -248,8 +242,10 @@
         document.getElementById("drawerMudanza").classList.add("translate-x-full");
     }
 
+    // CONTROLADOR DE PESTAÑAS (Maneja la visibilidad e inyección de clases CSS en cada Tab)
     function cambiarDrawerTab(tabName) {
         const tabs = ['resumen', 'ruta', 'inventario', 'servicios', 'fotos', 'indicaciones'];
+        
         tabs.forEach(t => {
             const btn = document.getElementById(`tab-d-${t}`);
             const pane = document.getElementById(`pane-d-${t}`);
