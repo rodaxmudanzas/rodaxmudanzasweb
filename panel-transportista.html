@@ -13,102 +13,115 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-   <style>
+<style>
     /* ========================================================
-       BARRA LATERAL IZQUIERDA: COLOR SINK CORPORATIVO Y ALTO CONTRASTE
-       ======================================================== --> */
+       DISEÑO DE ALTA FIDELIDAD: AZUL NOCHE Y MENÚ MINIMALISTA COMPACTO
+       ======================================================== */
     
-    /* Primero y Cuarto: Fondo azul idéntico al de la barra superior */
-    .sidebar-container {
-        background-color: #0B3CC1 !important; 
-    }
-    
-    /* Separadores de categoría legibles */
-    .menu-title {
-        font-size: 11px;
-        font-weight: 800;
-        letter-spacing: 0.08em;
-        color: rgba(255, 255, 255, 0.65); /* Blanco con opacidad suave para títulos */
-        text-transform: uppercase;
-        margin-top: 24px;
-        margin-bottom: 8px;
-        padding-left: 14px;
+    /* Ambos bloques con el mismo tono exacto de azul oscuro premium */
+    .theme-azul-oscuro-rodax {
+        background-color: #0B1E5B !important; /* Azul marino oscuro idéntico al diseño */
     }
 
-    /* Segundo: Letras, palabras e iconos que resaltan mucho más (Alto contraste) */
-    .nav-item-premium {
-        width: 100%;
+    .sidebar-container-compact {
+        width: 72px !important; /* Menú lateral súper estrecho centrado en los iconos */
+        background-color: #0B1E5B !important;
+        display: flex;
+        flex-col: flex-col;
+        align-items: center;
+    }
+    
+    /* Ocultamos las etiquetas de texto de categoría para mantenerlo limpio */
+    .menu-title-compact {
+        display: none; 
+    }
+
+    /* Iconos y botones del menú de alto contraste y centrados */
+    .nav-item-compact {
+        width: 48px;
+        height: 48px;
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 11px 14px;
+        justify-content: center;
         border-radius: 12px;
-        color: #FFFFFF !important; /* Texto en blanco puro para máxima legibilidad */
-        font-size: 13px;
-        font-weight: 700; /* Letras más gruesas para que resalten */
+        color: rgba(255, 255, 255, 0.85) !important;
         transition: all 0.2s ease-in-out;
         position: relative;
-        background: transparent;
+        margin: 4px auto;
     }
 
-    .nav-item-premium i, .nav-item-premium svg {
-        width: 18px;
-        height: 18px;
-        color: rgba(255, 255, 255, 0.85) !important; /* Iconos brillantes */
+    .nav-item-compact i, .nav-item-compact svg {
+        width: 20px;
+        height: 20px;
+        color: rgba(255, 255, 255, 0.85) !important;
         transition: transform 0.2s ease;
     }
 
-    /* Tercero: Efecto interactivo premium al pasar el cursor (Hover) */
-    .nav-item-premium:hover:not(.disabled) {
-        background-color: rgba(255, 255, 255, 0.15) !important; /* Fondo sutilmente más claro */
+    /* Texto flotante sutil al pasar el mouse por si olvidan qué significa el icono */
+    .nav-item-compact:hover::after {
+        content: attr(data-title);
+        position: absolute;
+        left: 62px;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: #1E293B;
+        color: #FFFFFF;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 6px;
+        white-space: nowrap;
+        z-index: 100;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    /* Efectos Interactivos (Hover y Click) */
+    .nav-item-compact:hover:not(.disabled) {
+        background-color: rgba(255, 255, 255, 0.15) !important;
         color: #FFFFFF !important;
-        transform: translateX(4px); /* Pequeño desplazamiento hacia la derecha */
     }
     
-    .nav-item-premium:hover:not(.disabled) i, 
-    .nav-item-premium:hover:not(.disabled) svg {
-        color: #FFFFFF !important;
-        transform: scale(1.1); /* El icono se agranda ligeramente */
+    .nav-item-compact:hover:not(.disabled) i {
+        transform: scale(1.08);
     }
 
-    /* Tercero: Efecto activo al hacer CLICK o estar seleccionado */
-    .nav-item-premium.active {
-        background-color: rgba(255, 255, 255, 0.25) !important; /* Resalte fuerte en blanco/transparente */
+    .nav-item-compact.active {
+        background-color: rgba(255, 255, 255, 0.25) !important;
         color: #FFFFFF !important;
-        box-shadow: inset 4px 0 0 0 #FFFFFF; /* Línea indicadora izquierda en blanco puro */
+        box-shadow: inset 3px 0 0 0 #FFFFFF; /* Marca blanca lateral */
     }
 
-    .nav-item-premium.active i, .nav-item-premium.active svg {
-        color: #FFFFFF !important;
-    }
-
-    /* Elementos bloqueados sutiles */
-    .nav-item-premium.disabled {
-        opacity: 0.55;
+    .nav-item-compact.disabled {
+        opacity: 0.35;
         cursor: not-allowed;
     }
 
-    /* Badges de notificación premium adaptados al fondo azul */
-    .badge-menu-premium {
-        background-color: #FFFFFF !important;
-        color: #0B3CC1 !important; /* El número va en color azul para contrastar */
-        font-size: 11px;
+    /* Pequeños globos contadores sobre los iconos */
+    .badge-menu-compact {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        background-color: #FFFFFF;
+        color: #0B1E5B;
+        font-size: 9px;
         font-weight: 900;
-        padding: 1px 7px;
-        border-radius: 8px;
-        margin-left: auto;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 1px 4px;
+        border-radius: 6px;
+        line-height: 1;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 
-    .badge-menu-alert {
+    .badge-menu-alert-compact {
+        position: absolute;
+        top: 2px;
+        right: 2px;
         background-color: #EF4444;
         color: #FFFFFF;
-        font-size: 10px;
+        font-size: 9px;
         font-weight: 700;
-        padding: 2px 7px;
-        border-radius: 8px;
-        margin-left: auto;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 1px 4px;
+        border-radius: 6px;
+        line-height: 1;
     }
 </style>
 
@@ -118,129 +131,72 @@
 <div id="mobile-overlay" class="fixed inset-0 bg-gray-900/60 z-40 hidden md:hidden backdrop-blur-sm"
      onclick="cerrarMenuMovil()"></div>
 
-<!-- REEMPLAZAR BARRA LATERAL COMPLETA -->
-<aside id="sidebar" class="w-64 sidebar-container border-r border-blue-700/30 flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col shadow-xl">
+<!-- BARRA LATERAL ULTRA COMPACTA (DISEÑO EXACTO CORREGIDO) -->
+<aside id="sidebar" class="sidebar-container-compact border-r border-white/5 flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col py-4 shadow-xl">
 
-    <!-- ========================================================
-         Quinto: LOGO DE LA PARTE IZQUIERDA SUPERIOR (CÓDIGO ABIERTO)
-         Modifica el atributo src="..." de abajo cuando quieras cambiar el logo.
-         ======================================================== -->
-    <div class="px-6 py-5 border-b border-white/10 flex items-center justify-center bg-white/5">
-        
-        <img src="images/logo-rodax.png" 
-             id="logoRodaxSide" 
-             alt="RODAX MUDANZAS" 
-             class="h-10 object-contain brightness-0 invert transition-transform duration-200 hover:scale-105">
-             
+    <!-- LOGO ABIERTO (Para modificar cuando quieras) -->
+    <div class="w-full flex items-center justify-center pb-5 border-b border-white/10 mb-4 px-2">
+        <img src="images/logo-rodax.png" id="logoRodaxSide" alt="RODAX" class="h-6 object-contain brightness-0 invert">
     </div>
 
-    <!-- PERFIL DEL TRANSPORTISTA -->
-    <div class="px-5 py-4 border-b border-white/10 bg-white/5">
-        <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-xl overflow-hidden border border-white/20 bg-white/10">
-                <img id="profile-img" src="https://ui-avatars.com" class="w-full h-full object-cover">
-            </div>
-            <div class="flex-1 min-w-0">
-                <div id="profile-name" class="font-bold text-white text-sm truncate">Cargando...</div>
-                <div class="flex items-center gap-1.5 text-[11px] text-emerald-300 font-bold mt-0.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
-                    Conectado
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- ICONOS DE ACCESO DIRECTO CON TEXTO HOVER FLOTANTE -->
+    <nav class="flex-1 w-full flex flex-col items-center gap-1">
 
-    <!-- NAVEGACIÓN PRINCIPAL CON ALTO CONTRASTE -->
-    <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-1">
-
-        <div class="menu-title">Marketplace</div>
-        
-        <button onclick="cambiarTab('disponibles')" class="nav-item-premium active" id="nav-disponibles">
+        <button onclick="cambiarTab('disponibles')" class="nav-item-compact active" id="nav-disponibles" data-title="Trabajos disponibles">
             <i data-lucide="search"></i>
-            <span>Trabajos disponibles</span>
-            <span id="badge-disponibles" class="badge-menu-premium">0</span>
+            <span id="badge-disponibles" class="badge-menu-compact">0</span>
         </button>
 
-        <button onclick="cambiarTab('mis-mudanzas')" class="nav-item-premium" id="nav-mis-mudanzas">
+        <button onclick="cambiarTab('mis-mudanzas')" class="nav-item-compact" id="nav-mis-mudanzas" data-title="Mis mudanzas activas">
             <i data-lucide="truck"></i>
-            <span>Mis mudanzas activas</span>
-            <span id="badge-activas" class="badge-menu-premium hidden">0</span>
+            <span id="badge-activas" class="badge-menu-compact hidden">0</span>
         </button>
 
-        <div class="menu-title">Operaciones</div>
-        
-        <button class="nav-item-premium disabled" title="Próximamente">
+        <div class="w-8 border-t border-white/10 my-3"></div>
+
+        <button class="nav-item-compact disabled" data-title="Mi agenda (Próximamente)">
             <i data-lucide="calendar-days"></i>
-            <span>Mi agenda</span>
-            <i data-lucide="lock" class="ml-auto opacity-50" style="width:12px; height:12px;"></i>
         </button>
 
-        <button class="nav-item-premium disabled" title="Próximamente">
+        <button class="nav-item-compact disabled" data-title="Mis rutas (Próximamente)">
             <i data-lucide="route"></i>
-            <span>Mis rutas</span>
-            <i data-lucide="lock" class="ml-auto opacity-50" style="width:12px; height:12px;"></i>
         </button>
 
-        <div class="menu-title">Finanzas</div>
-        
-        <button class="nav-item-premium disabled" title="Próximamente">
+        <button class="nav-item-compact disabled" data-title="Pagos (Próximamente)">
             <i data-lucide="wallet"></i>
-            <span>Pagos</span>
-            <i data-lucide="lock" class="ml-auto opacity-50" style="width:12px; height:12px;"></i>
         </button>
 
-        <button class="nav-item-premium disabled" title="Próximamente">
+        <button class="nav-item-compact disabled" data-title="Facturación (Próximamente)">
             <i data-lucide="receipt"></i>
-            <span>Facturación</span>
-            <i data-lucide="lock" class="ml-auto opacity-50" style="width:12px; height:12px;"></i>
         </button>
 
-        <div class="menu-title">Mi negocio</div>
-        
-        <button class="nav-item-premium disabled" title="Próximamente">
+        <button class="nav-item-compact disabled" data-title="Mis vehículos (Próximamente)">
             <i data-lucide="package"></i>
-            <span>Mis vehículos</span>
-            <i data-lucide="lock" class="ml-auto opacity-50" style="width:12px; height:12px;"></i>
         </button>
 
-        <button class="nav-item-premium disabled" title="Próximamente">
+        <button class="nav-item-compact disabled" data-title="Equipo (Próximamente)">
             <i data-lucide="users"></i>
-            <span>Equipo / Operarios</span>
-            <i data-lucide="lock" class="ml-auto opacity-50" style="width:12px; height:12px;"></i>
         </button>
 
-        <div class="menu-title">Mi cuenta</div>
-        
-        <button class="nav-item-premium disabled">
+        <button class="nav-item-compact disabled" data-title="Mi perfil">
             <i data-lucide="user"></i>
-            <span>Mi perfil</span>
         </button>
 
-        <button class="nav-item-premium disabled flex items-center w-full">
+        <button class="nav-item-compact disabled" data-title="Notificaciones">
             <i data-lucide="bell"></i>
-            <span>Notificaciones</span>
-            <span class="badge-menu-alert">3</span>
+            <span class="badge-menu-alert-compact">3</span>
         </button>
 
-        <button class="nav-item-premium disabled">
+        <button class="nav-item-compact disabled" data-title="Configuración">
             <i data-lucide="settings"></i>
-            <span>Configuración</span>
-        </button>
-
-        <div class="menu-title">Ayuda</div>
-        
-        <button class="nav-item-premium disabled">
-            <i data-lucide="headphones"></i>
-            <span>Soporte</span>
         </button>
 
     </nav>
 
-    <!-- CERRAR SESIÓN -->
-    <div class="p-4 border-t border-white/10 bg-white/5 flex-shrink-0">
-        <button onclick="cerrarSesion()" class="nav-item-premium text-red-200 hover:bg-red-500/20 hover:text-white transition-colors">
-            <i data-lucide="log-out" class="text-white/80"></i>
-            <span>Cerrar sesión</span>
+    <!-- CERRAR SESIÓN INFERIOR -->
+    <div class="w-full pt-4 border-t border-white/10 flex items-center justify-center">
+        <button onclick="cerrarSesion()" class="nav-item-compact text-rose-300 hover:bg-rose-500/20" data-title="Cerrar sesión">
+            <i data-lucide="log-out" class="text-rose-300"></i>
         </button>
     </div>
 
@@ -249,61 +205,47 @@
 <!-- CONTENIDO PRINCIPAL -->
 <main class="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50 relative w-full">
 
-    <!-- ========================================================
-         BARRA SUPERIOR 1: CUADRO AZUL MARINO DE ESTADO
+       <!-- ========================================================
+         BARRA SUPERIOR AZUL OSCURO CON INTEGRACIÓN DE PERFIL (CORREGIDO)
          ======================================================== -->
     <div class="px-6 pt-5 pb-3 no-print flex-shrink-0">
-        <div class="bg-[#0B3CC1] text-white rounded-2xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-md shadow-blue-900/10">
-            <!-- Izquierda: Título e Icono principal -->
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white/90">
-                    <i data-lucide="truck" class="w-6 h-6"></i>
-                </div>
-                <div>
+        <div class="theme-azul-oscuro-rodax text-white rounded-2xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-md">
+            
+            <!-- Bloque Izquierdo: Título y Datos Logísticos Compactos -->
+            <div class="flex items-center gap-5">
+                <div class="flex flex-col">
                     <h1 class="text-xl font-bold tracking-tight">Trabajos Disponibles</h1>
-                    <p class="text-xs text-white/70 mt-0.5 font-medium">Encuentra y acepta servicios que encajen con tu ruta y disponibilidad.</p>
+                    <div class="flex items-center gap-4 mt-2 text-xs text-white/70 font-medium">
+                        <span class="flex items-center gap-1"><i data-lucide="box" class="w-3.5 h-3.5 text-white/50"></i> <strong id="banner-contador-trabajos" class="text-white">0</strong> disponibles</span>
+                        <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-white/50"></i> Madrid, España</span>
+                        <span onclick="recargarDatos()" class="flex items-center gap-1 cursor-pointer hover:text-white"><i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-white/50"></i> Actualizar</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Centro/Derecha: Bloques de información alineados horizontalmente -->
-            <div class="flex flex-wrap items-center gap-6 w-full md:w-auto text-xs font-medium border-t border-white/10 md:border-0 pt-3 md:pt-0">
-                <!-- Contador de trabajos -->
-                <div class="flex items-center gap-2.5">
-                    <i data-lucide="box" class="w-4 h-4 text-white/60"></i>
-                    <div>
-                        <span id="banner-contador-trabajos" class="block font-bold text-sm leading-none">5</span>
-                        <span class="text-[10px] text-white/60 block mt-0.5">trabajos disponibles</span>
+            <!-- Bloque Derecho: Perfil del Transportista (Alineado e idéntico al diseño original) -->
+            <div class="flex items-center gap-4 ml-auto md:ml-0 flex-shrink-0">
+                <!-- Estado Conectado e Información -->
+                <div class="text-right hidden sm:block">
+                    <div id="profile-name-top" class="font-bold text-sm text-slate-100 leading-tight">Cargando...</div>
+                    <div class="flex items-center justify-end gap-1.5 text-[11px] text-emerald-400 font-semibold mt-0.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        Conectado
                     </div>
                 </div>
 
-                <!-- Ubicación -->
-                <div class="flex items-center gap-2.5">
-                    <i data-lucide="map-pin" class="w-4 h-4 text-white/60"></i>
-                    <div>
-                        <span class="block font-bold text-sm leading-none">Madrid, España</span>
-                        <span class="text-[10px] text-white/60 block mt-0.5">Tu ubicación actual</span>
-                    </div>
+                <!-- Avatar Redondo con Iniciales (Sustituye la caja RF antigua) -->
+                <div class="w-11 h-11 rounded-full overflow-hidden border-2 border-white/20 bg-white/10 shadow-sm flex items-center justify-center font-bold text-sm text-white select-none">
+                    <img id="profile-img-top" src="https://ui-avatars.com" class="w-full h-full object-cover">
                 </div>
 
-                <!-- Sincronización -->
-                <div onclick="recargarDatos()" class="flex items-center gap-2.5 cursor-pointer hover:text-white/80 transition-colors">
-                    <i data-lucide="refresh-cw" class="w-4 h-4 text-white/60"></i>
-                    <div>
-                        <span class="block font-bold text-sm leading-none">Actualizar</span>
-                        <span class="text-[10px] text-white/60 block mt-0.5">Hace 2 min</span>
-                    </div>
-                </div>
-
-                <!-- Toggle Disponibilidad -->
-                <div class="flex items-center gap-3 bg-white/10 px-3 py-2 rounded-xl border border-white/10 ml-auto md:ml-0">
-                    <span class="text-[10px] text-white/60 uppercase font-bold tracking-wider">Disponibilidad</span>
-                    <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span class="font-bold text-slate-100">Disponible</span>
-                    </div>
+                <!-- Dropdown de Disponibilidad Operativa -->
+                <div class="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-xl border border-white/10 text-xs font-semibold">
+                    <span class="font-bold text-slate-100">Disponible</span>
                     <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-white/60"></i>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -622,42 +564,47 @@ Transportista.currentUserId = currentUserId;
         }
     }
 
-    async function cargarDatosPerfil() {
-    try {
-        console.log("Buscando perfil del transportista:", currentUserId);
+        async function cargarDatosPerfil() {
+        try {
+            console.log("Buscando perfil del transportista:", currentUserId);
 
-        const { data, error } = await dbClient
-            .from('transportistas')
-            .select('nombre')
-            .eq('id', currentUserId)
-            .maybeSingle();
+            const { data, error } = await dbClient
+                .from('transportistas')
+                .select('nombre')
+                .eq('id', currentUserId)
+                .maybeSingle();
 
-        console.log("Perfil transportista:", data);
-        console.log("Error perfil:", error);
+            console.log("Perfil transportista:", data);
+            console.log("Error perfil:", error);
 
-        if (error) {
-            console.error("Error al cargar el perfil:", error);
-            return;
+            if (error) {
+                console.error("Error al cargar el perfil:", error);
+                return;
+            }
+
+            // 👇 REEMPLAZA DESDE AQUÍ HASTA EL CIERRE DEL IF (DATA):
+            if (data) {
+                currentUserNombre = data.nombre || 'Transportista';
+
+                // Inyección en el nuevo texto de la cabecera derecha de la barra azul oscuro
+                const elNameTop = document.getElementById('profile-name-top') || document.getElementById('profile-name');
+                if (elNameTop) elNameTop.textContent = currentUserNombre;
+
+                // Generamos el avatar redondo premium con iniciales en color azul corporativo
+                const avatarUrl = `https://ui-avatars.com{encodeURIComponent(currentUserNombre)}&background=ffffff&color=0b1e5b&bold=true`;
+                
+                if (document.getElementById('profile-img-top')) document.getElementById('profile-img-top').src = avatarUrl;
+                if (document.getElementById('profile-img')) document.getElementById('profile-img').src = avatarUrl;
+            } else {
+                console.warn("No existe perfil para este usuario.");
+                const elNameTop = document.getElementById('profile-name-top') || document.getElementById('profile-name');
+                if (elNameTop) elNameTop.textContent = 'Transportista';
+            }
+
+        } catch (err) {
+            console.error("Error inesperado cargando perfil:", err);
         }
-
-        if (data) {
-            currentUserNombre = data.nombre || 'Transportista';
-
-            document.getElementById('profile-name').textContent =
-                currentUserNombre;
-
-            document.getElementById('profile-img').src =
-                `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUserNombre)}&background=1d4ed8&color=fff&bold=true`;
-        } else {
-            console.warn("No existe perfil para este usuario.");
-            document.getElementById('profile-name').textContent =
-                'Transportista';
-        }
-
-    } catch (err) {
-        console.error("Error inesperado cargando perfil:", err);
     }
-}
 
     async function cerrarSesion() {
         await dbClient.auth.signOut();
