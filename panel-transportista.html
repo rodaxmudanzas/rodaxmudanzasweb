@@ -275,74 +275,73 @@
         </div>
     </header>
 
-           <!-- ========================================================
-         BARRA SUPERIOR AZUL OSCURO (DISEÑO ULTRA COMPACTO IDÉNTICO)
+        <!-- ========================================================
+         BARRA SUPERIOR AZUL OSCURO (DISEÑO PREMIUM REESTRUCTURADO)
          ======================================================== -->
     <div class="px-6 pt-3 pb-1 no-print flex-shrink-0">
-        <div class="theme-azul-oscuro-rodax text-white rounded-xl px-5 py-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+        <div class="theme-azul-oscuro-rodax text-white rounded-xl px-5 py-3 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
             
-                        <!-- Bloque Izquierdo: Icono separado y textos en columna con alineación perfecta a la 'T' -->
-            <div class="flex items-start gap-3">
-                <!-- El icono flota a la izquierda de forma independiente -->
-                <i data-lucide="truck" class="w-5 h-5 text-white/90 flex-shrink-0 mt-0.5"></i>
+            <!-- SEGUNDO REQUERIMIENTO: Icono del camión centrado verticalmente en el medio de las dos frases -->
+            <div class="flex items-center gap-3.5">
+                <!-- El icono del camión ahora se alinea en el eje central del texto vertical -->
+                <i data-lucide="truck" class="w-5 h-5 text-white/90 flex-shrink-0"></i>
                 
-                <!-- Contenedor vertical: Asegura que el título y la frase tengan el mismo margen izquierdo -->
-                <div class="flex flex-col items-start">
+                <div class="flex flex-col justify-center">
                     <h1 class="text-sm md:text-base font-black tracking-tight leading-none">Trabajos Disponibles</h1>
-                    <!-- 'hidden' lo oculta en móvil; 'md:block' lo muestra exactamente debajo empezando en la 'T' -->
-                    <p class="hidden md:block text-[11px] text-white/60 font-semibold mt-1.5 leading-tight max-w-xs">
-                        Encuentra y acepta servicios que encajen con tu ruta.
+                    <p class="hidden md:block text-[11px] text-white/60 font-semibold mt-1 leading-tight max-w-xs select-none">
+                        Encuentra y acepta servicios que encajen con tu ruta y disponibilidad.
                     </p>
                 </div>
             </div>
 
-                        <!-- Bloque Derecho: Sub-bloques transformados en Cápsulas/Botones Premium -->
-            <div class="flex flex-wrap items-center gap-3 text-xs font-bold ml-auto md:ml-0">
+            <!-- Bloques logísticos intermedios compactos -->
+            <div class="flex flex-wrap items-center gap-5 text-[11px] font-medium ml-auto md:ml-0">
                 
-                <!-- Botón Contador Dinámico -->
-                <div class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-6 py-3.5 rounded-md transition-colors cursor-pointer select-none">
-                    <i data-lucide="box" class="w-4 h-4 text-white/70"></i>
-                    <span id="banner-contador-trabajos" class="font-black text-white text-[11px]">0</span>
-                    <span class="text-white/90">trabajos disponibles</span>
+                <!-- Contador -->
+                <div class="flex items-center gap-1.5 border-r border-white/10 pr-4 last:border-0 last:pr-0">
+                    <i data-lucide="box" class="w-3.5 h-3.5 text-white/50"></i>
+                    <span id="banner-contador-trabajos" class="font-bold text-white">0</span>
+                    <span class="text-white/60">trabajos disponibles</span>
                 </div>
 
-                <!-- Botón Ubicación Actual -->
-                <div class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-6 py-3.5 rounded-md transition-colors cursor-pointer select-none">
-                    <i data-lucide="map-pin" class="w-4 h-4 text-white/70"></i>
-                    <span class="text-white/90">Madrid, España</span>
+                <!-- Ubicación -->
+                <div class="flex items-center gap-1.5 border-r border-white/10 pr-4 last:border-0 last:pr-0">
+                    <i data-lucide="map-pin" class="w-3.5 h-3.5 text-white/50"></i>
+                    <span class="text-white/60">Madrid, España</span>
                 </div>
 
-                <!-- Botón Sincronizar / Actualizar -->
-                <div onclick="recargarDatos()" class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-6 py-3.5 rounded-md transition-colors cursor-pointer select-none">
-                    <i data-lucide="refresh-cw" class="w-4 h-4 text-white/70"></i>
-                    <span class="text-white/90">Actualizar</span>
+                <!-- Actualizar -->
+                <div onclick="recargarDatos()" class="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors border-r border-white/10 pr-4 last:border-0 last:pr-0">
+                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-white/50"></i>
+                    <span class="text-white/60">Actualizar</span>
                 </div>
 
-                <!-- ========================================================
-     SELECTOR DE DISPONIBILIDAD CON ACTIVACIÓN AUTOMÁTICA
-     ======================================================== -->
-<div class="flex flex-col items-start gap-1 flex-shrink-0 select-none no-print">
-    <!-- Palabra fija encima del selector tal como está en la captura -->
-    <span class="text-[10px] text-white/60 uppercase font-black tracking-wider pl-1">Disponibilidad</span>
-    
-    <!-- Contenedor del Selector con pastilla translúcida exacta -->
-    <div class="relative flex items-center bg-white/10 hover:bg-white/15 rounded-xl transition-colors border border-white/10 px-3.5 py-2 min-w-[150px]">
-        <!-- Indicador de color dinámico (Verde para Disponible / Rojo para No Disponible) -->
-        <span id="disponibilidad-indicador-color" class="w-2.5 h-2.5 rounded-full bg-emerald-400 mr-2.5 flex-shrink-0 transition-colors duration-300"></span>
-        
-        <!-- Elemento Selector Nativo Estilizado (Alto contraste con fuentes con fuerza) -->
-        <select id="selector-disponibilidad-transportista" onchange="actualizarDisponibilidadBaseDatos(this.value)" class="bg-transparent text-white font-black text-sm tracking-wide focus:outline-none pr-6 cursor-pointer appearance-none w-full font-sans">
-            <option value="Disponible" class="text-slate-900 font-bold">Disponible</option>
-            <option value="No Disponible" class="text-slate-900 font-bold">No Disponible</option>
-        </select>
-        
-        <!-- Icono de flecha de despliegue a la derecha -->
-        <i data-lucide="chevron-down" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/70 w-4 h-4 pointer-events-none"></i>
-    </div>
-</div>
+                <!-- PRIMER REQUERIMIENTO: Selector encapsulado armónicamente en una única pastilla translúcida premium -->
+                <div class="relative flex flex-col items-start bg-white/10 hover:bg-white/15 rounded-xl transition-colors border border-white/10 px-4 py-1.5 min-w-[155px] h-[46px] justify-center no-print">
+                    
+                    <!-- Palabra fija superior interna -->
+                    <span class="text-[9px] text-white/50 uppercase font-bold tracking-wider leading-none select-none block mb-0.5">Disponibilidad</span>
+                    
+                    <!-- Contenedor interno flexible para alinear el punto verde y el selector de texto -->
+                    <div class="flex items-center w-full relative">
+                        <!-- Indicador de color flotante dinámico -->
+                        <span id="disponibilidad-indicador-color" class="w-2 h-2 rounded-full bg-emerald-400 mr-2 flex-shrink-0 transition-colors duration-300"></span>
+                        
+                        <!-- Elemento Selector Nativo Invisible visualmente pero interactivo -->
+                        <select id="selector-disponibilidad-transportista" onchange="actualizarDisponibilidadBaseDatos(this.value)" class="bg-transparent text-white font-black text-xs md:text-sm tracking-wide focus:outline-none pr-6 cursor-pointer appearance-none w-full font-sans leading-none">
+                            <option value="Disponible" class="text-slate-900 font-bold">Disponible</option>
+                            <option value="No Disponible" class="text-slate-900 font-bold">No Disponible</option>
+                        </select>
+                        
+                        <!-- Flecha indicadora derecha integrada en la misma pastilla -->
+                        <i data-lucide="chevron-down" class="absolute right-0 top-1/2 -translate-y-1/2 text-white/60 w-3.5 h-3.5 pointer-events-none"></i>
+                    </div>
+                </div>
+
+            </div>
 
         </div>
-    </div>
+    </div>       
 
     <!-- ========================================================
          FILTROS AVANZADOS (CUADRO BLANCO CON TEXTOS CON FUERZA)
