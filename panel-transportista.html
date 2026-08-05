@@ -281,12 +281,18 @@
     <div class="px-6 pt-3 pb-1 no-print flex-shrink-0">
         <div class="theme-azul-oscuro-rodax text-white rounded-xl px-5 py-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
             
-            <!-- Bloque Izquierdo: Icono flotante y Texto juntos en una sola línea -->
-            <div class="flex items-center gap-3">
-                <i data-lucide="truck" class="w-5 h-5 text-white/90 flex-shrink-0"></i>
-                <div class="flex items-baseline gap-2">
-                    <h1 class="text-sm font-black tracking-tight">Trabajos Disponibles</h1>
-                    <p class="text-[11px] text-white/60 font-medium hidden lg:inline">Encuentra y acepta servicios que encajen con tu ruta.</p>
+                        <!-- Bloque Izquierdo: Icono separado y textos en columna con alineación perfecta a la 'T' -->
+            <div class="flex items-start gap-3">
+                <!-- El icono flota a la izquierda de forma independiente -->
+                <i data-lucide="truck" class="w-5 h-5 text-white/90 flex-shrink-0 mt-0.5"></i>
+                
+                <!-- Contenedor vertical: Asegura que el título y la frase tengan el mismo margen izquierdo -->
+                <div class="flex flex-col items-start">
+                    <h1 class="text-sm md:text-base font-black tracking-tight leading-none">Trabajos Disponibles</h1>
+                    <!-- 'hidden' lo oculta en móvil; 'md:block' lo muestra exactamente debajo empezando en la 'T' -->
+                    <p class="hidden md:block text-[11px] text-white/60 font-semibold mt-1.5 leading-tight max-w-xs">
+                        Encuentra y acepta servicios que encajen con tu ruta.
+                    </p>
                 </div>
             </div>
 
