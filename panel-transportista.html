@@ -318,14 +318,28 @@
                     <span class="text-white/90">Actualizar</span>
                 </div>
 
-                <!-- Botón Estado Minimalista (Tu versión de tamaño grande sincronizada) -->
-                <div class="flex items-center gap-2 bg-white/15 hover:bg-white/20 px-3.5 py-1.5 rounded-md text-[13px] font-black tracking-wide transition-colors cursor-pointer select-none border border-white/10">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    <span class="text-white">Disponible</span>
-                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-white/70 ml-0.5"></i>
-                </div>
-
-            </div>
+                <!-- ========================================================
+     SELECTOR DE DISPONIBILIDAD CON ACTIVACIÓN AUTOMÁTICA
+     ======================================================== -->
+<div class="flex flex-col items-start gap-1 flex-shrink-0 select-none no-print">
+    <!-- Palabra fija encima del selector tal como está en la captura -->
+    <span class="text-[10px] text-white/60 uppercase font-black tracking-wider pl-1">Disponibilidad</span>
+    
+    <!-- Contenedor del Selector con pastilla translúcida exacta -->
+    <div class="relative flex items-center bg-white/10 hover:bg-white/15 rounded-xl transition-colors border border-white/10 px-3.5 py-2 min-w-[150px]">
+        <!-- Indicador de color dinámico (Verde para Disponible / Rojo para No Disponible) -->
+        <span id="disponibilidad-indicador-color" class="w-2.5 h-2.5 rounded-full bg-emerald-400 mr-2.5 flex-shrink-0 transition-colors duration-300"></span>
+        
+        <!-- Elemento Selector Nativo Estilizado (Alto contraste con fuentes con fuerza) -->
+        <select id="selector-disponibilidad-transportista" onchange="actualizarDisponibilidadBaseDatos(this.value)" class="bg-transparent text-white font-black text-sm tracking-wide focus:outline-none pr-6 cursor-pointer appearance-none w-full font-sans">
+            <option value="Disponible" class="text-slate-900 font-bold">Disponible</option>
+            <option value="No Disponible" class="text-slate-900 font-bold">No Disponible</option>
+        </select>
+        
+        <!-- Icono de flecha de despliegue a la derecha -->
+        <i data-lucide="chevron-down" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/70 w-4 h-4 pointer-events-none"></i>
+    </div>
+</div>
 
         </div>
     </div>
@@ -596,7 +610,7 @@ Transportista.currentUserId = currentUserId;
         document.getElementById('mobile-overlay').classList.add('hidden');
     }
 
-        async function verificarSesion() {
+            async function verificarSesion() {
         try {
             const { data: { session }, error } = await dbClient.auth.getSession();
 
@@ -607,15 +621,33 @@ Transportista.currentUserId = currentUserId;
 
             if (error || !session) {
                 console.error("NO SE DETECTÓ SESIÓN ACTIVA.");
-                // Comentamos la expulsión para que no te saque si el token tarda un segundo en cargar
-                // window.location.replace('transportistas.html');
+                window.location.replace('transportistas.html');
                 return;
             }
             
             currentUserId = session.user.id;
             Transportista.currentUserId = currentUserId;
 
-            // Protegemos con condicionales para que no falle si el ID cambió de nombre
+            // ==========================================
+            // 🚀 AUTOMATIZACIÓN DE LOGIN: FORZAR DISPONIBLE EN SUPABASE
+            // ==========================================
+            console.log("Transportista logueado. Sincronizando estado automático: Disponible");
+            
+            // Hacemos el UPDATE automático en Supabase para que el Panel Admin lo vea al instante
+            await dbClient
+                .from('transportistas')
+                .update({ 
+                    disponibilidad: "Disponible",
+                    ultima_actualizacion_estado: new Date().toISOString()
+                })
+                .eq('id', currentUserId);
+
+            // Ajustamos visualmente el selector de la barra superior azul
+            const selectorDisp = document.getElementById('selector-disponibilidad-transportista');
+            if (selectorDisp) selectorDisp.value = "Disponible";
+            toggleColorIndicadorDisponibilidad("Disponible");
+            // ==========================================
+
             const elLoadingText = document.getElementById('loading-text');
             if (elLoadingText) elLoadingText.textContent = 'Cargando tu panel...';
             
@@ -637,7 +669,6 @@ Transportista.currentUserId = currentUserId;
             
         } catch (err) {
             console.error('Error controlado en verificación:', err);
-            // Esto obligará a la web a mostrarte en un cuadro qué elemento HTML está roto
             alert("Detalle del error en la sesión: " + err.message);
         }
     }
@@ -1456,6 +1487,52 @@ console.log(typeof renderFotosDrawer);
 
 <script>
 console.log("SCRIPT EXTERNO CARGADO");
+// Función para guardar el cambio manual del selector en la base de datos
+async function actualizarDisponibilidadBaseDatos(nuevoEstado) {
+    try {
+        console.log("Cambio manual de disponibilidad detectado:", nuevoEstado);
+        
+        // Cambiar el punto de color instantáneamente (Verde o Rojo)
+        toggleColorIndicadorDisponibilidad(nuevoEstado);
+
+        // Actualizar Supabase para el Panel de Administración (Admin)
+        const { error } = await dbClient
+            .from('transportistas')
+            .update({ 
+                disponibilidad: nuevoEstado,
+                ultima_actualizacion_estado: new Date().toISOString()
+            })
+            .eq('id', currentUserId);
+
+        if (error) {
+            console.error("Error al actualizar la disponibilidad:", error);
+            alert("Hubo un problema de conexión con el servidor. Tu estado no se pudo guardar.");
+            return;
+        }
+        
+        console.log("Disponibilidad guardada correctamente en Supabase.");
+
+    } catch (err) {
+        console.error("Fallo en el selector interactivo:", err);
+    }
+}
+
+// Función auxiliar para controlar las clases de color del círculo indicador
+function toggleColorIndicadorDisponibilidad(estado) {
+    const indicador = document.getElementById('disponibilidad-indicador-color');
+    if (!indicador) return;
+    
+    if (estado === "Disponible") {
+        indicador.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 mr-2.5 flex-shrink-0 transition-colors duration-300";
+    } else {
+        indicador.className = "w-2.5 h-2.5 rounded-full bg-rose-500 mr-2.5 flex-shrink-0 transition-colors duration-300";
+    }
+}
+
+// Vinculamos las funciones al objeto Window global
+window.actualizarDisponibilidadBaseDatos = actualizarDisponibilidadBaseDatos;
+window.toggleColorIndicadorDisponibilidad = toggleColorIndicadorDisponibilidad;
+
 </script>
 
 </body>
