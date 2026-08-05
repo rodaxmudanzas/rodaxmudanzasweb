@@ -290,33 +290,33 @@
                 </div>
             </div>
 
-            <!-- Bloque Derecho: Sub-bloques logísticos compactos y alineados -->
-            <div class="flex flex-wrap items-center gap-5 text-[11px] font-medium ml-auto md:ml-0">
+                        <!-- Bloque Derecho: Sub-bloques transformados en Cápsulas/Botones Premium -->
+            <div class="flex flex-wrap items-center gap-3 text-xs font-bold ml-auto md:ml-0">
                 
-                <!-- Contador -->
-                <div class="flex items-center gap-1.5 border-r border-white/10 pr-4 last:border-0 last:pr-0">
-                    <i data-lucide="box" class="w-3.5 h-3.5 text-white/50"></i>
-                    <span id="banner-contador-trabajos" class="font-bold text-white">0</span>
-                    <span class="text-white/60">trabajos disponibles</span>
+                <!-- Botón Contador Dinámico -->
+                <div class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-3 py-1.5 rounded-md transition-colors cursor-pointer select-none">
+                    <i data-lucide="box" class="w-4 h-4 text-white/70"></i>
+                    <span id="banner-contador-trabajos" class="font-black text-white text-[13px]">0</span>
+                    <span class="text-white/90">trabajos disponibles</span>
                 </div>
 
-                <!-- Ubicación -->
-                <div class="flex items-center gap-1.5 border-r border-white/10 pr-4 last:border-0 last:pr-0">
-                    <i data-lucide="map-pin" class="w-3.5 h-3.5 text-white/50"></i>
-                    <span class="text-white/60">Madrid, España</span>
+                <!-- Botón Ubicación Actual -->
+                <div class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-3 py-1.5 rounded-md transition-colors cursor-pointer select-none">
+                    <i data-lucide="map-pin" class="w-4 h-4 text-white/70"></i>
+                    <span class="text-white/90">Madrid, España</span>
                 </div>
 
-                <!-- Actualizar -->
-                <div onclick="recargarDatos()" class="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors border-r border-white/10 pr-4 last:border-0 last:pr-0">
-                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-white/50"></i>
-                    <span class="text-white/60">Actualizar</span>
+                <!-- Botón Sincronizar / Actualizar -->
+                <div onclick="recargarDatos()" class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-3 py-1.5 rounded-md transition-colors cursor-pointer select-none">
+                    <i data-lucide="refresh-cw" class="w-4 h-4 text-white/70"></i>
+                    <span class="text-white/90">Actualizar</span>
                 </div>
 
-                <!-- Botón Estado Minimalista (Pastilla translúcida exacta) -->
-                <div class="flex items-center gap-1.5 bg-white/10 hover:bg-white/15 px-5.5 py-2.5 rounded-md text-[16px] font-bold tracking-wide transition-colors cursor-pointer select-none">
+                <!-- Botón Estado Minimalista (Tu versión de tamaño grande sincronizada) -->
+                <div class="flex items-center gap-2 bg-white/15 hover:bg-white/20 px-3.5 py-1.5 rounded-md text-[13px] font-black tracking-wide transition-colors cursor-pointer select-none border border-white/10">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                     <span class="text-white">Disponible</span>
-                    <i data-lucide="chevron-down" class="w-3 h-3 text-white/60 ml-0.5"></i>
+                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-white/70 ml-0.5"></i>
                 </div>
 
             </div>
