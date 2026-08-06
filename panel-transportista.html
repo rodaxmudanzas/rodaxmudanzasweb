@@ -141,49 +141,130 @@
      onclick="cerrarMenuMovil()"></div>
 
 <!-- ========================================================
-     BARRA LATERAL DE MENÚS (CONTENEDOR AZUL CON 4 ESQUINAS REDONDEADAS)
+     BARRA LATERAL DE MENÚS COMPLETA (CUADRO AZUL CON TODOS LOS MENÚS)
      ======================================================== -->
 <aside id="sidebar" class="w-64 flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col bg-white">
 
-    <!-- Contenedor del LOGO CORPORATIVO (Se queda limpio, plano y blanco arriba) -->
+    <!-- Contenedor del LOGO CORPORATIVO (Plano y blanco arriba) -->
     <div class="w-full bg-white flex items-center justify-center px-6 py-5 flex-shrink-0">
-        <!-- Manteniendo tu tamaño personalizado h-[68px] -->
         <img src="images/logo-rodax-nuevo.png" id="logoRodaxSide" alt="RODAX MUDANZAS" class="h-[68px] object-contain transition-transform duration-200 hover:scale-105">
     </div>
 
     <!-- CUADRO AZUL EXCLUSIVO CON SUS 4 BORDES CURVADOS (Misma curva que el panel central) -->
     <div class="flex-1 flex flex-col mx-3 mb-4 rounded-2xl bg-gradient-to-b from-[#0b1e5b] to-[#163562] text-white shadow-xl overflow-hidden">
         
-        <!-- Cuerpo del menú dinámico dentro de la caja curva -->
-        <nav class="flex-1 overflow-y-auto px-4 py-4 space-y-1.5 custom-scrollbar">
+        <!-- Cuerpo del menú dinámico con scroll interno si es necesario -->
+        <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-3 custom-scrollbar text-sm">
 
-            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-2">Marketplace</div>
-            
-            <!-- Botón Activo: Trabajos Disponibles -->
-            <button onclick="cambiarTab('disponibles')" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 bg-white/15 text-white font-medium shadow-sm border border-white/10" id="nav-disponibles">
-                <div class="flex items-center space-x-3">
-                    <i data-lucide="search" class="w-5 h-5 text-sky-400"></i>
-                    <span class="text-sm">Trabajos disponibles</span>
-                </div>
-                <span id="badge-disponibles" class="bg-sky-500 text-white text-xs font-bold px-2.5 py-0.5 rounded-full shadow-md">43</span>
-            </button>
+            <!-- SECCIÓN: MARKETPLACE -->
+            <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">Marketplace</div>
+                <div class="space-y-1">
+                    <!-- Botón Activo: Trabajos Disponibles -->
+                    <button onclick="cambiarTab('disponibles')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 bg-white/15 text-white font-medium shadow-sm border border-white/10" id="nav-disponibles">
+                        <div class="flex items-center space-x-2.5">
+                            <i data-lucide="search" class="w-4 h-4 text-sky-400"></i>
+                            <span>Trabajos disponibles</span>
+                        </div>
+                        <span id="badge-disponibles" class="bg-sky-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-md">43</span>
+                    </button>
 
-            <!-- Botón Inactivo: Mis Mudanzas Activas -->
-            <button onclick="cambiarTab('mis-mudanzas')" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 text-slate-300/90 hover:bg-white/10 hover:text-white font-medium" id="nav-mis-mudanzas">
-                <div class="flex items-center space-x-3">
-                    <i data-lucide="truck" class="w-5 h-5 text-slate-400"></i>
-                    <span class="text-sm">Mis mudanzas activas</span>
+                    <!-- Botón Inactivo: Mis Mudanzas Activas -->
+                    <button onclick="cambiarTab('mis-mudanzas')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 text-slate-300/90 hover:bg-white/10 hover:text-white" id="nav-mis-mudanzas">
+                        <div class="flex items-center space-x-2.5">
+                            <i data-lucide="truck" class="w-4 h-4 text-slate-400"></i>
+                            <span>Mis mudanzas activas</span>
+                        </div>
+                        <span id="badge-activas" class="bg-emerald-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">2</span>
+                    </button>
                 </div>
-                <span id="badge-activas" class="bg-emerald-500 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">2</span>
-            </button>
+            </div>
+
+            <!-- SECCIÓN: OPERACIONES -->
+            <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">Operaciones</div>
+                <div class="space-y-1">
+                    <button onclick="cambiarTab('mi-agenda')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-mi-agenda">
+                        <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
+                        <span>Mi agenda</span>
+                    </button>
+                    <button onclick="cambiarTab('mis-rutas')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-mis-rutas">
+                        <i data-lucide="map-pin" class="w-4 h-4 text-slate-400"></i>
+                        <span>Mis rutas</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECCIÓN: FINANZAS -->
+            <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">Finanzas</div>
+                <div class="space-y-1">
+                    <button onclick="cambiarTab('pagos')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-pagos">
+                        <i data-lucide="wallet" class="w-4 h-4 text-slate-400"></i>
+                        <span>Pagos</span>
+                    </button>
+                    <button onclick="cambiarTab('facturacion')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-facturacion">
+                        <i data-lucide="file-text" class="w-4 h-4 text-slate-400"></i>
+                        <span>Facturación</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECCIÓN: MI NEGOCIO -->
+            <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">Mi Negocio</div>
+                <div class="space-y-1">
+                    <button onclick="cambiarTab('mis-vehiculos')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-mis-vehiculos">
+                        <i data-lucide="car" class="w-4 h-4 text-slate-400"></i>
+                        <span>Mis vehículos</span>
+                    </button>
+                    <button onclick="cambiarTab('equipo')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-equipo">
+                        <i data-lucide="users" class="w-4 h-4 text-slate-400"></i>
+                        <span>Equipo / Operarios</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECCIÓN: MI CUENTA -->
+            <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">Mi Cuenta</div>
+                <div class="space-y-1">
+                    <button onclick="cambiarTab('mi-perfil')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-mi-perfil">
+                        <i data-lucide="user" class="w-4 h-4 text-slate-400"></i>
+                        <span>Mi perfil</span>
+                    </button>
+                    <button onclick="cambiarTab('notificaciones')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-notificaciones">
+                        <div class="flex items-center space-x-2.5">
+                            <i data-lucide="bell" class="w-4 h-4 text-slate-400"></i>
+                            <span>Notificaciones</span>
+                        </div>
+                        <span class="w-2 h-2 bg-sky-400 rounded-full"></span>
+                    </button>
+                    <button onclick="cambiarTab('configuracion')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-configuracion">
+                        <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
+                        <span>Configuración</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECCIÓN: AYUDA -->
+            <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">Ayuda</div>
+                <div class="space-y-1">
+                    <button onclick="cambiarTab('soporte')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-soporte">
+                        <i data-lucide="help-circle" class="w-4 h-4 text-slate-400"></i>
+                        <span>Soporte</span>
+                    </button>
+                </div>
+            </div>
 
         </nav>
 
         <!-- Botón de Cerrar Sesión integrado en la base del cuadro azul -->
-        <div class="p-4 border-t border-white/10">
-            <button onclick="cerrarSesion()" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-red-500/20 hover:text-red-400 transition-colors duration-200">
-                <i data-lucide="log-out" class="w-5 h-5"></i>
-                <span class="text-sm font-medium">Cerrar sesión</span>
+        <div class="p-3 border-t border-white/10">
+            <button onclick="cerrarSesion()" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300 hover:bg-red-500/20 hover:text-red-400 transition-colors duration-200">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                <span>Cerrar sesión</span>
             </button>
         </div>
 
