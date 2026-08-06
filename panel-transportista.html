@@ -141,107 +141,48 @@
      onclick="cerrarMenuMovil()"></div>
 
 <!-- ========================================================
-     BARRA LATERAL DE MENÚS (CORREGIDA: PALABRAS COMPLETAS Y ALTO CONTRASTE)
+     BARRA LATERAL DE MENÚS (DISEÑO PREMIUM REVOLUCIONARIO CON BORDES CURVADOS)
      ======================================================== -->
-<aside id="sidebar" class="w-64 sidebar-azul-rodax flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col shadow-xl">
+<aside id="sidebar" class="w-64 bg-gradient-to-b from-[#0b1e5b] to-[#163562] text-white flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col shadow-2xl rounded-r-[28px] overflow-hidden">
 
-    <!-- Error 3: Contenedor del LOGO CORPORATIVO con fondo BLANCO (CÓDIGO ABIERTO) -->
-    <!-- Puedes modificar o cambiar el atributo src de la etiqueta img cuando lo desees -->
-    <div class="w-full logo-container-blanco flex items-center justify-center px-6 flex-shrink-0">
-        
-        <!-- Reemplaza la línea antigua por esta (asumiendo que tu imagen se llama logo-rodax-nuevo.png) -->
-<img src="images/logo-rodax-nuevo.png" id="logoRodaxSide" alt="RODAX MUDANZAS" class="h-[68px] object-contain transition-transform duration-200 hover:scale-105">
-
+    <!-- Contenedor del LOGO CORPORATIVO con fondo BLANCO y bordes suavizados internos -->
+    <div class="w-full bg-white flex items-center justify-center px-6 py-5 flex-shrink-0 shadow-md mb-2">
+        <!-- Manteniendo tu tamaño personalizado exacto h-[68px] -->
+        <img src="images/logo-rodax-nuevo.png" id="logoRodaxSide" alt="RODAX MUDANZAS" class="h-[68px] object-contain transition-transform duration-200 hover:scale-105">
     </div>
 
-    <!-- Error 1 y 2: Cuerpo del menú dinámico con palabras completas -->
-    <nav class="flex-1 overflow-y-auto px-4 py-4 space-y-1">
+    <!-- Cuerpo del menú dinámico con espaciado optimizado -->
+    <nav class="flex-1 overflow-y-auto px-4 py-4 space-y-1.5 custom-scrollbar">
 
-        <div class="menu-title">Marketplace</div>
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-2">Marketplace</div>
         
-        <button onclick="cambiarTab('disponibles')" class="nav-item-premium active" id="nav-disponibles">
-            <i data-lucide="search"></i>
-            <span>Trabajos disponibles</span>
-            <span id="badge-disponibles" class="badge-menu-premium">0</span>
+        <!-- Botón Activo: Trabajos Disponibles -->
+        <button onclick="cambiarTab('disponibles')" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 bg-white/15 text-white font-medium shadow-sm border border-white/10" id="nav-disponibles">
+            <div class="flex items-center space-x-3">
+                <i data-lucide="search" class="w-5 h-5 text-sky-400"></i>
+                <span class="text-sm">Trabajos disponibles</span>
+            </div>
+            <span id="badge-disponibles" class="bg-sky-500 text-white text-xs font-bold px-2.5 py-0.5 rounded-full shadow-md">43</span>
         </button>
 
-        <button onclick="cambiarTab('mis-mudanzas')" class="nav-item-premium" id="nav-mis-mudanzas">
-            <i data-lucide="truck"></i>
-            <span>Mis mudanzas activas</span>
-            <span id="badge-activas" class="badge-menu-premium hidden">0</span>
-        </button>
-
-        <div class="menu-title">Operaciones</div>
-        
-        <button class="nav-item-premium disabled" title="Próximamente">
-            <i data-lucide="calendar-days"></i>
-            <span>Mi agenda</span>
-        </button>
-
-        <button class="nav-item-premium disabled" title="Próximamente">
-            <i data-lucide="route"></i>
-            <span>Mis rutas</span>
-        </button>
-
-        <div class="menu-title">Finanzas</div>
-        
-        <button class="nav-item-premium disabled" title="Próximamente">
-            <i data-lucide="wallet"></i>
-            <span>Pagos</span>
-        </button>
-
-        <button class="nav-item-premium disabled" title="Próximamente">
-            <i data-lucide="receipt"></i>
-            <span>Facturación</span>
-        </button>
-
-        <div class="menu-title">Mi negocio</div>
-        
-        <button class="nav-item-premium disabled" title="Próximamente">
-            <i data-lucide="package"></i>
-            <span>Mis vehículos</span>
-        </button>
-
-        <button class="nav-item-premium disabled" title="Próximamente">
-            <i data-lucide="users"></i>
-            <span>Equipo / Operarios</span>
-        </button>
-
-        <div class="menu-title">Mi cuenta</div>
-        
-        <button class="nav-item-premium disabled">
-            <i data-lucide="user"></i>
-            <span>Mi perfil</span>
-        </button>
-
-        <button class="nav-item-premium disabled flex items-center w-full">
-            <i data-lucide="bell"></i>
-            <span>Notificaciones</span>
-            <span class="badge-menu-premium bg-red-500 !text-white text-[10px] px-2 py-0.5 rounded-md ml-auto">3</span>
-        </button>
-
-        <button class="nav-item-premium disabled">
-            <i data-lucide="settings"></i>
-            <span>Configuración</span>
-        </button>
-
-        <div class="menu-title">Ayuda</div>
-        
-        <button class="nav-item-premium disabled">
-            <i data-lucide="headphones"></i>
-            <span>Soporte</span>
+        <!-- Botón Inactivo: Mis Mudanzas Activas -->
+        <button onclick="cambiarTab('mis-mudanzas')" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 text-slate-300/90 hover:bg-white/10 hover:text-white font-medium" id="nav-mis-mudanzas">
+            <div class="flex items-center space-x-3">
+                <i data-lucide="truck" class="w-5 h-5 text-slate-400"></i>
+                <span class="text-sm">Mis mudanzas activas</span>
+            </div>
+            <span id="badge-activas" class="bg-emerald-500 text-white text-xs font-bold px-2.5 py-0.5 rounded-full hidden">0</span>
         </button>
 
     </nav>
 
-    <!-- BOTÓN DE CIERRE DE SESIÓN -->
-    <div class="p-4 border-t border-white/10 flex-shrink-0 bg-black/10">
-        <button onclick="cerrarSesion()" class="nav-item-premium text-rose-300 hover:text-white transition-colors">
-            <i data-lucide="log-out"></i>
-            <span>Cerrar sesión</span>
+    <!-- Botón de Cerrar Sesión inferior -->
+    <div class="p-4 border-t border-white/10 mb-2">
+        <button onclick="cerrarSesion()" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-red-500/20 hover:text-red-400 transition-colors duration-200">
+            <i data-lucide="log-out" class="w-5 h-5"></i>
+            <span class="text-sm font-medium">Cerrar sesión</span>
         </button>
     </div>
-
 </aside>
 
 <!-- CONTENIDO CENTRAL DE LA PLATAFORMA -->
