@@ -149,11 +149,9 @@
     <!-- Puedes modificar o cambiar el atributo src de la etiqueta img cuando lo desees -->
     <div class="w-full logo-container-blanco flex items-center justify-center px-6 flex-shrink-0">
         
-        <img src="images/logo-rodax.png" 
-             id="logoRodaxSide" 
-             alt="RODAX MUDANZAS" 
-             class="h-10 object-contain transition-transform duration-200 hover:scale-105">
-             
+        <!-- Reemplaza la línea antigua por esta (asumiendo que tu imagen se llama logo-rodax-nuevo.png) -->
+<img src="images/logo-rodax-nuevo.png" id="logoRodaxSide" alt="RODAX MUDANZAS" class="h-10 object-contain transition-transform duration-200 hover:scale-105">
+
     </div>
 
     <!-- Error 1 y 2: Cuerpo del menú dinámico con palabras completas -->
@@ -671,39 +669,48 @@ Transportista.currentUserId = currentUserId;
         }
     }
 
-        async function cargarDatosPerfil() {
+            async function cargarDatosPerfil() {
         try {
-            console.log("Buscando perfil del transportista:", currentUserId);
-
-            const { data, error } = await dbClient
-                .from('transportistas')
-                .select('nombre')
-                .eq('id', currentUserId)
-                .maybeSingle();
-
-            console.log("Perfil transportista:", data);
-            console.log("Error perfil:", error);
-
-            if (error) {
-                console.error("Error al cargar el perfil:", error);
+            // 1. Validar y asegurar la sesión del usuario directamente desde Supabase
+            const { data: sessionData, error: sessionError } = await dbClient.auth.getUser();
+            
+            if (sessionError || !sessionData.user) {
+                console.error("No hay una sesión activa de Supabase:", sessionError);
                 return;
             }
 
-            // 👇 REEMPLAZA DESDE AQUÍ HASTA EL CIERRE DEL IF (DATA):
+            const cleanUserId = sessionData.user.id;
+            console.log("Buscando perfil del transportista con UUID limpio:", cleanUserId);
+
+            // 2. Hacer la consulta con el ID verificado
+            const { data, error } = await dbClient
+                .from('transportistas')
+                .select('nombre')
+                .eq('id', cleanUserId)
+                .maybeSingle();
+
+            console.log("Perfil transportista recibido:", data);
+
+            if (error) {
+                console.error("Error al cargar el perfil de la base de datos:", error);
+                return;
+            }
+
+            // 3. Inyectar datos en la interfaz si el perfil existe
             if (data) {
                 currentUserNombre = data.nombre || 'Transportista';
 
-                // Inyección en el nuevo texto de la cabecera derecha de la barra azul oscuro
+                // Inyección en el texto de la cabecera derecha
                 const elNameTop = document.getElementById('profile-name-top') || document.getElementById('profile-name');
                 if (elNameTop) elNameTop.textContent = currentUserNombre;
 
-                // Generamos el avatar redondo premium con iniciales en color azul corporativo
+                // CORREGIDO: URL del avatar premium con sintaxis de plantilla corregida ($ y /api/)
                 const avatarUrl = `https://ui-avatars.com{encodeURIComponent(currentUserNombre)}&background=ffffff&color=0b1e5b&bold=true`;
                 
                 if (document.getElementById('profile-img-top')) document.getElementById('profile-img-top').src = avatarUrl;
                 if (document.getElementById('profile-img')) document.getElementById('profile-img').src = avatarUrl;
             } else {
-                console.warn("No existe perfil para este usuario.");
+                console.warn("No existe un registro en la tabla 'transportistas' para este ID.");
                 const elNameTop = document.getElementById('profile-name-top') || document.getElementById('profile-name');
                 if (elNameTop) elNameTop.textContent = 'Transportista';
             }
