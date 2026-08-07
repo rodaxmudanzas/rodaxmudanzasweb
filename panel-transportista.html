@@ -340,47 +340,27 @@
                     <span class="text-white/90">Actualizar</span>
                 </div>
 
-  <!-- CONTENEDOR PRINCIPAL DE LOS BOTONES DE LA BARRA AZUL -->
-<div class="flex items-center gap-3 ml-auto">
+                <!-- ========================================================
+     SELECTOR DE DISPONIBILIDAD CON ACTIVACIÓN AUTOMÁTICA
+     ======================================================== -->
+<div class="flex flex-col items-start gap-1 flex-shrink-0 select-none no-print">
+    <!-- Palabra fija encima del selector tal como está en la captura -->
+    <span class="text-[10px] text-white/60 uppercase font-black tracking-wider pl-1">Disponibilidad</span>
     
-    <!-- Botón: Trabajos disponibles -->
-    <div class="bg-white/10 px-4 py-2 rounded-xl text-xs font-medium text-white flex items-center gap-2">
-        <i data-lucide="briefcase" class="w-4 h-4"></i>
-        <span>43 trabajos disponibles</span>
-    </div>
-
-    <!-- Botón: Madrid, España -->
-    <div class="bg-white/10 px-4 py-2 rounded-xl text-xs font-medium text-white flex items-center gap-2">
-        <i data-lucide="map-pin" class="w-4 h-4"></i>
-        <span>Madrid, España</span>
-    </div>
-
-    <!-- Botón: Actualizar -->
-    <button class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl text-xs font-medium text-white flex items-center gap-2 transition-colors">
-        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-        <span>Actualizar</span>
-    </button>
-
-    <!-- 🔄 CONTENEDOR DEL SELECTOR CORREGIDO: TODO AL MISMO NIVEL Y TEXTO CENTRADO -->
-    <div class="flex flex-col items-center justify-center min-w-[130px]">
-        <!-- Palabra "Disponibilidad" perfectamente centrada sobre el botón -->
-        <span class="text-[9px] font-bold uppercase tracking-wider text-slate-300 mb-1 text-center w-full">
-            Disponibilidad
-        </span>
+    <!-- Contenedor del Selector con pastilla translúcida exacta -->
+    <div class="relative flex items-center bg-white/10 hover:bg-white/15 rounded-xl transition-colors border border-white/10 px-3.5 py-2 min-w-[150px]">
+        <!-- Indicador de color dinámico (Verde para Disponible / Rojo para No Disponible) -->
+        <span id="disponibilidad-indicador-color" class="w-2.5 h-2.5 rounded-full bg-emerald-400 mr-2.5 flex-shrink-0 transition-colors duration-300"></span>
         
-        <!-- Selector alineado a la misma altura que los botones anteriores (h-8 o py-1.5) -->
-        <div class="relative w-full">
-            <select class="w-full bg-emerald-500 text-white text-xs font-semibold pl-7 pr-8 py-1.5 rounded-xl appearance-none cursor-pointer focus:outline-none text-center shadow-sm">
-                <option value="disponible">Disponible</option>
-                <option value="no-disponible">No Disponible</option>
-            </select>
-            <!-- Punto indicador verde a la izquierda -->
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white animate-pulse"></span>
-            <!-- Flecha select a la derecha -->
-            <i data-lucide="chevron-down" class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white pointer-events-none"></i>
-        </div>
+        <!-- Elemento Selector Nativo Estilizado (Alto contraste con fuentes con fuerza) -->
+        <select id="selector-disponibilidad-transportista" onchange="actualizarDisponibilidadBaseDatos(this.value)" class="bg-transparent text-white font-black text-sm tracking-wide focus:outline-none pr-6 cursor-pointer appearance-none w-full font-sans">
+            <option value="Disponible" class="text-slate-900 font-bold">Disponible</option>
+            <option value="No Disponible" class="text-slate-900 font-bold">No Disponible</option>
+        </select>
+        
+        <!-- Icono de flecha de despliegue a la derecha -->
+        <i data-lucide="chevron-down" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/70 w-4 h-4 pointer-events-none"></i>
     </div>
-
 </div>
 
         </div>
