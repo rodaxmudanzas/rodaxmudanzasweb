@@ -141,18 +141,16 @@
      onclick="cerrarMenuMovil()"></div>
 
 <!-- ========================================================
-     BARRA LATERAL DE MENÚS COMPLETA (CUADRO AZUL CON TODOS LOS MENÚS)
+     BARRA LATERAL DE MENÚS (Estructura de referencia completa)
      ======================================================== -->
 <aside id="sidebar" class="w-64 flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col bg-white">
 
-    <!-- Contenedor del LOGO CORPORATIVO (Plano y blanco arriba) -->
+    <!-- REFERENCIA: Contenedor del LOGO CORPORATIVO (Mantenlo como está) -->
     <div class="w-full bg-white flex items-center justify-center px-6 py-5 flex-shrink-0">
-        <!-- REVISAR ESTA LÍNEA EXACTA EN TU ARCHIVO -->
-<img src="images/logo-rodax-nuevo.png" id="logoRodaxSide" alt="RODAX MUDANZAS" class="h-17 object-contain transition-transform duration-200 hover:scale-105">
-
+        <img src="images/logo-rodax-nuevo.png" id="logoRodaxSide" alt="RODAX MUDANZAS" class="h-[68px] object-contain transition-transform duration-200 hover:scale-105">
     </div>
 
-    <!-- CUADRO AZUL EXCLUSIVO CON SUS 4 BORDES CURVADOS (Misma curva que el panel central) -->
+    <!-- 📥 PEGA TODO TU BLOQUE DEL CUADRO AZUL EXACTAMENTE DESDE AQUÍ: -->
     <div class="flex-1 flex flex-col mx-3 mb-4 rounded-2xl bg-gradient-to-b from-[#0b1e5b] to-[#163562] text-white shadow-xl overflow-hidden">
         
         <!-- Cuerpo del menú dinámico con scroll interno si es necesario -->
@@ -162,7 +160,6 @@
             <div>
                 <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">Marketplace</div>
                 <div class="space-y-1">
-                    <!-- Botón Activo: Trabajos Disponibles -->
                     <button onclick="cambiarTab('disponibles')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 bg-white/15 text-white font-medium shadow-sm border border-white/10" id="nav-disponibles">
                         <div class="flex items-center space-x-2.5">
                             <i data-lucide="search" class="w-4 h-4 text-sky-400"></i>
@@ -170,8 +167,6 @@
                         </div>
                         <span id="badge-disponibles" class="bg-sky-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-md">43</span>
                     </button>
-
-                    <!-- Botón Inactivo: Mis Mudanzas Activas -->
                     <button onclick="cambiarTab('mis-mudanzas')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 text-slate-300/90 hover:bg-white/10 hover:text-white" id="nav-mis-mudanzas">
                         <div class="flex items-center space-x-2.5">
                             <i data-lucide="truck" class="w-4 h-4 text-slate-400"></i>
@@ -240,7 +235,7 @@
                             <i data-lucide="bell" class="w-4 h-4 text-slate-400"></i>
                             <span>Notificaciones</span>
                         </div>
-                        <span class="w-2 h-2 bg-sky-400 rounded-full"></span>
+                        <span id="badge-notificaciones-sidebar" class="bg-sky-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">0</span>
                     </button>
                     <button onclick="cambiarTab('configuracion')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-configuracion">
                         <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
@@ -249,20 +244,9 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN: AYUDA -->
-            <div>
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">Ayuda</div>
-                <div class="space-y-1">
-                    <button onclick="cambiarTab('soporte')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-soporte">
-                        <i data-lucide="help-circle" class="w-4 h-4 text-slate-400"></i>
-                        <span>Soporte</span>
-                    </button>
-                </div>
-            </div>
-
         </nav>
-
-        <!-- Botón de Cerrar Sesión integrado en la base del cuadro azul -->
+        
+        <!-- Botón de Cerrar Sesión inferior de la caja azul -->
         <div class="p-3 border-t border-white/10">
             <button onclick="cerrarSesion()" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300 hover:bg-red-500/20 hover:text-red-400 transition-colors duration-200">
                 <i data-lucide="log-out" class="w-4 h-4"></i>
@@ -271,6 +255,8 @@
         </div>
 
     </div>
+    <!-- 📤 HASTA AQUÍ TERMINA EL CUADRO AZUL -->
+
 </aside>
 
 <!-- CONTENIDO CENTRAL DE LA PLATAFORMA -->
@@ -738,7 +724,7 @@ Transportista.currentUserId = currentUserId;
                 
                 if (document.getElementById('profile-img-top')) document.getElementById('profile-img-top').src = avatarUrl;
                 if (document.getElementById('profile-img')) document.getElementById('profile-img').src = avatarUrl;
-            } else {
+                        } else {
                 console.warn("No existe un registro en la tabla 'transportistas' para este ID.");
                 const elNameTop = document.getElementById('profile-name-top') || document.getElementById('profile-name');
                 if (elNameTop) elNameTop.textContent = 'Transportista';
@@ -747,8 +733,26 @@ Transportista.currentUserId = currentUserId;
         } catch (err) {
             console.error("Error inesperado cargando perfil:", err);
         }
+    } // <-- ESTA ES LA LLAVE DE CIERRE DE CARGARDATOSPERFIL()
+
+    // 🔔 PEGA EL NUEVO CÓDIGO AQUÍ:
+    function actualizarContadorNotificaciones(cantidad) {
+        const badgeTop = document.getElementById('badge-notificaciones-top');
+        if (badgeTop) {
+            badgeTop.textContent = cantidad;
+            if (cantidad === 0) badgeTop.classList.add('hidden');
+            else badgeTop.classList.remove('hidden');
+        }
+
+        const badgeSidebar = document.getElementById('badge-notificaciones-sidebar');
+        if (badgeSidebar) {
+            badgeSidebar.textContent = cantidad;
+            if (cantidad === 0) badgeSidebar.classList.add('hidden');
+            else badgeSidebar.classList.remove('hidden');
+        }
     }
 
+    // REFERENCIA: Debajo continuará tu archivo con la siguiente función
     async function cerrarSesion() {
         await dbClient.auth.signOut();
         window.location.replace('transportistas.html');
