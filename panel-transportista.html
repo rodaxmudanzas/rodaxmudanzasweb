@@ -265,53 +265,36 @@
     <!-- ========================================================
          Error 4: FILA SUPERIOR BLANCA DE PERFIL Y CONECTIVIDAD (SIEMPRE VISIBLE)
          ======================================================== -->
-    <header class="top-profile-bar-blanca px-6 flex items-center justify-between flex-shrink-0 no-print">
-        <!-- Espacio izquierdo o botón móvil -->
-        <button onclick="abrirMenuMovil()" class="md:hidden text-slate-600 p-2 bg-slate-100 rounded-lg">
+        <!-- ========================================================
+         FILA SUPERIOR BLANCA DE PERFIL (CORREGIDA: IZQUIERDA COMPLETA)
+         ======================================================== -->
+    <header class="top-profile-bar-blanca px-6 flex items-center justify-start gap-4 flex-shrink-0 no-print bg-white border-b border-slate-100">
+        
+        <!-- Botón para el menú móvil (se mantiene visible solo en móviles) -->
+        <button onclick="abrirMenuMovil()" class="md:hidden text-slate-600 p-2 bg-slate-100 rounded-lg mr-2">
             <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
-
-        <!-- CONTENEDOR DEL PERFIL SUPERIOR DERECHO (REEMPLAZAR / AJUSTAR) -->
-<div class="flex items-center space-x-4">
-
-    <!-- 🔔 NUEVA CAMPANA DE NOTIFICACIONES CONECTADA -->
-    <div class="relative cursor-pointer p-2 hover:bg-slate-100 rounded-full transition-colors duration-200">
-        <!-- Icono de Lucide para la campana -->
-        <i data-lucide="bell" class="w-6 h-6 text-slate-600"></i>
-        <!-- Globo indicador dinámico (mismo ID que usaremos en JS) -->
-        <span id="badge-notificaciones-top" class="absolute top-1 right-1 bg-sky-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
-            0
-        </span>
-    </div>
-
-    <!-- Bloque de información del transportista existente -->
-    <div class="flex flex-col text-right">
-        <span id="profile-name-top" class="font-semibold text-slate-800 text-sm">rodrigo flores</span>
-        <div class="flex items-center justify-end space-x-1.5">
-            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-            <span class="text-xs font-medium text-emerald-600">Conectado</span>
-        </div>
-    </div>
-    
-    <!-- Imagen del perfil / Avatar -->
-    <img id="profile-img-top" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover border border-slate-200">
-</div>
         
-        <!-- Bloque de información del transportista alineado a la derecha sobre fondo blanco puro -->
-        <div class="flex items-center gap-4 ml-auto">
-            <div class="text-right">
-                <div id="profile-name-top" class="font-bold-premium text-sm text-slate-800 leading-tight">Cargando...</div>
-                <div class="flex items-center justify-end gap-1.5 text-[11px] text-emerald-600 font-bold-premium mt-0.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    Conectado
-                </div>
-            </div>
+        <!-- 🔔 LA CAMPANA AHORA A LA IZQUIERDA -->
+        <div class="relative cursor-pointer p-2 hover:bg-slate-100 rounded-full transition-colors duration-200">
+            <i data-lucide="bell" class="w-6 h-6 text-slate-600"></i>
+            <span id="badge-notificaciones-top" class="absolute top-1 right-1 bg-sky-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
+                0
+            </span>
+        </div>
 
-            <!-- Avatar Redondo con Iniciales -->
-            <div class="w-10 h-10 rounded-full overflow-hidden border border-slate-200 bg-slate-100 shadow-sm flex items-center justify-center font-bold-premium text-xs text-slate-700">
-                <img id="profile-img-top" src="" class="w-full h-full object-cover">
+        <!-- 👤 INFORMACIÓN DEL TRANSPORTISTA (AHORA A LA IZQUIERDA) -->
+        <div class="flex flex-col text-left">
+            <div id="profile-name-top" class="font-bold-premium text-sm text-slate-800 leading-tight">rodrigo flores</div>
+            <div class="flex items-center justify-start gap-1.5 text-[11px] text-emerald-600 font-bold-premium mt-0.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-xs font-medium text-emerald-600">Conectado</span>
             </div>
         </div>
+        
+        <!-- 🖼️ IMAGEN DE AVATAR (ALINEADA A LA IZQUIERDA JUNTO AL TEXTO) -->
+        <img id="profile-img-top" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover border border-slate-200">
+
     </header>
 
            <!-- ========================================================
