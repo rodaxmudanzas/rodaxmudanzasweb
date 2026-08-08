@@ -282,10 +282,27 @@ async function cargarTrabajosDisponibles() {
 }
 
 async function procesarAceptacion(id) {
-    modalContent.innerHTML = `
+
+    const modalContentMarketplace =
+        document.getElementById('modal-content');
+
+    const actionModalMarketplace =
+        document.getElementById('action-modal');
+
+    if (!modalContentMarketplace) {
+        console.error('❌ No existe #modal-content');
+        return;
+    }
+
+    modalContentMarketplace.innerHTML = `
         <i data-lucide="loader-2" class="w-10 h-10 animate-spin mx-auto text-blue-600 mb-3"></i>
-        <p class="text-gray-600 font-medium text-sm">Asignando mudanza...</p>`;
-    lucide.createIcons();
+        <p class="text-gray-600 font-medium text-sm">
+            Asignando mudanza...
+        </p>`;
+
+    if (window.lucide) {
+        lucide.createIcons();
+    }
 
     console.log("Intentando aceptar mudanza:", id);
     console.log("Transportista:", currentUserId);
@@ -309,6 +326,7 @@ async function procesarAceptacion(id) {
     console.log("Error aceptación:", error);
 
     if (error) {
+
         console.error("Error al aceptar:", error);
 
         alert(
@@ -316,29 +334,42 @@ async function procesarAceptacion(id) {
             'Puede que otro transportista la haya aceptado antes.'
         );
 
-        cerrarModal();
+        if (actionModalMarketplace) {
+            actionModalMarketplace.classList.add('hidden');
+        }
+
         await cargarTrabajosDisponibles();
         return;
     }
 
     if (!data || data.length === 0) {
+
         alert(
             'Esta mudanza ya no está disponible.\n\n' +
             'Es posible que otro transportista la haya aceptado.'
         );
 
-        cerrarModal();
+        if (actionModalMarketplace) {
+            actionModalMarketplace.classList.add('hidden');
+        }
+
         await cargarTrabajosDisponibles();
         return;
     }
 
-    console.log("Mudanza asignada correctamente:", data[0]);
+    console.log(
+        "Mudanza asignada correctamente:",
+        data[0]
+    );
 
     await Promise.all([
         cargarTrabajosDisponibles(),
         cargarMisMudanzas()
     ]);
 
-        cerrarModal();
+    if (actionModalMarketplace) {
+        actionModalMarketplace.classList.add('hidden');
+    }
+
     cambiarTab('mis-mudanzas');
 }
