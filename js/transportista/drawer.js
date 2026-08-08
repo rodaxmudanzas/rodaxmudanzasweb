@@ -225,7 +225,6 @@
         cambiarDrawerTab('resumen');
     }
 
-    window.onload = verificarSesion;
 
     function abrirDrawer(){
         document.getElementById("drawerOverlay").classList.remove("hidden");
