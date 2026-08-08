@@ -368,8 +368,10 @@ async function procesarAceptacion(id) {
     ]);
 
     if (actionModalMarketplace) {
-        actionModalMarketplace.classList.add('hidden');
-    }
+    actionModalMarketplace.classList.add('hidden');
+}
 
-    cambiarTab('mis-mudanzas');
+cerrarDrawer();
+
+cambiarTab('mis-mudanzas');
 }
