@@ -1088,19 +1088,75 @@ Transportista.currentUserId = currentUserId;
     function cerrarModal() { actionModal.classList.add('hidden'); }
 
     function confirmarAceptar(id) {
-        modalContent.innerHTML = `
-            <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i data-lucide="briefcase" class="w-8 h-8 text-blue-600"></i>
+
+    modalContent.innerHTML = `
+        <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="briefcase" class="w-8 h-8 text-blue-600"></i>
+        </div>
+
+        <h3 class="text-xl font-black text-gray-900 mb-2">
+            ¿Aceptar este trabajo?
+        </h3>
+
+        <p class="text-gray-500 text-sm mb-4 leading-relaxed">
+            Al aceptar, la mudanza pasará a
+            <strong>"Mis Mudanzas Activas"</strong>.<br>
+            Los datos del cliente estarán disponibles
+            <strong>24h antes</strong> del servicio.
+        </p>
+
+        <!-- AVISO DE COMPROMISO -->
+        <div class="text-left bg-amber-50 border border-amber-200 rounded-xl p-3.5 mb-4">
+            <div class="flex items-start gap-2.5">
+                <i data-lucide="alert-triangle"
+                   class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5"></i>
+
+                <div>
+                    <p class="text-xs font-black text-amber-800 mb-1">
+                        Compromiso del transportista
+                    </p>
+
+                    <p class="text-xs text-amber-700 leading-relaxed">
+                        Al aceptar este trabajo, confirmas tu disponibilidad
+                        y compromiso para realizar el servicio en las
+                        condiciones indicadas.
+                    </p>
+
+                    <p class="text-xs text-amber-700 leading-relaxed mt-1.5">
+                        Una posterior desasignación o cancelación injustificada
+                        podrá dar lugar a las consecuencias y penalizaciones
+                        previstas en las
+                        <a href="condiciones-transportista.html"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="font-bold text-blue-600 underline hover:text-blue-800">
+                            Condiciones de Registro del Transportista
+                        </a>.
+                    </p>
+                </div>
             </div>
-            <h3 class="text-xl font-black text-gray-900 mb-2">¿Aceptar este trabajo?</h3>
-            <p class="text-gray-500 text-sm mb-6 leading-relaxed">Al aceptar, la mudanza pasará a "Mis Mudanzas Activas".<br>Los datos del cliente estarán disponibles <strong>24h antes</strong> del servicio.</p>
-            <div class="flex gap-3">
-                <button onclick="cerrarModal()" class="flex-1 bg-gray-100 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors">Cancelar</button>
-                <button onclick="procesarAceptacion(${id})" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md transition-colors">✅ Aceptar</button>
-            </div>`;
-        lucide.createIcons();
-        actionModal.classList.remove('hidden');
-    }
+        </div>
+
+        <!-- BOTONES -->
+        <div class="flex gap-3">
+            <button
+                onclick="cerrarModal()"
+                class="flex-1 bg-gray-100 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors">
+                Cancelar
+            </button>
+
+            <button
+                onclick="procesarAceptacion(${id})"
+                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md transition-colors">
+                ✅ Aceptar
+            </button>
+        </div>
+    `;
+
+    lucide.createIcons();
+
+    actionModal.classList.remove('hidden');
+}
 
 async function marcarCompletada(id) {
 
