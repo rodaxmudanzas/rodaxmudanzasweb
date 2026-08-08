@@ -26,11 +26,24 @@
                         state.activas.find(m => Number(m.id) === Number(id));
 
         if(!mudanza){
-            alert("No se ha encontrado la mudanza.");
-            return;
-        }
+    alert("No se ha encontrado la mudanza.");
+    return;
+}
 
-        abrirDrawer();
+abrirDrawer();
+
+const btnAceptarDrawer = document.getElementById("btnAceptarDrawer");
+
+if (btnAceptarDrawer) {
+    btnAceptarDrawer.onclick = function () {
+        console.log(
+            "🟦 BOTÓN ACEPTAR TRABAJO PULSADO. ID:",
+            mudanza.id
+        );
+
+        confirmarAceptar(mudanza.id);
+    };
+}
 
         // Número o ID de reserva
         const elReserva = document.getElementById("drawerReserva") || document.getElementById("drawerIdTexto");
@@ -263,6 +276,7 @@
     document.getElementById("drawerOverlay")?.addEventListener("click", cerrarDrawer);
 
     window.verDetalleMudanza = verDetalleMudanza;
-    window.cambiarDrawerTab = cambiarDrawerTab;
+window.cambiarDrawerTab = cambiarDrawerTab;
+window.cerrarDrawer = cerrarDrawer;
 
 })();
