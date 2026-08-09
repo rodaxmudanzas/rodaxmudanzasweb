@@ -41,13 +41,13 @@ async function cargarTrabajosDisponibles() {
 
     // PRUEBA 3: consulta completa del Marketplace
     const { data, error } = await dbClient
-        .from('mudanzas')
-        .select('*')
-        .eq('estado', 'Pendiente de asignación')
-        .eq('publicada_marketplace', true)
-        .eq('bloqueada', false)
-        .is('transportista_id', null)
-        .order('id', { ascending: false });
+    .from('mudanzas')
+    .select('*')
+    .eq('estado', 'Pendiente de asignación')
+    .eq('publicada_marketplace', true)
+    .eq('bloqueada', false)
+    .is('transportista_id', null)
+    .order('fecha', { ascending: true });
 
     console.log("PRUEBA 3 - Marketplace:", data);
     console.log("PRUEBA 3 - Error:", error);
