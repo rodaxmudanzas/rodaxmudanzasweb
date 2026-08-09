@@ -797,11 +797,11 @@ Transportista.currentUserId = currentUserId;
     console.log("Transportista:", currentUserId);
 
     const { data, error } = await dbClient
-        .from('mudanzas')
-        .select('*')
-        .eq('estado', 'Transportista asignado')
-        .eq('transportista_id', currentUserId)
-        .order('id', { ascending: false });
+    .from('mudanzas')
+    .select('*')
+    .eq('estado', 'Transportista asignado')
+    .eq('transportista_id', currentUserId)
+    .order('fecha', { ascending: true });
 
     console.log("Mis Mudanzas Activas:", data);
     console.log("Error Mis Mudanzas Activas:", error);
@@ -860,7 +860,27 @@ Transportista.currentUserId = currentUserId;
         badge.textContent = state.activas.length;
     }
 
-        const cards = state.activas.map(t => {
+        const hoy = new Date();
+hoy.setHours(0, 0, 0, 0);
+
+const activasOrdenadas = [...state.activas].sort((a, b) => {
+
+    const fechaA = new Date(a.fecha + 'T00:00:00');
+    const fechaB = new Date(b.fecha + 'T00:00:00');
+
+    const esPasadaA = fechaA < hoy;
+    const esPasadaB = fechaB < hoy;
+
+    // Primero las mudanzas de hoy y futuras
+    if (esPasadaA !== esPasadaB) {
+        return esPasadaA ? 1 : -1;
+    }
+
+    // Dentro del mismo grupo: de la fecha más próxima a la más lejana
+    return fechaA - fechaB;
+});
+
+const cards = activasOrdenadas.map(t => {
             const fechaParts = (t.fecha || '').split('-');
             let moveDate;
             if (fechaParts.length === 3) {
