@@ -983,8 +983,21 @@ const cards = activasOrdenadas.map(t => {
                         ${fotosHTML}
                     </div>
                     <div class="bg-green-50 border border-green-100 p-4 rounded-xl flex flex-col items-end justify-center md:min-w-[140px]">
-                        <span class="text-xs font-bold text-gray-500 uppercase mb-1 block">Cobro Neto</span>
-                        <span class="text-2xl font-black text-green-600 block">${t.preciototal || '—'}</span>
+                        <span class="text-xs font-bold text-gray-500 uppercase mb-1 block">
+    TU COBRO
+</span>
+
+<span class="text-2xl font-black text-green-600 block">
+    ${t.preciototal || '—'}
+</span>
+
+<span class="text-xs text-gray-500 font-bold mt-1">
+    IVA incl.
+</span>
+
+<span class="text-xs text-gray-400 font-medium mt-1">
+    A cobrar el día del servicio
+</span>
                         <span class="text-xs text-gray-400 font-medium mt-1">A cobrar el día</span>
                     </div>
                 </div>
