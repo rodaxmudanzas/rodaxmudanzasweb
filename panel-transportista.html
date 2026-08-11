@@ -967,7 +967,9 @@ const cards = activasOrdenadas.map(t => {
             <div class="bg-white rounded-2xl p-5 shadow-card border border-l-4 border-l-blue-500">
                 <div class="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
                     <div>
-                        <span class="text-xs font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">Mudanza #${t.id}</span>
+                        <span class="text-xs font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">
+    ID: ${window.Transportista.getNumeroReserva(t)}
+</span>
                         <span class="text-xs text-gray-400 font-semibold ml-2">📅 ${t.fecha || 'Sin fecha'}</span>
                     </div>
                     <button onclick="imprimirFicha(${t.id}, '${(t.origen||'').replace(/'/g,"\\'")}', '${(t.destino||'').replace(/'/g,"\\'")}', '${t.fecha||''}', '${t.km||''}', '${(t.volumen||'').replace(/'/g,"\\'")}', '${t.preciototal||''}', '${t.ascensor||''}', '${t.extras||''}')"
