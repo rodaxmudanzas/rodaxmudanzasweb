@@ -1,17 +1,35 @@
-console.log("drawerIndicaciones cargado");
-
 (function () {
 
     "use strict";
 
-    window.renderIndicacionesDrawer = function (mudanza) {
+    function renderIndicacionesDrawer(mudanza) {
 
-        document.getElementById("drawerObservaciones").textContent =
-            mudanza.observaciones ||
+        const texto =
+            mudanza?.observaciones ||
             "El cliente no ha añadido observaciones.";
 
-    };
+        const resumen =
+            document.getElementById("drawerObservaciones");
 
-    console.log(typeof renderIndicacionesDrawer);
+        if (resumen) {
+            resumen.textContent = texto;
+        }
+
+        const contenedor =
+            document.getElementById(
+                "drawerIndicacionesContenedor"
+            );
+
+        if (contenedor) {
+            contenedor.textContent = texto;
+        }
+    }
+
+    window.renderIndicacionesDrawer =
+        renderIndicacionesDrawer;
+
+    console.log(
+        "✅ Drawer Indicaciones cargado correctamente"
+    );
 
 })();
