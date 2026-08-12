@@ -717,7 +717,8 @@ Transportista.currentUserId = currentUserId;
                 if (elNameTop) elNameTop.textContent = currentUserNombre;
 
                 // CORREGIDO: URL del avatar premium con sintaxis de plantilla corregida ($ y /api/)
-                const avatarUrl = `https://ui-avatars.com{encodeURIComponent(currentUserNombre)}&background=ffffff&color=0b1e5b&bold=true`;
+                const avatarUrl =
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUserNombre)}&background=ffffff&color=0b1e5b&bold=true`;
                 
                 if (document.getElementById('profile-img-top')) document.getElementById('profile-img-top').src = avatarUrl;
                 if (document.getElementById('profile-img')) document.getElementById('profile-img').src = avatarUrl;
@@ -1035,7 +1036,7 @@ const accesos =
 <span class="text-xs text-gray-400 font-medium mt-1">
     A cobrar el día del servicio
 </span>
-                        <span class="text-xs text-gray-400 font-medium mt-1">A cobrar el día</span>
+
                     </div>
                 </div>
                 ${t.ascensor || t.extras ? `
@@ -1479,17 +1480,29 @@ window.toggleColorIndicadorDisponibilidad = toggleColorIndicadorDisponibilidad;
 <!-- ===================================================== -->
 
 <script src="js/transportista/utils.js"></script>
-
+<script>
+console.log("RODAX utils.js cargado");
+console.log("Transportista API:", window.Transportista);
+console.log(
+    "getTotalArticulos:",
+    typeof window.Transportista?.getTotalArticulos
+);
+console.log(
+    "getTotalM3:",
+    typeof window.Transportista?.getTotalM3
+);
+console.log(
+    "getAccesos:",
+    typeof window.Transportista?.getAccesos
+);
+</script>
 <script src="js/transportista/drawer.js"></script>
-
 <script src="js/transportista/drawerRuta.js"></script>
 <script src="js/transportista/drawerServicios.js"></script>
 <script src="js/transportista/drawerInventario.js"></script>
 <script src="js/transportista/drawerFotos.js"></script>
 <script src="js/transportista/drawerIndicaciones.js"></script>
-
 <script src="js/transportista/tarjetas.js"></script>
-
 <script src="js/transportista/marketplace.js"></script>
 
 <!-- ===================================================== -->
