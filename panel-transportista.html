@@ -881,6 +881,34 @@ const activasOrdenadas = [...state.activas].sort((a, b) => {
 });
 
 const cards = activasOrdenadas.map(t => {
+
+    //////////////////////////////////////////////////////
+// CARGA
+//////////////////////////////////////////////////////
+
+const numArticulos =
+    window.Transportista.getTotalArticulos(
+        t.inventario
+    );
+
+const totalM3 =
+    window.Transportista.getTotalM3(
+        t.inventario
+    );
+
+const m3Texto =
+    window.Transportista.formatM3(
+        totalM3
+    );
+
+
+//////////////////////////////////////////////////////
+// ACCESOS
+//////////////////////////////////////////////////////
+
+const accesos =
+    window.Transportista.getAccesos(t);
+
             const fechaParts = (t.fecha || '').split('-');
             let moveDate;
             if (fechaParts.length === 3) {
@@ -972,10 +1000,17 @@ const cards = activasOrdenadas.map(t => {
 </span>
                         <span class="text-xs text-gray-400 font-semibold ml-2">📅 ${t.fecha || 'Sin fecha'}</span>
                     </div>
-                    <button onclick="imprimirFicha(${t.id}, '${(t.origen||'').replace(/'/g,"\\'")}', '${(t.destino||'').replace(/'/g,"\\'")}', '${t.fecha||''}', '${t.km||''}', '${(t.volumen||'').replace(/'/g,"\\'")}', '${t.preciototal||''}', '${t.ascensor||''}', '${t.extras||''}')"
-                        class="flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg transition-colors no-print border border-blue-100">
-                        <i data-lucide="printer" class="w-3.5 h-3.5"></i> Ficha PDF
-                    </button>
+                    <button
+    onclick="imprimirFicha(${t.id})"
+    class="flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg transition-colors no-print border border-blue-100">
+
+    <i
+        data-lucide="printer"
+        class="w-3.5 h-3.5">
+    </i>
+
+    Ficha PDF
+</button>
                 </div>
                 <div class="mb-3">${tiempoRestanteHTML}</div>
                 <div class="flex flex-col md:flex-row gap-4 mb-4">
@@ -1005,9 +1040,20 @@ const cards = activasOrdenadas.map(t => {
                 </div>
                 ${t.ascensor || t.extras ? `
                 <div class="bg-gray-50 border border-gray-100 p-3 rounded-xl mb-4 text-xs space-y-1">
-                    ${t.ascensor ? `<p class="text-gray-600"><strong>Ascensores:</strong> ${t.ascensor}</p>` : ''}
+                    <p class="text-gray-600">
+    <strong>Recogida:</strong>
+    ${accesos.recogida}
+</p>
+
+<p class="text-gray-600">
+    <strong>Entrega:</strong>
+    ${accesos.entrega}
+</p>
                     ${t.extras   ? `<p class="text-gray-600"><strong>Extras:</strong> ${t.extras}</p>` : ''}
-                    ${t.volumen  ? `<p class="text-gray-600"><strong>Carga:</strong> ${t.volumen}</p>` : ''}
+                    ${t.volumen  ? `<p class="text-gray-600">
+    <strong>Carga:</strong>
+    ${numArticulos} artículos · ${m3Texto}
+</p>` : ''}
                 </div>` : ''}
                 <button onclick="marcarCompletada(${t.id})"
                     class="no-print w-full bg-white hover:bg-green-50 text-green-700 font-bold py-3 rounded-xl border-2 border-green-100 hover:border-green-300 transition-colors flex items-center justify-center gap-2">
@@ -1020,11 +1066,66 @@ const cards = activasOrdenadas.map(t => {
         lucide.createIcons();
     }
 
-    function imprimirFicha(id, origen, destino, fecha, km, volumen, precio, ascensor, extras) {
-        const nombre = currentUserNombre || 'Transportista RODAX';
-        const fechaHoy = new Date().toLocaleDateString('es-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    function imprimirFicha(id) {
 
-        const contenido = `<!DOCTYPE html>
+    // 1. Buscar la mudanza
+    const mudanza =
+        state.activas.find(
+            m => Number(m.id) === Number(id)
+        );
+
+    if (!mudanza) {
+        alert("No se ha encontrado la mudanza.");
+        return;
+    }
+
+    // 2. Obtener datos
+    const origen = mudanza.origen || "";
+    const destino = mudanza.destino || "";
+    const fecha = mudanza.fecha || "";
+    const km = mudanza.km || "";
+    const precio = mudanza.preciototal || "";
+    const extras = mudanza.extras || "";
+    const volumen = mudanza.volumen || "";
+    const ascensor = mudanza.ascensor || "";
+
+    // 3. Nuevos datos
+    const numeroReserva =
+        window.Transportista.getNumeroReserva(mudanza);
+
+    const numArticulos =
+        window.Transportista.getTotalArticulos(
+            mudanza.inventario
+        );
+
+    const totalM3 =
+        window.Transportista.getTotalM3(
+            mudanza.inventario
+        );
+
+    const m3Texto =
+        window.Transportista.formatM3(totalM3);
+
+    const accesos =
+        window.Transportista.getAccesos(mudanza);
+
+    // 4. Nombre y fecha
+    const nombre =
+        currentUserNombre || 'Transportista RODAX';
+
+    const fechaHoy =
+        new Date().toLocaleDateString(
+            'es-ES',
+            {
+                weekday:'long',
+                year:'numeric',
+                month:'long',
+                day:'numeric'
+            }
+        );
+
+    // 5. AQUÍ empieza la ficha HTML
+    const contenido = `<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -1065,7 +1166,10 @@ const cards = activasOrdenadas.map(t => {
             <p style="font-size:11px;color:#6b7280;margin-top:4px;">672 907 012 · rodax.furgo.mudanzas.es@gmail.com</p>
         </div>
         <div class="ficha-num">
-            <h2>FICHA TÉCNICA #${id}</h2>
+            <h2>FICHA TÉCNICA</h2>
+<p>
+    ID: <strong>${numeroReserva}</strong>
+</p>
             <p>Generada: ${fechaHoy}</p>
             <p>Transportista: <strong>${nombre}</strong></p>
         </div>
@@ -1083,17 +1187,69 @@ const cards = activasOrdenadas.map(t => {
         <div class="seccion">
             <div class="seccion-titulo">📦 Detalles del Servicio</div>
             <div style="margin-bottom:12px;"><div class="dato-label">Fecha del Servicio</div><div class="dato-valor">${fecha || '—'}</div></div>
-            <div style="margin-bottom:12px;"><div class="dato-label">Volumen / Tamaño</div><div class="dato-valor">${volumen || '—'}</div></div>
+            <div style="margin-bottom:12px;">
+
+    <div class="dato-label">
+        Carga
+    </div>
+
+    <div class="dato-valor">
+        ${numArticulos} artículos · ${m3Texto}
+    </div>
+
+</div>
+
+<div style="margin-bottom:12px;">
+
+    <div class="dato-label">
+        Tipo de vivienda
+    </div>
+
+    <div class="dato-valor">
+        ${volumen || '—'}
+    </div>
+
+</div>
             <div><div class="dato-label">Distancia</div><div class="dato-valor">${km || '?'} km</div></div>
         </div>
     </div>
-    ${ascensor ? `<div class="seccion"><div class="seccion-titulo">🛗 Accesos y Ascensores</div><div class="dato-valor" style="font-size:13px;">${ascensor}</div></div>` : ''}
+    <div class="seccion">
+
+    <div class="seccion-titulo">
+        🛗 Accesos
+    </div>
+
+    <div class="dato-valor" style="font-size:13px;">
+
+        <p>
+            <strong>Recogida:</strong>
+            ${accesos.recogida}
+        </p>
+
+        <p style="margin-top:6px;">
+            <strong>Entrega:</strong>
+            ${accesos.entrega}
+        </p>
+
+    </div>
+
+</div>
     ${extras && extras !== 'Solo transporte básico' ? `<div class="seccion"><div class="seccion-titulo">➕ Servicios Adicionales</div><div class="dato-valor" style="font-size:13px;">${extras}</div></div>` : ''}
     <div class="precio-box" style="margin-bottom:20px;">
-        <div class="dato-label" style="text-align:center;">Precio Total del Servicio (30% ya cobrado en reserva)</div>
-        <div class="dato-valor grande">${precio || '—'}</div>
-        <p style="font-size:12px;color:#6b7280;margin-top:6px;">El cliente abona el 70% restante directamente a ti al finalizar el servicio.</p>
+
+    <div class="dato-label" style="text-align:center;">
+        COBRO DEL TRANSPORTISTA
     </div>
+
+    <div class="dato-valor grande" style="text-align:center;">
+        ${precio || '—'}
+    </div>
+
+    <p style="font-size:12px;color:#6b7280;margin-top:6px;text-align:center;">
+        IVA incluido
+    </p>
+
+</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:40px;">
         <div><div class="firma-linea"></div><div class="firma-texto">Firma del Transportista</div></div>
         <div><div class="firma-linea"></div><div class="firma-texto">Firma del Cliente (recibí conforme)</div></div>
