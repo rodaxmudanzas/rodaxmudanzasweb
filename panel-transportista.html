@@ -819,27 +819,49 @@ Transportista.currentUserId = currentUserId;
 }
 
     function renderizarActivas() {
-    const contenedor = document.getElementById('contenedor-activas');
-    const badge = document.getElementById('badge-activas');
+
+    const contenedor =
+        document.getElementById(
+            'contenedor-activas'
+        );
+
+    const badge =
+        document.getElementById(
+            'badge-activas'
+        );
 
     if (!contenedor) {
-        console.error('No existe #contenedor-activas');
+        console.error(
+            'No existe #contenedor-activas'
+        );
         return;
     }
 
-    if (state.activas.length === 0) {
+    const trabajos =
+        Array.isArray(state.activas)
+            ? state.activas
+            : [];
 
-        if (badge) {
-            badge.classList.add('hidden');
-            badge.textContent = '0';
-        }
+    if (badge) {
+
+        badge.textContent =
+            trabajos.length;
+
+        badge.classList.toggle(
+            'hidden',
+            trabajos.length === 0
+        );
+    }
+
+    if (trabajos.length === 0) {
 
         contenedor.innerHTML = `
-            <div id="empty-activas"
-                 class="text-center py-16 bg-white rounded-3xl border border-dashed border-gray-300">
+            <div class="text-center py-16 bg-white rounded-3xl border border-dashed border-gray-300">
 
-                <i data-lucide="inbox"
-                   class="w-14 h-14 text-gray-300 mx-auto mb-4"></i>
+                <i
+                    data-lucide="inbox"
+                    class="w-14 h-14 text-gray-300 mx-auto mb-4"
+                ></i>
 
                 <h4 class="text-lg font-bold text-gray-700 mb-2">
                     No tienes ninguna mudanza asignada actualmente.
@@ -853,219 +875,18 @@ Transportista.currentUserId = currentUserId;
         `;
 
         lucide.createIcons();
+
         return;
     }
 
-    if (badge) {
-        badge.classList.remove('hidden');
-        badge.textContent = state.activas.length;
-    }
+    contenedor.innerHTML =
+        window.Transportista.Tarjetas
+            .renderizarTarjetasActivas(
+                trabajos
+            );
 
-        const hoy = new Date();
-hoy.setHours(0, 0, 0, 0);
-
-const activasOrdenadas = [...state.activas].sort((a, b) => {
-
-    const fechaA = new Date(a.fecha + 'T00:00:00');
-    const fechaB = new Date(b.fecha + 'T00:00:00');
-
-    const esPasadaA = fechaA < hoy;
-    const esPasadaB = fechaB < hoy;
-
-    // Primero las mudanzas de hoy y futuras
-    if (esPasadaA !== esPasadaB) {
-        return esPasadaA ? 1 : -1;
-    }
-
-    // Dentro del mismo grupo: de la fecha más próxima a la más lejana
-    return fechaA - fechaB;
-});
-
-const cards = activasOrdenadas.map(t => {
-
-    //////////////////////////////////////////////////////
-// CARGA
-//////////////////////////////////////////////////////
-
-const numArticulos =
-    window.Transportista.getTotalArticulos(
-        t.inventario
-    );
-
-const totalM3 =
-    window.Transportista.getTotalM3(
-        t.inventario
-    );
-
-const m3Texto =
-    window.Transportista.formatM3(
-        totalM3
-    );
-
-
-//////////////////////////////////////////////////////
-// ACCESOS
-//////////////////////////////////////////////////////
-
-const accesos =
-    window.Transportista.getAccesos(t);
-
-            const fechaParts = (t.fecha || '').split('-');
-            let moveDate;
-            if (fechaParts.length === 3) {
-                moveDate = new Date(parseInt(fechaParts[0]), parseInt(fechaParts[1]) - 1, parseInt(fechaParts[2]), 0, 0, 0);
-            } else {
-                moveDate = new Date(NaN);
-            }
-
-            const now = new Date();
-            const diffMs = moveDate.getTime() - now.getTime();
-            const diffHoras = diffMs / (1000 * 60 * 60);
-            const mostrarDatos = !isNaN(diffHoras) && diffHoras <= 24;
-
-            let tiempoRestanteHTML = '';
-            if (!isNaN(diffHoras)) {
-                if (diffHoras > 24) {
-                    const h = Math.floor(diffHoras);
-                    const d = Math.floor(h / 24);
-                    tiempoRestanteHTML = `
-                        <div class="flex items-center gap-1.5 text-xs text-amber-600 font-bold bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-lg">
-                            <i data-lucide="clock" class="w-3.5 h-3.5"></i>
-                            Datos visibles en ${d > 0 ? d + 'd ' : ''}${h % 24}h (24h antes del servicio)
-                        </div>`;
-                } else if (diffHoras > 0) {
-                    tiempoRestanteHTML = `
-                        <div class="flex items-center gap-1.5 text-xs text-green-700 font-bold bg-green-50 border border-green-200 px-3 py-1.5 rounded-lg">
-                            <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
-                            Servicio en menos de 24h — datos del cliente visibles
-                        </div>`;
-                } else {
-                    tiempoRestanteHTML = `
-                        <div class="flex items-center gap-1.5 text-xs text-purple-700 font-bold bg-purple-50 border border-purple-200 px-3 py-1.5 rounded-lg">
-                            <i data-lucide="calendar-check" class="w-3.5 h-3.5"></i>
-                            Servicio ya pasado — marcar como finalizado
-                        </div>`;
-                }
-            }
-
-            let datosClienteHTML, rutaCompletaHTML;
-
-            if (mostrarDatos) {
-                datosClienteHTML = `
-                    <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl space-y-1">
-                        <p class="text-sm text-gray-600 font-medium">Cliente: <strong class="text-gray-900">${t.nombre}</strong></p>
-                        <p class="text-sm text-gray-600 font-medium">Teléfono: <a href="tel:${t.telefono}" class="text-blue-600 font-black hover:underline">${t.telefono}</a></p>
-                        ${t.email ? `<p class="text-xs text-gray-500">Email: <a href="mailto:${t.email}" class="text-blue-500 hover:underline">${t.email}</a></p>` : ''}
-                    </div>`;
-                rutaCompletaHTML = `
-                    <div class="space-y-1 mb-3">
-                        <p class="text-sm font-bold text-gray-900 flex items-start gap-2"><span class="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0 mt-1.5"></span>${t.origen}</p>
-                        <p class="text-xs text-gray-400 ml-4">↓ ${t.km || '?'} km</p>
-                        <p class="text-sm font-bold text-gray-900 flex items-start gap-2"><span class="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0 mt-1.5"></span>${t.destino}</p>
-                    </div>`;
-            } else {
-                datosClienteHTML = `
-                    <div class="bg-gray-50 border border-gray-200 p-3 rounded-xl">
-                        <p class="dato-censurado mb-1.5"><i data-lucide="lock" class="w-3 h-3"></i> Nombre y teléfono ocultos por seguridad</p>
-                        <p class="text-xs text-gray-400 font-medium">Los datos de contacto del cliente se mostrarán automáticamente 24h antes del servicio.</p>
-                    </div>`;
-                rutaCompletaHTML = `
-                    <div class="space-y-1 mb-3">
-                        <p class="text-sm font-bold text-gray-900 flex items-start gap-2"><span class="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0 mt-1.5"></span><span class="dato-censurado"><i data-lucide="lock" class="w-3 h-3"></i> Dirección de recogida oculta</span></p>
-                        <p class="text-xs text-gray-400 ml-4">↓ ${t.km || '?'} km (visible para tu planificación)</p>
-                        <p class="text-sm font-bold text-gray-900 flex items-start gap-2"><span class="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0 mt-1.5"></span><span class="dato-censurado"><i data-lucide="lock" class="w-3 h-3"></i> Dirección de entrega oculta</span></p>
-                    </div>`;
-            }
-
-            let fotosHTML = '';
-            if (t.urls_fotos && t.urls_fotos.trim()) {
-                const urls = t.urls_fotos.split(',').map(u => u.trim());
-                fotosHTML = `
-                    <div class="mt-3 border-t border-gray-100 pt-3">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase mb-2">Fotos Cliente</p>
-                        <div class="flex gap-2 overflow-x-auto pb-1">
-                            ${urls.map(url => `
-                                <a href="${url}" target="_blank" class="flex-shrink-0 w-12 h-12 rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:border-blue-500 transition-all group">
-                                    <img src="${url}" alt="Foto" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
-                                </a>`).join('')}
-                        </div>
-                    </div>`;
-            }
-
-            return `
-            <div class="bg-white rounded-2xl p-5 shadow-card border border-l-4 border-l-blue-500">
-                <div class="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
-                    <div>
-                        <span class="text-xs font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">
-    ID: ${window.Transportista.getNumeroReserva(t)}
-</span>
-                        <span class="text-xs text-gray-400 font-semibold ml-2">📅 ${t.fecha || 'Sin fecha'}</span>
-                    </div>
-                    <button
-    onclick="imprimirFicha(${t.id})"
-    class="flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg transition-colors no-print border border-blue-100">
-
-    <i
-        data-lucide="printer"
-        class="w-3.5 h-3.5">
-    </i>
-
-    Ficha PDF
-</button>
-                </div>
-                <div class="mb-3">${tiempoRestanteHTML}</div>
-                <div class="flex flex-col md:flex-row gap-4 mb-4">
-                    <div class="flex-1">
-                        ${rutaCompletaHTML}
-                        ${datosClienteHTML}
-                        ${fotosHTML}
-                    </div>
-                    <div class="bg-green-50 border border-green-100 p-4 rounded-xl flex flex-col items-end justify-center md:min-w-[140px]">
-                        <span class="text-xs font-bold text-gray-500 uppercase mb-1 block">
-    TU COBRO
-</span>
-
-<span class="text-2xl font-black text-green-600 block">
-    ${t.preciototal || '—'}
-</span>
-
-<span class="text-xs text-gray-500 font-bold mt-1">
-    IVA incl.
-</span>
-
-<span class="text-xs text-gray-400 font-medium mt-1">
-    A cobrar el día del servicio
-</span>
-
-                    </div>
-                </div>
-                ${t.ascensor || t.extras ? `
-                <div class="bg-gray-50 border border-gray-100 p-3 rounded-xl mb-4 text-xs space-y-1">
-                    <p class="text-gray-600">
-    <strong>Recogida:</strong>
-    ${accesos.recogida}
-</p>
-
-<p class="text-gray-600">
-    <strong>Entrega:</strong>
-    ${accesos.entrega}
-</p>
-                    ${t.extras   ? `<p class="text-gray-600"><strong>Extras:</strong> ${t.extras}</p>` : ''}
-                    ${t.volumen  ? `<p class="text-gray-600">
-    <strong>Carga:</strong>
-    ${numArticulos} artículos · ${m3Texto}
-</p>` : ''}
-                </div>` : ''}
-                <button onclick="marcarCompletada(${t.id})"
-                    class="no-print w-full bg-white hover:bg-green-50 text-green-700 font-bold py-3 rounded-xl border-2 border-green-100 hover:border-green-300 transition-colors flex items-center justify-center gap-2">
-                    <i data-lucide="check-circle" class="w-5 h-5"></i> Marcar como Finalizada
-                </button>
-            </div>`;
-        }).join('');
-
-        contenedor.innerHTML = cards;
-        lucide.createIcons();
-    }
+    lucide.createIcons();
+}
 
     function imprimirFicha(id) {
 
