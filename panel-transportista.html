@@ -1664,7 +1664,16 @@
         );
     }
 
-    async function recargarDatos() {
+    let actualizandoMarketplace = false;
+
+function recargarDatos() {
+
+    // Evitar dobles clics
+    if (actualizandoMarketplace) {
+        return;
+    }
+
+    actualizandoMarketplace = true;
 
     const boton =
         document.getElementById(
@@ -1681,94 +1690,70 @@
             "icono-actualizar-marketplace"
         );
 
-    // Evitar dobles clics mientras se actualiza
-    if (
-        boton &&
-        boton.disabled
-    ) {
-        return;
+    // Estado visual: actualizando
+    if (boton) {
+        boton.disabled = true;
+    }
+
+    if (texto) {
+        texto.textContent = "Actualizando...";
+    }
+
+    if (icono) {
+        icono.classList.add("animate-spin");
+    }
+
+    // --------------------------------------------------
+    // RECARGAR LOS DOS BLOQUES
+    // --------------------------------------------------
+
+    try {
+        cargarTrabajosDisponibles();
+    } catch (error) {
+        console.error(
+            "Error actualizando trabajos disponibles:",
+            error
+        );
     }
 
     try {
-
-        // ESTADO: ACTUALIZANDO
-        if (boton) {
-            boton.disabled = true;
-        }
-
-        if (texto) {
-            texto.textContent =
-                "Actualizando...";
-        }
-
-        if (icono) {
-            icono.classList.add(
-                "animate-spin"
-            );
-        }
-
-        // Recargar ambos bloques
-        await Promise.all([
-            cargarTrabajosDisponibles(),
-            cargarMisMudanzas()
-        ]);
-
-        // ESTADO: ACTUALIZADO
-        if (texto) {
-            texto.textContent =
-                "Actualizado";
-        }
-
-        // Pequeña pausa para que el usuario
-        // vea la confirmación
-        await new Promise(
-            resolve =>
-                setTimeout(
-                    resolve,
-                    900
-                )
-        );
-
+        cargarMisMudanzas();
     } catch (error) {
-
         console.error(
-            "Error actualizando el Marketplace:",
+            "Error actualizando mis mudanzas:",
             error
         );
-
-        if (texto) {
-            texto.textContent =
-                "Error al actualizar";
-        }
-
-        await new Promise(
-            resolve =>
-                setTimeout(
-                    resolve,
-                    1200
-                )
-        );
-
-    } finally {
-
-        // Volver al estado normal
-        if (icono) {
-            icono.classList.remove(
-                "animate-spin"
-            );
-        }
-
-        if (texto) {
-            texto.textContent =
-                "Actualizar";
-        }
-
-        if (boton) {
-            boton.disabled = false;
-        }
-
     }
 
+    // --------------------------------------------------
+    // RESTABLECER EL BOTÓN
+    // --------------------------------------------------
+
+    setTimeout(() => {
+
+        if (icono) {
+            icono.classList.remove("animate-spin");
+        }
+
+        if (texto) {
+            texto.textContent = "Actualizado";
+        }
+
+        setTimeout(() => {
+
+            if (texto) {
+                texto.textContent = "Actualizar";
+            }
+
+            if (boton) {
+                boton.disabled = false;
+            }
+
+            actualizandoMarketplace = false;
+
+        }, 800);
+
+    }, 1000);
 }
 
     function cambiarTab(
