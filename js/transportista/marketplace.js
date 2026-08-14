@@ -704,27 +704,43 @@ function volumenDentroDeFiltroMarketplace(
 
     switch (filtro) {
 
-        case "0-20":
-            return volumen <= 20;
+    case "0-3":
+        return volumen <= 3;
 
-        case "20-40":
-            return volumen > 20 &&
-                volumen <= 40;
+    case "3-5":
+        return volumen > 3 &&
+            volumen <= 5;
 
-        case "40-60":
-            return volumen > 40 &&
-                volumen <= 60;
+    case "5-7":
+        return volumen > 5 &&
+            volumen <= 7;
 
-        case "60-80":
-            return volumen > 60 &&
-                volumen <= 80;
+    case "7-10":
+        return volumen > 7 &&
+            volumen <= 10;
 
-        case "80+":
-            return volumen > 80;
+    case "10-20":
+        return volumen > 10 &&
+            volumen <= 20;
 
-        default:
-            return true;
-    }
+    case "20-40":
+        return volumen > 20 &&
+            volumen <= 40;
+
+    case "40-60":
+        return volumen > 40 &&
+            volumen <= 60;
+
+    case "60-80":
+        return volumen > 60 &&
+            volumen <= 80;
+
+    case "80+":
+        return volumen > 80;
+
+    default:
+        return true;
+}
 }
 
 function articulosDentroDeFiltroMarketplace(
@@ -742,23 +758,31 @@ function articulosDentroDeFiltroMarketplace(
 
     switch (filtro) {
 
-        case "0-20":
-            return articulos <= 20;
+    case "0-5":
+        return articulos <= 5;
 
-        case "20-40":
-            return articulos > 20 &&
-                articulos <= 40;
+    case "5-10":
+        return articulos > 5 &&
+            articulos <= 10;
 
-        case "40-60":
-            return articulos > 40 &&
-                articulos <= 60;
+    case "10-20":
+        return articulos > 10 &&
+            articulos <= 20;
 
-        case "60+":
-            return articulos > 60;
+    case "20-40":
+        return articulos > 20 &&
+            articulos <= 40;
 
-        default:
-            return true;
-    }
+    case "40-60":
+        return articulos > 40 &&
+            articulos <= 60;
+
+    case "60+":
+        return articulos > 60;
+
+    default:
+        return true;
+}
 }
 
 function obtenerTrabajosFiltradosMarketplace() {
@@ -1545,13 +1569,22 @@ function crearPopoverMasFiltrosMarketplace() {
         <div class="space-y-3">
 
             ${crearSelectAvanzadoMarketplace(
-                "Tipo de mudanza",
-                "filtro-avanzado-tipo",
-                dinamicos.tipos,
-                filtrosMarketplace.tipoServicio,
-                "todos",
-                "Todos los tipos"
-            )}
+    "Tipo de mudanza",
+    "filtro-avanzado-tipo",
+    [
+        {
+            valor: "Mudanza Estándar",
+            texto: "Mudanza Estándar"
+        },
+        {
+            valor: "Mudanza Total",
+            texto: "Mudanza Total"
+        }
+    ],
+    filtrosMarketplace.tipoServicio,
+    "todos",
+    "Todos los tipos"
+)}
 
             ${crearSelectAvanzadoMarketplace(
                 "Precio",
@@ -1591,31 +1624,47 @@ function crearPopoverMasFiltrosMarketplace() {
                 "Volumen",
                 "filtro-avanzado-volumen",
                 [
-                    {
-                        valor: "todos",
-                        texto: "Cualquier volumen"
-                    },
-                    {
-                        valor: "0-20",
-                        texto: "Hasta 20 m³"
-                    },
-                    {
-                        valor: "20-40",
-                        texto: "20 – 40 m³"
-                    },
-                    {
-                        valor: "40-60",
-                        texto: "40 – 60 m³"
-                    },
-                    {
-                        valor: "60-80",
-                        texto: "60 – 80 m³"
-                    },
-                    {
-                        valor: "80+",
-                        texto: "Más de 80 m³"
-                    }
-                ],
+    {
+        valor: "todos",
+        texto: "Cualquier volumen"
+    },
+    {
+        valor: "0-3",
+        texto: "Hasta 3 m³"
+    },
+    {
+        valor: "3-5",
+        texto: "3 – 5 m³"
+    },
+    {
+        valor: "5-7",
+        texto: "5 – 7 m³"
+    },
+    {
+        valor: "7-10",
+        texto: "7 – 10 m³"
+    },
+    {
+        valor: "10-20",
+        texto: "10 – 20 m³"
+    },
+    {
+        valor: "20-40",
+        texto: "20 – 40 m³"
+    },
+    {
+        valor: "40-60",
+        texto: "40 – 60 m³"
+    },
+    {
+        valor: "60-80",
+        texto: "60 – 80 m³"
+    },
+    {
+        valor: "80+",
+        texto: "Más de 80 m³"
+    }
+],
                 filtrosMarketplace.volumen,
                 "todos",
                 "Cualquier volumen"
@@ -1629,22 +1678,36 @@ function crearPopoverMasFiltrosMarketplace() {
                         valor: "todos",
                         texto: "Cualquier cantidad"
                     },
-                    {
-                        valor: "0-20",
-                        texto: "Hasta 20 artículos"
-                    },
-                    {
-                        valor: "20-40",
-                        texto: "20 – 40 artículos"
-                    },
-                    {
-                        valor: "40-60",
-                        texto: "40 – 60 artículos"
-                    },
-                    {
-                        valor: "60+",
-                        texto: "Más de 60 artículos"
-                    }
+                    [
+    {
+        valor: "todos",
+        texto: "Cualquier cantidad"
+    },
+    {
+        valor: "0-5",
+        texto: "Hasta 5 artículos"
+    },
+    {
+        valor: "5-10",
+        texto: "5 – 10 artículos"
+    },
+    {
+        valor: "10-20",
+        texto: "10 – 20 artículos"
+    },
+    {
+        valor: "20-40",
+        texto: "20 – 40 artículos"
+    },
+    {
+        valor: "40-60",
+        texto: "40 – 60 artículos"
+    },
+    {
+        valor: "60+",
+        texto: "Más de 60 artículos"
+    }
+]
                 ],
                 filtrosMarketplace.articulos,
                 "todos",
@@ -1699,19 +1762,27 @@ function crearPopoverMasFiltrosMarketplace() {
                 "Servicios",
                 "filtro-avanzado-servicios",
                 [
-                    {
-                        valor: "todos",
-                        texto: "Cualquier servicio"
-                    },
-                    {
-                        valor: "1",
-                        texto: "1 servicio"
-                    },
-                    {
-                        valor: "6",
-                        texto: "6 servicios — Mudanza Total"
-                    }
-                ],
+    {
+        valor: "todos",
+        texto: "Cualquier servicio"
+    },
+    {
+        valor: "desmontaje",
+        texto: "Desmontaje"
+    },
+    {
+        valor: "montaje",
+        texto: "Montaje"
+    },
+    {
+        valor: "embalaje",
+        texto: "Embalaje"
+    },
+    {
+        valor: "empaquetado",
+        texto: "Empaquetado"
+    }
+],
                 filtrosMarketplace.servicios,
                 "todos",
                 "Cualquier servicio"

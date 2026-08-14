@@ -1956,7 +1956,15 @@ value="si"
 class="calculo-trigger">
                             </div>
                             <div>
-                                <label class="block text-gray-700 font-bold mb-1.5 text-sm">Piso / Planta</label>
+                                <label class="block text-gray-700 font-bold mb-1.5 text-sm">
+    Piso / Planta
+    <span
+        id="texto_piso_origen"
+        class="ml-1 text-blue-600 font-black"
+    >
+        Un Bajo
+    </span>
+</label>
                                 <div class="qty-wrapper piso-wrapper">
 
     <button type="button" class="qty-btn piso-minus">
@@ -2048,7 +2056,15 @@ value="si"
 class="calculo-trigger">
                             </div>
                             <div>
-                                <label class="block text-gray-700 font-bold mb-1.5 text-sm">Piso / Planta</label>
+                                <label class="block text-gray-700 font-bold mb-1.5 text-sm">
+    Piso / Planta
+    <span
+        id="texto_piso_destino"
+        class="ml-1 text-blue-600 font-black"
+    >
+        Un Bajo
+    </span>
+</label>
                                 <div class="qty-wrapper piso-wrapper">
 
     <button type="button" class="qty-btn piso-minus">
@@ -3791,16 +3807,93 @@ function togglePiso(tipo){
     document.getElementById('nota_piso_' + tipo);
 
     // SI HAY ASCENSOR
-    if(ascensor === 'si'){
+    function togglePiso(tipo) {
 
-        input.disabled = true;
+    const ascensor =
+        document.getElementById(
+            'ascensor_' + tipo
+        ).value;
 
-        input.value = 0;
+    const input =
+        document.getElementById(
+            'piso_' + tipo
+        );
 
-        nota.innerHTML =
-        'Con ascensor el piso no afecta al precio.';
+    const nota =
+        document.getElementById(
+            'nota_piso_' + tipo
+        );
 
+    const textoPiso =
+        document.getElementById(
+            'texto_piso_' + tipo
+        );
+
+
+    if (!input) return;
+
+
+    // ==================================================
+    // EL PISO SIEMPRE ESTÁ DISPONIBLE
+    // ==================================================
+
+    input.disabled = false;
+
+
+    const piso =
+        Math.max(
+            0,
+            parseInt(input.value || 0, 10)
+        );
+
+
+    // ==================================================
+    // PISO 0 = UN BAJO
+    // ==================================================
+
+    if (piso === 0) {
+
+        if (textoPiso) {
+            textoPiso.textContent =
+                "Un Bajo";
+        }
+
+        if (nota) {
+            nota.innerHTML =
+                ascensor === "si"
+                    ? "Un Bajo · Con ascensor · sin suplemento."
+                    : "Un Bajo · Sin ascensor · sin suplemento.";
+        }
+
+        return;
     }
+
+
+    // ==================================================
+    // PISO +1 O SUPERIOR
+    // ==================================================
+
+    if (textoPiso) {
+
+        textoPiso.textContent =
+            `Piso ${piso}`;
+    }
+
+
+    if (nota) {
+
+        if (ascensor === "si") {
+
+            nota.innerHTML =
+                `Con ascensor · Piso ${piso} · sin suplemento.`;
+
+        } else {
+
+            nota.innerHTML =
+                `Sin ascensor · Piso ${piso} · se aplica suplemento por escaleras.`;
+        }
+    }
+}
 
     // SOLO ESCALERAS
     else{
