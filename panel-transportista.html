@@ -17,27 +17,27 @@
     /* ========================================================
        DISEÑO DE ALTA FIDELIDAD: PARCHE INTEGRAL DE ERRORES UI/UX
        ======================================================== */
-    
-    /* Error 1 y 4: Color Azul Noche Corporativo para el Menú y la Barra Superior */
+
+    /* Color Azul Noche Corporativo para el Menú y la Barra Superior */
     .sidebar-azul-rodax {
         background-color: #0B1E5B !important;
-        width: 256px !important; /* Ancho completo original para ver botones y palabras completas */
+        width: 256px !important;
     }
 
-    /* Modifica para que quede así, agregando la coma y la nueva clase: */
-.banner-azul-rodax, .theme-azul-oscuro-rodax {
-    background-color: #0B1E5B !important;
-}
+    .banner-azul-rodax,
+    .theme-azul-oscuro-rodax {
+        background-color: #0B1E5B !important;
+    }
 
-    /* Error 3: Área del logo con fondo estrictamente BLANCO */
+    /* Área del logo con fondo estrictamente BLANCO */
     .logo-container-blanco {
         background-color: #FFFFFF !important;
-        height: 64px; /* Alineado exacto con la barra superior de perfil */
+        height: 64px;
         border-bottom: 1px solid #E2E8F0;
         border-right: 1px solid #E2E8F0;
     }
 
-    /* Error 4: Fila superior blanca de Perfil y Conectividad */
+    /* Fila superior blanca de Perfil y Conectividad */
     .top-profile-bar-blanca {
         background-color: #FFFFFF !important;
         height: 64px;
@@ -45,7 +45,7 @@
         width: 100%;
     }
 
-    /* Error 1: Botones y palabras completas en la barra lateral */
+    /* Botones y palabras completas en la barra lateral */
     .nav-item-premium {
         width: 100%;
         display: flex;
@@ -53,30 +53,30 @@
         gap: 12px;
         padding: 11px 16px;
         border-radius: 12px;
-        color: rgba(255, 255, 255, 0.9) !important; /* Texto muy claro para resaltar */
+        color: rgba(255, 255, 255, 0.9) !important;
         font-size: 13px;
-        font-weight: 700; /* Error 5: Letras con más fuerza */
+        font-weight: 700;
         transition: all 0.2s ease-in-out;
         background: transparent;
     }
 
-    .nav-item-premium i, .nav-item-premium svg {
+    .nav-item-premium i,
+    .nav-item-premium svg {
         width: 18px;
         height: 18px;
         color: rgba(255, 255, 255, 0.75) !important;
     }
 
-    /* Efectos hover/click interactivos premium */
     .nav-item-premium:hover:not(.disabled) {
         background-color: rgba(255, 255, 255, 0.12) !important;
         color: #FFFFFF !important;
-        padding-left: 20px; /* Sutil desplazamiento dinámico */
+        padding-left: 20px;
     }
 
     .nav-item-premium.active {
         background-color: rgba(255, 255, 255, 0.22) !important;
         color: #FFFFFF !important;
-        box-shadow: inset 4px 0 0 0 #FFFFFF; /* Barra indicadora blanca */
+        box-shadow: inset 4px 0 0 0 #FFFFFF;
     }
 
     .nav-item-premium.disabled {
@@ -105,11 +105,20 @@
         margin-left: auto;
     }
 
-    /* Error 5: Refuerzo de tipografía y fuerza en inputs, filtros y botones del panel */
-    input, select, button, span, p, h1, h2, h3, h4, h5 {
-        font-weight: 600 !important; /* Elimina el aspecto tenue de las letras */
+    /* Refuerzo de tipografía y fuerza en inputs, filtros y botones */
+    input,
+    select,
+    button,
+    span,
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+        font-weight: 600 !important;
     }
-    
+
     .font-bold-premium {
         font-weight: 700 !important;
     }
@@ -118,1174 +127,3196 @@
         font-weight: 900 !important;
     }
 
-    /* Error 6: Tarjetas del Marketplace con separación evidente y sombras marcadas */
+    /* Tarjetas del Marketplace */
     .tarjeta-mudanza-premium {
         background-color: #FFFFFF !important;
         border: 1px solid #E2E8F0 !important;
-        box-shadow: 0 4px 12px -1px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04) !important;
-        margin-bottom: 12px !important; /* Espaciado extra de separación entre ofertas */
+        box-shadow:
+            0 4px 12px -1px rgba(15, 23, 42, 0.08),
+            0 2px 6px -1px rgba(15, 23, 42, 0.04) !important;
+        margin-bottom: 12px !important;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .tarjeta-mudanza-premium:hover {
         transform: translateY(-2px);
-        box-shadow: 0 12px 20px -3px rgba(15, 23, 42, 0.12), 0 4px 12px -2px rgba(15, 23, 42, 0.06) !important;
+        box-shadow:
+            0 12px 20px -3px rgba(15, 23, 42, 0.12),
+            0 4px 12px -2px rgba(15, 23, 42, 0.06) !important;
         border-color: #CBD5E1 !important;
     }
 </style>
 
 </head>
+
 <body class="flex h-screen overflow-hidden">
 
-<div id="mobile-overlay" class="fixed inset-0 bg-gray-900/60 z-40 hidden md:hidden backdrop-blur-sm"
-     onclick="cerrarMenuMovil()"></div>
+<div
+    id="mobile-overlay"
+    class="fixed inset-0 bg-gray-900/60 z-40 hidden md:hidden backdrop-blur-sm"
+    onclick="cerrarMenuMovil()">
+</div>
 
 <!-- ========================================================
-     BARRA LATERAL DE MENÚS (Estructura de referencia completa)
+     BARRA LATERAL DE MENÚS
      ======================================================== -->
-<aside id="sidebar" class="w-64 flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col bg-white">
 
-    <!-- REFERENCIA: Contenedor del LOGO CORPORATIVO (Mantenlo como está) -->
+<aside
+    id="sidebar"
+    class="w-64 flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col bg-white">
+
+    <!-- LOGO CORPORATIVO -->
     <div class="w-full bg-white flex items-center justify-center px-6 py-5 flex-shrink-0">
-        <img src="images/logo-rodax-nuevo.png" id="logoRodaxSide" alt="RODAX MUDANZAS" class="h-[68px] object-contain transition-transform duration-200 hover:scale-105">
+        <img
+            src="images/logo-rodax-nuevo.png"
+            id="logoRodaxSide"
+            alt="RODAX MUDANZAS"
+            class="h-[68px] object-contain transition-transform duration-200 hover:scale-105">
     </div>
 
-    <!-- 📥 PEGA TODO TU BLOQUE DEL CUADRO AZUL EXACTAMENTE DESDE AQUÍ: -->
+    <!-- CUADRO AZUL DEL MENÚ -->
     <div class="flex-1 flex flex-col mx-3 mb-4 rounded-2xl bg-gradient-to-b from-[#0b1e5b] to-[#163562] text-white shadow-xl overflow-hidden">
-        
-        <!-- Cuerpo del menú dinámico con scroll interno si es necesario -->
+
+        <!-- CUERPO DEL MENÚ -->
         <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-3 custom-scrollbar text-sm">
 
             <!-- SECCIÓN: MARKETPLACE -->
             <div>
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">Marketplace</div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
+                    Marketplace
+                </div>
+
                 <div class="space-y-1">
-                    <button onclick="cambiarTab('disponibles')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 bg-white/15 text-white font-medium shadow-sm border border-white/10" id="nav-disponibles">
+
+                    <button
+                        onclick="cambiarTab('disponibles')"
+                        class="w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 bg-white/15 text-white font-medium shadow-sm border border-white/10"
+                        id="nav-disponibles">
+
                         <div class="flex items-center space-x-2.5">
                             <i data-lucide="search" class="w-4 h-4 text-sky-400"></i>
                             <span>Trabajos disponibles</span>
                         </div>
-                        <span id="badge-disponibles" class="bg-sky-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-md">43</span>
+
+                        <span
+                            id="badge-disponibles"
+                            class="bg-sky-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-md">
+                            43
+                        </span>
                     </button>
-                    <button onclick="cambiarTab('mis-mudanzas')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 text-slate-300/90 hover:bg-white/10 hover:text-white" id="nav-mis-mudanzas">
+
+                    <button
+                        onclick="cambiarTab('mis-mudanzas')"
+                        class="w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 text-slate-300/90 hover:bg-white/10 hover:text-white"
+                        id="nav-mis-mudanzas">
+
                         <div class="flex items-center space-x-2.5">
                             <i data-lucide="truck" class="w-4 h-4 text-slate-400"></i>
                             <span>Mis mudanzas activas</span>
                         </div>
-                        <span id="badge-activas" class="bg-emerald-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">2</span>
+
+                        <span
+                            id="badge-activas"
+                            class="bg-emerald-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                            2
+                        </span>
                     </button>
+
                 </div>
             </div>
 
             <!-- SECCIÓN: OPERACIONES -->
             <div>
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">Operaciones</div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
+                    Operaciones
+                </div>
+
                 <div class="space-y-1">
-                    <button onclick="cambiarTab('mi-agenda')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-mi-agenda">
+
+                    <button
+                        onclick="cambiarTab('mi-agenda')"
+                        class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+                        id="nav-mi-agenda">
+
                         <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
                         <span>Mi agenda</span>
                     </button>
-                    <button onclick="cambiarTab('mis-rutas')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-mis-rutas">
+
+                    <button
+                        onclick="cambiarTab('mis-rutas')"
+                        class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+                        id="nav-mis-rutas">
+
                         <i data-lucide="map-pin" class="w-4 h-4 text-slate-400"></i>
                         <span>Mis rutas</span>
                     </button>
+
                 </div>
             </div>
 
             <!-- SECCIÓN: FINANZAS -->
             <div>
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">Finanzas</div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
+                    Finanzas
+                </div>
+
                 <div class="space-y-1">
-                    <button onclick="cambiarTab('pagos')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-pagos">
+
+                    <button
+                        onclick="cambiarTab('pagos')"
+                        class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+                        id="nav-pagos">
+
                         <i data-lucide="wallet" class="w-4 h-4 text-slate-400"></i>
                         <span>Pagos</span>
                     </button>
-                    <button onclick="cambiarTab('facturacion')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-facturacion">
+
+                    <button
+                        onclick="cambiarTab('facturacion')"
+                        class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+                        id="nav-facturacion">
+
                         <i data-lucide="file-text" class="w-4 h-4 text-slate-400"></i>
                         <span>Facturación</span>
                     </button>
+
                 </div>
             </div>
 
             <!-- SECCIÓN: MI NEGOCIO -->
             <div>
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">Mi Negocio</div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
+                    Mi Negocio
+                </div>
+
                 <div class="space-y-1">
-                    <button onclick="cambiarTab('mis-vehiculos')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-mis-vehiculos">
+
+                    <button
+                        onclick="cambiarTab('mis-vehiculos')"
+                        class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+                        id="nav-mis-vehiculos">
+
                         <i data-lucide="car" class="w-4 h-4 text-slate-400"></i>
                         <span>Mis vehículos</span>
                     </button>
-                    <button onclick="cambiarTab('equipo')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-equipo">
+
+                    <button
+                        onclick="cambiarTab('equipo')"
+                        class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+                        id="nav-equipo">
+
                         <i data-lucide="users" class="w-4 h-4 text-slate-400"></i>
                         <span>Equipo / Operarios</span>
                     </button>
+
                 </div>
             </div>
 
             <!-- SECCIÓN: MI CUENTA -->
             <div>
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">Mi Cuenta</div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
+                    Mi Cuenta
+                </div>
+
                 <div class="space-y-1">
-                    <button onclick="cambiarTab('mi-perfil')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-mi-perfil">
+
+                    <button
+                        onclick="cambiarTab('mi-perfil')"
+                        class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+                        id="nav-mi-perfil">
+
                         <i data-lucide="user" class="w-4 h-4 text-slate-400"></i>
                         <span>Mi perfil</span>
                     </button>
-                    <button onclick="cambiarTab('notificaciones')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-notificaciones">
+
+                    <button
+                        onclick="cambiarTab('notificaciones')"
+                        class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+                        id="nav-notificaciones">
+
                         <div class="flex items-center space-x-2.5">
                             <i data-lucide="bell" class="w-4 h-4 text-slate-400"></i>
                             <span>Notificaciones</span>
                         </div>
-                        <span id="badge-notificaciones-sidebar" class="bg-sky-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+
+                        <span
+                            id="badge-notificaciones-sidebar"
+                            class="bg-sky-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                            0
+                        </span>
                     </button>
-                    <button onclick="cambiarTab('configuracion')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all" id="nav-configuracion">
+
+                    <button
+                        onclick="cambiarTab('configuracion')"
+                        class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+                        id="nav-configuracion">
+
                         <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
                         <span>Configuración</span>
                     </button>
+
                 </div>
             </div>
 
         </nav>
-        
-        <!-- Botón de Cerrar Sesión inferior de la caja azul -->
+
+        <!-- CERRAR SESIÓN -->
         <div class="p-3 border-t border-white/10">
-            <button onclick="cerrarSesion()" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300 hover:bg-red-500/20 hover:text-red-400 transition-colors duration-200">
+
+            <button
+                onclick="cerrarSesion()"
+                class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300 hover:bg-red-500/20 hover:text-red-400 transition-colors duration-200">
+
                 <i data-lucide="log-out" class="w-4 h-4"></i>
                 <span>Cerrar sesión</span>
+
             </button>
+
         </div>
 
     </div>
-    <!-- 📤 HASTA AQUÍ TERMINA EL CUADRO AZUL -->
 
 </aside>
 
-<!-- CONTENIDO CENTRAL DE LA PLATAFORMA -->
+
+<!-- ========================================================
+     CONTENIDO CENTRAL DE LA PLATAFORMA
+     ======================================================== -->
+
 <main class="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50 relative w-full">
 
-            <!-- ========================================================
-         FILA SUPERIOR BLANCA DE PERFIL (ALINEADA TOTALMENTE A LA DERECHA)
+    <!-- ========================================================
+         FILA SUPERIOR BLANCA DE PERFIL
          ======================================================== -->
-    <header class="top-profile-bar-blanca px-6 flex items-center justify-between flex-shrink-0 no-print bg-white border-b border-slate-100">
-        
-        <!-- Botón para el menú móvil (se mantiene en su lugar a la izquierda solo en móviles) -->
-        <button onclick="abrirMenuMovil()" class="md:hidden text-slate-600 p-2 bg-slate-100 rounded-lg">
+
+    <header
+        class="top-profile-bar-blanca px-6 flex items-center justify-between flex-shrink-0 no-print bg-white border-b border-slate-100">
+
+        <!-- BOTÓN MENÚ MÓVIL -->
+        <button
+            onclick="abrirMenuMovil()"
+            class="md:hidden text-slate-600 p-2 bg-slate-100 rounded-lg">
+
             <i data-lucide="menu" class="w-5 h-5"></i>
+
         </button>
-        
-        <!-- 📦 CONTENEDOR AGRUPADO QUE SE EMPUJA AL EXTREMO DERECHO (ml-auto) -->
+
+
+        <!-- BLOQUE DERECHO -->
         <div class="flex items-center gap-4 ml-auto">
-            
-            <!-- 🔔 1. CAMPANA DE NOTIFICACIONES -->
-            <div class="relative cursor-pointer p-2 hover:bg-slate-100 rounded-full transition-colors duration-200">
+
+            <!-- CAMPANA -->
+            <div
+                class="relative cursor-pointer p-2 hover:bg-slate-100 rounded-full transition-colors duration-200">
+
                 <i data-lucide="bell" class="w-6 h-6 text-slate-600"></i>
-                <span id="badge-notificaciones-top" class="absolute top-1 right-1 bg-sky-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
+
+                <span
+                    id="badge-notificaciones-top"
+                    class="absolute top-1 right-1 bg-sky-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
                     0
                 </span>
+
             </div>
 
-            <!-- 👤 2. TEXTO DE INFORMACIÓN (Alineado a la derecha) -->
+
+            <!-- INFORMACIÓN DEL USUARIO -->
             <div class="flex flex-col text-right">
-                <div id="profile-name-top" class="font-bold-premium text-sm text-slate-800 leading-tight">rodrigo flores</div>
-                <div class="flex items-center justify-end gap-1.5 text-[11px] text-emerald-600 font-bold-premium mt-0.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="text-xs font-medium text-emerald-600">Conectado</span>
+
+                <div
+                    id="profile-name-top"
+                    class="font-bold-premium text-sm text-slate-800 leading-tight">
+                    rodrigo flores
                 </div>
+
+                <div
+                    class="flex items-center justify-end gap-1.5 text-[11px] text-emerald-600 font-bold-premium mt-0.5">
+
+                    <span
+                        class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse">
+                    </span>
+
+                    <span class="text-xs font-medium text-emerald-600">
+                        Conectado
+                    </span>
+
+                </div>
+
             </div>
-            
-            <!-- 🖼️ 3. IMAGEN DE AVATAR -->
-            <img id="profile-img-top" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover border border-slate-200">
+
+
+            <!-- AVATAR -->
+            <img
+                id="profile-img-top"
+                src=""
+                alt="Avatar"
+                class="w-9 h-9 rounded-full object-cover border border-slate-200">
 
         </div>
 
     </header>
 
-           <!-- ========================================================
-         BARRA SUPERIOR AZUL OSCURO (DISEÑO ULTRA COMPACTO IDÉNTICO)
-         ======================================================== -->
-    <div class="px-6 pt-3 pb-1 no-print flex-shrink-0">
-        <div class="theme-azul-oscuro-rodax text-white rounded-xl px-5 py-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
-            
-                        <!-- SEGUNDO REQUERIMIENTO: Icono del camión centrado verticalmente en el medio de las dos frases -->
-            <div class="flex items-center gap-3.5">
-                <!-- El icono del camión ahora se alinea en el eje central del texto vertical -->
-                <i data-lucide="truck" class="w-5 h-5 text-white/90 flex-shrink-0"></i>
-                
-                <div class="flex flex-col justify-center">
-                    <h1 class="text-sm md:text-base font-black tracking-tight leading-none">Trabajos Disponibles</h1>
-                    <p class="hidden md:block text-[11px] text-white/60 font-semibold mt-1 leading-tight max-w-xs select-none">
-                        Encuentra y acepta servicios que encajen con tu ruta y disponibilidad.
-                    </p>
-                </div>
-            </div>
-
-                        <!-- Bloque Derecho: Sub-bloques transformados en Cápsulas/Botones Premium -->
-            <div class="flex flex-wrap items-center gap-3 text-xs font-bold ml-auto md:ml-0">
-                
-                <!-- Botón Contador Dinámico -->
-                <div class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-6 py-3.5 rounded-md transition-colors cursor-pointer select-none">
-                    <i data-lucide="box" class="w-4 h-4 text-white/70"></i>
-                    <span id="banner-contador-trabajos" class="font-black text-white text-[11px]">0</span>
-                    <span class="text-white/90">trabajos disponibles</span>
-                </div>
-
-                <!-- Botón Ubicación Actual -->
-                <div class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-6 py-3.5 rounded-md transition-colors cursor-pointer select-none">
-                    <i data-lucide="map-pin" class="w-4 h-4 text-white/70"></i>
-                    <span class="text-white/90">Madrid, España</span>
-                </div>
-
-                <!-- Botón Sincronizar / Actualizar -->
-                <div onclick="recargarDatos()" class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-6 py-3.5 rounded-md transition-colors cursor-pointer select-none">
-                    <i data-lucide="refresh-cw" class="w-4 h-4 text-white/70"></i>
-                    <span class="text-white/90">Actualizar</span>
-                </div>
-
-                <!-- ========================================================
-     SELECTOR DE DISPONIBILIDAD CON ACTIVACIÓN AUTOMÁTICA
-     ======================================================== -->
-<div class="flex flex-col items-start gap-1 flex-shrink-0 select-none no-print">
-    <!-- Palabra fija encima del selector tal como está en la captura -->
-    <span class="text-[10px] text-white/60 uppercase font-black tracking-wider pl-1">Disponibilidad</span>
-    
-    <!-- Contenedor del Selector con pastilla translúcida exacta -->
-    <div class="relative flex items-center bg-white/10 hover:bg-white/15 rounded-xl transition-colors border border-white/10 px-3.5 py-2 min-w-[150px]">
-        <!-- Indicador de color dinámico (Verde para Disponible / Rojo para No Disponible) -->
-        <span id="disponibilidad-indicador-color" class="w-2.5 h-2.5 rounded-full bg-emerald-400 mr-2.5 flex-shrink-0 transition-colors duration-300"></span>
-        
-        <!-- Elemento Selector Nativo Estilizado (Alto contraste con fuentes con fuerza) -->
-        <select id="selector-disponibilidad-transportista" onchange="actualizarDisponibilidadBaseDatos(this.value)" class="bg-transparent text-white font-black text-sm tracking-wide focus:outline-none pr-6 cursor-pointer appearance-none w-full font-sans">
-            <option value="Disponible" class="text-slate-900 font-bold">Disponible</option>
-            <option value="No Disponible" class="text-slate-900 font-bold">No Disponible</option>
-        </select>
-        
-        <!-- Icono de flecha de despliegue a la derecha -->
-        <i data-lucide="chevron-down" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/70 w-4 h-4 pointer-events-none"></i>
-    </div>
-</div>
-
-        </div>
-    </div>
 
     <!-- ========================================================
-     CONTENEDOR DE FILTROS PREMIUM (COLOR INTEGRADO CON EL PANEL)
-     ======================================================== -->
-<div class="w-full bg-[#0b1e5b]/5 border border-[#0b1e5b]/15 rounded-2xl p-4 flex flex-wrap items-center gap-3 backdrop-blur-sm shadow-sm mb-6">
-
-    <!-- INPUT: Buscar origen o destino -->
-    <div class="flex-1 min-w-[200px] relative">
-        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-        <input type="text" placeholder="Buscar origen o destino..." class="w-full bg-white text-slate-700 placeholder-slate-400 pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0b1e5b]/20 focus:border-[#0b1e5b]">
-    </div>
-
-    <!-- SELECT: Fecha -->
-    <div class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-slate-300">
-        <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
-        <span>Fecha</span>
-        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 ml-auto"></i>
-    </div>
-
-    <!-- SELECT: Zona -->
-    <div class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-slate-300">
-        <i data-lucide="map-pin" class="w-4 h-4 text-slate-400"></i>
-        <span>Zona</span>
-        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 ml-auto"></i>
-    </div>
-
-    <!-- SELECT: Distancia -->
-    <div class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-slate-300">
-        <i data-lucide="navigation" class="w-4 h-4 text-slate-400"></i>
-        <span>Distancia</span>
-        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 ml-auto"></i>
-    </div>
-
-    <!-- SELECT: Vehículo -->
-    <div class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-slate-300">
-        <i data-lucide="truck" class="w-4 h-4 text-slate-400"></i>
-        <span>Vehículo</span>
-        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 ml-auto"></i>
-    </div>
-
-    <!-- BOTÓN: Más filtros -->
-    <button class="ml-auto bg-white hover:bg-slate-50 text-slate-700 font-medium px-4 py-2 rounded-xl border border-slate-200 text-sm flex items-center gap-2 transition-colors duration-150">
-        <i data-lucide="sliders-horizontal" class="w-4 h-4 text-[#0b1e5b]"></i>
-        <span>Más filtros</span>
-    </button>
-
-</div>
-
-</div>
-</div>
-
-        </div>
-    </div>
-
-        <!-- ========================================================
-         ZONA CENTRAL DE TRABAJOS (CONTENEDORES DINÁMICOS)
+         BARRA SUPERIOR AZUL OSCURO
          ======================================================== -->
-    <div class="flex-1 overflow-y-auto p-6">
 
-        <!-- 📑 VISTA 1: TRABAJOS DISPONIBLES (MARKETPLACE) -->
-        <div id="tab-disponibles" class="fade-in">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5" id="contenedor-disponibles">
-                <!-- Aquí JavaScript inyectará dinámicamente las mudanzas -->
-            </div>
-        </div>
+    <div class="px-6 pt-3 pb-1 no-print flex-shrink-0">
 
-        <!-- 📑 VISTA 2: MIS MUDANZAS ACTIVAS -->
-        <div id="tab-mis-mudanzas" class="hidden fade-in">
-            <div id="contenedor-activas" class="space-y-5">
-                <div id="empty-activas" class="text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300">
-                    <i data-lucide="inbox" class="w-12 h-12 text-gray-300 mx-auto mb-3"></i>
-                    <p class="text-gray-500 font-semibold">No tienes ninguna mudanza asignada actualmente.</p>
-                    <p class="text-gray-400 text-sm mt-1">Busca trabajos en la pestaña "Trabajos Disponibles".</p>
+        <div
+            class="theme-azul-oscuro-rodax text-white rounded-xl px-5 py-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+
+            <!-- BLOQUE IZQUIERDO -->
+            <div class="flex items-center gap-3.5">
+
+                <i
+                    data-lucide="truck"
+                    class="w-5 h-5 text-white/90 flex-shrink-0">
+                </i>
+
+                <div class="flex flex-col justify-center">
+
+                    <h1
+                        id="header-title"
+                        class="text-sm md:text-base font-black tracking-tight leading-none">
+                        Trabajos Disponibles
+                    </h1>
+
+                    <p
+                        class="hidden md:block text-[11px] text-white/60 font-semibold mt-1 leading-tight max-w-xs select-none">
+                        Encuentra y acepta servicios que encajen con tu ruta y disponibilidad.
+                    </p>
+
                 </div>
+
             </div>
+
+
+            <!-- BLOQUE DERECHO -->
+            <div
+                class="flex flex-wrap items-center gap-3 text-xs font-bold ml-auto md:ml-0">
+
+                <!-- CONTADOR -->
+                <div
+                    class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-6 py-3.5 rounded-md transition-colors cursor-pointer select-none">
+
+                    <i
+                        data-lucide="box"
+                        class="w-4 h-4 text-white/70">
+                    </i>
+
+                    <span
+                        id="banner-contador-trabajos"
+                        class="font-black text-white text-[11px]">
+                        0
+                    </span>
+
+                    <span class="text-white/90">
+                        trabajos disponibles
+                    </span>
+
+                </div>
+
+
+                <!-- UBICACIÓN -->
+                <div
+                    class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-6 py-3.5 rounded-md transition-colors cursor-pointer select-none">
+
+                    <i
+                        data-lucide="map-pin"
+                        class="w-4 h-4 text-white/70">
+                    </i>
+
+                    <span class="text-white/90">
+                        Madrid, España
+                    </span>
+
+                </div>
+
+
+                <!-- ACTUALIZAR -->
+                <div
+                    onclick="recargarDatos()"
+                    class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-6 py-3.5 rounded-md transition-colors cursor-pointer select-none">
+
+                    <i
+                        data-lucide="refresh-cw"
+                        class="w-4 h-4 text-white/70">
+                    </i>
+
+                    <span class="text-white/90">
+                        Actualizar
+                    </span>
+
+                </div>
+
+
+                <!-- ========================================================
+                     SELECTOR DE DISPONIBILIDAD
+                     ======================================================== -->
+
+                <div
+                    class="flex flex-col items-start gap-1 flex-shrink-0 select-none no-print">
+
+                    <span
+                        class="text-[10px] text-white/60 uppercase font-black tracking-wider pl-1">
+                        Disponibilidad
+                    </span>
+
+                    <div
+                        class="relative flex items-center bg-white/10 hover:bg-white/15 rounded-xl transition-colors border border-white/10 px-3.5 py-2 min-w-[150px]">
+
+                        <span
+                            id="disponibilidad-indicador-color"
+                            class="w-2.5 h-2.5 rounded-full bg-emerald-400 mr-2.5 flex-shrink-0 transition-colors duration-300">
+                        </span>
+
+                        <select
+                            id="selector-disponibilidad-transportista"
+                            onchange="actualizarDisponibilidadBaseDatos(this.value)"
+                            class="bg-transparent text-white font-black text-sm tracking-wide focus:outline-none pr-6 cursor-pointer appearance-none w-full font-sans">
+
+                            <option
+                                value="Disponible"
+                                class="text-slate-900 font-bold">
+                                Disponible
+                            </option>
+
+                            <option
+                                value="No Disponible"
+                                class="text-slate-900 font-bold">
+                                No Disponible
+                            </option>
+
+                        </select>
+
+                        <i
+                            data-lucide="chevron-down"
+                            class="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/70 w-4 h-4 pointer-events-none">
+                        </i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
     </div>
 
-<!-- MODAL DE ACCIÓN -->
-<div id="action-modal" class="fixed inset-0 bg-gray-900/80 z-[100] flex items-center justify-center p-4 hidden backdrop-blur-sm">
-    <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 text-center" id="modal-content"></div>
+
+    <!-- ========================================================
+         FILTROS PREMIUM — MARKETPLACE
+         ======================================================== -->
+
+    <div
+        class="w-full bg-[#0b1e5b]/5 border border-[#0b1e5b]/15 rounded-2xl p-4 flex flex-wrap items-center gap-3 backdrop-blur-sm shadow-sm mb-6">
+
+        <!-- BUSCADOR ORIGEN / DESTINO -->
+        <div class="flex-1 min-w-[200px] relative">
+
+            <i
+                data-lucide="search"
+                class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#0b1e5b] pointer-events-none">
+            </i>
+
+            <input
+                id="filtro-buscar-marketplace"
+                type="text"
+                placeholder="Buscar origen o destino..."
+                autocomplete="off"
+                oninput="aplicarFiltroBusquedaMarketplace()"
+                class="w-full bg-white text-slate-700 placeholder-slate-400 pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0b1e5b]/20 focus:border-[#0b1e5b]">
+
+        </div>
+
+
+        <!-- FILTRO FECHA -->
+        <button
+            type="button"
+            id="filtro-fecha-marketplace"
+            data-marketplace-filtro="true"
+            class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-700 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
+
+            <i
+                data-lucide="calendar"
+                class="w-4 h-4 text-[#0b1e5b]">
+            </i>
+
+            <span>Fecha</span>
+
+            <span
+                data-filtro-indicador
+                class="text-sky-500 font-black">
+            </span>
+
+            <i
+                data-lucide="chevron-down"
+                class="w-4 h-4 text-[#0b1e5b] ml-auto">
+            </i>
+
+        </button>
+
+
+        <!-- FILTRO ZONA -->
+        <button
+            type="button"
+            id="filtro-zona-marketplace"
+            data-marketplace-filtro="true"
+            class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-700 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
+
+            <i
+                data-lucide="map-pin"
+                class="w-4 h-4 text-[#0b1e5b]">
+            </i>
+
+            <span>Zona</span>
+
+            <span
+                data-filtro-indicador
+                class="text-sky-500 font-black">
+            </span>
+
+            <i
+                data-lucide="chevron-down"
+                class="w-4 h-4 text-[#0b1e5b] ml-auto">
+            </i>
+
+        </button>
+
+
+        <!-- FILTRO DISTANCIA -->
+        <button
+            type="button"
+            id="filtro-distancia-marketplace"
+            data-marketplace-filtro="true"
+            class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-700 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
+
+            <i
+                data-lucide="navigation"
+                class="w-4 h-4 text-[#0b1e5b]">
+            </i>
+
+            <span>Distancia</span>
+
+            <span
+                data-filtro-indicador
+                class="text-sky-500 font-black">
+            </span>
+
+            <i
+                data-lucide="chevron-down"
+                class="w-4 h-4 text-[#0b1e5b] ml-auto">
+            </i>
+
+        </button>
+
+
+        <!-- FILTRO VEHÍCULO -->
+        <button
+            type="button"
+            id="filtro-vehiculo-marketplace"
+            data-marketplace-filtro="true"
+            class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-700 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
+
+            <i
+                data-lucide="truck"
+                class="w-4 h-4 text-[#0b1e5b]">
+            </i>
+
+            <span>Vehículo</span>
+
+            <span
+                data-filtro-indicador
+                class="text-sky-500 font-black">
+            </span>
+
+            <i
+                data-lucide="chevron-down"
+                class="w-4 h-4 text-[#0b1e5b] ml-auto">
+            </i>
+
+        </button>
+
+
+        <!-- MÁS FILTROS -->
+        <button
+            type="button"
+            id="filtro-mas-marketplace"
+            data-marketplace-filtro="true"
+            class="ml-auto bg-white hover:bg-slate-50 text-slate-700 font-semibold px-4 py-2 rounded-xl border border-slate-200 text-sm flex items-center gap-2 transition-colors duration-150">
+
+            <i
+                data-lucide="sliders-horizontal"
+                class="w-4 h-4 text-[#0b1e5b]">
+            </i>
+
+            <span>
+                Más filtros
+            </span>
+
+            <span
+                data-filtro-indicador
+                class="text-sky-500 font-black">
+            </span>
+
+        </button>
+
+
+        <!-- LIMPIAR FILTROS -->
+        <button
+            type="button"
+            id="limpiar-todos-filtros-marketplace"
+            class="hidden bg-white hover:bg-red-50 text-slate-500 hover:text-red-600 font-semibold px-3 py-2 rounded-xl border border-slate-200 hover:border-red-200 text-xs flex items-center gap-2 transition-colors">
+
+            <i
+                data-lucide="rotate-ccw"
+                class="w-3.5 h-3.5">
+            </i>
+
+            <span>
+                Limpiar
+            </span>
+
+        </button>
+
+    </div>
+
+</div>
 </div>
 
-<div id="ficha-print-zone" style="display:none;"></div>
+</div>
 
-<!-- Capa de fondo oscuro con z-40 para capturar el click fuera del panel -->
-<div id="drawerOverlay" class="fixed inset-0 bg-black/40 hidden z-40 backdrop-blur-sm cursor-pointer"></div>
+</div>
 
-<!-- Panel Lateral Derecho (Drawer) con z-50 para quedar por encima de la capa oscura -->
-<aside id="drawerMudanza" class="fixed top-0 right-0 h-full w-[450px] max-w-full bg-white shadow-2xl translate-x-full transition-transform duration-300 z-50 flex flex-col border-l border-slate-100">
-    
-    <!-- CABECERA PRINCIPAL -->
-    <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-        <h2 class="text-base font-bold text-slate-800 tracking-tight">Detalles del trabajo</h2>
-        <button onclick="cerrarDrawer()" class="rounded-xl p-2 text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-colors text-sm font-medium">✕</button>
-    </div>
+<!-- ========================================================
+     CONTENEDORES PRINCIPALES DEL PANEL
+     ======================================================== -->
 
-    <!-- MENÚ DE PESTAÑAS (TABS) - Fijas y distribuidas de forma simétrica -->
-    <div class="px-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center w-full no-print flex-shrink-0">
-        <button onclick="cambiarDrawerTab('resumen')" id="tab-d-resumen" class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-blue-600 text-blue-600 transition-colors">Resumen</button>
-        <button onclick="cambiarDrawerTab('ruta')" id="tab-d-ruta" class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">Ruta</button>
-        <button onclick="cambiarDrawerTab('inventario')" id="tab-d-inventario" class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">Inventario</button>
-        <button onclick="cambiarDrawerTab('servicios')" id="tab-d-servicios" class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">Servicios</button>
-        <button onclick="cambiarDrawerTab('fotos')" id="tab-d-fotos" class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">Fotos</button>
-        <button onclick="cambiarDrawerTab('indicaciones')" id="tab-d-indicaciones" class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">Indicaciones</button>
-    </div>
+<div class="flex-1 overflow-y-auto px-6 pb-8 custom-scrollbar">
 
-        <!-- CONTENIDO DINÁMICO CON SCROLL (UNIFICADO Y VISIBLE) -->
-    <div class="flex-1 overflow-y-auto p-6 space-y-5">
-        
-        <!-- SUB-CABECERA GLOBAL (Siempre visible en la parte superior) -->
-        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-            <span id="drawerServicioBadge" class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md border">—</span>
-            <span class="text-xs font-medium text-slate-400">ID: <strong id="drawerIdTexto" class="text-slate-600 font-semibold">—</strong></span>
+    <!-- ========================================================
+         TAB: TRABAJOS DISPONIBLES
+         ======================================================== -->
+
+    <section
+        id="tab-disponibles"
+        class="tab-content">
+
+        <!-- CONTENEDOR DE TRABAJOS -->
+        <div
+            id="contenedor-disponibles"
+            class="space-y-3">
+
+            <!-- Los trabajos se generan dinámicamente desde
+                 marketplace.js / tarjetas.js -->
+
         </div>
 
-        <!-- 📑 PESTAÑA 1: RESUMEN -->
-        <div id="pane-d-resumen" class="drawer-pane space-y-5">
-            <!-- Ruta Compacta -->
-            <div class="relative pl-6 border-l-2 border-dashed border-slate-200 ml-2 space-y-6 my-2">
-                <div class="relative">
-                    <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-blue-600 border-4 border-white shadow-sm"></div>
-                    <p id="drawerOrigenResumen" class="text-sm font-bold text-slate-800 leading-tight">—</p>
-                    <p id="drawerOrigenAcceso" class="text-xs text-slate-400 mt-0.5">—</p>
-                </div>
-                <div class="relative">
-                    <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-orange-500 border-4 border-white shadow-sm"></div>
-                    <p id="drawerDestinoResumen" class="text-sm font-bold text-slate-800 leading-tight">—</p>
-                    <p id="drawerDestinoAcceso" class="text-xs text-slate-400 mt-0.5">—</p>
-                </div>
-            </div>
+    </section>
 
-            <!-- Título de Inventario Resumido -->
-            <div class="pt-2 border-t border-slate-100">
-                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center justify-between w-full">
-                    <span>INVENTARIO (<span id="drawerTotalArticulos" class="font-bold">0</span> ART.) — <span id="drawerTipoViviendaResumen" class="text-slate-700 font-semibold">—</span></span>
-                    <span id="drawerM3Texto" class="text-blue-600 font-bold ml-auto">0.0 m³</span>
-                </h3>
-                <div id="drawerInventarioResumen" class="space-y-2"></div>
-            </div>
 
-            <!-- Caja de Datos de Logística -->
-            <div class="grid grid-cols-2 gap-3 pt-1">
-                <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
-                    <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Distancia</span>
-                    <span id="drawerKm" class="font-bold text-slate-800 text-sm">—</span>
-                </div>
-                <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
-                    <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Fecha del Servicio</span>
-                    <span id="drawerFecha" class="font-bold text-slate-800 text-sm">—</span>
-                </div>
-            </div>
-            
-            <div class="bg-yellow-50/60 border border-yellow-100 rounded-xl p-3 text-xs">
-                <span class="block text-[10px] font-bold text-amber-600 uppercase tracking-wider mb-1">Observaciones preliminares</span>
-                <p id="drawerObservaciones" class="text-slate-600 leading-relaxed">—</p>
-            </div>
-        </div>
+    <!-- ========================================================
+         TAB: MIS MUDANZAS ACTIVAS
+         ======================================================== -->
 
-        <!-- 📑 PESTAÑA 2: RUTA DETALLADA -->
-        <div id="pane-d-ruta" class="drawer-pane space-y-4 hidden">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Itinerario y Accesos</h3>
-            <div id="drawerRutaDetalleContenedor" class="w-full"></div>
-        </div>
+    <section
+        id="tab-mis-mudanzas"
+        class="tab-content hidden">
 
-        <!-- 📑 PESTAÑA 3: INVENTARIO COMPLETO -->
-        <div id="pane-d-inventario" class="drawer-pane space-y-4 hidden">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between w-full">
-                <span>Desglose Completo de Carga</span>
-                <span id="drawerM3Badge" class="text-blue-600 font-bold">0.0 m³</span>
-            </h3>
-            <div id="drawerInventarioFull" class="space-y-1 w-full"></div>
-        </div>
+        <div class="flex items-center justify-between mb-5">
 
-        <!-- 📑 PESTAÑA 4: SERVICIOS CONTRATADOS -->
-        <div id="pane-d-servicios" class="drawer-pane space-y-4 hidden">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Garantías y Extras Incluidos</h3>
-            <!-- Contenedor nativo donde el script inyectará los checks -->
-            <div id="drawerServiciosLista" class="w-full"></div>
-        </div>
-
-        <!-- 📑 PESTAÑA 5: FOTOS -->
-        <div id="pane-d-fotos" class="drawer-pane space-y-4 hidden">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Registro Fotográfico del Cliente</h3>
-            <!-- Contenedor nativo para la galería e inyección de miniaturas -->
-            <div id="drawerFotosFull" class="w-full"></div>
-        </div>
-
-        <!-- 📑 PESTAÑA 6: INDICACIONES -->
-        <div id="pane-d-indicaciones" class="drawer-pane space-y-4 hidden">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Indicaciones Operativas</h3>
-            <!-- Contenedor nativo para las observaciones completas -->
-            <div id="drawerIndicacionesContenedor" class="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border"></div>
-        </div>
-
-    </div>
-
-    <!-- SECCIÓN FIJA INFERIOR - CORREGIDA (Corrección 2: Muestra Precio Total y pago en 48h) -->
-    <div class="p-4 border-t border-slate-100 bg-slate-50/50 flex flex-col gap-3 flex-shrink-0">
-        <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-200/60 shadow-sm">
             <div>
-                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">PRECIO TOTAL A PAGAR</span>
-                <span id="drawerPrecio" class="text-xl font-black text-blue-600 leading-none">—</span>
-                <span class="text-[10px] text-slate-400 block mt-0.5">IVA incl.</span>
+
+                <h2
+                    class="text-lg font-black text-slate-800 tracking-tight">
+                    Mis Mudanzas Activas
+                </h2>
+
+                <p
+                    class="text-xs text-slate-500 mt-1">
+                    Servicios aceptados y pendientes de realización.
+                </p>
+
             </div>
-            <div class="text-right">
-                <span class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold px-2 py-1 rounded-md block">Pago Garantizado</span>
-                <span class="text-[10px] text-slate-400 font-medium block mt-1">en 48 horas</span>
+
+            <div
+                class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-2 shadow-sm">
+
+                <i
+                    data-lucide="truck"
+                    class="w-4 h-4 text-emerald-500">
+                </i>
+
+                <span
+                    id="contador-mis-mudanzas"
+                    class="text-xs font-black text-slate-700">
+                    0 activas
+                </span>
+
             </div>
+
         </div>
-        <button id="btnAceptarDrawer" class="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3.5 font-bold text-sm shadow-md transition-all active:scale-[0.99]">
-            Aceptar trabajo
+
+
+        <div
+            id="contenedor-mis-mudanzas"
+            class="space-y-4">
+
+            <!-- Las mudanzas activas se generan dinámicamente -->
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================================================
+         TAB: MI AGENDA
+         ======================================================== -->
+
+    <section
+        id="tab-mi-agenda"
+        class="tab-content hidden">
+
+        <div
+            class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+
+            <div class="flex items-center gap-3 mb-5">
+
+                <div
+                    class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+
+                    <i
+                        data-lucide="calendar-days"
+                        class="w-5 h-5 text-blue-600">
+                    </i>
+
+                </div>
+
+                <div>
+
+                    <h2
+                        class="text-lg font-black text-slate-800">
+                        Mi agenda
+                    </h2>
+
+                    <p
+                        class="text-xs text-slate-500">
+                        Consulta tus servicios programados.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div
+                id="agenda-contenido"
+                class="text-sm text-slate-500">
+                No hay información de agenda disponible.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================================================
+         TAB: MIS RUTAS
+         ======================================================== -->
+
+    <section
+        id="tab-mis-rutas"
+        class="tab-content hidden">
+
+        <div
+            class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+
+            <div class="flex items-center gap-3 mb-5">
+
+                <div
+                    class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+
+                    <i
+                        data-lucide="route"
+                        class="w-5 h-5 text-blue-600">
+                    </i>
+
+                </div>
+
+                <div>
+
+                    <h2
+                        class="text-lg font-black text-slate-800">
+                        Mis rutas
+                    </h2>
+
+                    <p
+                        class="text-xs text-slate-500">
+                        Gestiona tus rutas y desplazamientos.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div
+                id="rutas-contenido"
+                class="text-sm text-slate-500">
+                No hay rutas disponibles.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================================================
+         TAB: PAGOS
+         ======================================================== -->
+
+    <section
+        id="tab-pagos"
+        class="tab-content hidden">
+
+        <div
+            class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+
+            <div class="flex items-center gap-3 mb-5">
+
+                <div
+                    class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
+
+                    <i
+                        data-lucide="wallet"
+                        class="w-5 h-5 text-emerald-600">
+                    </i>
+
+                </div>
+
+                <div>
+
+                    <h2
+                        class="text-lg font-black text-slate-800">
+                        Pagos
+                    </h2>
+
+                    <p
+                        class="text-xs text-slate-500">
+                        Consulta tus cobros y pagos.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div
+                id="pagos-contenido"
+                class="text-sm text-slate-500">
+                No hay información de pagos disponible.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================================================
+         TAB: FACTURACIÓN
+         ======================================================== -->
+
+    <section
+        id="tab-facturacion"
+        class="tab-content hidden">
+
+        <div
+            class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+
+            <div class="flex items-center gap-3 mb-5">
+
+                <div
+                    class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
+
+                    <i
+                        data-lucide="file-text"
+                        class="w-5 h-5 text-indigo-600">
+                    </i>
+
+                </div>
+
+                <div>
+
+                    <h2
+                        class="text-lg font-black text-slate-800">
+                        Facturación
+                    </h2>
+
+                    <p
+                        class="text-xs text-slate-500">
+                        Gestiona tus facturas y documentación.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div
+                id="facturacion-contenido"
+                class="text-sm text-slate-500">
+                No hay facturas disponibles.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================================================
+         TAB: MIS VEHÍCULOS
+         ======================================================== -->
+
+    <section
+        id="tab-mis-vehiculos"
+        class="tab-content hidden">
+
+        <div
+            class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+
+            <div class="flex items-center gap-3 mb-5">
+
+                <div
+                    class="w-10 h-10 rounded-xl bg-sky-50 flex items-center justify-center">
+
+                    <i
+                        data-lucide="truck"
+                        class="w-5 h-5 text-sky-600">
+                    </i>
+
+                </div>
+
+                <div>
+
+                    <h2
+                        class="text-lg font-black text-slate-800">
+                        Mis vehículos
+                    </h2>
+
+                    <p
+                        class="text-xs text-slate-500">
+                        Gestiona los vehículos asociados a tu cuenta.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div
+                id="vehiculos-contenido"
+                class="text-sm text-slate-500">
+                No hay vehículos registrados.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================================================
+         TAB: EQUIPO / OPERARIOS
+         ======================================================== -->
+
+    <section
+        id="tab-equipo"
+        class="tab-content hidden">
+
+        <div
+            class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+
+            <div class="flex items-center gap-3 mb-5">
+
+                <div
+                    class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center">
+
+                    <i
+                        data-lucide="users"
+                        class="w-5 h-5 text-violet-600">
+                    </i>
+
+                </div>
+
+                <div>
+
+                    <h2
+                        class="text-lg font-black text-slate-800">
+                        Equipo / Operarios
+                    </h2>
+
+                    <p
+                        class="text-xs text-slate-500">
+                        Gestiona los miembros de tu equipo.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div
+                id="equipo-contenido"
+                class="text-sm text-slate-500">
+                No hay operarios registrados.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================================================
+         TAB: MI PERFIL
+         ======================================================== -->
+
+    <section
+        id="tab-mi-perfil"
+        class="tab-content hidden">
+
+        <div
+            class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+
+            <div class="flex items-center gap-3 mb-6">
+
+                <div
+                    class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+
+                    <i
+                        data-lucide="user"
+                        class="w-5 h-5 text-blue-600">
+                    </i>
+
+                </div>
+
+                <div>
+
+                    <h2
+                        class="text-lg font-black text-slate-800">
+                        Mi perfil
+                    </h2>
+
+                    <p
+                        class="text-xs text-slate-500">
+                        Información de tu cuenta de transportista.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                <div>
+
+                    <label
+                        class="block text-[10px] uppercase tracking-wider font-black text-slate-400 mb-2">
+                        Nombre
+                    </label>
+
+                    <div
+                        id="perfil-nombre"
+                        class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700">
+                        —
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <label
+                        class="block text-[10px] uppercase tracking-wider font-black text-slate-400 mb-2">
+                        Email
+                    </label>
+
+                    <div
+                        id="perfil-email"
+                        class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700">
+                        —
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <label
+                        class="block text-[10px] uppercase tracking-wider font-black text-slate-400 mb-2">
+                        Teléfono
+                    </label>
+
+                    <div
+                        id="perfil-telefono"
+                        class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700">
+                        —
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <label
+                        class="block text-[10px] uppercase tracking-wider font-black text-slate-400 mb-2">
+                        Estado
+                    </label>
+
+                    <div
+                        id="perfil-estado"
+                        class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700">
+                        Disponible
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================================================
+         TAB: NOTIFICACIONES
+         ======================================================== -->
+
+    <section
+        id="tab-notificaciones"
+        class="tab-content hidden">
+
+        <div
+            class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+
+            <div class="flex items-center gap-3 mb-5">
+
+                <div
+                    class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+
+                    <i
+                        data-lucide="bell"
+                        class="w-5 h-5 text-amber-600">
+                    </i>
+
+                </div>
+
+                <div>
+
+                    <h2
+                        class="text-lg font-black text-slate-800">
+                        Notificaciones
+                    </h2>
+
+                    <p
+                        class="text-xs text-slate-500">
+                        Avisos importantes de RODAX.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div
+                id="notificaciones-contenido"
+                class="space-y-3">
+
+                <div
+                    class="text-sm text-slate-400 italic">
+                    No tienes nuevas notificaciones.
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================================================
+         TAB: CONFIGURACIÓN
+         ======================================================== -->
+
+    <section
+        id="tab-configuracion"
+        class="tab-content hidden">
+
+        <div
+            class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+
+            <div class="flex items-center gap-3 mb-5">
+
+                <div
+                    class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
+
+                    <i
+                        data-lucide="settings"
+                        class="w-5 h-5 text-slate-600">
+                    </i>
+
+                </div>
+
+                <div>
+
+                    <h2
+                        class="text-lg font-black text-slate-800">
+                        Configuración
+                    </h2>
+
+                    <p
+                        class="text-xs text-slate-500">
+                        Configura las preferencias de tu cuenta.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="space-y-4">
+
+                <div
+                    class="flex items-center justify-between border border-slate-200 rounded-xl p-4">
+
+                    <div>
+
+                        <p
+                            class="text-sm font-bold text-slate-700">
+                            Recibir notificaciones
+                        </p>
+
+                        <p
+                            class="text-xs text-slate-400 mt-1">
+                            Recibe avisos sobre nuevos trabajos.
+                        </p>
+
+                    </div>
+
+                    <div
+                        class="w-10 h-5 rounded-full bg-emerald-500 relative">
+
+                        <span
+                            class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow">
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- ========================================================
+     DRAWER PRINCIPAL — DETALLE DE MUDANZA
+     ======================================================== -->
+
+<div
+    id="drawer-overlay"
+    class="fixed inset-0 bg-slate-950/50 backdrop-blur-sm z-[90] hidden opacity-0 transition-opacity duration-200"
+    onclick="cerrarDrawer()">
+</div>
+
+
+<aside
+    id="mudanza-drawer"
+    class="fixed top-0 right-0 h-full w-full sm:w-[520px] bg-white z-[100] shadow-2xl translate-x-full transition-transform duration-300 overflow-hidden flex flex-col">
+
+    <!-- ====================================================
+         CABECERA DRAWER
+         ==================================================== -->
+
+    <div
+        class="flex-shrink-0 bg-white border-b border-slate-200 px-5 py-4 flex items-center justify-between">
+
+        <div class="flex items-center gap-3 min-w-0">
+
+            <div
+                class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+
+                <i
+                    data-lucide="clipboard-list"
+                    class="w-5 h-5 text-blue-600">
+                </i>
+
+            </div>
+
+            <div class="min-w-0">
+
+                <div
+                    class="flex items-center gap-2">
+
+                    <span
+                        class="text-[10px] uppercase tracking-wider font-black text-slate-400">
+                        Trabajo
+                    </span>
+
+                    <span
+                        id="drawerIdTrabajo"
+                        class="text-xs font-black text-[#0b1e5b] truncate">
+                        —
+                    </span>
+
+                </div>
+
+                <h2
+                    id="drawerTitulo"
+                    class="text-base font-black text-slate-800 truncate">
+                    Detalle de la mudanza
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            onclick="cerrarDrawer()"
+            class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors flex-shrink-0">
+
+            <i
+                data-lucide="x"
+                class="w-5 h-5">
+            </i>
+
         </button>
+
+    </div>
+
+
+    <!-- ====================================================
+         RESUMEN DRAWER
+         ==================================================== -->
+
+    <div
+        class="flex-shrink-0 px-5 py-4 bg-slate-50 border-b border-slate-200">
+
+        <div
+            class="grid grid-cols-2 gap-3">
+
+            <!-- ORIGEN -->
+            <div
+                class="bg-white rounded-xl border border-slate-200 p-3">
+
+                <div
+                    class="flex items-center gap-1.5 mb-1">
+
+                    <span
+                        class="w-2 h-2 rounded-full bg-blue-600">
+                    </span>
+
+                    <span
+                        class="text-[9px] uppercase tracking-wider font-black text-blue-600">
+                        Recogida
+                    </span>
+
+                </div>
+
+                <p
+                    id="drawerOrigenResumen"
+                    class="text-xs font-black text-slate-800 truncate">
+                    —
+                </p>
+
+                <p
+                    id="drawerOrigenAcceso"
+                    class="text-[10px] text-slate-500 mt-1">
+                    —
+                </p>
+
+            </div>
+
+
+            <!-- DESTINO -->
+            <div
+                class="bg-white rounded-xl border border-slate-200 p-3">
+
+                <div
+                    class="flex items-center gap-1.5 mb-1">
+
+                    <span
+                        class="w-2 h-2 rounded-full bg-orange-500">
+                    </span>
+
+                    <span
+                        class="text-[9px] uppercase tracking-wider font-black text-orange-600">
+                        Entrega
+                    </span>
+
+                </div>
+
+                <p
+                    id="drawerDestinoResumen"
+                    class="text-xs font-black text-slate-800 truncate">
+                    —
+                </p>
+
+                <p
+                    id="drawerDestinoAcceso"
+                    class="text-[10px] text-slate-500 mt-1">
+                    —
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="flex items-center justify-between mt-3">
+
+            <div
+                class="flex items-center gap-2">
+
+                <i
+                    data-lucide="calendar"
+                    class="w-3.5 h-3.5 text-slate-400">
+                </i>
+
+                <span
+                    id="drawerFecha"
+                    class="text-xs font-bold text-slate-600">
+                    —
+                </span>
+
+            </div>
+
+            <div
+                class="flex items-center gap-2">
+
+                <i
+                    data-lucide="route"
+                    class="w-3.5 h-3.5 text-slate-400">
+                </i>
+
+                <span
+                    id="drawerKm"
+                    class="text-xs font-black text-slate-700">
+                    —
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ====================================================
+         NAVEGACIÓN DE SECCIONES DEL DRAWER
+         ==================================================== -->
+
+    <div
+        class="flex-shrink-0 px-4 py-2 border-b border-slate-200 bg-white overflow-x-auto">
+
+        <div
+            class="flex items-center gap-1.5 min-w-max">
+
+            <button
+                type="button"
+                data-drawer-tab="ruta"
+                onclick="cambiarDrawerTab('ruta')"
+                class="drawer-tab active px-3 py-2 rounded-lg text-[11px] font-black text-blue-600 bg-blue-50 flex items-center gap-1.5">
+
+                <i
+                    data-lucide="route"
+                    class="w-3.5 h-3.5">
+                </i>
+
+                Ruta
+
+            </button>
+
+
+            <button
+                type="button"
+                data-drawer-tab="inventario"
+                onclick="cambiarDrawerTab('inventario')"
+                class="drawer-tab px-3 py-2 rounded-lg text-[11px] font-black text-slate-500 hover:bg-slate-50 flex items-center gap-1.5">
+
+                <i
+                    data-lucide="package"
+                    class="w-3.5 h-3.5">
+                </i>
+
+                Inventario
+
+            </button>
+
+
+            <button
+                type="button"
+                data-drawer-tab="servicios"
+                onclick="cambiarDrawerTab('servicios')"
+                class="drawer-tab px-3 py-2 rounded-lg text-[11px] font-black text-slate-500 hover:bg-slate-50 flex items-center gap-1.5">
+
+                <i
+                    data-lucide="wrench"
+                    class="w-3.5 h-3.5">
+                </i>
+
+                Servicios
+
+            </button>
+
+
+            <button
+                type="button"
+                data-drawer-tab="fotos"
+                onclick="cambiarDrawerTab('fotos')"
+                class="drawer-tab px-3 py-2 rounded-lg text-[11px] font-black text-slate-500 hover:bg-slate-50 flex items-center gap-1.5">
+
+                <i
+                    data-lucide="images"
+                    class="w-3.5 h-3.5">
+                </i>
+
+                Fotos
+
+            </button>
+
+
+            <button
+                type="button"
+                data-drawer-tab="indicaciones"
+                onclick="cambiarDrawerTab('indicaciones')"
+                class="drawer-tab px-3 py-2 rounded-lg text-[11px] font-black text-slate-500 hover:bg-slate-50 flex items-center gap-1.5">
+
+                <i
+                    data-lucide="message-square"
+                    class="w-3.5 h-3.5">
+                </i>
+
+                Indicaciones
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ====================================================
+         CONTENIDO SCROLLABLE DEL DRAWER
+         ==================================================== -->
+
+    <div
+        id="drawer-scroll-content"
+        class="flex-1 overflow-y-auto px-5 py-5 custom-scrollbar">
+
+        <!-- RUTA -->
+        <div
+            id="drawer-tab-ruta"
+            class="drawer-tab-content">
+
+            <div
+                id="drawerRutaDetalleContenedor">
+            </div>
+
+        </div>
+
+
+        <!-- INVENTARIO -->
+        <div
+            id="drawer-tab-inventario"
+            class="drawer-tab-content hidden">
+
+            <div
+                class="flex items-center justify-between mb-3">
+
+                <div>
+
+                    <h3
+                        class="text-sm font-black text-slate-800">
+                        Inventario
+                    </h3>
+
+                    <p
+                        class="text-[10px] text-slate-400 mt-0.5">
+                        Carga declarada por el cliente.
+                    </p>
+
+                </div>
+
+                <div
+                    class="flex items-center gap-1.5">
+
+                    <span
+                        id="drawerTotalArticulos"
+                        class="text-xs font-black text-blue-700 bg-blue-50 border border-blue-100 px-2 py-1 rounded-lg">
+                        0
+                    </span>
+
+                    <span
+                        id="drawerM3Badge"
+                        class="text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-1 rounded-lg">
+                        0,0 m³
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="drawerInventarioResumen"
+                class="space-y-2">
+            </div>
+
+
+            <div
+                id="drawerInventarioFull"
+                class="hidden space-y-2">
+            </div>
+
+        </div>
+
+
+        <!-- SERVICIOS -->
+        <div
+            id="drawer-tab-servicios"
+            class="drawer-tab-content hidden">
+
+            <div
+                class="mb-3">
+
+                <h3
+                    class="text-sm font-black text-slate-800">
+                    Servicios y extras
+                </h3>
+
+                <p
+                    class="text-[10px] text-slate-400 mt-0.5">
+                    Servicios incluidos y extras seleccionados.
+                </p>
+
+            </div>
+
+            <div
+                id="drawerServiciosLista"
+                class="w-full">
+            </div>
+
+        </div>
+
+
+        <!-- FOTOS -->
+        <div
+            id="drawer-tab-fotos"
+            class="drawer-tab-content hidden">
+
+            <div
+                class="mb-3">
+
+                <h3
+                    class="text-sm font-black text-slate-800">
+                    Fotografías
+                </h3>
+
+                <p
+                    class="text-[10px] text-slate-400 mt-0.5">
+                    Imágenes aportadas por el cliente.
+                </p>
+
+            </div>
+
+            <div
+                id="drawerFotosFull"
+                class="w-full">
+            </div>
+
+        </div>
+
+
+        <!-- INDICACIONES -->
+        <div
+            id="drawer-tab-indicaciones"
+            class="drawer-tab-content hidden">
+
+            <div
+                class="mb-3">
+
+                <h3
+                    class="text-sm font-black text-slate-800">
+                    Indicaciones del cliente
+                </h3>
+
+                <p
+                    class="text-[10px] text-slate-400 mt-0.5">
+                    Observaciones importantes para el servicio.
+                </p>
+
+            </div>
+
+            <div
+                id="drawerIndicacionesContenedor"
+                class="bg-amber-50 border border-amber-100 rounded-xl p-4 text-xs text-amber-800 leading-relaxed">
+                El cliente no ha añadido observaciones.
+            </div>
+
+        </div>
+
     </div>
 
 </aside>
 
+
+<!-- ========================================================
+     MODAL DE CONFIRMACIÓN DE ACEPTACIÓN
+     ======================================================== -->
+
+<div
+    id="action-modal"
+    class="fixed inset-0 z-[120] hidden items-center justify-center p-4 bg-slate-950/50 backdrop-blur-sm">
+
+    <div
+        id="modal-content"
+        class="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 text-center">
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================
+     MODAL PARA FINALIZAR MUDANZA
+     ======================================================== -->
+
+<div
+    id="finalizar-modal"
+    class="fixed inset-0 z-[120] hidden items-center justify-center p-4 bg-slate-950/50 backdrop-blur-sm">
+
+    <div
+        id="finalizar-modal-content"
+        class="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6">
+
+    </div>
+
+</div>
+
+<!-- ========================================================
+     ESTILOS ESPECÍFICOS DEL DRAWER Y COMPONENTES
+     ======================================================== -->
+
+<style>
+
+    /* =====================================================
+       SCROLLBAR PERSONALIZADA
+       ===================================================== */
+
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 999px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+
+    /* =====================================================
+       CONTENEDORES DE PESTAÑAS
+       ===================================================== */
+
+    .tab-content {
+        width: 100%;
+    }
+
+
+    /* =====================================================
+       DRAWER
+       ===================================================== */
+
+    .drawer-tab-content {
+        width: 100%;
+    }
+
+    .drawer-tab {
+        transition:
+            background-color 0.2s ease,
+            color 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .drawer-tab.active {
+        color: #2563eb !important;
+        background-color: #eff6ff !important;
+    }
+
+
+    /* =====================================================
+       DETALLES DE INVENTARIO
+       ===================================================== */
+
+    details summary::-webkit-details-marker {
+        display: none;
+    }
+
+    details > summary {
+        list-style: none;
+    }
+
+    details > summary::-webkit-details-marker {
+        display: none;
+    }
+
+
+    /* =====================================================
+       ANIMACIONES
+       ===================================================== */
+
+    @keyframes rodaxFadeIn {
+
+        from {
+            opacity: 0;
+            transform: translateY(4px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    }
+
+    .rodax-fade-in {
+        animation: rodaxFadeIn 0.25s ease-out;
+    }
+
+
+    /* =====================================================
+       TARJETAS DE MUDANZAS
+       ===================================================== */
+
+    .mudanza-card {
+        animation: rodaxFadeIn 0.25s ease-out;
+    }
+
+
+    /* =====================================================
+       RESPONSIVE DRAWER
+       ===================================================== */
+
+    @media (max-width: 640px) {
+
+        #mudanza-drawer {
+            width: 100%;
+        }
+
+        .drawer-tab {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+    }
+
+
+    /* =====================================================
+       IMPRESIÓN
+       ===================================================== */
+
+    @media print {
+
+        .no-print {
+            display: none !important;
+        }
+
+        body {
+            overflow: visible !important;
+            height: auto !important;
+            background: white !important;
+        }
+
+        main {
+            overflow: visible !important;
+            height: auto !important;
+        }
+
+    }
+
+</style>
+
+
+<!-- ========================================================
+     FUNCIONES GLOBALES DE NAVEGACIÓN
+     ======================================================== -->
+
 <script>
-    lucide.createIcons();
 
-    const URL_DB = 'https://defvfvfyrydopaybnisg.supabase.co';
-const KEY_DB = 'sb_publishable_dKIRJ1_K4u1ypfCNTuylIw_AyAKeZTS';
-const dbClient = window.supabase.createClient(URL_DB, KEY_DB);
+"use strict";
 
-let currentUserId = null;
-let currentUserNombre = '';
 
-const state = {
-    disponibles: [],
-    activas: []
-};
+/* ========================================================
+   MENÚ MÓVIL
+   ======================================================== */
 
-window.Transportista = window.Transportista || {};
+function abrirMenuMovil() {
 
-Transportista.dbClient = dbClient;
-Transportista.state = state;
-Transportista.currentUserId = currentUserId;
+    const sidebar =
+        document.getElementById("sidebar");
 
-    const UI_TABS = {
-        tabs: ['disponibles', 'mis-mudanzas'],
-        titles: { 'disponibles': 'Trabajos Disponibles', 'mis-mudanzas': 'Mis Mudanzas Activas' }
+    const overlay =
+        document.getElementById("mobile-overlay");
+
+    if (sidebar) {
+
+        sidebar.classList.remove(
+            "-translate-x-full"
+        );
+
+    }
+
+    if (overlay) {
+
+        overlay.classList.remove(
+            "hidden"
+        );
+
+    }
+
+}
+
+
+function cerrarMenuMovil() {
+
+    const sidebar =
+        document.getElementById("sidebar");
+
+    const overlay =
+        document.getElementById("mobile-overlay");
+
+    if (sidebar) {
+
+        sidebar.classList.add(
+            "-translate-x-full"
+        );
+
+    }
+
+    if (overlay) {
+
+        overlay.classList.add(
+            "hidden"
+        );
+
+    }
+
+}
+
+
+/* ========================================================
+   CAMBIO DE PESTAÑA PRINCIPAL
+   ======================================================== */
+
+function cambiarTab(tab) {
+
+    document
+        .querySelectorAll(".tab-content")
+        .forEach(elemento => {
+
+            elemento.classList.add(
+                "hidden"
+            );
+
+        });
+
+
+    const tabSeleccionado =
+        document.getElementById(
+            "tab-" + tab
+        );
+
+    if (tabSeleccionado) {
+
+        tabSeleccionado.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    /* -----------------------------------------------
+       ESTADO ACTIVO DEL MENÚ
+       ----------------------------------------------- */
+
+    document
+        .querySelectorAll(
+            '[id^="nav-"]'
+        )
+        .forEach(boton => {
+
+            boton.classList.remove(
+                "bg-white/15",
+                "text-white",
+                "shadow-sm",
+                "border",
+                "border-white/10"
+            );
+
+            boton.classList.add(
+                "text-slate-300/90"
+            );
+
+        });
+
+
+    const navSeleccionado =
+        document.getElementById(
+            "nav-" + tab
+        );
+
+    if (navSeleccionado) {
+
+        navSeleccionado.classList.remove(
+            "text-slate-300/90"
+        );
+
+        navSeleccionado.classList.add(
+            "bg-white/15",
+            "text-white",
+            "shadow-sm",
+            "border",
+            "border-white/10"
+        );
+
+    }
+
+
+    /* -----------------------------------------------
+       TÍTULO SUPERIOR
+       ----------------------------------------------- */
+
+    const titulos = {
+
+        "disponibles":
+            "Trabajos Disponibles",
+
+        "mis-mudanzas":
+            "Mis Mudanzas Activas",
+
+        "mi-agenda":
+            "Mi Agenda",
+
+        "mis-rutas":
+            "Mis Rutas",
+
+        "pagos":
+            "Pagos",
+
+        "facturacion":
+            "Facturación",
+
+        "mis-vehiculos":
+            "Mis Vehículos",
+
+        "equipo":
+            "Equipo / Operarios",
+
+        "mi-perfil":
+            "Mi Perfil",
+
+        "notificaciones":
+            "Notificaciones",
+
+        "configuracion":
+            "Configuración"
+
     };
 
-    function abrirMenuMovil() {
-        document.getElementById('sidebar').classList.remove('-translate-x-full');
-        document.getElementById('mobile-overlay').classList.remove('hidden');
-    }
-    function cerrarMenuMovil() {
-        document.getElementById('sidebar').classList.add('-translate-x-full');
-        document.getElementById('mobile-overlay').classList.add('hidden');
-    }
 
-            async function verificarSesion() {
-        try {
-            const { data: { session }, error } = await dbClient.auth.getSession();
+    const titulo =
+        document.getElementById(
+            "header-title"
+        );
 
-            console.log("=== DIAGNÓSTICO RODAX ===");
-            console.log("Sesión:", session);
-            console.log("Usuario:", session?.user);
-            console.log("========================");
+    if (
+        titulo &&
+        titulos[tab]
+    ) {
 
-            if (error || !session) {
-                console.error("NO SE DETECTÓ SESIÓN ACTIVA.");
-                window.location.replace('transportistas.html');
-                return;
-            }
-            
-            currentUserId = session.user.id;
-            Transportista.currentUserId = currentUserId;
+        titulo.textContent =
+            titulos[tab];
 
-            // ==========================================
-            // 🚀 AUTOMATIZACIÓN DE LOGIN: FORZAR DISPONIBLE EN SUPABASE
-            // ==========================================
-            console.log("Transportista logueado. Sincronizando estado automático: Disponible");
-            
-            // Hacemos el UPDATE automático en Supabase para que el Panel Admin lo vea al instante
-            await dbClient
-                .from('transportistas')
-                .update({ 
-                    disponibilidad: "Disponible",
-                    ultima_actualizacion_estado: new Date().toISOString()
-                })
-                .eq('id', currentUserId);
-
-            // Ajustamos visualmente el selector de la barra superior azul
-            const selectorDisp = document.getElementById('selector-disponibilidad-transportista');
-            if (selectorDisp) selectorDisp.value = "Disponible";
-            toggleColorIndicadorDisponibilidad("Disponible");
-            // ==========================================
-
-            const elLoadingText = document.getElementById('loading-text');
-            if (elLoadingText) elLoadingText.textContent = 'Cargando tu panel...';
-            
-            await cargarDatosPerfil();
-            
-            const elLoadingScreen = document.getElementById('loading-screen');
-            if (elLoadingScreen) elLoadingScreen.classList.add('hidden');
-            
-            // Cargamos datos del marketplace
-            cargarTrabajosDisponibles();
-            cargarMisMudanzas();
-            
-            setInterval(() => {
-                const tabDisp = document.getElementById('tab-disponibles');
-                if (tabDisp && !tabDisp.classList.contains('hidden')) {
-                    cargarTrabajosDisponibles();
-                }
-            }, 30000);
-            
-        } catch (err) {
-            console.error('Error controlado en verificación:', err);
-            alert("Detalle del error en la sesión: " + err.message);
-        }
     }
 
-            async function cargarDatosPerfil() {
-        try {
-            // 1. Validar y asegurar la sesión del usuario directamente desde Supabase
-            const { data: sessionData, error: sessionError } = await dbClient.auth.getUser();
-            
-            if (sessionError || !sessionData.user) {
-                console.error("No hay una sesión activa de Supabase:", sessionError);
-                return;
-            }
 
-            const cleanUserId = sessionData.user.id;
-            console.log("Buscando perfil del transportista con UUID limpio:", cleanUserId);
+    /* -----------------------------------------------
+       ACCIONES ESPECÍFICAS
+       ----------------------------------------------- */
 
-            // 2. Hacer la consulta con el ID verificado
-            const { data, error } = await dbClient
-                .from('transportistas')
-                .select('nombre')
-                .eq('id', cleanUserId)
-                .maybeSingle();
+    if (
+        tab === "disponibles" &&
+        typeof cargarTrabajosDisponibles ===
+            "function"
+    ) {
 
-            console.log("Perfil transportista recibido:", data);
-
-            if (error) {
-                console.error("Error al cargar el perfil de la base de datos:", error);
-                return;
-            }
-
-            // 3. Inyectar datos en la interfaz si el perfil existe
-            if (data) {
-                currentUserNombre = data.nombre || 'Transportista';
-
-                // Inyección en el texto de la cabecera derecha
-                const elNameTop = document.getElementById('profile-name-top') || document.getElementById('profile-name');
-                if (elNameTop) elNameTop.textContent = currentUserNombre;
-
-                // CORREGIDO: URL del avatar premium con sintaxis de plantilla corregida ($ y /api/)
-                const avatarUrl =
-    `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUserNombre)}&background=ffffff&color=0b1e5b&bold=true`;
-                
-                if (document.getElementById('profile-img-top')) document.getElementById('profile-img-top').src = avatarUrl;
-                if (document.getElementById('profile-img')) document.getElementById('profile-img').src = avatarUrl;
-                        } else {
-                console.warn("No existe un registro en la tabla 'transportistas' para este ID.");
-                const elNameTop = document.getElementById('profile-name-top') || document.getElementById('profile-name');
-                if (elNameTop) elNameTop.textContent = 'Transportista';
-            }
-
-        } catch (err) {
-            console.error("Error inesperado cargando perfil:", err);
-        }
-    } // <-- ESTA ES LA LLAVE DE CIERRE DE CARGARDATOSPERFIL()
-
-    // 🔔 PEGA EL NUEVO CÓDIGO AQUÍ:
-    function actualizarContadorNotificaciones(cantidad) {
-        const badgeTop = document.getElementById('badge-notificaciones-top');
-        if (badgeTop) {
-            badgeTop.textContent = cantidad;
-            if (cantidad === 0) badgeTop.classList.add('hidden');
-            else badgeTop.classList.remove('hidden');
-        }
-
-        const badgeSidebar = document.getElementById('badge-notificaciones-sidebar');
-        if (badgeSidebar) {
-            badgeSidebar.textContent = cantidad;
-            if (cantidad === 0) badgeSidebar.classList.add('hidden');
-            else badgeSidebar.classList.remove('hidden');
-        }
-    }
-
-    // REFERENCIA: Debajo continuará tu archivo con la siguiente función
-    async function cerrarSesion() {
-        await dbClient.auth.signOut();
-        window.location.replace('transportistas.html');
-    }
-
-    function recargarDatos() {
         cargarTrabajosDisponibles();
+
+    }
+
+
+    if (
+        tab === "mis-mudanzas" &&
+        typeof cargarMisMudanzas ===
+            "function"
+    ) {
+
         cargarMisMudanzas();
+
     }
 
-    function cambiarTab(tabId) {
-    // Lista de tus pestañas reales del Marketplace
-    const tabs = ['disponibles', 'mis-mudanzas'];
-    
-    tabs.forEach(t => {
-        // Ocultamos las secciones de contenido
-        const pane = document.getElementById(`tab-${t}`);
-        if(pane) pane.classList.add('hidden');
-        
-        // Removemos el estado activo del botón
-        const nav = document.getElementById(`nav-${t}`);
-        if (nav) nav.classList.remove('active');
-    });
-    
-    // Mostramos la pestaña seleccionada
-    const paneActivo = document.getElementById(`tab-${tabId}`);
-    if(paneActivo) paneActivo.classList.remove('hidden');
-    
-    // Iluminamos el botón en el menú izquierdo
-    const navActivo = document.getElementById(`nav-${tabId}`);
-    if (navActivo) navActivo.classList.add('active');
-    
-    // Actualizamos el título del header de la página
-    const titles = { 'disponibles': 'Trabajos Disponibles', 'mis-mudanzas': 'Mis Mudanzas Activas' };
-    if(document.getElementById('header-title')) {
-        document.getElementById('header-title').textContent = titles[tabId];
-    }
-    
-    cerrarMenuMovil();
-}
 
-    async function cargarMisMudanzas() {
+    /* -----------------------------------------------
+       CERRAR MENÚ MÓVIL
+       ----------------------------------------------- */
 
-    console.log("Cargando Mis Mudanzas Activas...");
-    console.log("Transportista:", currentUserId);
+    if (
+        window.innerWidth < 768
+    ) {
 
-    const { data, error } = await dbClient
-    .from('mudanzas')
-    .select('*')
-    .eq('estado', 'Transportista asignado')
-    .eq('transportista_id', currentUserId)
-    .order('fecha', { ascending: true });
+        cerrarMenuMovil();
 
-    console.log("Mis Mudanzas Activas:", data);
-    console.log("Error Mis Mudanzas Activas:", error);
-
-    if (error) {
-        console.error("Error cargando Mis Mudanzas Activas:", error);
-        state.activas = [];
-        renderizarActivas();
-        return;
     }
 
-    state.activas = data || [];
-    renderizarActivas();
-}
 
-    function renderizarActivas() {
+    /* -----------------------------------------------
+       ICONOS
+       ----------------------------------------------- */
 
-    const contenedor =
-        document.getElementById(
-            'contenedor-activas'
-        );
-
-    const badge =
-        document.getElementById(
-            'badge-activas'
-        );
-
-    if (!contenedor) {
-        console.error(
-            'No existe #contenedor-activas'
-        );
-        return;
-    }
-
-    const trabajos =
-        Array.isArray(state.activas)
-            ? state.activas
-            : [];
-
-    if (badge) {
-
-        badge.textContent =
-            trabajos.length;
-
-        badge.classList.toggle(
-            'hidden',
-            trabajos.length === 0
-        );
-    }
-
-    if (trabajos.length === 0) {
-
-        contenedor.innerHTML = `
-            <div class="text-center py-16 bg-white rounded-3xl border border-dashed border-gray-300">
-
-                <i
-                    data-lucide="inbox"
-                    class="w-14 h-14 text-gray-300 mx-auto mb-4"
-                ></i>
-
-                <h4 class="text-lg font-bold text-gray-700 mb-2">
-                    No tienes ninguna mudanza asignada actualmente.
-                </h4>
-
-                <p class="text-gray-400 font-medium text-sm">
-                    Busca trabajos en la pestaña "Trabajos Disponibles".
-                </p>
-
-            </div>
-        `;
+    if (
+        window.lucide &&
+        typeof lucide.createIcons ===
+            "function"
+    ) {
 
         lucide.createIcons();
 
-        return;
     }
 
-    contenedor.innerHTML =
-        window.Transportista.Tarjetas
-            .renderizarTarjetasActivas(
-                trabajos
-            );
-
-    lucide.createIcons();
 }
 
-    function imprimirFicha(id) {
 
-    // 1. Buscar la mudanza
-    const mudanza =
-        state.activas.find(
-            m => Number(m.id) === Number(id)
+/* ========================================================
+   DRAWER — ABRIR
+   ======================================================== */
+
+function abrirDrawer() {
+
+    const drawer =
+        document.getElementById(
+            "mudanza-drawer"
         );
 
-    if (!mudanza) {
-        alert("No se ha encontrado la mudanza.");
-        return;
+    const overlay =
+        document.getElementById(
+            "drawer-overlay"
+        );
+
+    if (!drawer) return;
+
+
+    drawer.classList.remove(
+        "translate-x-full"
+    );
+
+
+    if (overlay) {
+
+        overlay.classList.remove(
+            "hidden"
+        );
+
+        setTimeout(() => {
+
+            overlay.classList.remove(
+                "opacity-0"
+            );
+
+        }, 10);
+
     }
 
-    // 2. Obtener datos
-    const origen = mudanza.origen || "";
-    const destino = mudanza.destino || "";
-    const fecha = mudanza.fecha || "";
-    const km = mudanza.km || "";
-    const precio = mudanza.preciototal || "";
-    const extras = mudanza.extras || "";
-    const volumen = mudanza.volumen || "";
-    const ascensor = mudanza.ascensor || "";
+}
 
-    // 3. Nuevos datos
-    const numeroReserva =
-        window.Transportista.getNumeroReserva(mudanza);
 
-    const numArticulos =
-        window.Transportista.getTotalArticulos(
-            mudanza.inventario
+/* ========================================================
+   DRAWER — CERRAR
+   ======================================================== */
+
+function cerrarDrawer() {
+
+    const drawer =
+        document.getElementById(
+            "mudanza-drawer"
         );
 
-    const totalM3 =
-        window.Transportista.getTotalM3(
-            mudanza.inventario
+    const overlay =
+        document.getElementById(
+            "drawer-overlay"
         );
 
-    const m3Texto =
-        window.Transportista.formatM3(totalM3);
 
-    const accesos =
-        window.Transportista.getAccesos(mudanza);
+    if (drawer) {
 
-    // 4. Nombre y fecha
-    const nombre =
-        currentUserNombre || 'Transportista RODAX';
-
-    const fechaHoy =
-        new Date().toLocaleDateString(
-            'es-ES',
-            {
-                weekday:'long',
-                year:'numeric',
-                month:'long',
-                day:'numeric'
-            }
+        drawer.classList.add(
+            "translate-x-full"
         );
 
-    // 5. AQUÍ empieza la ficha HTML
-    const contenido = `<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Ficha Técnica — Mudanza #${id} — RODAX</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: Arial, Helvetica, sans-serif; background: white; color: #1a1a1a; padding: 30px; font-size: 14px; }
-        .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #2563eb; padding-bottom: 20px; margin-bottom: 25px; }
-        .logo { font-size: 22px; font-weight: 900; color: #1e3a5f; letter-spacing: -0.5px; }
-        .logo span { color: #2563eb; }
-        .ficha-num { text-align: right; }
-        .ficha-num h2 { font-size: 18px; font-weight: 900; color: #2563eb; }
-        .ficha-num p { color: #6b7280; font-size: 11px; margin-top: 4px; }
-        .seccion { margin-bottom: 20px; }
-        .seccion-titulo { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #6b7280; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #e5e7eb; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .dato-label { font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
-        .dato-valor { font-size: 15px; font-weight: 700; color: #111827; }
-        .dato-valor.grande { font-size: 24px; font-weight: 900; color: #059669; }
-        .ruta-box { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 12px; padding: 16px; }
-        .punto { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
-        .punto-circulo { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; margin-top: 2px; }
-        .punto-circulo.azul { background: #2563eb; }
-        .punto-circulo.naranja { background: #ea580c; }
-        .km-linea { font-size: 11px; color: #6b7280; margin: 4px 0 4px 22px; }
-        .precio-box { background: #f0fdf4; border: 2px solid #86efac; border-radius: 12px; padding: 16px; text-align: center; }
-        .aviso { background: #fefce8; border: 1px solid #fde047; border-radius: 8px; padding: 12px; font-size: 12px; color: #713f12; margin-bottom: 20px; }
-        .footer { border-top: 1px solid #e5e7eb; padding-top: 16px; margin-top: 30px; text-align: center; font-size: 11px; color: #9ca3af; }
-        .firma-linea { border-bottom: 1px solid #d1d5db; height: 50px; margin-bottom: 6px; }
-        .firma-texto { font-size: 10px; color: #9ca3af; text-align: center; }
-        @media print { body { padding: 20px; } .no-print { display: none !important; } }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <div>
-            <div class="logo">RODAX<span>FURGO MUDANZAS</span></div>
-            <p style="font-size:11px;color:#6b7280;margin-top:4px;">672 907 012 · rodax.furgo.mudanzas.es@gmail.com</p>
-        </div>
-        <div class="ficha-num">
-            <h2>FICHA TÉCNICA</h2>
-<p>
-    ID: <strong>${numeroReserva}</strong>
-</p>
-            <p>Generada: ${fechaHoy}</p>
-            <p>Transportista: <strong>${nombre}</strong></p>
-        </div>
+    }
+
+
+    if (overlay) {
+
+        overlay.classList.add(
+            "opacity-0"
+        );
+
+        setTimeout(() => {
+
+            overlay.classList.add(
+                "hidden"
+            );
+
+        }, 200);
+
+    }
+
+}
+
+
+/* ========================================================
+   DRAWER — CAMBIO DE SECCIÓN
+   ======================================================== */
+
+function cambiarDrawerTab(tab) {
+
+    document
+        .querySelectorAll(
+            ".drawer-tab-content"
+        )
+        .forEach(contenedor => {
+
+            contenedor.classList.add(
+                "hidden"
+            );
+
+        });
+
+
+    const contenido =
+        document.getElementById(
+            "drawer-tab-" + tab
+        );
+
+    if (contenido) {
+
+        contenido.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    document
+        .querySelectorAll(
+            ".drawer-tab"
+        )
+        .forEach(boton => {
+
+            boton.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    const botonActivo =
+        document.querySelector(
+            '[data-drawer-tab="' +
+            tab +
+            '"]'
+        );
+
+    if (botonActivo) {
+
+        botonActivo.classList.add(
+            "active"
+        );
+
+    }
+
+
+    if (
+        window.lucide &&
+        typeof lucide.createIcons ===
+            "function"
+    ) {
+
+        lucide.createIcons();
+
+    }
+
+}
+
+
+/* ========================================================
+   RECARGAR DATOS
+   ======================================================== */
+
+function recargarDatos() {
+
+    if (
+        typeof cargarTrabajosDisponibles ===
+        "function"
+    ) {
+
+        cargarTrabajosDisponibles();
+
+    }
+
+    if (
+        typeof cargarMisMudanzas ===
+        "function"
+    ) {
+
+        cargarMisMudanzas();
+
+    }
+
+}
+
+
+/* ========================================================
+   CERRAR DRAWER CON ESC
+   ======================================================== */
+
+document.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (
+            event.key === "Escape"
+        ) {
+
+            cerrarDrawer();
+
+        }
+
+    }
+);
+
+
+/* ========================================================
+   INICIALIZACIÓN DE ICONOS
+   ======================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        if (
+            window.lucide &&
+            typeof lucide.createIcons ===
+                "function"
+        ) {
+
+            lucide.createIcons();
+
+        }
+
+    }
+);
+
+</script>
+
+
+<!-- ========================================================
+     SUPABASE
+     ======================================================== -->
+
+<script>
+
+"use strict";
+
+
+const SUPABASE_URL =
+    "https://YOUR-PROJECT.supabase.co";
+
+const SUPABASE_ANON_KEY =
+    "YOUR_SUPABASE_ANON_KEY";
+
+
+let supabaseClient = null;
+
+
+try {
+
+    if (
+        window.supabase &&
+        SUPABASE_URL &&
+        SUPABASE_ANON_KEY &&
+        !SUPABASE_URL.includes(
+            "YOUR-PROJECT"
+        )
+    ) {
+
+        supabaseClient =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_ANON_KEY
+            );
+
+    }
+
+} catch (error) {
+
+    console.error(
+        "Error inicializando Supabase:",
+        error
+    );
+
+}
+
+</script>
+
     </div>
-    <div class="aviso">⚠️ <strong>Documento confidencial.</strong> No compartir los datos del cliente con terceros. Los datos de contacto solo son accesibles 24h antes del servicio.</div>
+
+    <div class="aviso">
+        ⚠️ <strong>Documento confidencial.</strong>
+        No compartir los datos del cliente con terceros.
+        Los datos de contacto solo son accesibles 24h antes del servicio.
+    </div>
+
     <div class="grid-2" style="margin-bottom:20px;">
+
         <div class="seccion">
-            <div class="seccion-titulo">📍 Ruta de la Mudanza</div>
-            <div class="ruta-box">
-                <div class="punto"><div class="punto-circulo azul"></div><div><div class="dato-label">Recogida (Origen)</div><div class="dato-valor" style="font-size:13px;">${origen || '—'}</div></div></div>
-                <div class="km-linea">↓ ${km || '?'} km en carretera</div>
-                <div class="punto"><div class="punto-circulo naranja"></div><div><div class="dato-label">Entrega (Destino)</div><div class="dato-valor" style="font-size:13px;">${destino || '—'}</div></div></div>
+
+            <div class="seccion-titulo">
+                📍 Ruta de la Mudanza
             </div>
+
+            <div class="ruta-box">
+
+                <div class="punto">
+
+                    <div class="punto-circulo azul"></div>
+
+                    <div>
+
+                        <div class="dato-label">
+                            Recogida (Origen)
+                        </div>
+
+                        <div
+                            class="dato-valor"
+                            style="font-size:13px;">
+                            ${origen || '—'}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="km-linea">
+                    ↓ ${km || '?'} km en carretera
+                </div>
+
+                <div class="punto">
+
+                    <div class="punto-circulo naranja"></div>
+
+                    <div>
+
+                        <div class="dato-label">
+                            Entrega (Destino)
+                        </div>
+
+                        <div
+                            class="dato-valor"
+                            style="font-size:13px;">
+                            ${destino || '—'}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
+
+
         <div class="seccion">
-            <div class="seccion-titulo">📦 Detalles del Servicio</div>
-            <div style="margin-bottom:12px;"><div class="dato-label">Fecha del Servicio</div><div class="dato-valor">${fecha || '—'}</div></div>
+
+            <div class="seccion-titulo">
+                📦 Detalles del Servicio
+            </div>
+
             <div style="margin-bottom:12px;">
 
-    <div class="dato-label">
-        Carga
-    </div>
+                <div class="dato-label">
+                    Fecha del Servicio
+                </div>
 
-    <div class="dato-valor">
-        ${numArticulos} artículos · ${m3Texto}
-    </div>
+                <div class="dato-valor">
+                    ${fecha || '—'}
+                </div>
 
-</div>
+            </div>
 
-<div style="margin-bottom:12px;">
 
-    <div class="dato-label">
-        Tipo de vivienda
-    </div>
+            <div style="margin-bottom:12px;">
 
-    <div class="dato-valor">
-        ${volumen || '—'}
-    </div>
+                <div class="dato-label">
+                    Carga
+                </div>
 
-</div>
-            <div><div class="dato-label">Distancia</div><div class="dato-valor">${km || '?'} km</div></div>
+                <div class="dato-valor">
+                    ${numArticulos} artículos · ${m3Texto}
+                </div>
+
+            </div>
+
+
+            <div style="margin-bottom:12px;">
+
+                <div class="dato-label">
+                    Tipo de vivienda
+                </div>
+
+                <div class="dato-valor">
+                    ${volumen || '—'}
+                </div>
+
+            </div>
+
+
+            <div>
+
+                <div class="dato-label">
+                    Distancia
+                </div>
+
+                <div class="dato-valor">
+                    ${km || '?'} km
+                </div>
+
+            </div>
+
         </div>
+
     </div>
+
+
     <div class="seccion">
 
-    <div class="seccion-titulo">
-        🛗 Accesos
+        <div class="seccion-titulo">
+            🛗 Accesos
+        </div>
+
+        <div
+            class="dato-valor"
+            style="font-size:13px;">
+
+            <p>
+                <strong>Recogida:</strong>
+                ${accesos.recogida}
+            </p>
+
+            <p style="margin-top:6px;">
+                <strong>Entrega:</strong>
+                ${accesos.entrega}
+            </p>
+
+        </div>
+
     </div>
 
-    <div class="dato-valor" style="font-size:13px;">
 
-        <p>
-            <strong>Recogida:</strong>
-            ${accesos.recogida}
-        </p>
+    ${
+        extras &&
+        extras !== 'Solo transporte básico'
+            ? `
+                <div class="seccion">
 
-        <p style="margin-top:6px;">
-            <strong>Entrega:</strong>
-            ${accesos.entrega}
-        </p>
+                    <div class="seccion-titulo">
+                        ➕ Servicios Adicionales
+                    </div>
 
-    </div>
+                    <div
+                        class="dato-valor"
+                        style="font-size:13px;">
+                        ${extras}
+                    </div>
 
-</div>
-    ${extras && extras !== 'Solo transporte básico' ? `<div class="seccion"><div class="seccion-titulo">➕ Servicios Adicionales</div><div class="dato-valor" style="font-size:13px;">${extras}</div></div>` : ''}
-    <div class="precio-box" style="margin-bottom:20px;">
-
-    <div class="dato-label" style="text-align:center;">
-        COBRO DEL TRANSPORTISTA
-    </div>
-
-    <div class="dato-valor grande" style="text-align:center;">
-        ${precio || '—'}
-    </div>
-
-    <p style="font-size:12px;color:#6b7280;margin-top:6px;text-align:center;">
-        IVA incluido
-    </p>
-
-</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:40px;">
-        <div><div class="firma-linea"></div><div class="firma-texto">Firma del Transportista</div></div>
-        <div><div class="firma-linea"></div><div class="firma-texto">Firma del Cliente (recibí conforme)</div></div>
-    </div>
-    <div class="footer">
-        <p>RODAX Furgo Mudanzas &copy; 2026 · 672 907 012 · rodax.furgo.mudanzas.es@gmail.com · España</p>
-        <p style="margin-top:4px;">Este documento tiene validez como albarán de servicio entre las partes.</p>
-    </div>
-    <button class="no-print" onclick="window.print()" style="margin-top:20px;padding:12px 24px;background:#2563eb;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:15px;">🖨️ Imprimir / Guardar PDF</button>
-    <script>window.onload = function() { setTimeout(() => window.print(), 500); };<\/script>
-
-</body>
-</html>`;
-
-        const ventana = window.open('', '_blank', 'width=800,height=900');
-        if (ventana) {
-            ventana.document.write(contenido);
-            ventana.document.close();
-        } else {
-            alert('Tu navegador bloqueó la ventana emergente. Permite las ventanas emergentes e inténtalo de nuevo.');
-        }
+                </div>
+            `
+            : ''
     }
 
-    const actionModal = document.getElementById('action-modal');
-    const modalContent = document.getElementById('modal-content');
 
-    function cerrarModal() { actionModal.classList.add('hidden'); }
+    <div
+        class="precio-box"
+        style="margin-bottom:20px;">
+
+        <div
+            class="dato-label"
+            style="text-align:center;">
+            COBRO DEL TRANSPORTISTA
+        </div>
+
+        <div
+            class="dato-valor grande"
+            style="text-align:center;">
+            ${precio || '—'}
+        </div>
+
+        <p
+            style="
+                font-size:12px;
+                color:#6b7280;
+                margin-top:6px;
+                text-align:center;
+            ">
+            IVA incluido
+        </p>
+
+    </div>
+
+
+    <div
+        style="
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:30px;
+            margin-top:40px;
+        ">
+
+        <div>
+
+            <div class="firma-linea"></div>
+
+            <div class="firma-texto">
+                Firma del Transportista
+            </div>
+
+        </div>
+
+        <div>
+
+            <div class="firma-linea"></div>
+
+            <div class="firma-texto">
+                Firma del Cliente (recibí conforme)
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+
+        <p>
+            RODAX Furgo Mudanzas &copy; 2026 ·
+            672 907 012 ·
+            rodax.furgo.mudanzas.es@gmail.com ·
+            España
+        </p>
+
+        <p style="margin-top:4px;">
+            Este documento tiene validez como albarán de servicio entre las partes.
+        </p>
+
+    </div>
+
+
+    <button
+        class="no-print"
+        onclick="window.print()"
+        style="
+            margin-top:20px;
+            padding:12px 24px;
+            background:#2563eb;
+            color:white;
+            border:none;
+            border-radius:8px;
+            font-weight:700;
+            cursor:pointer;
+            font-size:15px;
+        ">
+        🖨️ Imprimir / Guardar PDF
+    </button>
+
+
+    <script>
+        window.onload = function() {
+            setTimeout(() => window.print(), 500);
+        };
+    <\/script>
+
+</body>
+
+</html>`;
+
+        const ventana =
+            window.open(
+                '',
+                '_blank',
+                'width=800,height=900'
+            );
+
+        if (ventana) {
+
+            ventana.document.write(
+                contenido
+            );
+
+            ventana.document.close();
+
+        } else {
+
+            alert(
+                'Tu navegador bloqueó la ventana emergente. ' +
+                'Permite las ventanas emergentes e inténtalo de nuevo.'
+            );
+
+        }
+
+    }
+
+
+    const actionModal =
+        document.getElementById(
+            'action-modal'
+        );
+
+    const modalContent =
+        document.getElementById(
+            'modal-content'
+        );
+
+
+    function cerrarModal() {
+
+        actionModal.classList.add(
+            'hidden'
+        );
+
+    }
+
 
     function confirmarAceptar(id) {
 
-    modalContent.innerHTML = `
-        <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
-            <i data-lucide="briefcase" class="w-8 h-8 text-blue-600"></i>
-        </div>
+        modalContent.innerHTML = `
 
-        <h3 class="text-xl font-black text-gray-900 mb-2">
-            ¿Aceptar este trabajo?
-        </h3>
+            <div
+                class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
 
-        <p class="text-gray-500 text-sm mb-4 leading-relaxed">
-            Al aceptar, la mudanza pasará a
-            <strong>"Mis Mudanzas Activas"</strong>.<br>
-            Los datos del cliente estarán disponibles
-            <strong>24h antes</strong> del servicio.
-        </p>
+                <i
+                    data-lucide="briefcase"
+                    class="w-8 h-8 text-blue-600">
+                </i>
 
-        <!-- AVISO DE COMPROMISO -->
-        <div class="text-left bg-amber-50 border border-amber-200 rounded-xl p-3.5 mb-4">
-            <div class="flex items-start gap-2.5">
-                <i data-lucide="alert-triangle"
-                   class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5"></i>
-
-                <div>
-                    <p class="text-xs font-black text-amber-800 mb-1">
-                        Compromiso del transportista
-                    </p>
-
-                    <p class="text-xs text-amber-700 leading-relaxed">
-                        Al aceptar este trabajo, confirmas tu disponibilidad
-                        y compromiso para realizar el servicio en las
-                        condiciones indicadas.
-                    </p>
-
-                    <p class="text-xs text-amber-700 leading-relaxed mt-1.5">
-                        Una posterior desasignación o cancelación injustificada
-                        podrá dar lugar a las consecuencias y penalizaciones
-                        previstas en las
-                        <a href="condiciones-transportista.html"
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           class="font-bold text-blue-600 underline hover:text-blue-800">
-                            Condiciones de Registro del Transportista
-                        </a>.
-                    </p>
-                </div>
             </div>
-        </div>
 
-        <!-- BOTONES -->
-        <div class="flex gap-3">
-            <button
-                onclick="cerrarModal()"
-                class="flex-1 bg-gray-100 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors">
-                Cancelar
-            </button>
 
-            <button
-                onclick="procesarAceptacion(${id})"
-                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md transition-colors">
-                ✅ Aceptar
-            </button>
-        </div>
-    `;
+            <h3
+                class="text-xl font-black text-gray-900 mb-2">
 
-    lucide.createIcons();
+                ¿Aceptar este trabajo?
 
-    actionModal.classList.remove('hidden');
-}
+            </h3>
 
-async function marcarCompletada(id) {
 
-    const confirmar = confirm(
-        '¿Confirmas que has terminado este servicio y que el cliente ha pagado el resto?\n\n' +
-        'La mudanza desaparecerá de tu panel activo.'
-    );
+            <p
+                class="text-gray-500 text-sm mb-4 leading-relaxed">
 
-    if (!confirmar) return;
+                Al aceptar, la mudanza pasará a
+                <strong>"Mis Mudanzas Activas"</strong>.<br>
 
-    console.log('====================================');
-    console.log('FINALIZANDO MUDANZA:', id);
-    console.log('TRANSPORTISTA:', currentUserId);
+                Los datos del cliente estarán disponibles
+                <strong>24h antes</strong> del servicio.
 
-    const { data, error } = await dbClient
-        .from('mudanzas')
-        .update({
-            estado: 'Completada'
-        })
-        .eq('id', id)
-        .eq('transportista_id', currentUserId)
-        .select();
+            </p>
 
-    console.log('RESULTADO UPDATE:', data);
-    console.log('ERROR UPDATE:', error);
-    console.log('====================================');
 
-    if (error) {
-        console.error('Error al finalizar:', error);
+            <!-- AVISO DE COMPROMISO -->
 
-        alert(
-            'No se pudo marcar la mudanza como completada.\n\n' +
-            error.message
+            <div
+                class="text-left bg-amber-50 border border-amber-200 rounded-xl p-3.5 mb-4">
+
+                <div
+                    class="flex items-start gap-2.5">
+
+                    <i
+                        data-lucide="alert-triangle"
+                        class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5">
+                    </i>
+
+
+                    <div>
+
+                        <p
+                            class="text-xs font-black text-amber-800 mb-1">
+
+                            Compromiso del transportista
+
+                        </p>
+
+
+                        <p
+                            class="text-xs text-amber-700 leading-relaxed">
+
+                            Al aceptar este trabajo, confirmas tu disponibilidad
+                            y compromiso para realizar el servicio en las
+                            condiciones indicadas.
+
+                        </p>
+
+
+                        <p
+                            class="text-xs text-amber-700 leading-relaxed mt-1.5">
+
+                            Una posterior desasignación o cancelación injustificada
+                            podrá dar lugar a las consecuencias y penalizaciones
+                            previstas en las
+
+                            <a
+                                href="condiciones-transportista.html"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="font-bold text-blue-600 underline hover:text-blue-800">
+
+                                Condiciones de Registro del Transportista
+
+                            </a>.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- BOTONES -->
+
+            <div class="flex gap-3">
+
+                <button
+                    onclick="cerrarModal()"
+                    class="flex-1 bg-gray-100 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors">
+
+                    Cancelar
+
+                </button>
+
+
+                <button
+                    onclick="procesarAceptacion(${id})"
+                    class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md transition-colors">
+
+                    ✅ Aceptar
+
+                </button>
+
+            </div>
+
+        `;
+
+
+        lucide.createIcons();
+
+        actionModal.classList.remove(
+            'hidden'
         );
 
-        return;
     }
 
-    if (!data || data.length === 0) {
-        console.error('El UPDATE no modificó ninguna fila.');
 
-        alert(
-            'Supabase no ha actualizado la mudanza.\n\n' +
-            'Posible causa: una política RLS está bloqueando la actualización.'
+    async function marcarCompletada(id) {
+
+        const confirmar =
+            confirm(
+                '¿Confirmas que has terminado este servicio y que el cliente ha pagado el resto?\n\n' +
+                'La mudanza desaparecerá de tu panel activo.'
+            );
+
+        if (!confirmar) return;
+
+
+        console.log(
+            '===================================='
         );
 
-        return;
-    }
+        console.log(
+            'FINALIZANDO MUDANZA:',
+            id
+        );
 
-    // Eliminar inmediatamente la mudanza del estado local
-    state.activas = state.activas.filter(
-        mudanza => Number(mudanza.id) !== Number(id)
-    );
+        console.log(
+            'TRANSPORTISTA:',
+            currentUserId
+        );
 
-    // Redibujar inmediatamente el panel
-    renderizarActivas();
 
-    // Comprobar nuevamente los datos reales de Supabase
-    await cargarMisMudanzas();
+        const {
+            data,
+            error
+        } =
+            await dbClient
+                .from('mudanzas')
+                .update({
+                    estado: 'Completada'
+                })
+                .eq(
+                    'id',
+                    id
+                )
+                .eq(
+                    'transportista_id',
+                    currentUserId
+                )
+                .select();
 
-    console.log('Mudanza finalizada correctamente:', id);
-}
 
-window.onload = verificarSesion;
+        console.log(
+            'RESULTADO UPDATE:',
+            data
+        );
 
-</script>
+        console.log(
+            'ERROR UPDATE:',
+            error
+        );
 
-<script>
-console.log("SCRIPT EXTERNO CARGADO");
-// Función para guardar el cambio manual del selector en la base de datos
-async function actualizarDisponibilidadBaseDatos(nuevoEstado) {
-    try {
-        console.log("Cambio manual de disponibilidad detectado:", nuevoEstado);
-        
-        // Cambiar el punto de color instantáneamente (Verde o Rojo)
-        toggleColorIndicadorDisponibilidad(nuevoEstado);
+        console.log(
+            '===================================='
+        );
 
-        // Actualizar Supabase para el Panel de Administración (Admin)
-        const { error } = await dbClient
-            .from('transportistas')
-            .update({ 
-                disponibilidad: nuevoEstado,
-                ultima_actualizacion_estado: new Date().toISOString()
-            })
-            .eq('id', currentUserId);
 
         if (error) {
-            console.error("Error al actualizar la disponibilidad:", error);
-            alert("Hubo un problema de conexión con el servidor. Tu estado no se pudo guardar.");
+
+            console.error(
+                'Error al finalizar:',
+                error
+            );
+
+            alert(
+                'No se pudo marcar la mudanza como completada.\n\n' +
+                error.message
+            );
+
             return;
+
         }
-        
-        console.log("Disponibilidad guardada correctamente en Supabase.");
 
-    } catch (err) {
-        console.error("Fallo en el selector interactivo:", err);
+
+        if (
+            !data ||
+            data.length === 0
+        ) {
+
+            console.error(
+                'El UPDATE no modificó ninguna fila.'
+            );
+
+            alert(
+                'Supabase no ha actualizado la mudanza.\n\n' +
+                'Posible causa: una política RLS está bloqueando la actualización.'
+            );
+
+            return;
+
+        }
+
+
+        // Eliminar inmediatamente la mudanza del estado local
+
+        state.activas =
+            state.activas.filter(
+                mudanza =>
+                    Number(mudanza.id) !==
+                    Number(id)
+            );
+
+
+        // Redibujar inmediatamente el panel
+
+        renderizarActivas();
+
+
+        // Comprobar nuevamente los datos reales de Supabase
+
+        await cargarMisMudanzas();
+
+
+        console.log(
+            'Mudanza finalizada correctamente:',
+            id
+        );
+
     }
-}
 
-// Función auxiliar para controlar las clases de color del círculo indicador
-function toggleColorIndicadorDisponibilidad(estado) {
-    const indicador = document.getElementById('disponibilidad-indicador-color');
-    if (!indicador) return;
-    
-    if (estado === "Disponible") {
-        indicador.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 mr-2.5 flex-shrink-0 transition-colors duration-300";
-    } else {
-        indicador.className = "w-2.5 h-2.5 rounded-full bg-rose-500 mr-2.5 flex-shrink-0 transition-colors duration-300";
-    }
-}
 
-// Vinculamos las funciones al objeto Window global
-window.actualizarDisponibilidadBaseDatos = actualizarDisponibilidadBaseDatos;
-window.toggleColorIndicadorDisponibilidad = toggleColorIndicadorDisponibilidad;
+    window.onload =
+        verificarSesion;
 
 </script>
+
+
+<script>
+
+console.log(
+    "SCRIPT EXTERNO CARGADO"
+);
+
+
+// Función para guardar el cambio manual del selector en la base de datos
+
+async function actualizarDisponibilidadBaseDatos(
+    nuevoEstado
+) {
+
+    try {
+
+        console.log(
+            "Cambio manual de disponibilidad detectado:",
+            nuevoEstado
+        );
+
+
+        // Cambiar el punto de color instantáneamente
+
+        toggleColorIndicadorDisponibilidad(
+            nuevoEstado
+        );
+
+
+        // Actualizar Supabase para el Panel de Administración
+
+        const {
+            error
+        } =
+            await dbClient
+                .from('transportistas')
+                .update({
+
+                    disponibilidad:
+                        nuevoEstado,
+
+                    ultima_actualizacion_estado:
+                        new Date().toISOString()
+
+                })
+                .eq(
+                    'id',
+                    currentUserId
+                );
+
+
+        if (error) {
+
+            console.error(
+                "Error al actualizar la disponibilidad:",
+                error
+            );
+
+            alert(
+                "Hubo un problema de conexión con el servidor. " +
+                "Tu estado no se pudo guardar."
+            );
+
+            return;
+
+        }
+
+
+        console.log(
+            "Disponibilidad guardada correctamente en Supabase."
+        );
+
+
+    } catch (err) {
+
+        console.error(
+            "Fallo en el selector interactivo:",
+            err
+        );
+
+    }
+
+}
+
+
+// Función auxiliar para controlar las clases de color del círculo indicador
+
+function toggleColorIndicadorDisponibilidad(
+    estado
+) {
+
+    const indicador =
+        document.getElementById(
+            'disponibilidad-indicador-color'
+        );
+
+    if (!indicador) return;
+
+
+    if (
+        estado === "Disponible"
+    ) {
+
+        indicador.className =
+            "w-2.5 h-2.5 rounded-full " +
+            "bg-emerald-400 mr-2.5 flex-shrink-0 " +
+            "transition-colors duration-300";
+
+    } else {
+
+        indicador.className =
+            "w-2.5 h-2.5 rounded-full " +
+            "bg-rose-500 mr-2.5 flex-shrink-0 " +
+            "transition-colors duration-300";
+
+    }
+
+}
+
+
+// Vinculamos las funciones al objeto Window global
+
+window.actualizarDisponibilidadBaseDatos =
+    actualizarDisponibilidadBaseDatos;
+
+window.toggleColorIndicadorDisponibilidad =
+    toggleColorIndicadorDisponibilidad;
+
+</script>
+
 
 <!-- ===================================================== -->
 <!-- CORE -->
@@ -1296,27 +3327,42 @@ window.toggleColorIndicadorDisponibilidad = toggleColorIndicadorDisponibilidad;
 <script src="js/core/state.js"></script>
 <script src="js/core/registry.js"></script>
 
+
 <!-- ===================================================== -->
 <!-- TRANSPORTISTA -->
 <!-- ===================================================== -->
 
 <script src="js/transportista/utils.js"></script>
+
 <script>
-console.log("RODAX utils.js cargado");
-console.log("Transportista API:", window.Transportista);
+
+console.log(
+    "RODAX utils.js cargado"
+);
+
+console.log(
+    "Transportista API:",
+    window.Transportista
+);
+
 console.log(
     "getTotalArticulos:",
     typeof window.Transportista?.getTotalArticulos
 );
+
 console.log(
     "getTotalM3:",
     typeof window.Transportista?.getTotalM3
 );
+
 console.log(
     "getAccesos:",
     typeof window.Transportista?.getAccesos
 );
+
 </script>
+
+
 <script src="js/transportista/drawer.js"></script>
 <script src="js/transportista/drawerRuta.js"></script>
 <script src="js/transportista/drawerServicios.js"></script>
@@ -1326,11 +3372,13 @@ console.log(
 <script src="js/transportista/tarjetas.js"></script>
 <script src="js/transportista/marketplace.js"></script>
 
+
 <!-- ===================================================== -->
 <!-- ROUTER -->
 <!-- ===================================================== -->
 
 <script src="js/core/router.js"></script>
+
 
 </body>
 </html>
