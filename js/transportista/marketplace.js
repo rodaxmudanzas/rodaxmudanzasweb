@@ -1670,49 +1670,43 @@ function crearPopoverMasFiltrosMarketplace() {
                 "Cualquier volumen"
             )}
 
-            ${crearSelectAvanzadoMarketplace(
-                "Artículos",
-                "filtro-avanzado-articulos",
-                [
-                    {
-                        valor: "todos",
-                        texto: "Cualquier cantidad"
-                    },
-                    [
-    {
-        valor: "todos",
-        texto: "Cualquier cantidad"
-    },
-    {
-        valor: "0-5",
-        texto: "Hasta 5 artículos"
-    },
-    {
-        valor: "5-10",
-        texto: "5 – 10 artículos"
-    },
-    {
-        valor: "10-20",
-        texto: "10 – 20 artículos"
-    },
-    {
-        valor: "20-40",
-        texto: "20 – 40 artículos"
-    },
-    {
-        valor: "40-60",
-        texto: "40 – 60 artículos"
-    },
-    {
-        valor: "60+",
-        texto: "Más de 60 artículos"
-    }
-]
-                ],
-                filtrosMarketplace.articulos,
-                "todos",
-                "Cualquier cantidad"
-            )}
+           ${crearSelectAvanzadoMarketplace(
+    "Artículos",
+    "filtro-avanzado-articulos",
+    [
+        {
+            valor: "todos",
+            texto: "Cualquier cantidad"
+        },
+        {
+            valor: "0-5",
+            texto: "Hasta 5 artículos"
+        },
+        {
+            valor: "5-10",
+            texto: "5 – 10 artículos"
+        },
+        {
+            valor: "10-20",
+            texto: "10 – 20 artículos"
+        },
+        {
+            valor: "20-40",
+            texto: "20 – 40 artículos"
+        },
+        {
+            valor: "40-60",
+            texto: "40 – 60 artículos"
+        },
+        {
+            valor: "60+",
+            texto: "Más de 60 artículos"
+        }
+    ],
+    filtrosMarketplace.articulos,
+    "todos",
+    "Cualquier cantidad"
+)}
 
             ${crearSelectAvanzadoMarketplace(
                 "Ascensor",
@@ -1756,36 +1750,6 @@ function crearPopoverMasFiltrosMarketplace() {
                 filtrosMarketplace.fotos,
                 "todos",
                 "Cualquier cantidad"
-            )}
-
-            ${crearSelectAvanzadoMarketplace(
-                "Servicios",
-                "filtro-avanzado-servicios",
-                [
-    {
-        valor: "todos",
-        texto: "Cualquier servicio"
-    },
-    {
-        valor: "desmontaje",
-        texto: "Desmontaje"
-    },
-    {
-        valor: "montaje",
-        texto: "Montaje"
-    },
-    {
-        valor: "embalaje",
-        texto: "Embalaje"
-    },
-    {
-        valor: "empaquetado",
-        texto: "Empaquetado"
-    }
-],
-                filtrosMarketplace.servicios,
-                "todos",
-                "Cualquier servicio"
             )}
 
         </div>
