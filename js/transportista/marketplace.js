@@ -3,6 +3,130 @@ window.Transportista = window.Transportista || {};
 let marketplaceCargando = false;
 
 ///////////////////////////////////////////////////////////
+// REFERENCIAS SEGURAS DEL PANEL
+///////////////////////////////////////////////////////////
+
+function obtenerDbClientMarketplace() {
+
+    const candidatos = [
+        window.dbClient,
+        window.supabaseClient,
+        window.Transportista?.dbClient,
+        window.Transportista?.supabaseClient
+    ];
+
+    for (const cliente of candidatos) {
+
+        if (
+            cliente &&
+            typeof cliente.from === "function"
+        ) {
+            return cliente;
+        }
+    }
+
+    /*
+     * Compatibilidad con un dbClient declarado con
+     * const/let en otro script clásico de la misma página.
+     */
+    try {
+
+        if (
+            typeof dbClient !== "undefined" &&
+            dbClient &&
+            typeof dbClient.from === "function"
+        ) {
+            return dbClient;
+        }
+
+    } catch (_) {
+        // El identificador no existe en este contexto.
+    }
+
+    return null;
+}
+
+
+function obtenerStateMarketplace() {
+
+    if (
+        window.state &&
+        typeof window.state === "object"
+    ) {
+        return window.state;
+    }
+
+    /*
+     * Compatibilidad con un state declarado con
+     * const/let en otro script clásico.
+     */
+    try {
+
+        if (
+            typeof state !== "undefined" &&
+            state &&
+            typeof state === "object"
+        ) {
+            return state;
+        }
+
+    } catch (_) {
+        // El identificador no existe en este contexto.
+    }
+
+    if (
+        !window.marketplaceStateFallback ||
+        typeof window.marketplaceStateFallback !== "object"
+    ) {
+        window.marketplaceStateFallback = {
+            disponibles: []
+        };
+    }
+
+    return window.marketplaceStateFallback;
+}
+
+
+function obtenerCurrentUserIdMarketplace() {
+
+    if (
+        window.currentUserId !== undefined &&
+        window.currentUserId !== null
+    ) {
+        return window.currentUserId;
+    }
+
+    if (
+        window.Transportista &&
+        window.Transportista.currentUserId !== undefined &&
+        window.Transportista.currentUserId !== null
+    ) {
+        return window.Transportista.currentUserId;
+    }
+
+    /*
+     * Compatibilidad con currentUserId declarado con
+     * const/let en otro script clásico.
+     */
+    try {
+
+        if (
+            typeof currentUserId !== "undefined" &&
+            currentUserId
+        ) {
+            return currentUserId;
+        }
+
+    } catch (_) {
+        // El identificador no existe en este contexto.
+    }
+
+    return null;
+}
+
+
+
+///////////////////////////////////////////////////////////
 // SISTEMA INTEGRAL DE FILTROS MARKETPLACE
 ///////////////////////////////////////////////////////////
 
@@ -640,8 +764,8 @@ function articulosDentroDeFiltroMarketplace(
 function obtenerTrabajosFiltradosMarketplace() {
 
     const trabajos =
-        Array.isArray(state.disponibles)
-            ? state.disponibles
+        Array.isArray(obtenerStateMarketplace().disponibles)
+            ? obtenerStateMarketplace().disponibles
             : [];
 
     const busqueda =
@@ -1023,8 +1147,8 @@ function aplicarFiltroBusquedaMarketplace() {
 function crearOpcionesDinamicasMarketplace() {
 
     const trabajos =
-        Array.isArray(state.disponibles)
-            ? state.disponibles
+        Array.isArray(obtenerStateMarketplace().disponibles)
+            ? obtenerStateMarketplace().disponibles
             : [];
 
     const zonas = new Map();
@@ -1853,6 +1977,9 @@ function limpiarFiltrosMarketplace() {
     const input =
         document.getElementById(
             "filtro-buscar-marketplace"
+        ) ||
+        document.querySelector(
+            'input[placeholder="Buscar origen o destino..."]'
         );
 
     if (input) {
@@ -2239,6 +2366,9 @@ function inicializarFiltrosMarketplace() {
     const input =
         document.getElementById(
             "filtro-buscar-marketplace"
+        ) ||
+        document.querySelector(
+            'input[placeholder="Buscar origen o destino..."]'
         );
 
     if (
@@ -2456,15 +2586,19 @@ async function cargarTrabajosDisponibles() {
         return;
     }
 
-    if (
-        !window.dbClient &&
-        typeof dbClient ===
-            "undefined"
-    ) {
+    const cliente =
+        obtenerDbClientMarketplace();
+
+    if (!cliente) {
 
         console.error(
-            "Marketplace: dbClient no está disponible."
+            "Marketplace: no hay un cliente Supabase disponible. " +
+            "Expón window.dbClient = dbClient antes de cargar marketplace.js."
         );
+
+        obtenerStateMarketplace().disponibles = [];
+
+        renderizarDisponibles();
 
         return;
     }
@@ -2472,10 +2606,6 @@ async function cargarTrabajosDisponibles() {
     marketplaceCargando = true;
 
     try {
-
-        const cliente =
-            window.dbClient ||
-            dbClient;
 
         const {
             data,
@@ -2515,14 +2645,14 @@ async function cargarTrabajosDisponibles() {
                 error.hint
             );
 
-            state.disponibles = [];
+            obtenerStateMarketplace().disponibles = [];
 
             renderizarDisponibles();
 
             return;
         }
 
-        state.disponibles =
+        obtenerStateMarketplace().disponibles =
             Array.isArray(data)
                 ? data
                 : [];
@@ -2536,7 +2666,7 @@ async function cargarTrabajosDisponibles() {
             error
         );
 
-        state.disponibles = [];
+        obtenerStateMarketplace().disponibles = [];
 
         renderizarDisponibles();
 
@@ -2902,8 +3032,24 @@ async function procesarAceptacion(
     try {
 
         const cliente =
-            window.dbClient ||
-            dbClient;
+            obtenerDbClientMarketplace();
+
+        const transportistaId =
+            obtenerCurrentUserIdMarketplace();
+
+        if (!cliente) {
+
+            throw new Error(
+                "No hay un cliente Supabase disponible para aceptar la mudanza."
+            );
+        }
+
+        if (!transportistaId) {
+
+            throw new Error(
+                "No se ha podido identificar al transportista conectado."
+            );
+        }
 
         const {
             data,
@@ -2916,7 +3062,7 @@ async function procesarAceptacion(
                     "Transportista asignado",
 
                 transportista_id:
-                    currentUserId,
+                    transportistaId,
 
                 bloqueada:
                     true,
