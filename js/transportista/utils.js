@@ -13,6 +13,371 @@
     window.Transportista.currentUserId =
         window.Transportista.currentUserId || null;
 
+
+
+    //////////////////////////////////////////////////////
+    // INVENTARIO RODAX — REGLA CENTRAL MUDANZA TOTAL
+    //////////////////////////////////////////////////////
+
+    const RODAX_CATEGORIAS_INVENTARIO = {
+        "Salón": [
+                "Sofá 2 plazas",
+                "Sofá 3 plazas",
+                "Sofá chaise longue",
+                "Sofá cama",
+                "Butaca",
+                "Puff",
+                "Mesa de centro",
+                "Mesa auxiliar",
+                "Mueble TV",
+                "Televisión pequeña - 40\"",
+                "Televisión pequeña",
+                "Televisión grande + 40\"",
+                "Televisión grande",
+                "Equipo de sonido",
+                "Altavoces",
+                "Estantería pequeña",
+                "Estantería grande",
+                "Estantería",
+                "Librería",
+                "Vitrina",
+                "Aparador",
+                "Consola recibidor",
+                "Chimenea eléctrica",
+                "Mesa escritorio",
+                "Silla escritorio",
+                "Ordenador sobremesa",
+                "Monitor",
+                "Impresora",
+                "Lámpara de pie",
+                "Lámpara de mesa",
+                "Lámpara mesa",
+                "Cuadros grandes",
+                "Cuadros pequeños",
+                "Alfombra pequeña",
+                "Alfombra grande",
+                "Cortinas",
+                "Espejo grande",
+                "Espejo pequeño",
+                "Aire acondicionado portátil",
+                "Planta decorativa grande",
+                "Planta decorativa pequeña"
+        ],
+        "Cocina": [
+                "Nevera",
+                "Frigorífico americano",
+                "Congelador",
+                "Lavadora",
+                "Secadora",
+                "Lavavajillas",
+                "Horno",
+                "Microondas",
+                "Vitrocerámica",
+                "Cafetera",
+                "Mesa cocina",
+                "Sillas cocina",
+                "Isla cocina",
+                "Carro auxiliar cocina",
+                "Estantería cocina",
+                "Vajillero",
+                "Campana extractora",
+                "Taburete",
+                "Mueble auxiliar",
+                "Cubo reciclaje",
+                "Robot cocina",
+                "Batidora",
+                "Tostadora",
+                "Freidora de aire",
+                "Envasadora vacío",
+                "Botellero",
+                "Nevera pequeña",
+                "Arcón congelador",
+                "Dispensador agua",
+                "Caja utensilios",
+                "Bandejas cocina"
+        ],
+        "Comedor": [
+                "Mesa comedor pequeña",
+                "Mesa comedor grande",
+                "Mesa extensible",
+                "Sillas comedor",
+                "Silla comedor",
+                "Banco comedor",
+                "Vitrina",
+                "Aparador",
+                "Cómoda comedor",
+                "Carrito bebidas",
+                "Mueble bar",
+                "Espejo comedor",
+                "Lámpara techo",
+                "Alfombra comedor",
+                "Cuadro decorativo",
+                "Estantería comedor",
+                "Vajillero",
+                "Consola comedor",
+                "Mesa auxiliar",
+                "Trona bebé"
+        ],
+        "Dormitorio": [
+                "Cama Individual",
+                "Cama Doble",
+                "Cama king size",
+                "Litera",
+                "Canapé abatible",
+                "Colchón",
+                "Colchón individual",
+                "Colchón doble",
+                "Cabecero",
+                "Mesita de noche",
+                "Cómoda",
+                "Sinfonier",
+                "Armario",
+                "Armario pequeño",
+                "Armario grande",
+                "Armario corredero",
+                "Vestidor desmontable",
+                "Escritorio",
+                "Silla escritorio",
+                "Tocador",
+                "Espejo cuerpo entero",
+                "Televisión dormitorio",
+                "Estantería",
+                "Librería",
+                "Zapatero",
+                "Cuna bebé",
+                "Cambiador bebé",
+                "Sillón dormitorio",
+                "Perchero",
+                "Banco dormitorio",
+                "Caja organizadora",
+                "Maleta pequeña",
+                "Maleta grande",
+                "Ventilador",
+                "Lámpara techo",
+                "Lámpara mesa",
+                "Cortinas",
+                "Alfombra"
+        ],
+        "Baño": [
+                "Mueble Baño",
+                "Lavabo auxiliar",
+                "Espejo baño",
+                "Estantería baño",
+                "Armario baño",
+                "Cesto ropa",
+                "Lavadora pequeña",
+                "Secadora pequeña",
+                "Mueble almacenaje",
+                "Zapatero baño",
+                "Calefactor baño",
+                "Toallero eléctrico",
+                "Carrito baño",
+                "Banco baño",
+                "Organizador baño",
+                "Mampara"
+        ],
+        "Otros": [
+                "Caja Pequeña",
+                "Caja Mediana",
+                "Caja Grande",
+                "Caja armario",
+                "Caja libros",
+                "Caja frágil",
+                "Bicicleta",
+                "Bici",
+                "Patinete eléctrico",
+                "Moto pequeña",
+                "Maleta pequeña",
+                "Maleta grande",
+                "Esquíes",
+                "Tabla surf",
+                "Tabla paddle surf",
+                "Instrumento musical pequeño",
+                "Piano eléctrico",
+                "Guitarra",
+                "Batería musical",
+                "Impresora grande",
+                "Caja herramientas",
+                "Aspiradora",
+                "Escalera",
+                "Perchero",
+                "Ventilador",
+                "Radiador portátil",
+                "Cuadro grande",
+                "Cuadro pequeño",
+                "Planta grande",
+                "Planta pequeña",
+                "Planta",
+                "Jaula mascota",
+                "Acuario pequeño",
+                "Acuario grande"
+        ]
+};
+
+    const RODAX_EXTRAS_NOMBRES = {
+        "caja pequena": "Cajas pequeñas",
+        "caja mediana": "Cajas medianas",
+        "caja grande": "Cajas grandes"
+    };
+
+    function normalizarNombreInventario(valor) {
+        return String(valor ?? "")
+            .trim()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function esMudanzaTotalInventario(tipoServicio) {
+        return normalizarNombreInventario(tipoServicio).includes("total");
+    }
+
+    function obtenerNombreItemInventario(item) {
+        return String(
+            item?.nombre ??
+            item?.mueble ??
+            item?.item ??
+            item?.descripcion ??
+            "Artículo"
+        ).trim();
+    }
+
+    function obtenerCantidadItemInventario(item) {
+        const n = Number.parseInt(item?.cantidad, 10);
+        return Number.isFinite(n) ? Math.max(0, n) : 0;
+    }
+
+    function obtenerCategoriaInventario(nombre) {
+        const clave = normalizarNombreInventario(nombre);
+        for (const [categoria, items] of Object.entries(RODAX_CATEGORIAS_INVENTARIO)) {
+            if (items.some(item => normalizarNombreInventario(item) === clave)) {
+                return categoria;
+            }
+        }
+        return "Otros";
+    }
+
+    function separarInventarioMudanza(inventario, tipoServicio) {
+        const items = parseInventario(inventario);
+        const total = esMudanzaTotalInventario(tipoServicio);
+        const visible = [];
+        const extras = {
+            "Cajas pequeñas": 0,
+            "Cajas medianas": 0,
+            "Cajas grandes": 0
+        };
+
+        items.forEach(item => {
+            const cantidad = obtenerCantidadItemInventario(item);
+            if (cantidad <= 0) return;
+
+            const nombre = obtenerNombreItemInventario(item);
+            const clave = normalizarNombreInventario(nombre);
+
+            if (total && RODAX_EXTRAS_NOMBRES[clave]) {
+                extras[RODAX_EXTRAS_NOMBRES[clave]] += cantidad;
+                return;
+            }
+
+            visible.push({
+                ...item,
+                nombre,
+                cantidad,
+                categoria: item?.categoria || item?.grupo || item?.seccion || obtenerCategoriaInventario(nombre)
+            });
+        });
+
+        return { visible, extras };
+    }
+
+    function obtenerExtrasMudanzaTotal(mudanza) {
+        const t = mudanza || {};
+        const resultado = {
+            "Cajas pequeñas": 0,
+            "Cajas medianas": 0,
+            "Cajas grandes": 0
+        };
+
+        if (!esMudanzaTotalInventario(t.tipo_servicio)) return resultado;
+
+        // 1) Primero respetamos campos estructurados/directos si existen.
+        const fuentes = [
+            t.extras_mudanza_total,
+            t.extrasMudanzaTotal,
+            t.beneficios_mudanza_total,
+            t.beneficiosMudanzaTotal,
+            t.cajas_extras,
+            t.cajasExtras
+        ];
+
+        const aliases = {
+            "Cajas pequeñas": ["cajas_pequenas","cajasPequenas","cajas_pequena","cajasPequena","beneficio_cajas_pequenas","beneficioCajasPequenas"],
+            "Cajas medianas": ["cajas_medianas","cajasMedianas","cajas_mediana","cajasMediana","beneficio_cajas_medianas","beneficioCajasMedianas"],
+            "Cajas grandes": ["cajas_grandes","cajasGrandes","cajas_grande","cajasGrande","beneficio_cajas_grandes","beneficioCajasGrandes"]
+        };
+
+        for (const [etiqueta, nombres] of Object.entries(aliases)) {
+            for (const fuente of [t, ...fuentes]) {
+                if (!fuente || typeof fuente !== "object" || Array.isArray(fuente)) continue;
+                for (const nombre of nombres) {
+                    if (fuente[nombre] !== undefined && fuente[nombre] !== null && fuente[nombre] !== "") {
+                        const n = Number(fuente[nombre]);
+                        if (Number.isFinite(n) && n > 0) {
+                            resultado[etiqueta] = n;
+                            break;
+                        }
+                    }
+                }
+                if (resultado[etiqueta] > 0) break;
+            }
+        }
+
+        // 2) Si no llegaron como campos, las cantidades de las tres
+        // cajas de beneficios se recuperan del inventario por nombre EXACTO.
+        const desdeInventario = separarInventarioMudanza(t.inventario, t.tipo_servicio).extras;
+        for (const etiqueta of Object.keys(resultado)) {
+            if (resultado[etiqueta] <= 0 && desdeInventario[etiqueta] > 0) {
+                resultado[etiqueta] = desdeInventario[etiqueta];
+            }
+        }
+
+        return resultado;
+    }
+
+    function obtenerResumenInventarioMudanza(mudanza) {
+        const t = mudanza || {};
+        const separado = separarInventarioMudanza(t.inventario, t.tipo_servicio);
+        const extrasDirectos = obtenerExtrasMudanzaTotal(t);
+        const extras = { ...separado.extras };
+
+        for (const etiqueta of Object.keys(extras)) {
+            if (extrasDirectos[etiqueta] > 0) extras[etiqueta] = extrasDirectos[etiqueta];
+        }
+
+        const totalArticulos = separado.visible.reduce((s, item) => s + obtenerCantidadItemInventario(item), 0);
+        const totalM3 = separado.visible.reduce((s, item) => {
+            let m3 = Number(item?.metrosCubicos ?? item?.m3);
+            if (!Number.isFinite(m3) || m3 <= 0) m3 = 0.5;
+            return s + obtenerCantidadItemInventario(item) * m3;
+        }, 0);
+
+        const categorias = {};
+        Object.keys(RODAX_CATEGORIAS_INVENTARIO).forEach(c => categorias[c] = []);
+        separado.visible.forEach(item => {
+            const categoria = item.categoria || obtenerCategoriaInventario(item.nombre);
+            (categorias[categoria] || (categorias[categoria] = [])).push({ nombre: item.nombre, cantidad: item.cantidad });
+        });
+
+        return {
+            esMudanzaTotal: esMudanzaTotalInventario(t.tipo_servicio),
+            visible: separado.visible,
+            categorias,
+            extras,
+            totalArticulos,
+            totalM3
+        };
+    }
+
  //////////////////////////////////////////////////////
 // INVENTARIO
 //////////////////////////////////////////////////////
@@ -55,74 +420,31 @@ function parseInventario(inventario) {
 // TOTAL ARTÍCULOS
 //////////////////////////////////////////////////////
 
-function getTotalArticulos(inventario) {
+function getTotalArticulos(inventario, tipoServicio) {
+        const items = esMudanzaTotalInventario(tipoServicio)
+            ? separarInventarioMudanza(inventario, tipoServicio).visible
+            : parseInventario(inventario);
 
-    const items =
-        parseInventario(inventario);
-
-    return items.reduce(
-        (total, item) => {
-
-            const cantidad =
-                Number.parseInt(
-                    item?.cantidad,
-                    10
-                );
-
-            return total +
-                (
-                    Number.isFinite(cantidad)
-                        ? Math.max(0, cantidad)
-                        : 0
-                );
-
-        },
-        0
-    );
-}
+        return items.reduce((total, item) => total + obtenerCantidadItemInventario(item), 0);
+    }
 
 
 //////////////////////////////////////////////////////
 // TOTAL M³
 //////////////////////////////////////////////////////
 
-function getTotalM3(inventario) {
+function getTotalM3(inventario, tipoServicio) {
+        const items = esMudanzaTotalInventario(tipoServicio)
+            ? separarInventarioMudanza(inventario, tipoServicio).visible
+            : parseInventario(inventario);
 
-    const items =
-        parseInventario(inventario);
-
-    return items.reduce(
-        (total, item) => {
-
-            const cantidad =
-                Number.parseInt(
-                    item?.cantidad,
-                    10
-                ) || 0;
-
-            let m3Unitario =
-                Number(
-                    item?.metrosCubicos ??
-                    item?.m3
-                );
-
-            if (
-                !Number.isFinite(m3Unitario) ||
-                m3Unitario <= 0
-            ) {
-                m3Unitario = 0.5;
-            }
-
-            return total +
-                (
-                    Math.max(0, cantidad) *
-                    m3Unitario
-                );
-
-        },
-        0
-    );
-}
+        return items.reduce((total, item) => {
+            const cantidad = obtenerCantidadItemInventario(item);
+            let m3Unitario = Number(item?.metrosCubicos ?? item?.m3);
+            if (!Number.isFinite(m3Unitario) || m3Unitario <= 0) m3Unitario = 0.5;
+            return total + cantidad * m3Unitario;
+        }, 0);
+    }
 
 
 //////////////////////////////////////////////////////
@@ -428,6 +750,22 @@ function formatM3(valor) {
     //////////////////////////////////////////////////////
     // EXPONER API COMÚN
     //////////////////////////////////////////////////////
+
+
+    window.Transportista.normalizarNombreInventario =
+        normalizarNombreInventario;
+
+    window.Transportista.separarInventarioMudanza =
+        separarInventarioMudanza;
+
+    window.Transportista.obtenerExtrasMudanzaTotal =
+        obtenerExtrasMudanzaTotal;
+
+    window.Transportista.obtenerResumenInventarioMudanza =
+        obtenerResumenInventarioMudanza;
+
+    window.Transportista.obtenerCategoriaInventario =
+        obtenerCategoriaInventario;
 
     window.Transportista.parseInventario =
         parseInventario;
