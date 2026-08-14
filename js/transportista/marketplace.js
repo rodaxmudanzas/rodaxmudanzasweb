@@ -44,17 +44,23 @@ function obtenerTrabajosFiltradosMarketplace() {
     });
 }
 
+
 function aplicarFiltroBusquedaMarketplace() {
 
     const input =
-        document.getElementById("filtro-buscar-marketplace");
+        document.getElementById("filtro-buscar-marketplace") ||
+        document.querySelector(
+            'input[placeholder="Buscar origen o destino..."]'
+        );
 
     if (!input) return;
 
     filtroMarketplaceBusqueda = input.value;
 
+    // Aplicar inmediatamente el filtro y volver a pintar las tarjetas
     renderizarDisponibles();
 }
+
 
 ///////////////////////////////////////////////////////////
 // UTILIDADES
@@ -68,6 +74,7 @@ function escapeHtmlMarketplace(valor) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
+
 
 function apiTransportistaDisponible() {
 
@@ -88,12 +95,16 @@ function apiTransportistaDisponible() {
 async function cargarTrabajosDisponibles() {
 
     if (marketplaceCargando) {
-        console.log("Marketplace: consulta ya en curso; se evita duplicado.");
+        console.log(
+            "Marketplace: consulta ya en curso; se evita duplicado."
+        );
         return;
     }
 
     if (!window.dbClient && typeof dbClient === "undefined") {
-        console.error("Marketplace: dbClient no está disponible.");
+        console.error(
+            "Marketplace: dbClient no está disponible."
+        );
         return;
     }
 
@@ -114,6 +125,7 @@ async function cargarTrabajosDisponibles() {
             .order("fecha", { ascending: true });
 
         if (error) {
+
             console.error(
                 "❌ ERROR CARGANDO MARKETPLACE:",
                 error.message,
@@ -122,7 +134,9 @@ async function cargarTrabajosDisponibles() {
             );
 
             state.disponibles = [];
+
             renderizarDisponibles();
+
             return;
         }
 
@@ -140,9 +154,11 @@ async function cargarTrabajosDisponibles() {
         );
 
         state.disponibles = [];
+
         renderizarDisponibles();
 
     } finally {
+
         marketplaceCargando = false;
     }
 }
@@ -163,8 +179,12 @@ function crearEncabezadoFechaMarketplace(fecha) {
     }
 
     const hoy = new Date();
+
     const manana = new Date(hoy);
-    manana.setDate(hoy.getDate() + 1);
+
+    manana.setDate(
+        hoy.getDate() + 1
+    );
 
     const mismoDia = (a, b) =>
         a.getFullYear() === b.getFullYear() &&
@@ -215,7 +235,7 @@ function renderizarDisponibles() {
         document.getElementById("banner-contador-trabajos");
 
     const trabajos =
-    obtenerTrabajosFiltradosMarketplace();
+        obtenerTrabajosFiltradosMarketplace();
 
     if (badge) {
         badge.textContent = trabajos.length;
@@ -231,13 +251,20 @@ function renderizarDisponibles() {
 
         contenedor.innerHTML = `
             <div class="col-span-1 lg:col-span-2 text-center py-16 bg-white rounded-3xl border border-dashed border-gray-300">
-                <i data-lucide="satellite" class="w-14 h-14 text-gray-300 mx-auto mb-4"></i>
+
+                <i
+                    data-lucide="satellite"
+                    class="w-14 h-14 text-gray-300 mx-auto mb-4"
+                ></i>
+
                 <h4 class="text-xl font-bold text-gray-700 mb-2">
                     Buscando nuevas rutas
                 </h4>
+
                 <p class="text-gray-400 font-medium text-sm">
                     En cuanto un cliente reserve aparecerá aquí automáticamente.
                 </p>
+
             </div>
         `;
 
@@ -258,7 +285,9 @@ function renderizarDisponibles() {
     trabajos.forEach(trabajo => {
 
         const titulo =
-            crearEncabezadoFechaMarketplace(trabajo.fecha);
+            crearEncabezadoFechaMarketplace(
+                trabajo.fecha
+            );
 
         if (!gruposPorFecha[titulo]) {
             gruposPorFecha[titulo] = [];
@@ -281,12 +310,15 @@ function renderizarDisponibles() {
 
         contenedor.innerHTML = `
             <div class="col-span-1 lg:col-span-2 text-center py-12 bg-white rounded-3xl border border-red-100">
+
                 <h4 class="text-lg font-bold text-red-600 mb-2">
                     Error cargando los datos de las mudanzas
                 </h4>
+
                 <p class="text-sm text-slate-500">
                     No se ha cargado correctamente el módulo de utilidades.
                 </p>
+
             </div>
         `;
 
@@ -300,18 +332,34 @@ function renderizarDisponibles() {
 
     let htmlFinal = "";
 
-    for (const [fechaTitulo, trabajosFecha] of Object.entries(gruposPorFecha)) {
+    for (
+        const [fechaTitulo, trabajosFecha]
+        of Object.entries(gruposPorFecha)
+    ) {
 
         htmlFinal += `
             <div class="col-span-1 lg:col-span-2 flex items-center gap-2.5 mt-6 mb-3 no-print">
+
                 <span class="text-xs font-bold text-blue-600 bg-blue-50/80 px-2.5 py-1 rounded-lg border border-blue-100/70 font-sans flex items-center gap-1.5">
-                    <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+
+                    <i
+                        data-lucide="calendar"
+                        class="w-3.5 h-3.5"
+                    ></i>
+
                     ${escapeHtmlMarketplace(fechaTitulo)}
+
                 </span>
+
                 <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">
-                    ${trabajosFecha.length} trabajos disponibles
+
+                    ${trabajosFecha.length}
+                    trabajos disponibles
+
                 </span>
+
                 <div class="flex-1 border-t border-slate-200/60"></div>
+
             </div>
         `;
 
@@ -319,7 +367,8 @@ function renderizarDisponibles() {
         trabajosFecha.forEach(t => {
 
             htmlFinal +=
-    window.Transportista.Tarjetas.crearTarjetaMarketplace(t);
+                window.Transportista.Tarjetas.crearTarjetaMarketplace(t);
+
         });
     }
 
@@ -344,12 +393,20 @@ async function procesarAceptacion(id) {
         document.getElementById("action-modal");
 
     if (!modalContentMarketplace) {
-        console.error("❌ No existe #modal-content");
+
+        console.error(
+            "❌ No existe #modal-content"
+        );
+
         return;
     }
 
     modalContentMarketplace.innerHTML = `
-        <i data-lucide="loader-2" class="w-10 h-10 animate-spin mx-auto text-blue-600 mb-3"></i>
+        <i
+            data-lucide="loader-2"
+            class="w-10 h-10 animate-spin mx-auto text-blue-600 mb-3"
+        ></i>
+
         <p class="text-gray-600 font-medium text-sm">
             Asignando mudanza...
         </p>
@@ -380,7 +437,11 @@ async function procesarAceptacion(id) {
             .select();
 
         if (error) {
-            console.error("❌ Error al aceptar mudanza:", error);
+
+            console.error(
+                "❌ Error al aceptar mudanza:",
+                error
+            );
 
             alert(
                 "No se pudo asignar la mudanza.\n\n" +
@@ -392,6 +453,7 @@ async function procesarAceptacion(id) {
             }
 
             await cargarTrabajosDisponibles();
+
             return;
         }
 
@@ -407,6 +469,7 @@ async function procesarAceptacion(id) {
             }
 
             await cargarTrabajosDisponibles();
+
             return;
         }
 
@@ -435,7 +498,10 @@ async function procesarAceptacion(id) {
 
     } catch (error) {
 
-        console.error("❌ Excepción aceptando mudanza:", error);
+        console.error(
+            "❌ Excepción aceptando mudanza:",
+            error
+        );
 
         alert(
             "Se produjo un error al aceptar la mudanza.\n\n" +
@@ -448,6 +514,7 @@ async function procesarAceptacion(id) {
     }
 }
 
+
 ///////////////////////////////////////////////////////////
 // EVENTO — BUSCADOR MARKETPLACE
 ///////////////////////////////////////////////////////////
@@ -455,13 +522,23 @@ async function procesarAceptacion(id) {
 document.addEventListener("DOMContentLoaded", () => {
 
     const input =
-        document.getElementById("filtro-buscar-marketplace");
+        document.getElementById("filtro-buscar-marketplace") ||
+        document.querySelector(
+            'input[placeholder="Buscar origen o destino..."]'
+        );
 
     if (!input) {
+
         console.warn(
-            "Marketplace: no se encontró #filtro-buscar-marketplace"
+            "Marketplace: no se encontró el buscador de origen/destino."
         );
+
         return;
+    }
+
+    // Nos aseguramos de que tenga el ID correcto
+    if (!input.id) {
+        input.id = "filtro-buscar-marketplace";
     }
 
     input.addEventListener(
@@ -469,7 +546,13 @@ document.addEventListener("DOMContentLoaded", () => {
         aplicarFiltroBusquedaMarketplace
     );
 
+    console.log(
+        "✅ Buscador Marketplace conectado correctamente:",
+        input
+    );
+
 });
+
 
 ///////////////////////////////////////////////////////////
 // API GLOBAL
@@ -484,4 +567,6 @@ window.renderizarDisponibles =
 window.procesarAceptacion =
     procesarAceptacion;
 
-console.log("✅ Marketplace cargado correctamente");
+console.log(
+    "✅ Marketplace cargado correctamente"
+);
