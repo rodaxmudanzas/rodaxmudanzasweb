@@ -366,10 +366,10 @@
         return `
             <div class="mt-3 bg-emerald-50/70 border border-emerald-200 rounded-xl p-3 w-full text-left">
                 <div class="flex items-center gap-2 mb-2">
-                    <span class="text-sm">🎁</span>
+                    <span class="text-sm"></span>
                     <span class="text-[10px] font-black text-emerald-700 uppercase tracking-wider">EXTRAS</span>
                 </div>
-                <div class="text-[10px] text-emerald-600 font-semibold uppercase tracking-wide mb-1.5">Beneficios Mudanza Total</div>
+                <div class="text-[10px] text-emerald-600 font-semibold uppercase tracking-wide mb-1.5">Proveer estas cajas y materiales</div>
                 <div class="divide-y divide-emerald-100/70">${filas.join("")}</div>
             </div>
         `;
