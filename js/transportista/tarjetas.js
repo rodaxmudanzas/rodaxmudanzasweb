@@ -1000,7 +1000,7 @@
                             tracking-wider
                             text-emerald-700
                         ">
-                            Extras — Beneficios Mudanza Total
+                            Extras — Proveer estas cajas y materiales
                         </span>
 
                     </div>
