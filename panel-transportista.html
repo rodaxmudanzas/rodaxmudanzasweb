@@ -2073,22 +2073,374 @@ function recargarDatos() {
                 );
 
         const numArticulos =
-            window.Transportista
-                .getTotalArticulos(
-                    mudanza.inventario
-                );
+    window.Transportista
+        .getTotalArticulos(
+            mudanza.inventario,
+            mudanza.tipo_servicio
+        );
 
-        const totalM3 =
-            window.Transportista
-                .getTotalM3(
-                    mudanza.inventario
-                );
+const totalM3 =
+    window.Transportista
+        .getTotalM3(
+            mudanza.inventario,
+            mudanza.tipo_servicio
+        );
 
         const m3Texto =
             window.Transportista
                 .formatM3(
                     totalM3
                 );
+                /////////////////////////////////////////////////////////
+// INVENTARIO PARA FICHA TÉCNICA
+/////////////////////////////////////////////////////////
+
+const inventarioOriginal =
+    Array.isArray(mudanza.inventario)
+        ? mudanza.inventario
+        : (() => {
+            try {
+                return JSON.parse(
+                    mudanza.inventario || "[]"
+                );
+            } catch {
+                return [];
+            }
+        })();
+
+const esMudanzaTotalFicha =
+    String(
+        mudanza.tipo_servicio || ""
+    )
+        .toLowerCase()
+        .includes("total");
+
+const normalizarNombreFicha =
+    valor =>
+        String(valor ?? "")
+            .trim()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(
+                /[\u0300-\u036f]/g,
+                ""
+            );
+
+const nombresExtrasFicha = new Set([
+    "caja pequena",
+    "caja mediana",
+    "caja grande"
+]);
+
+const categoriasFicha =
+    window.RodaxInventario?.config?.categorias ||
+    {};
+
+const inventarioPorCategoria = {};
+
+Object.keys(categoriasFicha).forEach(
+    categoria => {
+        inventarioPorCategoria[categoria] = [];
+    }
+);
+
+inventarioOriginal.forEach(item => {
+
+    const cantidad =
+        Number.parseInt(
+            item?.cantidad,
+            10
+        ) || 0;
+
+    if (cantidad <= 0) {
+        return;
+    }
+
+    const nombre =
+        String(
+            item?.nombre ??
+            item?.mueble ??
+            item?.item ??
+            "Artículo"
+        ).trim();
+
+    /*
+     * En Mudanza Total:
+     * las tres cajas de beneficios
+     * NO forman parte del INVENTARIO.
+     */
+    if (
+        esMudanzaTotalFicha &&
+        nombresExtrasFicha.has(
+            normalizarNombreFicha(nombre)
+        )
+    ) {
+        return;
+    }
+
+    let categoriaEncontrada =
+        item?.categoria ||
+        item?.grupo ||
+        item?.seccion ||
+        "Otros";
+
+    let encontradaEnConfig = false;
+
+    for (
+        const [
+            categoria,
+            listaItems
+        ]
+        of Object.entries(categoriasFicha)
+    ) {
+
+        const coincide =
+            listaItems.some(
+                itemConfigurado =>
+                    normalizarNombreFicha(
+                        itemConfigurado
+                    ) ===
+                    normalizarNombreFicha(
+                        nombre
+                    )
+            );
+
+        if (coincide) {
+            categoriaEncontrada =
+                categoria;
+
+            encontradaEnConfig = true;
+            break;
+        }
+    }
+
+    if (
+        !encontradaEnConfig &&
+        !inventarioPorCategoria[
+            categoriaEncontrada
+        ]
+    ) {
+        categoriaEncontrada = "Otros";
+    }
+
+    if (
+        !inventarioPorCategoria[
+            categoriaEncontrada
+        ]
+    ) {
+        inventarioPorCategoria[
+            categoriaEncontrada
+        ] = [];
+    }
+
+    inventarioPorCategoria[
+        categoriaEncontrada
+    ].push({
+        nombre,
+        cantidad
+    });
+});
+
+/////////////////////////////////////////////////////////
+// HTML INVENTARIO AGRUPADO
+/////////////////////////////////////////////////////////
+
+const iconosFicha = {
+    "Salón": "🛋️",
+    "Cocina": "🍳",
+    "Comedor": "🍽️",
+    "Dormitorio": "🛏️",
+    "Baño": "🚿",
+    "Otros": "📦"
+};
+
+let htmlInventarioFicha = "";
+
+Object.entries(
+    inventarioPorCategoria
+).forEach(
+    ([categoria, items]) => {
+
+        if (
+            !items ||
+            items.length === 0
+        ) {
+            return;
+        }
+
+        const totalCategoria =
+            items.reduce(
+                (
+                    total,
+                    item
+                ) =>
+                    total +
+                    item.cantidad,
+                0
+            );
+
+        htmlInventarioFicha += `
+            <div class="inventario-categoria">
+                
+                <div class="inventario-categoria-header">
+                    <span>
+                        ${
+                            iconosFicha[
+                                categoria
+                            ] || "📦"
+                        }
+                        ${categoria}
+                    </span>
+
+                    <span class="inventario-total">
+                        ${totalCategoria}
+                    </span>
+                </div>
+
+                <div class="inventario-items">
+
+                    ${items
+                        .map(
+                            item => `
+                                <div class="inventario-item">
+                                    <span>
+                                        ${item.nombre}
+                                    </span>
+
+                                    <strong>
+                                        x${item.cantidad}
+                                    </strong>
+                                </div>
+                            `
+                        )
+                        .join("")
+                    }
+
+                </div>
+
+            </div>
+        `;
+    }
+);
+
+if (!htmlInventarioFicha) {
+
+    htmlInventarioFicha = `
+        <div class="inventario-vacio">
+            No se especificó inventario detallado.
+        </div>
+    `;
+}
+
+/////////////////////////////////////////////////////////
+// EXTRAS — SOLO MUDANZA TOTAL
+/////////////////////////////////////////////////////////
+
+let htmlExtrasFicha = "";
+
+if (esMudanzaTotalFicha) {
+
+    let extrasFicha = {
+        "Cajas pequeñas": 0,
+        "Cajas medianas": 0,
+        "Cajas grandes": 0
+    };
+
+    if (
+        typeof window
+            .RodaxInventario
+            ?.obtenerExtrasCajas
+        === "function"
+    ) {
+
+        extrasFicha =
+            window.RodaxInventario
+                .obtenerExtrasCajas(
+                    mudanza
+                );
+    }
+
+    if (
+        extrasFicha[
+            "Cajas pequeñas"
+        ] > 0 ||
+        extrasFicha[
+            "Cajas medianas"
+        ] > 0 ||
+        extrasFicha[
+            "Cajas grandes"
+        ] > 0
+    ) {
+
+        htmlExtrasFicha = `
+            <div class="seccion">
+
+                <div class="seccion-titulo extras-titulo">
+                    📦 EXTRAS
+                </div>
+
+                <div class="extras-ficha">
+
+                    ${
+                        extrasFicha[
+                            "Cajas pequeñas"
+                        ] > 0
+                            ? `
+                                <div class="extra-fila">
+                                    <span>
+                                        Cajas pequeñas
+                                    </span>
+
+                                    <strong>
+                                        x${extrasFicha["Cajas pequeñas"]}
+                                    </strong>
+                                </div>
+                            `
+                            : ""
+                    }
+
+                    ${
+                        extrasFicha[
+                            "Cajas medianas"
+                        ] > 0
+                            ? `
+                                <div class="extra-fila">
+                                    <span>
+                                        Cajas medianas
+                                    </span>
+
+                                    <strong>
+                                        x${extrasFicha["Cajas medianas"]}
+                                    </strong>
+                                </div>
+                            `
+                            : ""
+                    }
+
+                    ${
+                        extrasFicha[
+                            "Cajas grandes"
+                        ] > 0
+                            ? `
+                                <div class="extra-fila">
+                                    <span>
+                                        Cajas grandes
+                                    </span>
+
+                                    <strong>
+                                        x${extrasFicha["Cajas grandes"]}
+                                    </strong>
+                                </div>
+                            `
+                            : ""
+                    }
+
+                </div>
+
+            </div>
+        `;
+    }
+}
 
         const accesos =
             window.Transportista
@@ -2383,6 +2735,98 @@ function recargarDatos() {
                 4px 0 4px 22px;
         }
 
+        .inventario-categoria {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.inventario-categoria-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 12px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 11px;
+    font-weight: 900;
+    color: #1f2937;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.inventario-total {
+    background: #e5e7eb;
+    color: #475569;
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-size: 10px;
+}
+
+.inventario-items {
+    padding: 5px 12px;
+}
+
+.inventario-item,
+.extra-fila {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 11px;
+    color: #334155;
+}
+
+.inventario-item:last-child,
+.extra-fila:last-child {
+    border-bottom: none;
+}
+
+.inventario-item strong,
+.extra-fila strong {
+    min-width: 36px;
+    text-align: center;
+    background: #f1f5f9;
+    color: #334155;
+    padding: 3px 6px;
+    border-radius: 5px;
+    font-size: 10px;
+}
+
+.inventario-vacio {
+    padding: 15px;
+    text-align: center;
+    color: #9ca3af;
+    font-size: 11px;
+    font-style: italic;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+.extras-titulo {
+    color: #047857 !important;
+}
+
+.extras-ficha {
+    border: 1px solid #a7f3d0;
+    background: #ecfdf5;
+    border-radius: 10px;
+    padding: 7px 12px;
+}
+
+.extra-fila {
+    color: #065f46;
+}
+
+.extra-fila strong {
+    background: #059669;
+    color: white;
+}
+
         .precio-box {
             background:
                 #f0fdf4;
@@ -2637,7 +3081,7 @@ function recargarDatos() {
                 </div>
 
                 <div class="dato-valor">
-                    ${numArticulos} artículos · ${m3Texto}
+                    ${numArticulos} ART. · ${m3Texto}
                 </div>
 
             </div>
@@ -2669,6 +3113,20 @@ function recargarDatos() {
         </div>
 
     </div>
+
+    <div class="seccion">
+
+    <div class="seccion-titulo">
+        📦 Inventario
+    </div>
+
+    <div>
+        ${htmlInventarioFicha}
+    </div>
+
+</div>
+
+${htmlExtrasFicha}
 
     <div class="seccion">
 
