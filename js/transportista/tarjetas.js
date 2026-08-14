@@ -589,345 +589,38 @@
     //////////////////////////////////////////////////////////////
 
     function obtenerExtrasMudanzaTotal(mudanza) {
+        const t = mudanza || {};
+        const total = esMudanzaTotal(t);
+        if (!total) return [];
 
-        const t =
-            mudanza || {};
-
-
-        if (
-            !esMudanzaTotal(t)
-        ) {
-
-            return [];
-
+        const api = window.Transportista;
+        let datos = null;
+        if (api && typeof api.obtenerExtrasMudanzaTotal === "function") {
+            datos = api.obtenerExtrasMudanzaTotal(t);
         }
 
-
-        const resultado = [];
-
-
-        //////////////////////////////////////////////////////////
-        // 1. Campo estructurado de extras
-        //////////////////////////////////////////////////////////
-
-        const posiblesExtras = [
-
-            t.extras_mudanza_total,
-
-            t.extrasMudanzaTotal,
-
-            t.beneficios_mudanza_total,
-
-            t.beneficiosMudanzaTotal,
-
-            t.cajas_extras,
-
-            t.cajasExtras
-
-        ];
-
-
-        for (
-            const fuente
-            of posiblesExtras
-        ) {
-
-            if (
-                fuente === null ||
-                fuente === undefined ||
-                fuente === ""
-            ) {
-
-                continue;
-
-            }
-
-
-            let datos =
-                fuente;
-
-
-            if (
-                typeof datos === "string"
-            ) {
-
-                try {
-
-                    datos =
-                        JSON.parse(datos);
-
-                } catch (error) {
-
-                    /*
-                     * Si es texto simple no lo utilizamos
-                     * como inventario porque podría contener
-                     * observaciones.
-                     */
-
-                    continue;
-
-                }
-
-            }
-
-
-            if (
-                Array.isArray(datos)
-            ) {
-
-                datos.forEach(
-                    item => {
-
-                        const nombre =
-                            item?.nombre ??
-                            item?.mueble ??
-                            item?.tipo ??
-                            item?.descripcion ??
-                            "";
-
-
-                        const cantidad =
-                            Number.parseInt(
-                                item?.cantidad ??
-                                item?.qty ??
-                                item?.unidades,
-                                10
-                            ) || 0;
-
-
-                        if (
-                            String(nombre).trim() &&
-                            cantidad > 0
-                        ) {
-
-                            resultado.push({
-
-                                nombre:
-                                    String(nombre).trim(),
-
-                                cantidad
-
-                            });
-
-                        }
-
-                    }
-                );
-
-            } else if (
-                typeof datos === "object"
-            ) {
-
-                Object.entries(datos)
-                    .forEach(
-                        ([clave, valor]) => {
-
-                            const cantidad =
-                                Number.parseInt(
-                                    valor,
-                                    10
-                                ) || 0;
-
-
-                            if (
-                                cantidad > 0
-                            ) {
-
-                                resultado.push({
-
-                                    nombre:
-                                        clave,
-
-                                    cantidad
-
-                                });
-
-                            }
-
-                        }
-                    );
-
-            }
-
+        if (!datos) {
+            datos = {
+                "Cajas pequeñas": 0,
+                "Cajas medianas": 0,
+                "Cajas grandes": 0
+            };
+            let arr = t.inventario;
+            if (typeof arr === "string") { try { arr = JSON.parse(arr); } catch { arr = []; } }
+            if (!Array.isArray(arr)) arr = [];
+            arr.forEach(item => {
+                const nombre = normalizarTexto(item?.nombre ?? item?.mueble ?? item?.item ?? "");
+                const cantidad = Number.parseInt(item?.cantidad, 10) || 0;
+                if (nombre === "caja pequena") datos["Cajas pequeñas"] += cantidad;
+                if (nombre === "caja mediana") datos["Cajas medianas"] += cantidad;
+                if (nombre === "caja grande") datos["Cajas grandes"] += cantidad;
+            });
         }
 
-
-        //////////////////////////////////////////////////////////
-        // 2. Campos directos de cajas de beneficios
-        //////////////////////////////////////////////////////////
-
-        const camposDirectos = [
-
-            {
-                nombres: [
-                    "cajas_pequenas",
-                    "cajasPequenas",
-                    "beneficio_cajas_pequenas",
-                    "beneficioCajasPequenas"
-                ],
-
-                etiqueta:
-                    "Cajas pequeñas"
-            },
-
-            {
-                nombres: [
-                    "cajas_medianas",
-                    "cajasMedianas",
-                    "beneficio_cajas_medianas",
-                    "beneficioCajasMedianas"
-                ],
-
-                etiqueta:
-                    "Cajas medianas"
-            },
-
-            {
-                nombres: [
-                    "cajas_grandes",
-                    "cajasGrandes",
-                    "beneficio_cajas_grandes",
-                    "beneficioCajasGrandes"
-                ],
-
-                etiqueta:
-                    "Cajas grandes"
-            }
-
-        ];
-
-
-        camposDirectos.forEach(
-            campo => {
-
-                let encontrado =
-                    null;
-
-
-                for (
-                    const nombreCampo
-                    of campo.nombres
-                ) {
-
-                    if (
-                        t[nombreCampo] !==
-                        undefined &&
-                        t[nombreCampo] !==
-                        null &&
-                        t[nombreCampo] !== ""
-                    ) {
-
-                        encontrado =
-                            t[nombreCampo];
-
-                        break;
-
-                    }
-
-                }
-
-
-                const cantidad =
-                    Number.parseInt(
-                        encontrado,
-                        10
-                    ) || 0;
-
-
-                if (
-                    cantidad > 0
-                ) {
-
-                    /*
-                     * Evitamos duplicar una misma caja
-                     * si ya llegó dentro del objeto extras.
-                     */
-
-                    const yaExiste =
-                        resultado.some(
-                            item =>
-                                normalizarTexto(
-                                    item.nombre
-                                ) ===
-                                normalizarTexto(
-                                    campo.etiqueta
-                                )
-                        );
-
-
-                    if (!yaExiste) {
-
-                        resultado.push({
-
-                            nombre:
-                                campo.etiqueta,
-
-                            cantidad
-
-                        });
-
-                    }
-
-                }
-
-            }
-        );
-
-
-        /*
-         * Eliminar duplicados finales sumando cantidades.
-         */
-
-        const agrupado =
-            new Map();
-
-
-        resultado.forEach(
-            item => {
-
-                const clave =
-                    normalizarTexto(
-                        item.nombre
-                    );
-
-
-                if (!clave) {
-                    return;
-                }
-
-
-                const anterior =
-                    agrupado.get(clave);
-
-
-                if (anterior) {
-
-                    anterior.cantidad +=
-                        item.cantidad;
-
-                } else {
-
-                    agrupado.set(
-                        clave,
-                        {
-                            nombre:
-                                item.nombre,
-
-                            cantidad:
-                                item.cantidad
-                        }
-                    );
-
-                }
-
-            }
-        );
-
-
-        return Array.from(
-            agrupado.values()
-        );
-
+        return Object.entries(datos).map(([nombre, cantidad]) => ({
+            nombre,
+            cantidad: Number(cantidad) || 0
+        }));
     }
 
 
@@ -1000,60 +693,30 @@
     //////////////////////////////////////////////////////////////
 
     function prepararInventarioVisible(mudanza) {
+        const t = mudanza || {};
+        const api = window.Transportista;
 
-        const inventario =
-            obtenerInventario(
-                mudanza
-            );
+        if (api && typeof api.separarInventarioMudanza === "function") {
+            return api.separarInventarioMudanza(t.inventario, t.tipo_servicio).visible
+                .map(item => ({
+                    nombre: String(item.nombre || "Artículo").trim(),
+                    cantidad: Math.max(0, Number.parseInt(item.cantidad, 10) || 0),
+                    categoria: item.categoria || (typeof api.obtenerCategoriaInventario === "function" ? api.obtenerCategoriaInventario(item.nombre) : "Otros")
+                }))
+                .filter(item => item.cantidad > 0);
+        }
 
-
-        return inventario
-
-            .map(
-                item => {
-
-                    const nombre =
-                        item?.nombre ??
-                        item?.mueble ??
-                        item?.descripcion ??
-                        "Artículo";
-
-
-                    const cantidad =
-                        Number.parseInt(
-                            item?.cantidad,
-                            10
-                        ) || 0;
-
-
-                    return {
-
-                        nombre:
-                            String(nombre).trim(),
-
-                        cantidad:
-
-                            Math.max(
-                                0,
-                                cantidad
-                            ),
-
-                        categoria:
-                            item?.categoria ??
-                            item?.grupo ??
-                            item?.seccion ??
-                            "Otros"
-
-                    };
-
-                }
-            )
-
-            .filter(
-                item =>
-                    item.cantidad > 0
-            );
-
+        const inventario = obtenerInventario(t);
+        const total = esMudanzaTotal(t);
+        const extras = new Set(["caja pequena", "caja mediana", "caja grande"]);
+        return inventario.map(item => {
+            const nombre = String(item?.nombre ?? item?.mueble ?? item?.descripcion ?? "Artículo").trim();
+            return {
+                nombre,
+                cantidad: Math.max(0, Number.parseInt(item?.cantidad, 10) || 0),
+                categoria: item?.categoria ?? item?.grupo ?? item?.seccion ?? "Otros"
+            };
+        }).filter(item => item.cantidad > 0 && !(total && extras.has(normalizarTexto(item.nombre))));
     }
 
 
@@ -1062,39 +725,15 @@
     //////////////////////////////////////////////////////////////
 
     function agruparInventario(inventario) {
-
         const grupos = {};
-
-
-        inventario.forEach(
-            item => {
-
-                const categoria =
-                    String(
-                        item.categoria ||
-                        "Otros"
-                    ).trim();
-
-
-                if (
-                    !grupos[categoria]
-                ) {
-
-                    grupos[categoria] = [];
-
-                }
-
-
-                grupos[categoria].push(
-                    item
-                );
-
-            }
-        );
-
-
+        const orden = ["Salón", "Cocina", "Comedor", "Dormitorio", "Baño", "Otros"];
+        orden.forEach(categoria => grupos[categoria] = []);
+        inventario.forEach(item => {
+            const categoria = String(item.categoria || "Otros").trim();
+            if (!grupos[categoria]) grupos[categoria] = [];
+            grupos[categoria].push(item);
+        });
         return grupos;
-
     }
 
 
@@ -1471,7 +1110,8 @@
 
             numArticulos =
                 window.Transportista.getTotalArticulos(
-                    t.inventario
+                    t.inventario,
+                    t.tipo_servicio
                 );
 
         }
@@ -1495,7 +1135,8 @@
 
             totalM3 =
                 window.Transportista.getTotalM3(
-                    t.inventario
+                    t.inventario,
+                    t.tipo_servicio
                 );
 
         }

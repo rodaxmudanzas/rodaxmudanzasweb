@@ -23,10 +23,8 @@
     //////////////////////////////////////////////////////////////
 
     const CONFIG_INVENTARIO = {
-
         categorias: {
-
-            "Salón": [
+        "Salón": [
                 "Sofá 2 plazas",
                 "Sofá 3 plazas",
                 "Sofá chaise longue",
@@ -36,12 +34,15 @@
                 "Mesa de centro",
                 "Mesa auxiliar",
                 "Mueble TV",
+                "Televisión pequeña - 40\"",
                 "Televisión pequeña",
+                "Televisión grande + 40\"",
                 "Televisión grande",
                 "Equipo de sonido",
                 "Altavoces",
                 "Estantería pequeña",
                 "Estantería grande",
+                "Estantería",
                 "Librería",
                 "Vitrina",
                 "Aparador",
@@ -54,6 +55,7 @@
                 "Impresora",
                 "Lámpara de pie",
                 "Lámpara de mesa",
+                "Lámpara mesa",
                 "Cuadros grandes",
                 "Cuadros pequeños",
                 "Alfombra pequeña",
@@ -64,9 +66,8 @@
                 "Aire acondicionado portátil",
                 "Planta decorativa grande",
                 "Planta decorativa pequeña"
-            ],
-
-            "Cocina": [
+        ],
+        "Cocina": [
                 "Nevera",
                 "Frigorífico americano",
                 "Congelador",
@@ -98,9 +99,8 @@
                 "Dispensador agua",
                 "Caja utensilios",
                 "Bandejas cocina"
-            ],
-
-            "Comedor": [
+        ],
+        "Comedor": [
                 "Mesa comedor pequeña",
                 "Mesa comedor grande",
                 "Mesa extensible",
@@ -114,62 +114,113 @@
                 "Mueble bar",
                 "Espejo comedor",
                 "Lámpara techo",
-                "Alfombra comedor"
-            ],
-
-            "Dormitorio": [
+                "Alfombra comedor",
+                "Cuadro decorativo",
+                "Estantería comedor",
+                "Vajillero",
+                "Consola comedor",
+                "Mesa auxiliar",
+                "Trona bebé"
+        ],
+        "Dormitorio": [
                 "Cama Individual",
                 "Cama Doble",
                 "Cama king size",
+                "Litera",
+                "Canapé abatible",
                 "Colchón",
-                "Armario",
+                "Colchón individual",
+                "Colchón doble",
+                "Cabecero",
                 "Mesita de noche",
-                "Cómoda"
-            ],
-
-            "Baño": [
+                "Cómoda",
+                "Sinfonier",
+                "Armario",
+                "Armario pequeño",
+                "Armario grande",
+                "Armario corredero",
+                "Vestidor desmontable",
+                "Escritorio",
+                "Silla escritorio",
+                "Tocador",
+                "Espejo cuerpo entero",
+                "Televisión dormitorio",
+                "Estantería",
+                "Librería",
+                "Zapatero",
+                "Cuna bebé",
+                "Cambiador bebé",
+                "Sillón dormitorio",
+                "Perchero",
+                "Banco dormitorio",
+                "Caja organizadora",
+                "Maleta pequeña",
+                "Maleta grande",
+                "Ventilador",
+                "Lámpara techo",
+                "Lámpara mesa",
+                "Cortinas",
+                "Alfombra"
+        ],
+        "Baño": [
                 "Mueble Baño",
                 "Lavabo auxiliar",
                 "Espejo baño",
+                "Estantería baño",
+                "Armario baño",
+                "Cesto ropa",
+                "Lavadora pequeña",
+                "Secadora pequeña",
+                "Mueble almacenaje",
+                "Zapatero baño",
+                "Calefactor baño",
+                "Toallero eléctrico",
+                "Carrito baño",
+                "Banco baño",
+                "Organizador baño",
                 "Mampara"
-            ],
-
-            "Otros": [
-                "Maleta",
+        ],
+        "Otros": [
+                "Caja Pequeña",
+                "Caja Mediana",
+                "Caja Grande",
+                "Caja armario",
+                "Caja libros",
+                "Caja frágil",
+                "Bicicleta",
                 "Bici",
+                "Patinete eléctrico",
+                "Moto pequeña",
+                "Maleta pequeña",
+                "Maleta grande",
+                "Esquíes",
+                "Tabla surf",
+                "Tabla paddle surf",
+                "Instrumento musical pequeño",
+                "Piano eléctrico",
+                "Guitarra",
+                "Batería musical",
+                "Impresora grande",
+                "Caja herramientas",
+                "Aspiradora",
+                "Escalera",
+                "Perchero",
+                "Ventilador",
+                "Radiador portátil",
+                "Cuadro grande",
+                "Cuadro pequeño",
+                "Planta grande",
+                "Planta pequeña",
                 "Planta",
-                "Espejo grande"
-            ]
-        },
-
-        // ======================================================
-        // CAMPOS QUE PUEDEN CONTENER LAS CAJAS EXTRAS
-        // ======================================================
-        //
-        // Dejamos varias posibilidades para que el módulo sea
-        // tolerante con los nombres que ya pueda tener el proyecto.
-        //
+                "Jaula mascota",
+                "Acuario pequeño",
+                "Acuario grande"
+        ]
+},
         extras: {
-            pequenas: [
-                "cajas_pequenas",
-                "cajasPequenas",
-                "cajas_pequena",
-                "cajasPequena"
-            ],
-
-            medianas: [
-                "cajas_medianas",
-                "cajasMedianas",
-                "cajas_mediana",
-                "cajasMediana"
-            ],
-
-            grandes: [
-                "cajas_grandes",
-                "cajasGrandes",
-                "cajas_grande",
-                "cajasGrande"
-            ]
+            pequenas: ["cajas_pequenas","cajasPequenas","cajas_pequena","cajasPequena"],
+            medianas: ["cajas_medianas","cajasMedianas","cajas_mediana","cajasMediana"],
+            grandes: ["cajas_grandes","cajasGrandes","cajas_grande","cajasGrande"]
         }
     };
 
@@ -258,100 +309,34 @@
     // OBTENER EXTRAS
     //////////////////////////////////////////////////////////////
 
-    function obtenerExtrasCajas(datosInventario) {
+    function obtenerExtrasCajas(datos) {
+        const resultado = { pequenas: 0, medianas: 0, grandes: 0 };
+        const t = datos || {};
+        const tipo = t?.tipo_servicio ?? t?.tipoServicio ?? "";
+        const total = String(tipo).toLowerCase().includes("total");
+        if (!total) return resultado;
 
-        const extras = {
-            pequenas: 0,
-            medianas: 0,
-            grandes: 0
-        };
-
-        /*
-         * Caso 1:
-         * Los datos vienen como objeto y contienen directamente
-         * los campos de las cajas de Mudanza Total.
-         */
-
-        if (
-            datosInventario &&
-            typeof datosInventario === "object" &&
-            !Array.isArray(datosInventario)
-        ) {
-
-            extras.pequenas =
-                obtenerCampo(
-                    datosInventario,
-                    CONFIG_INVENTARIO.extras.pequenas
-                );
-
-            extras.medianas =
-                obtenerCampo(
-                    datosInventario,
-                    CONFIG_INVENTARIO.extras.medianas
-                );
-
-            extras.grandes =
-                obtenerCampo(
-                    datosInventario,
-                    CONFIG_INVENTARIO.extras.grandes
-                );
+        const direct = window.Transportista?.obtenerExtrasMudanzaTotal;
+        if (typeof direct === "function") {
+            const r = direct(t);
+            resultado.pequenas = Number(r?.["Cajas pequeñas"]) || 0;
+            resultado.medianas = Number(r?.["Cajas medianas"]) || 0;
+            resultado.grandes = Number(r?.["Cajas grandes"]) || 0;
+            return resultado;
         }
 
-
-        /*
-         * Caso 2:
-         * Si el objeto contiene un bloque específico de extras,
-         * también lo aceptamos.
-         */
-
-        if (
-            datosInventario &&
-            typeof datosInventario === "object" &&
-            !Array.isArray(datosInventario)
-        ) {
-
-            const posiblesBloques = [
-                datosInventario.extras,
-                datosInventario.cajasExtras,
-                datosInventario.cajas_extras,
-                datosInventario.beneficiosMudanzaTotal,
-                datosInventario.beneficios_mudanza_total
-            ];
-
-            for (const bloque of posiblesBloques) {
-
-                if (
-                    !bloque ||
-                    typeof bloque !== "object"
-                ) {
-                    continue;
-                }
-
-                extras.pequenas =
-                    extras.pequenas ||
-                    obtenerCampo(
-                        bloque,
-                        CONFIG_INVENTARIO.extras.pequenas
-                    );
-
-                extras.medianas =
-                    extras.medianas ||
-                    obtenerCampo(
-                        bloque,
-                        CONFIG_INVENTARIO.extras.medianas
-                    );
-
-                extras.grandes =
-                    extras.grandes ||
-                    obtenerCampo(
-                        bloque,
-                        CONFIG_INVENTARIO.extras.grandes
-                    );
-            }
-        }
-
-
-        return extras;
+        // Fallback: solo los tres nombres exactos de las cajas de beneficios.
+        let arr = t.inventario ?? t;
+        if (typeof arr === "string") { try { arr = JSON.parse(arr); } catch { arr = []; } }
+        if (!Array.isArray(arr)) arr = Array.isArray(arr?.inventario) ? arr.inventario : [];
+        arr.forEach(item => {
+            const nombre = String(item?.nombre ?? item?.mueble ?? item?.item ?? "").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const cantidad = Number(item?.cantidad) || 0;
+            if (nombre === "caja pequena") resultado.pequenas += cantidad;
+            if (nombre === "caja mediana") resultado.medianas += cantidad;
+            if (nombre === "caja grande") resultado.grandes += cantidad;
+        });
+        return resultado;
     }
 
 
@@ -360,88 +345,32 @@
     //////////////////////////////////////////////////////////////
 
     function renderExtrasCajas(extras, esMudanzaTotal) {
+        if (!esMudanzaTotal) return "";
 
-        if (!esMudanzaTotal) {
-            return "";
-        }
+        const filas = [];
+        const lista = [
+            ["Cajas pequeñas", Number(extras?.pequenas) || 0],
+            ["Cajas medianas", Number(extras?.medianas) || 0],
+            ["Cajas grandes", Number(extras?.grandes) || 0]
+        ];
 
-        const tieneExtras =
-            extras.pequenas > 0 ||
-            extras.medianas > 0 ||
-            extras.grandes > 0;
-
-        if (!tieneExtras) {
-            return "";
-        }
-
-        let filas = "";
-
-        if (extras.pequenas > 0) {
-
-            filas += `
-                <div class="flex items-center justify-between gap-3 py-1">
-                    <span class="font-medium text-slate-700">
-                        Cajas pequeñas
-                    </span>
-
-                    <span class="shrink-0 bg-blue-600 text-white px-2 py-0.5 rounded-md text-[10px] font-black">
-                        x${extras.pequenas}
-                    </span>
+        lista.forEach(([nombre, cantidad]) => {
+            filas.push(`
+                <div class="flex items-center justify-between gap-3 py-1.5">
+                    <span class="font-medium text-slate-700">${nombre}</span>
+                    <span class="shrink-0 bg-emerald-600 text-white px-2 py-0.5 rounded-md text-[10px] font-black">x${cantidad}</span>
                 </div>
-            `;
-        }
-
-        if (extras.medianas > 0) {
-
-            filas += `
-                <div class="flex items-center justify-between gap-3 py-1">
-                    <span class="font-medium text-slate-700">
-                        Cajas medianas
-                    </span>
-
-                    <span class="shrink-0 bg-blue-600 text-white px-2 py-0.5 rounded-md text-[10px] font-black">
-                        x${extras.medianas}
-                    </span>
-                </div>
-            `;
-        }
-
-        if (extras.grandes > 0) {
-
-            filas += `
-                <div class="flex items-center justify-between gap-3 py-1">
-                    <span class="font-medium text-slate-700">
-                        Cajas grandes
-                    </span>
-
-                    <span class="shrink-0 bg-blue-600 text-white px-2 py-0.5 rounded-md text-[10px] font-black">
-                        x${extras.grandes}
-                    </span>
-                </div>
-            `;
-        }
+            `);
+        });
 
         return `
-            <div class="mt-3 bg-blue-50/70 border border-blue-100 rounded-xl p-3 w-full text-left">
-
+            <div class="mt-3 bg-emerald-50/70 border border-emerald-200 rounded-xl p-3 w-full text-left">
                 <div class="flex items-center gap-2 mb-2">
-
-                    <span class="text-sm">📦</span>
-
-                    <span class="text-[10px] font-black text-blue-700 uppercase tracking-wider">
-                        EXTRAS
-                    </span>
-
+                    <span class="text-sm">🎁</span>
+                    <span class="text-[10px] font-black text-emerald-700 uppercase tracking-wider">EXTRAS</span>
                 </div>
-
-                <div class="text-[10px] text-blue-600 font-semibold uppercase tracking-wide mb-1.5">
-                    Beneficios Mudanza Total
-                </div>
-
-                <div class="divide-y divide-blue-100/70">
-                    ${filas}
-                </div>
-
+                <div class="text-[10px] text-emerald-600 font-semibold uppercase tracking-wide mb-1.5">Beneficios Mudanza Total</div>
+                <div class="divide-y divide-emerald-100/70">${filas.join("")}</div>
             </div>
         `;
     }
@@ -545,6 +474,14 @@
         tipoServicioText,
         extrasCajasExternos = null
     ) {
+        const datosOriginales = datosInventario;
+        if (datosInventario && typeof datosInventario === "object" && !Array.isArray(datosInventario) && Array.isArray(datosInventario.inventario)) {
+            datosInventario = datosInventario.inventario;
+        }
+
+        if (!tipoServicioText && datosOriginales && typeof datosOriginales === "object") {
+            tipoServicioText = datosOriginales.tipo_servicio || datosOriginales.tipoServicio || "";
+        }
 
         const contenedorResumen =
             document.getElementById(
@@ -683,6 +620,24 @@
 
 
             if (cantidad <= 0) {
+                return;
+            }
+
+            // En Mudanza Total, las tres cajas de BENEFICIOS son EXTRAS.
+            // Se excluyen de ART. y M3, pero las cajas normales permanecen
+            // dentro del inventario.
+            const nombreNormalizado =
+                nombre.toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "");
+
+            const esCajaBeneficio =
+                esMudanzaTotal &&
+                (nombreNormalizado === "caja pequena" ||
+                 nombreNormalizado === "caja mediana" ||
+                 nombreNormalizado === "caja grande");
+
+            if (esCajaBeneficio) {
                 return;
             }
 
@@ -919,7 +874,7 @@
                         )
                 }
                 : obtenerExtrasCajas(
-                    datosInventario
+                    datosOriginales
                 );
 
 
@@ -1009,6 +964,9 @@
 
     window.RodaxInventario.obtenerExtrasCajas =
         obtenerExtrasCajas;
+
+    window.RodaxInventario.normalizarNombre =
+        valor => String(valor ?? "").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
 
     console.log(
