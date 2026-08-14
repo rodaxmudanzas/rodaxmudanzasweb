@@ -491,34 +491,26 @@
 
                 </div>
 
-                <div
-                    class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-6 py-3.5 rounded-md transition-colors cursor-pointer select-none">
+                <button
+    type="button"
+    id="btn-actualizar-marketplace"
+    onclick="recargarDatos()"
+    class="flex items-center gap-2 bg-white/10 hover:bg-white/15 active:bg-white/20 px-6 py-3.5 rounded-md transition-all duration-200 cursor-pointer select-none disabled:opacity-60 disabled:cursor-wait"
+    title="Actualizar trabajos disponibles">
 
-                    <i
-                        data-lucide="map-pin"
-                        class="w-4 h-4 text-white/70">
-                    </i>
+    <i
+        id="icono-actualizar-marketplace"
+        data-lucide="refresh-cw"
+        class="w-4 h-4 text-white/70 transition-transform duration-300">
+    </i>
 
-                    <span class="text-white/90">
-                        Madrid, España
-                    </span>
+    <span
+        id="texto-actualizar-marketplace"
+        class="text-white/90">
+        Actualizar
+    </span>
 
-                </div>
-
-                <div
-                    onclick="recargarDatos()"
-                    class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-6 py-3.5 rounded-md transition-colors cursor-pointer select-none">
-
-                    <i
-                        data-lucide="refresh-cw"
-                        class="w-4 h-4 text-white/70">
-                    </i>
-
-                    <span class="text-white/90">
-                        Actualizar
-                    </span>
-
-                </div>
+</button>
 
                 <!-- DISPONIBILIDAD -->
                 <div
@@ -1672,12 +1664,112 @@
         );
     }
 
-    function recargarDatos() {
+    async function recargarDatos() {
 
-        cargarTrabajosDisponibles();
+    const boton =
+        document.getElementById(
+            "btn-actualizar-marketplace"
+        );
 
-        cargarMisMudanzas();
+    const texto =
+        document.getElementById(
+            "texto-actualizar-marketplace"
+        );
+
+    const icono =
+        document.getElementById(
+            "icono-actualizar-marketplace"
+        );
+
+    // Evitar dobles clics mientras se actualiza
+    if (
+        boton &&
+        boton.disabled
+    ) {
+        return;
     }
+
+    try {
+
+        // ESTADO: ACTUALIZANDO
+        if (boton) {
+            boton.disabled = true;
+        }
+
+        if (texto) {
+            texto.textContent =
+                "Actualizando...";
+        }
+
+        if (icono) {
+            icono.classList.add(
+                "animate-spin"
+            );
+        }
+
+        // Recargar ambos bloques
+        await Promise.all([
+            cargarTrabajosDisponibles(),
+            cargarMisMudanzas()
+        ]);
+
+        // ESTADO: ACTUALIZADO
+        if (texto) {
+            texto.textContent =
+                "Actualizado";
+        }
+
+        // Pequeña pausa para que el usuario
+        // vea la confirmación
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    900
+                )
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Error actualizando el Marketplace:",
+            error
+        );
+
+        if (texto) {
+            texto.textContent =
+                "Error al actualizar";
+        }
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    1200
+                )
+        );
+
+    } finally {
+
+        // Volver al estado normal
+        if (icono) {
+            icono.classList.remove(
+                "animate-spin"
+            );
+        }
+
+        if (texto) {
+            texto.textContent =
+                "Actualizar";
+        }
+
+        if (boton) {
+            boton.disabled = false;
+        }
+
+    }
+
+}
 
     function cambiarTab(
         tabId
