@@ -2,6 +2,59 @@ window.Transportista = window.Transportista || {};
 
 let marketplaceCargando = false;
 
+///////////////////////////////////////////////////////////
+// FILTRO — BUSCADOR ORIGEN / DESTINO
+///////////////////////////////////////////////////////////
+
+let filtroMarketplaceBusqueda = "";
+
+function normalizarTextoMarketplace(valor) {
+    return String(valor ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+}
+
+function obtenerTrabajosFiltradosMarketplace() {
+
+    const trabajos = Array.isArray(state.disponibles)
+        ? state.disponibles
+        : [];
+
+    const busqueda =
+        normalizarTextoMarketplace(filtroMarketplaceBusqueda);
+
+    if (!busqueda) {
+        return trabajos;
+    }
+
+    return trabajos.filter(trabajo => {
+
+        const origen =
+            normalizarTextoMarketplace(trabajo.origen);
+
+        const destino =
+            normalizarTextoMarketplace(trabajo.destino);
+
+        return (
+            origen.includes(busqueda) ||
+            destino.includes(busqueda)
+        );
+    });
+}
+
+function aplicarFiltroBusquedaMarketplace() {
+
+    const input =
+        document.getElementById("filtro-buscar-marketplace");
+
+    if (!input) return;
+
+    filtroMarketplaceBusqueda = input.value;
+
+    renderizarDisponibles();
+}
 
 ///////////////////////////////////////////////////////////
 // UTILIDADES
@@ -162,9 +215,7 @@ function renderizarDisponibles() {
         document.getElementById("banner-contador-trabajos");
 
     const trabajos =
-        Array.isArray(state.disponibles)
-            ? state.disponibles
-            : [];
+    obtenerTrabajosFiltradosMarketplace();
 
     if (badge) {
         badge.textContent = trabajos.length;
@@ -397,6 +448,28 @@ async function procesarAceptacion(id) {
     }
 }
 
+///////////////////////////////////////////////////////////
+// EVENTO — BUSCADOR MARKETPLACE
+///////////////////////////////////////////////////////////
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const input =
+        document.getElementById("filtro-buscar-marketplace");
+
+    if (!input) {
+        console.warn(
+            "Marketplace: no se encontró #filtro-buscar-marketplace"
+        );
+        return;
+    }
+
+    input.addEventListener(
+        "input",
+        aplicarFiltroBusquedaMarketplace
+    );
+
+});
 
 ///////////////////////////////////////////////////////////
 // API GLOBAL
