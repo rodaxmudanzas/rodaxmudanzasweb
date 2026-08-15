@@ -2135,6 +2135,11 @@ const esMudanzaTotalFicha =
         .toLowerCase()
         .includes("total");
 
+        const tipoServicioFicha =
+    esMudanzaTotalFicha
+        ? "MUDANZA TOTAL"
+        : "MUDANZA ESTÁNDAR";
+
 const normalizarNombreFicha =
     valor =>
         String(valor ?? "")
@@ -2361,10 +2366,10 @@ let htmlExtrasFicha = "";
 if (esMudanzaTotalFicha) {
 
     let extrasFicha = {
-        "Cajas pequeñas": 0,
-        "Cajas medianas": 0,
-        "Cajas grandes": 0
-    };
+    pequenas: 0,
+    medianas: 0,
+    grandes: 0
+};
 
     if (
         typeof window
@@ -2396,10 +2401,8 @@ if (esMudanzaTotalFicha) {
                 <div class="extras-ficha">
 
                     ${
-                        extrasFicha[
-                            "Cajas pequeñas"
-                        ] > 0
-                            ? `
+    extrasFicha.pequenas > 0
+        ? `
                                 <div class="extra-fila">
                                     <span>
                                         Cajas pequeñas
@@ -2414,10 +2417,8 @@ if (esMudanzaTotalFicha) {
                     }
 
                     ${
-                        extrasFicha[
-                            "Cajas medianas"
-                        ] > 0
-                            ? `
+    extrasFicha.medianas > 0
+        ? `
                                 <div class="extra-fila">
                                     <span>
                                         Cajas medianas
@@ -2432,10 +2433,8 @@ if (esMudanzaTotalFicha) {
                     }
 
                     ${
-                        extrasFicha[
-                            "Cajas grandes"
-                        ] > 0
-                            ? `
+    extrasFicha.grandes > 0
+        ? `
                                 <div class="extra-fila">
                                     <span>
                                         Cajas grandes
@@ -3049,30 +3048,46 @@ const accesoEntregaFicha =
 
         <div class="ficha-num">
 
-            <h2>
-                FICHA TÉCNICA
-            </h2>
+    <h2>
+        FICHA TÉCNICA
+    </h2>
 
-            <p>
-                ID:
-                <strong>
-                    ${numeroReserva}
-                </strong>
-            </p>
+    <div
+        style="
+            display:inline-block;
+            margin-top:6px;
+            padding:5px 10px;
+            border-radius:999px;
+            font-size:10px;
+            font-weight:900;
+            letter-spacing:0.5px;
+            color:${esMudanzaTotalFicha ? '#047857' : '#1d4ed8'};
+            background:${esMudanzaTotalFicha ? '#ecfdf5' : '#eff6ff'};
+            border:1px solid ${esMudanzaTotalFicha ? '#a7f3d0' : '#bfdbfe'};
+        ">
+        ${tipoServicioFicha}
+    </div>
 
-            <p>
-                Generada:
-                ${fechaHoy}
-            </p>
+    <p>
+        ID:
+        <strong>
+            ${numeroReserva}
+        </strong>
+    </p>
 
-            <p>
-                Transportista:
-                <strong>
-                    ${nombre}
-                </strong>
-            </p>
+    <p>
+        Generada:
+        ${fechaHoy}
+    </p>
 
-        </div>
+    <p>
+        Transportista:
+        <strong>
+            ${nombre}
+        </strong>
+    </p>
+
+</div>
 
     </div>
 
@@ -3108,29 +3123,54 @@ const accesoEntregaFicha =
                     <div>
 
                         <div class="dato-label">
-                            Recogida (Origen)
-                        </div>
-
-                        <div
-                            class="dato-valor"
-                            style="font-size:13px;">
-
-                            ${origen || '—'}
+    Recogida (Origen)
+</div>
 
 <div
     class="dato-valor"
-    style="
-        font-size:11px;
-        margin-top:4px;
-        color:#64748b;
-        font-weight:600;
-    ">
-    ${accesoRecogidaFicha}
+    style="font-size:13px;">
+
+    ${origen || '—'}
+
+    <div
+        class="dato-valor"
+        style="
+            font-size:11px;
+            margin-top:4px;
+            color:#64748b;
+            font-weight:600;
+        ">
+        ${accesoRecogidaFicha}
+    </div>
+
+    <div
+        class="firmas-ruta"
+        style="
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:20px;
+            margin-top:18px;
+        ">
+
+        <div>
+            <div class="firma-linea"></div>
+
+            <div class="firma-texto">
+                Firma del Transportista
+            </div>
+        </div>
+
+        <div>
+            <div class="firma-linea"></div>
+
+            <div class="firma-texto">
+                Firma del Cliente (recogida conforme)
+            </div>
+        </div>
+
+    </div>
+
 </div>
-
-                        </div>
-
-                    </div>
 
                 </div>
 
@@ -3147,27 +3187,54 @@ const accesoEntregaFicha =
                     <div>
 
                         <div class="dato-label">
-                            Entrega (Destino)
-                        </div>
-
-                        <div
-                            class="dato-valor"
-                            style="font-size:13px;">
-
-                            ${destino || '—'}
+    Entrega (Destino)
+</div>
 
 <div
     class="dato-valor"
-    style="
-        font-size:11px;
-        margin-top:4px;
-        color:#64748b;
-        font-weight:600;
-    ">
-    ${accesoEntregaFicha}
-</div>
+    style="font-size:13px;">
 
-                        </div>
+    ${destino || '—'}
+
+    <div
+        class="dato-valor"
+        style="
+            font-size:11px;
+            margin-top:4px;
+            color:#64748b;
+            font-weight:600;
+        ">
+        ${accesoEntregaFicha}
+    </div>
+
+    <div
+        class="firmas-ruta"
+        style="
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:20px;
+            margin-top:18px;
+        ">
+
+        <div>
+            <div class="firma-linea"></div>
+
+            <div class="firma-texto">
+                Firma del Transportista
+            </div>
+        </div>
+
+        <div>
+            <div class="firma-linea"></div>
+
+            <div class="firma-texto">
+                Firma del Cliente (entrega conforme)
+            </div>
+        </div>
+
+    </div>
+
+</div>
 
                     </div>
 
