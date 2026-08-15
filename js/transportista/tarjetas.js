@@ -1000,7 +1000,7 @@
                             tracking-wider
                             text-emerald-700
                         ">
-                            Extras — Proveer estas cajas y materiales
+                            Extras — Beneficios Mudanza Total
                         </span>
 
                     </div>
@@ -1449,578 +1449,141 @@
                 mudanza
             );
 
-
-        const inventarioHTML =
-            crearHTMLInventario(
-                d.inventario,
-                d.extras
-            );
-
+        /*
+         * El inventario no se muestra dentro de la tarjeta.
+         * Sigue disponible en el drawer y en la Ficha PDF.
+         */
 
         return `
-
-        <div
-            onclick="verDetalleMudanza(${d.id})"
-            class="
-                tarjeta-mudanza-premium
-                col-span-1
-                lg:col-span-2
-                rounded-2xl
-                p-5
-                flex
-                flex-col
-                gap-5
-                relative
-                group
-                cursor-pointer
-            "
-        >
-
-            <!-- ==========================================
-                 CABECERA
-                 ========================================== -->
-
-            <div class="
-                flex
-                flex-col
-                md:flex-row
-                md:items-center
-                md:justify-between
-                gap-4
-            ">
-
-                <div class="
-                    flex
-                    items-center
-                    gap-4
-                ">
-
-                    <div class="
-                        flex
-                        flex-col
-                        items-center
-                        justify-center
-                        min-w-[70px]
-                        border-r
-                        border-slate-100
-                        pr-4
-                    ">
-
-                        <span class="
-                            text-3xl
-                            font-black
-                            text-slate-800
-                            leading-none
-                        ">
-                            ${d.fechaVisual.dia}
-                        </span>
-
-                        <span class="
-                            text-[10px]
-                            font-bold
-                            text-slate-400
-                            uppercase
-                            tracking-wider
-                            mt-1
-                        ">
-                            ${d.fechaVisual.mes}
-                        </span>
-
-                    </div>
-
-
-                    <div>
-
-                        <span class="
-                            inline-block
-                            text-[9px]
-                            uppercase
-                            font-black
-                            px-2
-                            py-1
-                            rounded
-                            border
-                            tracking-wide
-                            ${
-                                d.esMudanzaTotal
-                                    ? "text-emerald-600 bg-emerald-50 border-emerald-100"
-                                    : "text-blue-600 bg-blue-50 border-blue-100"
-                            }
-                        ">
-
-                            ${
-                                d.esMudanzaTotal
-                                    ? "MUDANZA TOTAL"
-                                    : "MUDANZA ESTÁNDAR"
-                            }
-
-                        </span>
-
-                        <div class="
-                            text-xs
-                            font-bold
-                            text-slate-500
-                            mt-2
-                        ">
-
-                            ${d.horario}
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="
-                    text-right
-                    md:min-w-[140px]
-                ">
-
-                    <span class="
-                        block
-                        text-[9px]
-                        font-bold
-                        text-slate-400
-                        uppercase
-                        tracking-wider
-                    ">
-                        TU COBRO
-                    </span>
-
-                    <div class="
-                        flex
-                        items-baseline
-                        justify-end
-                        gap-1
-                    ">
-
-                        <span class="
-                            text-2xl
-                            font-black
-                            text-blue-600
-                            tracking-tight
-                        ">
-                            ${d.precio}
-                        </span>
-
-                        <span class="
-                            text-[9px]
-                            font-bold
-                            text-slate-400
-                        ">
-                            IVA incl.
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- ==========================================
-                 RUTA
-                 ========================================== -->
-
-            <div class="
-                grid
-                grid-cols-1
-                md:grid-cols-3
-                items-center
-                gap-4
-                border-t
-                border-slate-100
-                pt-4
-            ">
-
-                <!-- ORIGEN -->
-
-                <div class="
-                    space-y-1
-                    text-left
-                ">
-
-                    <span class="
-                        text-[10px]
-                        font-bold
-                        text-slate-400
-                        uppercase
-                        tracking-wider
-                        block
-                    ">
-                        Origen
-                    </span>
-
-                    <p
-                        class="
-                            text-sm
-                            font-bold
-                            text-slate-800
-                            leading-tight
-                            truncate
-                        "
-                        title="${d.tituloOrigen}"
-                    >
-                        ${d.origen}
-                    </p>
-
-                    <p class="
-                        text-xs
-                        text-slate-400
-                        font-medium
-                    ">
-                        ${d.accesos.recogida}
-                    </p>
-
-                </div>
-
-
-                <!-- CENTRO -->
-
-                <div class="
-                    hidden
-                    md:flex
-                    flex-col
-                    items-center
-                    justify-center
-                    text-center
-                ">
-
-                    <span class="
-                        text-xs
-                        font-bold
-                        text-slate-600
-                        font-mono
-                        bg-slate-50
-                        border
-                        border-slate-100
-                        px-2
-                        py-1
-                        rounded
-                    ">
-                        ${d.km} km
-                    </span>
-
-                    <div class="
-                        w-full
-                        flex
-                        items-center
-                        justify-center
-                        relative
-                        mt-2
-                    ">
-
-                        <div class="
-                            w-full
-                            border-t
-                            border-dashed
-                            border-slate-300
-                        "></div>
-
-                        <div class="
-                            absolute
-                            bg-white
-                            px-2
-                            text-slate-400
-                        ">
-
-                            <i
-                                data-lucide="truck"
-                                class="w-4 h-4 text-blue-500"
-                            ></i>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- DESTINO -->
-
-                <div class="
-                    space-y-1
-                    text-left
-                    md:text-right
-                ">
-
-                    <span class="
-                        text-[10px]
-                        font-bold
-                        text-slate-400
-                        uppercase
-                        tracking-wider
-                        block
-                    ">
-                        Destino
-                    </span>
-
-                    <p
-                        class="
-                            text-sm
-                            font-bold
-                            text-slate-800
-                            leading-tight
-                            truncate
-                            md:ml-auto
-                        "
-                        title="${d.tituloDestino}"
-                    >
-                        ${d.destino}
-                    </p>
-
-                    <p class="
-                        text-xs
-                        text-red-500
-                        font-bold
-                    ">
-                        ${d.accesos.entrega}
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <!-- ==========================================
-                 CONTADORES
-                 ========================================== -->
-
-            <div class="
-                flex
-                flex-wrap
-                items-center
-                gap-x-5
-                gap-y-2
-                pt-3
-                border-t
-                border-slate-50
-                text-xs
-                text-slate-500
-                font-medium
-            ">
-
-                <span class="
-                    flex
-                    items-center
-                    gap-1.5
-                ">
-
-                    <i
-                        data-lucide="box"
-                        class="w-3.5 h-3.5 text-slate-400"
-                    ></i>
-
-                    <strong>
-                        ${d.numArticulos}
-                    </strong>
-
-                    ART.
-
-                    <span class="text-slate-300">
-                        ·
-                    </span>
-
-                    <strong>
-                        ${d.m3Texto}
-                    </strong>
-
-                </span>
-
-
-                <span class="
-                    flex
-                    items-center
-                    gap-1.5
-                ">
-
-                    <i
-                        data-lucide="shield-check"
-                        class="w-3.5 h-3.5 text-slate-400"
-                    ></i>
-
-                    <strong>
-                        ${d.serviciosContratados}
-                    </strong>
-
-                    servicios
-
-                </span>
-
-
-                <span class="
-                    flex
-                    items-center
-                    gap-1.5
-                ">
-
-                    <i
-                        data-lucide="image"
-                        class="w-3.5 h-3.5 text-slate-400"
-                    ></i>
-
-                    <strong>
-                        ${d.numFotos}
-                    </strong>
-
-                    fotos
-
-                </span>
-
-
-                <span class="
-                    flex
-                    items-center
-                    gap-1.5
-                ">
-
-                    <i
-                        data-lucide="message-square"
-                        class="w-3.5 h-3.5 text-slate-400"
-                    ></i>
-
-                    ${TARJETAS_CONFIG
-                        .marketplace
-                        .observacionesTexto}
-
-                </span>
-
-            </div>
-
-
-            <!-- ==========================================
-                 INVENTARIO / EXTRAS
-                 ========================================== -->
-
-            <details
-                onclick="event.stopPropagation()"
-                class="
-                    group/inventario
-                    border-t
-                    border-slate-100
-                    pt-3
-                "
+            <article
+                class="tarjeta-mudanza-premium w-full rounded-2xl border border-slate-200 bg-white px-4 py-4 md:px-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
             >
 
-                <summary class="
-                    list-none
-                    cursor-pointer
-                    flex
-                    items-center
-                    justify-between
-                    text-xs
-                    font-bold
-                    text-slate-600
-                ">
+                <!-- CABECERA -->
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex min-w-0 items-center gap-3">
 
-                    <span class="
-                        flex
-                        items-center
-                        gap-2
-                    ">
+                        <div class="min-w-[56px] border-r border-slate-100 pr-3 text-center">
+                            <div class="text-2xl font-black leading-none text-slate-800">
+                                ${d.fechaVisual.dia}
+                            </div>
+                            <div class="mt-1 text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                                ${d.fechaVisual.mes}
+                            </div>
+                        </div>
 
-                        <i
-                            data-lucide="package-open"
-                            class="w-4 h-4 text-cyan-600"
-                        ></i>
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="inline-flex items-center rounded-md border px-2 py-1 text-[9px] font-black uppercase tracking-wide ${
+                                    d.esMudanzaTotal
+                                        ? "border-emerald-100 bg-emerald-50 text-emerald-600"
+                                        : "border-blue-100 bg-blue-50 text-blue-600"
+                                }">
+                                    ${
+                                        d.esMudanzaTotal
+                                            ? "MUDANZA TOTAL"
+                                            : "MUDANZA ESTÁNDAR"
+                                    }
+                                </span>
 
-                        Ver inventario y extras
+                                <span class="text-[11px] font-semibold text-slate-500">
+                                    ${d.horario}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
 
-                    </span>
-
-                    <i
-                        data-lucide="chevron-down"
-                        class="
-                            w-4
-                            h-4
-                            text-slate-400
-                            transition-transform
-                            group-open/inventario:rotate-180
-                        "
-                    ></i>
-
-                </summary>
-
-
-                <div class="mt-3">
-
-                    ${inventarioHTML}
-
+                    <div class="hidden text-right sm:block">
+                        <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                            ID
+                        </div>
+                        <div class="mt-0.5 text-[11px] font-bold text-slate-700">
+                            ${d.numeroReserva}
+                        </div>
+                    </div>
                 </div>
 
-            </details>
+                <!-- RUTA -->
+                <div class="mt-3 grid grid-cols-1 items-center gap-3 border-t border-slate-100 pt-3 md:grid-cols-[1fr_auto_1fr]">
+                    <div class="min-w-0">
+                        <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Origen</div>
+                        <div class="mt-1 truncate text-sm font-bold leading-tight text-slate-800" title="${d.tituloOrigen}">
+                            ${d.origen}
+                        </div>
+                        <div class="mt-1 text-[10px] font-semibold text-slate-500">
+                            ${d.accesos.recogida}
+                        </div>
+                    </div>
 
+                    <div class="hidden w-[170px] flex-col items-center justify-center md:flex">
+                        <span class="rounded-md border border-slate-100 bg-slate-50 px-2 py-1 text-[10px] font-bold text-slate-600">
+                            ${d.km} km
+                        </span>
+                        <div class="relative mt-2 flex w-full items-center justify-center">
+                            <div class="w-full border-t border-dashed border-slate-300"></div>
+                            <div class="absolute bg-white px-2 text-slate-400">
+                                <i data-lucide="truck" class="h-4 w-4 text-blue-500"></i>
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- ==========================================
-                 POLÍTICA DE PAGO
-                 ========================================== -->
+                    <div class="min-w-0 text-left md:text-right">
+                        <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Destino</div>
+                        <div class="mt-1 truncate text-sm font-bold leading-tight text-slate-800" title="${d.tituloDestino}">
+                            ${d.destino}
+                        </div>
+                        <div class="mt-1 text-[10px] font-bold text-red-500">
+                            ${d.accesos.entrega}
+                        </div>
+                    </div>
+                </div>
 
-            <div class="
-                flex
-                justify-end
-                border-t
-                border-slate-100
-                pt-3
-            ">
+                <!-- RESUMEN -->
+                <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-50 pt-3 text-[10px] font-semibold text-slate-500">
+                    <span class="inline-flex items-center gap-1.5">
+                        <i data-lucide="package" class="h-3.5 w-3.5 text-slate-400"></i>
+                        <strong class="text-slate-700">${d.numArticulos} ART.</strong>
+                        <span class="text-slate-300">·</span>
+                        <strong class="text-slate-700">${d.m3Texto}</strong>
+                    </span>
 
-                <span class="
-                    inline-block
-                    text-[10px]
-                    font-bold
-                    text-blue-600
-                    bg-blue-50/70
-                    border
-                    border-blue-100
-                    px-2.5
-                    py-1
-                    rounded
-                    select-none
-                ">
-                    Pago según política RODAX
-                </span>
+                    <span class="inline-flex items-center gap-1.5">
+                        <i data-lucide="shield-check" class="h-3.5 w-3.5 text-slate-400"></i>
+                        <strong class="text-slate-700">${d.serviciosContratados}</strong> servicios
+                    </span>
 
-            </div>
+                    <span class="inline-flex items-center gap-1.5">
+                        <i data-lucide="camera" class="h-3.5 w-3.5 text-slate-400"></i>
+                        <strong class="text-slate-700">${d.numFotos}</strong> fotos
+                    </span>
+                </div>
 
+                <!-- PRECIO + ACCIÓN -->
+                <div class="mt-3 flex flex-col gap-3 border-t border-slate-100 pt-3 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                        <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                            Tu cobro
+                        </div>
+                        <div class="mt-0.5 flex items-baseline gap-1">
+                            <span class="text-2xl font-black tracking-tight text-blue-600">
+                                ${d.precio}
+                            </span>
+                            <span class="text-[9px] font-bold text-slate-400">IVA incl.</span>
+                        </div>
+                    </div>
 
-            <!-- FLECHA -->
+                    <button
+                        type="button"
+                        onclick="event.stopPropagation(); verDetalleMudanza(${d.id})"
+                        class="no-print inline-flex w-full min-w-[155px] items-center justify-center gap-2 rounded-xl bg-[#2563EB] px-5 py-3 text-sm font-black text-white shadow-sm transition-all hover:bg-[#1D4ED8] hover:shadow-md active:scale-[0.98] sm:w-auto"
+                    >
+                        Ver detalles
+                        <i data-lucide="arrow-right" class="h-4 w-4"></i>
+                    </button>
+                </div>
 
-            <div class="
-                absolute
-                right-3
-                top-1/2
-                -translate-y-1/2
-                text-slate-300
-                group-hover:text-blue-500
-                transition-colors
-                hidden
-                lg:block
-            ">
-
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                >
-
-                    <path
-                        d="m9 18 6-6-6-6"
-                    />
-
-                </svg>
-
-            </div>
-
-        </div>
-
+            </article>
         `;
-
     }
 
 
@@ -2571,442 +2134,254 @@
         //////////////////////////////////////////////////////////
 
         return `
-
-            <div
-                class="
-                    bg-white
-                    rounded-2xl
-                    p-5
-                    shadow-card
-                    border
-                    border-l-4
-                    border-l-blue-500
-                "
+            <article
+                class="tarjeta-mudanza-premium w-full rounded-2xl border border-l-4 border-l-blue-500 border-slate-200 bg-white px-4 py-4 md:px-5 shadow-sm transition-all duration-200 hover:shadow-md"
             >
 
                 <!-- CABECERA -->
-
-                <div class="
-                    flex
-                    flex-col
-                    md:flex-row
-                    md:justify-between
-                    md:items-center
-                    gap-3
-                    mb-4
-                    pb-3
-                    border-b
-                    border-gray-100
-                ">
-
-                    <div>
-
-                        <div class="
-                            flex
-                            flex-wrap
-                            items-center
-                            gap-2
-                        ">
-
-                            <span class="
-                                text-xs
-                                font-black
-                                text-blue-600
-                                bg-blue-50
-                                px-3
-                                py-1
-                                rounded-lg
-                                border
-                                border-blue-100
-                            ">
-
-                                ID:
-                                ${d.numeroReserva}
-
-                            </span>
-
-
-                            <span class="
-                                text-xs
-                                text-gray-400
-                                font-semibold
-                            ">
-
-                                ${escapeHtml(
-                                    d.fechaCompleta
-                                )}
-
-                            </span>
-
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex min-w-0 items-center gap-3">
+                        <div class="min-w-[56px] border-r border-slate-100 pr-3 text-center">
+                            <div class="text-2xl font-black leading-none text-slate-800">
+                                ${d.fechaVisual.dia}
+                            </div>
+                            <div class="mt-1 text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                                ${d.fechaVisual.mes}
+                            </div>
                         </div>
 
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="inline-flex items-center rounded-md border px-2 py-1 text-[9px] font-black uppercase tracking-wide ${
+                                    d.esMudanzaTotal
+                                        ? "border-emerald-100 bg-emerald-50 text-emerald-600"
+                                        : "border-blue-100 bg-blue-50 text-blue-600"
+                                }">
+                                    ${
+                                        d.esMudanzaTotal
+                                            ? "MUDANZA TOTAL"
+                                            : "MUDANZA ESTÁNDAR"
+                                    }
+                                </span>
 
-                        <div class="
-                            mt-2
-                            flex
-                            flex-wrap
-                            gap-2
-                        ">
+                                <span class="text-[11px] font-semibold text-slate-500">
+                                    ${d.horario}
+                                </span>
+                            </div>
 
-                            <span class="
-                                text-[10px]
-                                font-bold
-                                text-blue-600
-                                bg-blue-50
-                                border
-                                border-blue-100
-                                px-2
-                                py-1
-                                rounded-md
-                            ">
-
-                                ${d.horario}
-
-                            </span>
-
-
-                            ${
-                                d.esMudanzaTotal
-
-                                    ? `
-
-                                        <span class="
-                                            text-[10px]
-                                            font-bold
-                                            text-emerald-600
-                                            bg-emerald-50
-                                            border
-                                            border-emerald-100
-                                            px-2
-                                            py-1
-                                            rounded-md
-                                        ">
-                                            MUDANZA TOTAL
-                                        </span>
-
-                                      `
-
-                                    : `
-
-                                        <span class="
-                                            text-[10px]
-                                            font-bold
-                                            text-blue-600
-                                            bg-blue-50
-                                            border
-                                            border-blue-100
-                                            px-2
-                                            py-1
-                                            rounded-md
-                                        ">
-                                            MUDANZA ESTÁNDAR
-                                        </span>
-
-                                      `
-                            }
-
+                            <div class="mt-1 text-[10px] font-semibold text-slate-400">
+                                ID: ${d.numeroReserva}
+                            </div>
                         </div>
-
                     </div>
 
-
-                    <button
-                        onclick="event.stopPropagation(); imprimirFicha(${d.id})"
-                        class="
-                            flex
-                            items-center
-                            gap-1.5
-                            text-xs
-                            font-bold
-                            text-blue-600
-                            hover:text-blue-800
-                            bg-blue-50
-                            hover:bg-blue-100
-                            px-3
-                            py-2
-                            rounded-lg
-                            transition-colors
-                            no-print
-                            border
-                            border-blue-100
-                        "
-                    >
-
-                        <i
-                            data-lucide="printer"
-                            class="w-3.5 h-3.5"
-                        ></i>
-
-                        Ficha PDF
-
-                    </button>
-
+                    <div class="text-right">
+                        <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Tu cobro</div>
+                        <div class="mt-0.5 flex items-baseline gap-1 justify-end">
+                            <span class="text-2xl font-black tracking-tight text-green-600">${d.precio}</span>
+                            <span class="text-[9px] font-bold text-slate-400">IVA incl.</span>
+                        </div>
+                    </div>
                 </div>
-
 
                 <!-- ESTADO -->
-
-                <div class="mb-3">
-
+                <div class="mt-3">
                     ${tiempoRestanteHTML}
-
                 </div>
 
-
-                <!-- RUTA / CLIENTE / PRECIO -->
-
-                <div class="
-                    flex
-                    flex-col
-                    md:flex-row
-                    gap-4
-                    mb-4
-                ">
-
-                    <div class="flex-1">
-
-                        ${rutaCompletaHTML}
-
-                        ${datosClienteHTML}
-
+                <!-- RUTA -->
+                <div class="mt-3 grid grid-cols-1 items-center gap-3 border-t border-slate-100 pt-3 md:grid-cols-[1fr_auto_1fr]">
+                    <div class="min-w-0">
+                        <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Origen</div>
+                        <div class="mt-1 truncate text-sm font-bold leading-tight text-slate-800" title="${d.tituloOrigen}">
+                            ${d.origen}
+                        </div>
+                        <div class="mt-1 text-[10px] font-semibold text-slate-500">
+                            ${d.accesos.recogida}
+                        </div>
                     </div>
 
-
-                    <div class="
-                        bg-green-50
-                        border
-                        border-green-100
-                        p-4
-                        rounded-xl
-                        flex
-                        flex-col
-                        items-end
-                        justify-center
-                        md:min-w-[150px]
-                    ">
-
-                        <span class="
-                            text-xs
-                            font-bold
-                            text-gray-500
-                            uppercase
-                            mb-1
-                            block
-                        ">
-                            TU COBRO
+                    <div class="hidden w-[170px] flex-col items-center justify-center md:flex">
+                        <span class="rounded-md border border-slate-100 bg-slate-50 px-2 py-1 text-[10px] font-bold text-slate-600">
+                            ${d.km} km
                         </span>
-
-
-                        <span class="
-                            text-2xl
-                            font-black
-                            text-green-600
-                            block
-                        ">
-                            ${d.precio}
-                        </span>
-
-
-                        <span class="
-                            text-xs
-                            text-gray-500
-                            font-bold
-                            mt-1
-                        ">
-                            IVA incl.
-                        </span>
-
-
-                        <span class="
-                            text-[10px]
-                            text-green-700
-                            font-semibold
-                            mt-2
-                        ">
-                            Según política RODAX
-                        </span>
-
+                        <div class="relative mt-2 flex w-full items-center justify-center">
+                            <div class="w-full border-t border-dashed border-slate-300"></div>
+                            <div class="absolute bg-white px-2 text-slate-400">
+                                <i data-lucide="truck" class="h-4 w-4 text-blue-500"></i>
+                            </div>
+                        </div>
                     </div>
 
+                    <div class="min-w-0 text-left md:text-right">
+                        <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Destino</div>
+                        <div class="mt-1 truncate text-sm font-bold leading-tight text-slate-800" title="${d.tituloDestino}">
+                            ${d.destino}
+                        </div>
+                        <div class="mt-1 text-[10px] font-bold text-red-500">
+                            ${d.accesos.entrega}
+                        </div>
+                    </div>
                 </div>
 
+                <!-- CLIENTE: SOLO CUANDO ESTÁ AUTORIZADO POR TIEMPO -->
+                ${mostrarDatos && d.nombre ? `
+                    <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-slate-50 pt-3 text-[10px] font-semibold text-slate-500">
+                        <span class="inline-flex items-center gap-1.5">
+                            <i data-lucide="user" class="h-3.5 w-3.5 text-slate-400"></i>
+                            ${d.nombre}
+                        </span>
+                        ${d.telefono ? `
+                            <a href="tel:${d.telefono}" onclick="event.stopPropagation()" class="inline-flex items-center gap-1.5 text-blue-600 hover:underline">
+                                <i data-lucide="phone" class="h-3.5 w-3.5"></i>
+                                ${d.telefono}
+                            </a>
+                        ` : ""}
+                    </div>
+                ` : `
+                    <div class="mt-3 inline-flex items-center gap-1.5 border-t border-slate-50 pt-3 text-[10px] font-semibold text-slate-400">
+                        <i data-lucide="lock" class="h-3.5 w-3.5"></i>
+                        Datos de contacto ocultos hasta 24 h antes del servicio
+                    </div>
+                `}
 
-                <!-- DATOS OPERATIVOS -->
+                <!-- RESUMEN -->
+                <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-50 pt-3 text-[10px] font-semibold text-slate-500">
+                    <span class="inline-flex items-center gap-1.5">
+                        <i data-lucide="package" class="h-3.5 w-3.5 text-slate-400"></i>
+                        <strong class="text-slate-700">${d.numArticulos} ART.</strong>
+                        <span class="text-slate-300">·</span>
+                        <strong class="text-slate-700">${d.m3Texto}</strong>
+                    </span>
 
-                <div class="
-                    bg-gray-50
-                    border
-                    border-gray-100
-                    p-3
-                    rounded-xl
-                    mb-4
-                    text-xs
-                    space-y-1.5
-                ">
+                    <span class="inline-flex items-center gap-1.5">
+                        <i data-lucide="shield-check" class="h-3.5 w-3.5 text-slate-400"></i>
+                        <strong class="text-slate-700">${d.serviciosContratados}</strong> servicios
+                    </span>
 
-                    <p class="text-gray-600">
-
-                        <strong>
-                            Recogida:
-                        </strong>
-
-                        ${d.accesos.recogida}
-
-                    </p>
-
-
-                    <p class="text-gray-600">
-
-                        <strong>
-                            Entrega:
-                        </strong>
-
-                        ${d.accesos.entrega}
-
-                    </p>
-
-
-                    ${
-                        d.extrasTexto
-
-                            ? `
-
-                                <p class="text-gray-600">
-
-                                    <strong>
-                                        Observaciones:
-                                    </strong>
-
-                                    ${d.extrasTexto}
-
-                                </p>
-
-                              `
-
-                            : ""
-                    }
-
-
-                    <p class="text-gray-600">
-
-                        <strong>
-                            Carga:
-                        </strong>
-
-                        ${d.numArticulos}
-                        ART. ·
-                        ${d.m3Texto}
-
-                    </p>
-
-
-                    <p class="text-gray-600">
-
-                        <strong>
-                            Fotografías:
-                        </strong>
-
-                        ${d.numFotos}
-
-                    </p>
-
+                    <span class="inline-flex items-center gap-1.5">
+                        <i data-lucide="camera" class="h-3.5 w-3.5 text-slate-400"></i>
+                        <strong class="text-slate-700">${d.numFotos}</strong> fotos
+                    </span>
                 </div>
 
+                <!-- ACCIONES -->
+                <div class="mt-3 flex flex-col items-stretch gap-2 border-t border-slate-100 pt-3 sm:items-end">
+                    <button
+                        type="button"
+                        onclick="event.stopPropagation(); imprimirFicha(${d.id})"
+                        class="no-print inline-flex w-full min-w-[210px] items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-black text-blue-700 transition-all hover:border-blue-300 hover:bg-blue-100 active:scale-[0.99] sm:w-[210px]"
+                    >
+                        <i data-lucide="file-text" class="h-4 w-4"></i>
+                        Ficha PDF
+                    </button>
 
-                <!-- INVENTARIO -->
+                    <button
+                        type="button"
+                        onclick="event.stopPropagation(); marcarCompletada(${d.id})"
+                        class="no-print inline-flex w-full min-w-[210px] items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-black text-emerald-700 transition-all hover:border-emerald-300 hover:bg-emerald-100 active:scale-[0.99] sm:w-[210px]"
+                    >
+                        <i data-lucide="check-circle-2" class="h-4 w-4"></i>
+                        Marcar como Finalizada
+                    </button>
+                </div>
 
-                <details class="
-                    border
-                    border-slate-200
-                    rounded-xl
-                    mb-4
-                    overflow-hidden
-                ">
-
-                    <summary class="
-                        cursor-pointer
-                        list-none
-                        bg-slate-50
-                        px-4
-                        py-3
-                        flex
-                        items-center
-                        justify-between
-                        text-xs
-                        font-bold
-                        text-slate-700
-                    ">
-
-                        <span class="
-                            flex
-                            items-center
-                            gap-2
-                        ">
-
-                            <i
-                                data-lucide="package-open"
-                                class="w-4 h-4 text-cyan-600"
-                            ></i>
-
-                            Ver inventario completo
-
-                        </span>
-
-
-                        <i
-                            data-lucide="chevron-down"
-                            class="w-4 h-4 text-slate-400"
-                        ></i>
-
-                    </summary>
-
-
-                    <div class="p-3">
-
-                        ${inventarioHTML}
-
-                    </div>
-
-                </details>
-
-
-                <!-- FINALIZAR -->
-
-                <button
-                    onclick="event.stopPropagation(); marcarCompletada(${d.id})"
-                    class="
-                        no-print
-                        w-full
-                        bg-white
-                        hover:bg-green-50
-                        text-green-700
-                        font-bold
-                        py-3
-                        rounded-xl
-                        border-2
-                        border-green-100
-                        hover:border-green-300
-                        transition-colors
-                        flex
-                        items-center
-                        justify-center
-                        gap-2
-                    "
-                >
-
-                    <i
-                        data-lucide="check-circle"
-                        class="w-5 h-5"
-                    ></i>
-
-                    Marcar como Finalizada
-
-                </button>
-
-            </div>
-
+            </article>
         `;
+    }
 
+
+    //////////////////////////////////////////////////////////////
+    // RENDER MARKETPLACE
+    //////////////////////////////////////////////////////////////
+
+    function renderizarGruposDeTarjetas(
+        trabajos,
+        crearTarjeta
+    ) {
+
+        if (
+            !Array.isArray(trabajos) ||
+            typeof crearTarjeta !== "function"
+        ) {
+            return "";
+        }
+
+        const ordenados =
+            [...trabajos].sort(
+                (a, b) =>
+                    String(a?.fecha || "9999-12-31")
+                        .localeCompare(
+                            String(b?.fecha || "9999-12-31")
+                        )
+            );
+
+        const grupos = new Map();
+
+        ordenados.forEach(
+            trabajo => {
+                const clave =
+                    String(
+                        trabajo?.fecha ||
+                        "sin-fecha"
+                    );
+
+                if (!grupos.has(clave)) {
+                    grupos.set(clave, []);
+                }
+
+                grupos
+                    .get(clave)
+                    .push(trabajo);
+            }
+        );
+
+        let html = "";
+
+        for (
+            const [
+                clave,
+                trabajosFecha
+            ] of grupos.entries()
+        ) {
+
+            const titulo =
+                clave === "sin-fecha"
+                    ? "Fecha no disponible"
+                    : obtenerFechaCompleta(clave);
+
+            html += `
+                <section
+                    class="w-full rounded-3xl border border-slate-200 bg-slate-50/80 p-3 md:p-4 shadow-sm"
+                >
+                    <div class="mb-3 flex flex-wrap items-center gap-2 px-1">
+                        <span class="inline-flex items-center gap-1.5 rounded-lg border border-blue-100 bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700">
+                            <i data-lucide="calendar-days" class="h-3.5 w-3.5"></i>
+                            ${escapeHtml(titulo)}
+                        </span>
+
+                        <span class="rounded-md border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-400">
+                            ${trabajosFecha.length}
+                            ${
+                                trabajosFecha.length === 1
+                                    ? "trabajo"
+                                    : "trabajos"
+                            }
+                        </span>
+                    </div>
+
+                    <div class="space-y-3">
+                        ${
+                            trabajosFecha
+                                .map(crearTarjeta)
+                                .join("")
+                        }
+                    </div>
+                </section>
+            `;
+        }
+
+        return html;
     }
 
 
@@ -3018,26 +2393,10 @@
         trabajos
     ) {
 
-        if (
-            !Array.isArray(trabajos)
-        ) {
-
-            return "";
-
-        }
-
-
-        return trabajos
-
-            .map(
-                trabajo =>
-                    crearTarjetaMarketplace(
-                        trabajo
-                    )
-            )
-
-            .join("");
-
+        return renderizarGruposDeTarjetas(
+            trabajos,
+            crearTarjetaMarketplace
+        );
     }
 
 
@@ -3049,28 +2408,11 @@
         trabajos
     ) {
 
-        if (
-            !Array.isArray(trabajos)
-        ) {
-
-            return "";
-
-        }
-
-
-        return trabajos
-
-            .map(
-                trabajo =>
-                    crearTarjetaActiva(
-                        trabajo
-                    )
-            )
-
-            .join("");
-
+        return renderizarGruposDeTarjetas(
+            trabajos,
+            crearTarjetaActiva
+        );
     }
-
 
     //////////////////////////////////////////////////////////////
     // API PÚBLICA
@@ -3115,7 +2457,10 @@
         renderizarTarjetasMarketplace,
 
 
-        renderizarTarjetasActivas
+        renderizarTarjetasActivas,
+
+
+        renderizarGruposDeTarjetas
 
     };
 
