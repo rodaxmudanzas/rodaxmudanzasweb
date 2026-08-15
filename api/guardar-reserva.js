@@ -72,6 +72,8 @@ if(
 
     !datos.fecha ||
 
+    !datos.franja_horaria_recogida ||
+
     !datos.preciototal ||
 
     !datos.precioreserva
@@ -81,6 +83,30 @@ if(
     return res.status(400).json({
 
         error:"Faltan datos obligatorios."
+
+    });
+
+}
+
+//////////////////////////////////////////////////////
+// VALIDAR FRANJA HORARIA DE RECOGIDA
+//////////////////////////////////////////////////////
+
+const franjasPermitidas = [
+    "08:00 – 13:00",
+    "14:00 – 18:00"
+];
+
+if (
+    !franjasPermitidas.includes(
+        datos.franja_horaria_recogida
+    )
+) {
+
+    return res.status(400).json({
+
+        error:
+            "La franja horaria de recogida no es válida."
 
     });
 
@@ -143,6 +169,12 @@ const { data, error } = await supabase
 
     fecha: datos.fecha,
 
+    franja_horaria_recogida:
+        datos.franja_horaria_recogida,
+
+    hora_llegada_confirmada:
+        null,
+
     volumen: datos.volumen,
 
     ascensor: datos.ascensor,
@@ -159,17 +191,17 @@ const { data, error } = await supabase
 
     urls_fotos: datos.urls_fotos,
 
-inventario: datos.inventario,
+    inventario: datos.inventario,
 
-estado: "Pendiente de pago",
+    estado: "Pendiente de pago",
 
-estado_pago: "Checkout iniciado",
+    estado_pago: "Checkout iniciado",
 
-fecha_creacion: new Date(),
+    fecha_creacion: new Date(),
 
-transportista_id: null,
+    transportista_id: null,
 
-version_presupuesto: 1
+    version_presupuesto: 1
 
 })
 
