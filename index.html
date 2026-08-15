@@ -3827,30 +3827,19 @@ if (window.calcularPresupuesto) {
 });
 
 </script>   
+
   <script>
 
 /* =========================================
    CONTROL PISO + ASCENSOR
 ========================================= */
 
-function togglePiso(tipo){
+window.togglePiso = function(tipo){
 
-    const ascensor =
-    document.getElementById('ascensor_' + tipo).value;
-
-    const input =
-    document.getElementById('piso_' + tipo);
-
-    const nota =
-    document.getElementById('nota_piso_' + tipo);
-
-    // SI HAY ASCENSOR
-    function togglePiso(tipo) {
-
-    const ascensor =
+    const select =
         document.getElementById(
             'ascensor_' + tipo
-        ).value;
+        );
 
     const input =
         document.getElementById(
@@ -3867,87 +3856,96 @@ function togglePiso(tipo){
             'texto_piso_' + tipo
         );
 
+    if (!select || !input) {
+        return;
+    }
 
-    if (!input) return;
-
-
-    // ==================================================
-    // EL PISO SIEMPRE ESTÁ DISPONIBLE
-    // ==================================================
-
-    input.disabled = false;
-
+    const ascensor =
+        select.value;
 
     const piso =
         Math.max(
             0,
-            parseInt(input.value || 0, 10)
+            parseInt(
+                input.value || 0,
+                10
+            )
         );
 
+    input.disabled = false;
 
-    // ==================================================
-    // PISO 0 = UN BAJO
-    // ==================================================
+    /* ======================================
+       PISO 0 = UN BAJO
+    ====================================== */
 
     if (piso === 0) {
 
         if (textoPiso) {
+
             textoPiso.textContent =
                 "Un Bajo";
+
         }
 
         if (nota) {
-            nota.innerHTML =
+
+            nota.textContent =
                 ascensor === "si"
                     ? "Un Bajo · Con ascensor · sin suplemento."
                     : "Un Bajo · Sin ascensor · sin suplemento.";
+
+            nota.style.color =
+                ascensor === "si"
+                    ? "#3b82f6"
+                    : "#f97316";
+        }
+
+        if (
+            typeof window.calcularPresupuesto ===
+            "function"
+        ) {
+
+            window.calcularPresupuesto();
+
         }
 
         return;
     }
 
-
-    // ==================================================
-    // PISO +1 O SUPERIOR
-    // ==================================================
+    /* ======================================
+       PISO 1+
+    ====================================== */
 
     if (textoPiso) {
 
         textoPiso.textContent =
             `Piso ${piso}`;
-    }
 
+    }
 
     if (nota) {
 
-        if (ascensor === "si") {
+        nota.textContent =
+            ascensor === "si"
+                ? `Con ascensor · Piso ${piso} · sin suplemento.`
+                : `Sin ascensor · Piso ${piso} · se aplica suplemento por escaleras.`;
 
-            nota.innerHTML =
-                `Con ascensor · Piso ${piso} · sin suplemento.`;
-
-        } else {
-
-            nota.innerHTML =
-                `Sin ascensor · Piso ${piso} · se aplica suplemento por escaleras.`;
-        }
+        nota.style.color =
+            ascensor === "si"
+                ? "#3b82f6"
+                : "#f97316";
     }
-}
 
-    // SOLO ESCALERAS
-    else{
+    if (
+        typeof window.calcularPresupuesto ===
+        "function"
+    ) {
 
-        input.disabled = false;
-
-        nota.innerHTML =
-        'El piso afecta al precio por uso de escaleras.';
+        window.calcularPresupuesto();
 
     }
 
-}
-
-/* =========================================
-   BOTONES + Y -
-========================================= */
+};
 
 document.querySelectorAll('.piso-wrapper').forEach(wrapper => {
 
