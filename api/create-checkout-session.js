@@ -50,15 +50,17 @@ console.log("================================");
 
 const session = await stripe.checkout.sessions.create({
 
-            payment_method_types: ["card"],
+    payment_method_types: ["card"],
 
-            mode: "payment",
+    mode: "payment",
 
-            customer_email: email,
+    customer_email: email,
 
-           metadata: {
-
-    numero_reserva: numero_reserva,
+    metadata: {
+        numero_reserva: numero_reserva,
+        franja_horaria_recogida:
+            req.body.franja_horaria_recogida || ""
+    },    
 
     nombre,
     email,
