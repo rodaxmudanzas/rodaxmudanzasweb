@@ -360,25 +360,27 @@
 
         const candidatosTexto = [
 
-            t.franja_horaria,
+    t.franja_horaria_recogida,
 
-            t.franjaHoraria,
+    t.franja_horaria,
 
-            t.horario,
+    t.franjaHoraria,
 
-            t.horario_mudanza,
+    t.horario,
 
-            t.horarioMudanza,
+    t.horario_mudanza,
 
-            t.hora_llegada,
+    t.horarioMudanza,
 
-            t.horaLlegada,
+    t.hora_llegada,
 
-            t.hora_inicio_fin,
+    t.horaLlegada,
 
-            t.horaInicioFin
+    t.hora_inicio_fin,
 
-        ];
+    t.horaInicioFin
+
+];
 
 
         for (
