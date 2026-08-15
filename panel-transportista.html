@@ -2046,6 +2046,26 @@ function recargarDatos() {
             mudanza.fecha ||
             "";
 
+            function formatearFechaFicha(fechaOriginal) {
+
+    const texto =
+        String(fechaOriginal || "").trim();
+
+    const match =
+        texto.match(
+            /^(\d{4})-(\d{2})-(\d{2})/
+        );
+
+    if (!match) {
+        return texto || "—";
+    }
+
+    return `${match[3]}-${match[2]}-${match[1]}`;
+}
+
+const fechaFicha =
+    formatearFechaFicha(fecha);
+
         const km =
             mudanza.km ||
             "";
@@ -2361,15 +2381,9 @@ if (esMudanzaTotalFicha) {
     }
 
     if (
-        extrasFicha[
-            "Cajas pequeñas"
-        ] > 0 ||
-        extrasFicha[
-            "Cajas medianas"
-        ] > 0 ||
-        extrasFicha[
-            "Cajas grandes"
-        ] > 0
+        extrasFicha.pequenas > 0 ||
+        extrasFicha.medianas > 0 ||
+        extrasFicha.grandes > 0
     ) {
 
         htmlExtrasFicha = `
@@ -2392,7 +2406,7 @@ if (esMudanzaTotalFicha) {
                                     </span>
 
                                     <strong>
-                                        x${extrasFicha["Cajas pequeñas"]}
+                                        x${extrasFicha.pequenas}
                                     </strong>
                                 </div>
                             `
@@ -2410,7 +2424,7 @@ if (esMudanzaTotalFicha) {
                                     </span>
 
                                     <strong>
-                                        x${extrasFicha["Cajas medianas"]}
+                                        x${extrasFicha.medianas}
                                     </strong>
                                 </div>
                             `
@@ -2428,7 +2442,7 @@ if (esMudanzaTotalFicha) {
                                     </span>
 
                                     <strong>
-                                        x${extrasFicha["Cajas grandes"]}
+                                        x${extrasFicha.grandes}
                                     </strong>
                                 </div>
                             `
@@ -2443,10 +2457,88 @@ if (esMudanzaTotalFicha) {
 }
 
         const accesos =
-            window.Transportista
-                .getAccesos(
-                    mudanza
-                );
+    window.Transportista.getAccesos(mudanza) || {
+        recogida: "",
+        entrega: ""
+    };
+
+/*
+ * =========================================================
+ * ACCESOS PARA LA FICHA PDF
+ * =========================================================
+ */
+
+function formatearAccesoFicha(valor) {
+
+    const texto = String(valor || "").trim();
+
+    if (!texto) {
+        return "Acceso por confirmar";
+    }
+
+    /*
+     * Normalizamos cualquier variante:
+     * "sin ascensor", "Sin ascensor", etc.
+     */
+    const normalizado = texto
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+
+    /*
+     * Si aparece "sin ascensor", conservamos
+     * el piso que ya venga informado.
+     */
+    if (normalizado.includes("sin ascensor")) {
+
+        const matchPiso =
+            texto.match(
+                /piso\s*[:\-]?\s*([^\s|,;]+)/i
+            );
+
+        if (matchPiso) {
+
+            let piso =
+                String(matchPiso[1]).trim();
+
+            /*
+             * 0 y E = Bajo
+             */
+            if (
+                piso === "0" ||
+                piso.toUpperCase() === "E"
+            ) {
+                return "Sin ascensor · Bajo";
+            }
+
+            return `Sin ascensor · Piso ${piso}`;
+        }
+
+        return "Sin ascensor";
+    }
+
+    /*
+     * Si ya indica ascensor,
+     * lo mostramos de forma limpia.
+     */
+    if (
+        normalizado.includes("con ascensor")
+    ) {
+        return "Con ascensor";
+    }
+
+    return texto;
+}
+
+const accesoRecogidaFicha =
+    formatearAccesoFicha(
+        accesos.recogida
+    );
+
+const accesoEntregaFicha =
+    formatearAccesoFicha(
+        accesos.entrega
+    );
 
         const nombre =
             currentUserNombre ||
@@ -2932,9 +3024,16 @@ if (esMudanzaTotalFicha) {
 
         <div>
 
-            <div class="logo">
-                RODAX<span>FURGO MUDANZAS</span>
-            </div>
+            <img
+    src="images/logo-rodax-ficha.png"
+    alt="RODAX MUDANZAS"
+    style="
+        width:280px;
+        max-width:100%;
+        height:auto;
+        display:block;
+    "
+>
 
             <p
                 style="
@@ -3018,6 +3117,17 @@ if (esMudanzaTotalFicha) {
 
                             ${origen || '—'}
 
+<div
+    class="dato-valor"
+    style="
+        font-size:11px;
+        margin-top:4px;
+        color:#64748b;
+        font-weight:600;
+    ">
+    ${accesoRecogidaFicha}
+</div>
+
                         </div>
 
                     </div>
@@ -3046,6 +3156,17 @@ if (esMudanzaTotalFicha) {
 
                             ${destino || '—'}
 
+<div
+    class="dato-valor"
+    style="
+        font-size:11px;
+        margin-top:4px;
+        color:#64748b;
+        font-weight:600;
+    ">
+    ${accesoEntregaFicha}
+</div>
+
                         </div>
 
                     </div>
@@ -3069,7 +3190,7 @@ if (esMudanzaTotalFicha) {
                 </div>
 
                 <div class="dato-valor">
-                    ${fecha || '—'}
+                    ${fechaFicha}
                 </div>
 
             </div>
@@ -3216,34 +3337,6 @@ ${htmlExtrasFicha}
         </p>
 
     </div>
-
-    <div
-        style="
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:30px;
-            margin-top:40px;
-        ">
-
-        <div>
-
-            <div class="firma-linea"></div>
-
-            <div class="firma-texto">
-                Firma del Transportista
-            </div>
-
-        </div>
-
-        <div>
-
-            <div class="firma-linea"></div>
-
-            <div class="firma-texto">
-                Firma del Cliente (recibí conforme)
-            </div>
-
-        </div>
 
     </div>
 
