@@ -1834,7 +1834,7 @@ hover:scale-[1.02]">
                             <label class="block text-gray-700 font-bold mb-1.5 text-sm">Correo electrónico <span class="text-red-500">*</span></label>
                             <input type="email" id="email" required class="form-input" placeholder="Para enviarte el justificante de reserva">
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
 
     <!-- FECHA -->
     <div>
@@ -1887,6 +1887,44 @@ hover:scale-[1.02]">
         </select>
 
     </div>
+
+    <!-- FRANJA HORARIA DE RECOGIDA -->
+<div>
+    <label class="block text-gray-700 font-bold mb-3 text-sm">
+        Hora de recogida
+        <span class="text-red-500">*</span>
+    </label>
+
+    <div class="space-y-2">
+
+        <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition">
+            <input
+                type="radio"
+                name="franja_horaria_recogida"
+                value="08:00 – 13:00"
+                required
+                class="w-4 h-4 text-blue-600">
+
+            <span class="text-sm font-bold text-slate-700">
+                08:00 – 13:00
+            </span>
+        </label>
+
+        <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition">
+            <input
+                type="radio"
+                name="franja_horaria_recogida"
+                value="14:00 – 18:00"
+                required
+                class="w-4 h-4 text-blue-600">
+
+            <span class="text-sm font-bold text-slate-700">
+                14:00 – 18:00
+            </span>
+        </label>
+
+    </div>
+</div>
 
 </div>
                         </div>
