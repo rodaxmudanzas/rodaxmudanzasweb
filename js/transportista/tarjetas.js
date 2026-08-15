@@ -2337,7 +2337,21 @@
             }
         );
 
-        let html = "";
+        /*
+         * El contenedor completo de los grupos debe ocupar todo el ancho
+         * disponible. Esto evita que el contenedor padre del panel coloque
+         * cada fecha como una columna independiente.
+         *
+         * Dentro de cada grupo de fecha:
+         * - 2 columnas en escritorio.
+         * - 1 columna en móvil.
+         */
+        let html = `
+            <div
+                class="rodax-grupos-fecha w-full"
+                style="grid-column: 1 / -1;"
+            >
+        `;
 
         for (
             const [
@@ -2381,6 +2395,10 @@
                 </section>
             `;
         }
+
+        html += `
+            </div>
+        `;
 
         return html;
     }
