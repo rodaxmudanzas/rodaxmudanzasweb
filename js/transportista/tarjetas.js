@@ -2122,11 +2122,8 @@
         // INVENTARIO
         //////////////////////////////////////////////////////////
 
-        const inventarioHTML =
-            crearHTMLInventario(
-                d.inventario,
-                d.extras
-            );
+        // El inventario no se muestra dentro de la tarjeta.
+        // Se mantiene disponible para el drawer y la Ficha PDF.
 
 
         //////////////////////////////////////////////////////////
@@ -2265,12 +2262,12 @@
                     </span>
                 </div>
 
-                <!-- ACCIONES -->
-                <div class="mt-3 flex flex-col items-stretch gap-2 border-t border-slate-100 pt-3 sm:items-end">
+                <!-- ACCIONES: centradas al final de la tarjeta -->
+                <div class="mt-3 flex flex-col items-center gap-2 border-t border-slate-100 pt-3">
                     <button
                         type="button"
                         onclick="event.stopPropagation(); imprimirFicha(${d.id})"
-                        class="no-print inline-flex w-full min-w-[210px] items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-black text-blue-700 transition-all hover:border-blue-300 hover:bg-blue-100 active:scale-[0.99] sm:w-[210px]"
+                        class="no-print inline-flex w-full max-w-[240px] min-w-[210px] items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-black text-blue-700 transition-all hover:border-blue-300 hover:bg-blue-100 active:scale-[0.99]"
                     >
                         <i data-lucide="file-text" class="h-4 w-4"></i>
                         Ficha PDF
@@ -2279,7 +2276,7 @@
                     <button
                         type="button"
                         onclick="event.stopPropagation(); marcarCompletada(${d.id})"
-                        class="no-print inline-flex w-full min-w-[210px] items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-black text-emerald-700 transition-all hover:border-emerald-300 hover:bg-emerald-100 active:scale-[0.99] sm:w-[210px]"
+                        class="no-print inline-flex w-full max-w-[240px] min-w-[210px] items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-black text-emerald-700 transition-all hover:border-emerald-300 hover:bg-emerald-100 active:scale-[0.99]"
                     >
                         <i data-lucide="check-circle-2" class="h-4 w-4"></i>
                         Marcar como Finalizada
@@ -2299,6 +2296,10 @@
         trabajos,
         crearTarjeta
     ) {
+        // Cada fecha es un bloque visual independiente.
+        // Dentro de cada bloque: 1 columna en móvil y 2 columnas en escritorio.
+        // La misma distribución se utiliza en Trabajos disponibles y Mis mudanzas activas.
+
 
         if (
             !Array.isArray(trabajos) ||
@@ -2352,7 +2353,7 @@
 
             html += `
                 <section
-                    class="w-full rounded-3xl border border-slate-200 bg-slate-50/80 p-3 md:p-4 shadow-sm"
+                    class="w-full rounded-3xl border border-slate-200 bg-slate-50 p-4 md:p-5 shadow-sm"
                 >
                     <div class="mb-3 flex flex-wrap items-center gap-2 px-1">
                         <span class="inline-flex items-center gap-1.5 rounded-lg border border-blue-100 bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700">
@@ -2370,7 +2371,7 @@
                         </span>
                     </div>
 
-                    <div class="space-y-3">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
                         ${
                             trabajosFecha
                                 .map(crearTarjeta)
