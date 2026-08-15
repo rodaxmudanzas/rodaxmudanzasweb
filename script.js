@@ -1078,32 +1078,6 @@ function obtenerInventario() {
 }
 
 //////////////////////////////////////////////////////
-// OBTENER DATOS DEL FORMULARIO
-//////////////////////////////////////////////////////
-
-function obtenerDatosFormulario({
-
-    fotosString,
-
-    inventario,
-
-    volumenTexto,
-
-    ascOrigen,
-
-    ascDestino,
-
-    pisoOrigen,
-
-    pisoDestino,
-
-    extrasArr,
-
-    franjaHorariaRecogida
-
-}){
-
-    //////////////////////////////////////////////////////
 // TEXTO DE ACCESO PARA RESERVA
 //////////////////////////////////////////////////////
 
@@ -1129,6 +1103,33 @@ function textoAccesoReserva(ascensor, piso) {
         ? `Con ascensor · Piso ${numeroPiso}`
         : `Sin ascensor · Piso ${numeroPiso}`;
 }
+
+
+//////////////////////////////////////////////////////
+// OBTENER DATOS DEL FORMULARIO
+//////////////////////////////////////////////////////
+
+function obtenerDatosFormulario({
+
+    fotosString,
+
+    inventario,
+
+    volumenTexto,
+
+    ascOrigen,
+
+    ascDestino,
+
+    pisoOrigen,
+
+    pisoDestino,
+
+    extrasArr,
+
+    franjaHorariaRecogida
+
+}){
 
     return {
 
