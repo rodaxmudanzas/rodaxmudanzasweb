@@ -2392,66 +2392,78 @@ if (esMudanzaTotalFicha) {
     ) {
 
         htmlExtrasFicha = `
-            <div class="seccion">
+    <div class="seccion">
 
-                <div class="seccion-titulo extras-titulo">
-                    📦 EXTRAS
-                </div>
+        <div class="seccion-titulo extras-titulo">
+            📦 EXTRAS
+        </div>
 
-                <div class="extras-ficha">
+        <div class="extras-ficha">
 
-                    ${
-    extrasFicha.pequenas > 0
-        ? `
-                                <div class="extra-fila">
-                                    <span>
-                                        Cajas pequeñas
-                                    </span>
-
-                                    <strong>
-                                        x${extrasFicha.pequenas}
-                                    </strong>
-                                </div>
-                            `
-                            : ""
-                    }
-
-                    ${
-    extrasFicha.medianas > 0
-        ? `
-                                <div class="extra-fila">
-                                    <span>
-                                        Cajas medianas
-                                    </span>
-
-                                    <strong>
-                                        x${extrasFicha.medianas}
-                                    </strong>
-                                </div>
-                            `
-                            : ""
-                    }
-
-                    ${
-    extrasFicha.grandes > 0
-        ? `
-                                <div class="extra-fila">
-                                    <span>
-                                        Cajas grandes
-                                    </span>
-
-                                    <strong>
-                                        x${extrasFicha.grandes}
-                                    </strong>
-                                </div>
-                            `
-                            : ""
-                    }
-
-                </div>
-
+            <div
+                style="
+                    font-size:11px;
+                    font-weight:800;
+                    color:#047857;
+                    text-transform:uppercase;
+                    letter-spacing:0.04em;
+                    margin-bottom:10px;
+                ">
+                PROVEER ESTAS CAJAS Y MATERIALES
             </div>
-        `;
+
+            ${
+                extrasFicha.pequenas > 0
+                    ? `
+                        <div class="extra-fila">
+                            <span>
+                                Cajas pequeñas
+                            </span>
+
+                            <strong>
+                                x${extrasFicha.pequenas}
+                            </strong>
+                        </div>
+                    `
+                    : ""
+            }
+
+            ${
+                extrasFicha.medianas > 0
+                    ? `
+                        <div class="extra-fila">
+                            <span>
+                                Cajas medianas
+                            </span>
+
+                            <strong>
+                                x${extrasFicha.medianas}
+                            </strong>
+                        </div>
+                    `
+                    : ""
+            }
+
+            ${
+                extrasFicha.grandes > 0
+                    ? `
+                        <div class="extra-fila">
+                            <span>
+                                Cajas grandes
+                            </span>
+
+                            <strong>
+                                x${extrasFicha.grandes}
+                            </strong>
+                        </div>
+                    `
+                    : ""
+            }
+
+        </div>
+
+    </div>
+`;
     }
 }
 
