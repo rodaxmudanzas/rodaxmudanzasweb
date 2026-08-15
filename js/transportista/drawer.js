@@ -277,6 +277,16 @@
                 mudanza.fecha || "—";
         }
 
+        const elFranjaHorariaRecogida =
+    document.getElementById(
+        "drawerFranjaHorariaRecogida"
+    );
+
+if (elFranjaHorariaRecogida) {
+    elFranjaHorariaRecogida.textContent =
+        mudanza.franja_horaria_recogida || "—";
+}
+
         const elPrecio =
             document.getElementById("drawerPrecio");
 
