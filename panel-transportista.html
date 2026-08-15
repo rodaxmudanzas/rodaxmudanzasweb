@@ -3014,17 +3014,46 @@ const accesoEntregaFicha =
 
         @media print {
 
-            body {
-                padding:
-                    20px;
-            }
+    body {
+        padding: 20px;
+    }
 
-            .no-print {
-                display:
-                    none !important;
-            }
+    .no-print {
+        display: none !important;
+    }
 
-        }
+    /*
+     * ==========================================================
+     * FIRMAS DEL SERVICIO
+     * Nunca permitir que este bloque se parta entre páginas.
+     * Si no cabe completo al final de una página, el navegador
+     * lo llevará completo a la página siguiente.
+     * ==========================================================
+     */
+
+    .firmas-finales {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+        -webkit-column-break-inside: avoid !important;
+
+        /*
+         * Mantener título + Recogida + Entrega
+         * como una sola unidad visual.
+         */
+        display: block !important;
+    }
+
+    .firmas-finales > div {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+
+    .firmas-finales .firma-linea,
+    .firmas-finales .firma-texto {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+}
 
     </style>
 </head>
