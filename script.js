@@ -1097,7 +1097,9 @@ function obtenerDatosFormulario({
 
     pisoDestino,
 
-    extrasArr
+    extrasArr,
+
+    franjaHorariaRecogida
 
 }){
 
@@ -1124,28 +1126,35 @@ function obtenerDatosFormulario({
             ) || 0,
 
         fecha:
-            document.getElementById("fecha").value,
+    document.getElementById("fecha").value,
 
-        volumen:
-            volumenTexto,
+franja_horaria_recogida:
+    franjaHorariaRecogida,
 
-        ascensor:
+volumen:
+    volumenTexto,
 
-            `Recogida: ${
-                ascOrigen === "si"
+       function textoAccesoReserva(ascensor, piso) {
 
-                ? "Con ascensor"
+    const numeroPiso =
+        Math.max(
+            0,
+            parseInt(piso, 10) || 0
+        );
 
-                : `Sin ascensor (piso ${pisoOrigen})`
+    // PISO 0 SIEMPRE ES UN BAJO
+    if (numeroPiso === 0) {
 
-            } | Entrega: ${
-                ascDestino === "si"
+        return ascensor === "si"
+            ? "Un Bajo · Con ascensor"
+            : "Un Bajo · Sin ascensor";
+    }
 
-                ? "Con ascensor"
-
-                : `Sin ascensor (piso ${pisoDestino})`
-
-            }`,
+    // PISO 1 O SUPERIOR
+    return ascensor === "si"
+        ? `Con ascensor · Piso ${numeroPiso}`
+        : `Sin ascensor · Piso ${numeroPiso}`;
+}
 
         extras:
 
@@ -1221,6 +1230,20 @@ console.log(fotosString);
                 const ascDestino = document.getElementById('ascensor_destino')?.value || 'si';
                 const pisoDestino= parseInt(document.getElementById('piso_destino')?.value) || 0;
 
+                // FRANJA HORARIA DE RECOGIDA ELEGIDA POR EL CLIENTE
+const franjaHorariaRecogida =
+    document.querySelector(
+        'input[name="franja_horaria_recogida"]:checked'
+    )?.value || '';
+
+if (!franjaHorariaRecogida) {
+
+    throw new Error(
+        'Selecciona una franja horaria de recogida.'
+    );
+
+}
+
                 console.log("DESMONTAJE",
 document.getElementById("cant_desmontar")?.value);
 
@@ -1274,7 +1297,9 @@ const datosFormulario = obtenerDatosFormulario({
 
     pisoDestino,
 
-    extrasArr
+    extrasArr,
+
+    franjaHorariaRecogida
 
 });
 
@@ -1349,15 +1374,8 @@ if (!respuestaReserva.ok) {
         volumen: volumenTexto,
 
         ascensor:
-            `Recogida: ${
-                ascOrigen === "si"
-                    ? "Con ascensor"
-                    : `Sin ascensor (piso ${pisoOrigen})`
-            } | Entrega: ${
-                ascDestino === "si"
-                    ? "Con ascensor"
-                    : `Sin ascensor (piso ${pisoDestino})`
-            }`,
+
+    `Recogida: ${textoAccesoReserva(ascOrigen, pisoOrigen)} | Entrega: ${textoAccesoReserva(ascDestino, pisoDestino)}`,
 
         extras: extrasArr.join(" | ") || "Solo transporte básico",
 
