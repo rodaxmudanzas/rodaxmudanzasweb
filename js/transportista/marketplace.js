@@ -2879,137 +2879,34 @@ function renderizarDisponibles() {
         return;
     }
 
-    // AGRUPAR POR FECHA
+    // GENERAR HTML USANDO EL RENDERIZADOR COMÚN DE TARJETAS
     ///////////////////////////////////////////////////////
 
-    const gruposPorFecha = {};
+    const renderer =
+        window.Transportista?.Tarjetas?.renderizarTarjetasMarketplace;
 
-    trabajos.forEach(
-        trabajo => {
-
-            const titulo =
-                crearEncabezadoFechaMarketplace(
-                    trabajo.fecha
-                );
-
-            if (
-                !gruposPorFecha[titulo]
-            ) {
-
-                gruposPorFecha[titulo] =
-                    [];
-            }
-
-            gruposPorFecha[titulo].push(
-                trabajo
-            );
-        }
-    );
-
-    // COMPROBAR API UTILIDADES
-    ///////////////////////////////////////////////////////
-
-    if (
-        !apiTransportistaDisponible()
-    ) {
+    if (typeof renderer !== "function") {
 
         console.error(
-            "❌ Marketplace: utils.js no ha expuesto todavía la API Transportista.",
-            window.Transportista
+            "❌ Marketplace: no está disponible Tarjetas.renderizarTarjetasMarketplace."
         );
 
         contenedor.innerHTML = `
-
-            <div
-                class="col-span-1 lg:col-span-2 text-center py-12 bg-white rounded-3xl border border-red-100"
-            >
-
-                <h4
-                    class="text-lg font-bold text-red-600 mb-2"
-                >
-                    Error cargando los datos de las mudanzas
+            <div class="col-span-1 lg:col-span-2 text-center py-12 bg-white rounded-3xl border border-red-100">
+                <h4 class="text-lg font-bold text-red-600 mb-2">
+                    Error cargando los trabajos disponibles
                 </h4>
-
-                <p
-                    class="text-sm text-slate-500"
-                >
-                    No se ha cargado correctamente el módulo de utilidades.
+                <p class="text-sm text-slate-500">
+                    No se ha cargado correctamente el módulo de tarjetas.
                 </p>
-
             </div>
-
         `;
 
         return;
     }
 
-    // GENERAR HTML
-    ///////////////////////////////////////////////////////
-
-    let htmlFinal = "";
-
-    for (
-        const [
-            fechaTitulo,
-            trabajosFecha
-        ]
-        of Object.entries(
-            gruposPorFecha
-        )
-    ) {
-
-        htmlFinal += `
-
-            <div
-                class="col-span-1 lg:col-span-2 flex items-center gap-2.5 mt-6 mb-3 no-print"
-            >
-
-                <span
-                    class="text-xs font-bold text-blue-600 bg-blue-50/80 px-2.5 py-1 rounded-lg border border-blue-100/70 font-sans flex items-center gap-1.5"
-                >
-
-                    <i
-                        data-lucide="calendar"
-                        class="w-3.5 h-3.5"
-                    ></i>
-
-                    ${escapeHtmlMarketplace(
-                        fechaTitulo
-                    )}
-
-                </span>
-
-                <span
-                    class="text-xs font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md"
-                >
-
-                    ${trabajosFecha.length}
-                    trabajos disponibles
-
-                </span>
-
-                <div
-                    class="flex-1 border-t border-slate-200/60"
-                ></div>
-
-            </div>
-
-        `;
-
-        trabajosFecha.forEach(
-            t => {
-
-                htmlFinal +=
-                    window.Transportista.Tarjetas
-                        .crearTarjetaMarketplace(
-                            t
-                        );
-            }
-        );
-    }
-
     contenedor.innerHTML =
-        htmlFinal;
+        renderer(trabajos);
 
     if (window.lucide) {
         lucide.createIcons();
