@@ -2353,7 +2353,7 @@
 
             html += `
                 <section
-                    class="w-full rounded-3xl border border-slate-200 bg-slate-50 p-4 md:p-5 shadow-sm"
+                    class="w-full rounded-3xl border border-[#D8E5F5] bg-[#EEF4FF] p-4 md:p-5 shadow-sm"
                 >
                     <div class="mb-3 flex flex-wrap items-center gap-2 px-1">
                         <span class="inline-flex items-center gap-1.5 rounded-lg border border-blue-100 bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700">
@@ -2476,3 +2476,4 @@
 
 
 })();
+
