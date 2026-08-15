@@ -1103,6 +1103,33 @@ function obtenerDatosFormulario({
 
 }){
 
+    //////////////////////////////////////////////////////
+// TEXTO DE ACCESO PARA RESERVA
+//////////////////////////////////////////////////////
+
+function textoAccesoReserva(ascensor, piso) {
+
+    const numeroPiso =
+        Math.max(
+            0,
+            parseInt(piso, 10) || 0
+        );
+
+    // PISO 0 = UN BAJO
+    if (numeroPiso === 0) {
+
+        return ascensor === "si"
+            ? "Un Bajo · Con ascensor"
+            : "Un Bajo · Sin ascensor";
+
+    }
+
+    // PISO 1 O SUPERIOR
+    return ascensor === "si"
+        ? `Con ascensor · Piso ${numeroPiso}`
+        : `Sin ascensor · Piso ${numeroPiso}`;
+}
+
     return {
 
         nombre:
@@ -1134,61 +1161,34 @@ franja_horaria_recogida:
 volumen:
     volumenTexto,
 
-       function textoAccesoReserva(ascensor, piso) {
+extras:
+    extrasArr.join(" | ")
+    || "Solo transporte básico",
 
-    const numeroPiso =
-        Math.max(
-            0,
-            parseInt(piso, 10) || 0
-        );
+observaciones:
+    document
+        .getElementById("observaciones")
+        ?.value
+        .trim() || "",
 
-    // PISO 0 SIEMPRE ES UN BAJO
-    if (numeroPiso === 0) {
+tipo_servicio:
 
-        return ascensor === "si"
-            ? "Un Bajo · Con ascensor"
-            : "Un Bajo · Sin ascensor";
-    }
+    mudanzaTotal
+        ? "Mudanza Total"
+        : "Mudanza Estándar",
 
-    // PISO 1 O SUPERIOR
-    return ascensor === "si"
-        ? `Con ascensor · Piso ${numeroPiso}`
-        : `Sin ascensor · Piso ${numeroPiso}`;
-}
+preciototal:
+    window.UI.precioTotal.textContent,
 
-        extras:
+precioreserva:
+    window.UI.precioReserva.textContent,
 
-            extrasArr.join(" | ")
+urls_fotos:
+    fotosString,
 
-            || "Solo transporte básico",
+inventario
 
-        observaciones:
-
-            document
-                .getElementById("observaciones")
-                ?.value
-                .trim() || "",
-
-        tipo_servicio:
-
-            mudanzaTotal
-
-                ? "Mudanza Total"
-
-                : "Mudanza Estándar",
-
-        preciototal:
-            window.UI.precioTotal.textContent,
-
-        precioreserva:
-            window.UI.precioReserva.textContent,
-
-        urls_fotos:
-            fotosString,
-
-        inventario
-
-    };
+};
 
 }
 
@@ -1423,34 +1423,7 @@ if (stripeResult.error) {
 
     throw stripeResult.error;
 
-}
-
-                // Payload completo para Supabase
-                const payload = {
-    nombre:        document.getElementById('nombre').value.trim(),
-    telefono:      document.getElementById('telefono').value.trim(),
-    email:         document.getElementById('email').value.trim(),
-    origen:        document.getElementById('origen').value.trim(),
-    destino:       document.getElementById('destino').value.trim(),
-    km:            parseFloat(document.getElementById('km')?.value) || 0,
-    fecha:         document.getElementById('fecha').value,
-    volumen:       volumenTexto,
-    ascensor:      `Recogida: ${ascOrigen === 'si' ? 'Con ascensor' : `Sin ascensor (piso ${pisoOrigen})`} | Entrega: ${ascDestino === 'si' ? 'Con ascensor' : `Sin ascensor (piso ${pisoDestino})`}`,
-    extras:        extrasArr.join(' | ') || 'Solo transporte básico',
-    observaciones: document.getElementById('observaciones')?.value.trim() || '',
-    tipo_servicio: mudanzaTotal ? 'Mudanza Total' : 'Mudanza Estándar',
-    estado:        'Pendiente de Pago',
-    urls_fotos:    fotosString,
-    inventario:    JSON.stringify(inventario), // 👈 AGREGA ESTA LÍNEA (Guardamos el inventario como texto JSON)
-    preciototal:   window.UI.precioTotal.textContent,
-    precioreserva: window.UI.precioReserva.textContent,
-};
-
-
-                
-                const { error } = await supabase.from('mudanzas').insert([payload]);
-                if (error) throw error;
-            
+}           
 
                 // Éxito: mostrar modal con instrucciones de pago
                 /*
