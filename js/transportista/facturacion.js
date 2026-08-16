@@ -90,14 +90,6 @@
 
  
 
-        if (window.supabase) {
-
-            return window.supabase;
-
-        }
-
- 
-
         return null;
 
     }
