@@ -1340,22 +1340,6 @@
 
     }
 
- 
-
- 
-
-    ////////////////////////////////////////////////////////////
-
-    // EXPONER FUNCIÓN
-
-    ////////////////////////////////////////////////////////////
-
- 
-
-    window.cargarPerfil =
-
-        cargarPerfil;
-
- 
+    window.cargarPerfil = cargarPerfil;
 
 })(window);
