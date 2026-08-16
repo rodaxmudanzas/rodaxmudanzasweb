@@ -583,16 +583,8 @@ function formatM3(valor) {
         // PISO 0 = UN BAJO
         if (numeroPiso === 0 && pisoConocido) {
 
-            if (asc === "si") {
-                return "Un Bajo · Con ascensor";
-            }
-
-            if (asc === "no") {
-                return "Un Bajo · Sin ascensor";
-            }
-
-            return "Un Bajo";
-        }
+    return "Un Bajo";
+}
 
 
         // PISO +1 O SUPERIOR
