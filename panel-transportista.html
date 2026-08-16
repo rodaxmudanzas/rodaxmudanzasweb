@@ -772,6 +772,28 @@
 
     </div>
 
+            <!-- MI AGENDA -->
+        <div
+            id="tab-mi-agenda"
+            class="hidden fade-in">
+
+            <div class="mb-5">
+                <h2 class="text-lg font-black text-slate-800">
+                    Mi Agenda
+                </h2>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Organiza y consulta tus mudanzas programadas.
+                </p>
+            </div>
+
+            <div
+                id="contenedor-agenda"
+                class="space-y-4">
+            </div>
+
+        </div>
+
     <!-- MODAL -->
     <div
         id="action-modal"
@@ -1776,9 +1798,10 @@ function recargarDatos() {
     ) {
 
         const tabs = [
-            'disponibles',
-            'mis-mudanzas'
-        ];
+    'disponibles',
+    'mis-mudanzas',
+    'mi-agenda'
+];
 
         tabs.forEach(
             t => {
@@ -1834,12 +1857,15 @@ function recargarDatos() {
         }
 
         const titles = {
-            'disponibles':
-                'Trabajos Disponibles',
+    'disponibles':
+        'Trabajos Disponibles',
 
-            'mis-mudanzas':
-                'Mis Mudanzas Activas'
-        };
+    'mis-mudanzas':
+        'Mis Mudanzas Activas',
+
+    'mi-agenda':
+        'Mi Agenda'
+};
 
         const headerTitle =
             document.getElementById(
@@ -1847,15 +1873,22 @@ function recargarDatos() {
             );
 
         if (
-            headerTitle &&
-            titles[tabId]
-        ) {
+    headerTitle &&
+    titles[tabId]
+) {
 
-            headerTitle.textContent =
-                titles[tabId];
-        }
+    headerTitle.textContent =
+        titles[tabId];
+}
 
-        cerrarMenuMovil();
+if (
+    tabId === 'mi-agenda' &&
+    window.Transportista?.Agenda
+) {
+    window.Transportista.Agenda.cargar();
+}
+
+cerrarMenuMovil();
     }
 
     async function cargarMisMudanzas() {
@@ -4064,6 +4097,7 @@ console.log(
 
 <!-- MARKETPLACE -->
 <script src="js/transportista/marketplace.js"></script>
+<script src="js/transportista/agenda.js"></script>
 
 <!-- ROUTER -->
 <script src="js/core/router.js"></script>
