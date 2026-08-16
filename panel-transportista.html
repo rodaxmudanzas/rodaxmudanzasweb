@@ -1,4427 +1,8219 @@
 <!DOCTYPE html>
+
 <html lang="es" class="scroll-smooth">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
     <title>Panel de Control — RODAX Transportistas</title>
 
+ 
+
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script src="https://unpkg.com/lucide@latest"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+ 
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
+
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
 
+ 
+
 <style>
+
     /* ========================================================
+
        DISEÑO DE ALTA FIDELIDAD: PARCHE INTEGRAL DE ERRORES UI/UX
+
        ======================================================== */
+
     
+
     /* Error 1 y 4: Color Azul Noche Corporativo para el Menú y la Barra Superior */
+
     .sidebar-azul-rodax {
+
         background-color: #0B1E5B !important;
+
         width: 256px !important;
+
     }
+
+ 
 
     .banner-azul-rodax,
+
     .theme-azul-oscuro-rodax {
+
         background-color: #0B1E5B !important;
+
     }
+
+ 
 
     /* Error 3: Área del logo con fondo estrictamente BLANCO */
+
     .logo-container-blanco {
+
         background-color: #FFFFFF !important;
+
         height: 64px;
+
         border-bottom: 1px solid #E2E8F0;
+
         border-right: 1px solid #E2E8F0;
+
     }
+
+ 
 
     /* Error 4: Fila superior blanca de Perfil y Conectividad */
+
     .top-profile-bar-blanca {
+
         background-color: #FFFFFF !important;
+
         height: 64px;
+
         border-bottom: 1px solid #E2E8F0;
+
         width: 100%;
+
     }
+
+ 
 
     /* Error 1: Botones y palabras completas en la barra lateral */
+
     .nav-item-premium {
+
         width: 100%;
+
         display: flex;
+
         align-items: center;
+
         gap: 12px;
+
         padding: 11px 16px;
+
         border-radius: 12px;
+
         color: rgba(255, 255, 255, 0.9) !important;
+
         font-size: 13px;
+
         font-weight: 700;
+
         transition: all 0.2s ease-in-out;
+
         background: transparent;
+
     }
+
+ 
 
     .nav-item-premium i,
+
     .nav-item-premium svg {
+
         width: 18px;
+
         height: 18px;
+
         color: rgba(255, 255, 255, 0.75) !important;
+
     }
+
+ 
 
     .nav-item-premium:hover:not(.disabled) {
+
         background-color: rgba(255, 255, 255, 0.12) !important;
+
         color: #FFFFFF !important;
+
         padding-left: 20px;
+
     }
+
+ 
 
     .nav-item-premium.active {
+
         background-color: rgba(255, 255, 255, 0.22) !important;
+
         color: #FFFFFF !important;
+
         box-shadow: inset 4px 0 0 0 #FFFFFF;
+
     }
+
+ 
 
     .nav-item-premium.disabled {
+
         opacity: 0.45;
+
         cursor: not-allowed;
+
     }
+
+ 
 
     .menu-title {
+
         font-size: 10px;
+
         font-weight: 800;
+
         letter-spacing: 0.08em;
+
         color: rgba(255, 255, 255, 0.55);
+
         text-transform: uppercase;
+
         margin-top: 20px;
+
         margin-bottom: 6px;
+
         padding-left: 16px;
+
     }
+
+ 
 
     .badge-menu-premium {
+
         background-color: #FFFFFF !important;
+
         color: #0B1E5B !important;
+
         font-size: 11px;
+
         font-weight: 900;
+
         padding: 1px 7px;
+
         border-radius: 8px;
+
         margin-left: auto;
+
     }
+
+ 
 
     /* Error 5: Refuerzo de tipografía */
+
     input,
+
     select,
+
     button,
+
     span,
+
     p,
+
     h1,
+
     h2,
+
     h3,
+
     h4,
+
     h5 {
+
         font-weight: 600 !important;
+
     }
+
     
+
     .font-bold-premium {
+
         font-weight: 700 !important;
+
     }
+
+ 
 
     .font-black-premium {
+
         font-weight: 900 !important;
+
     }
+
+ 
 
     /* Error 6: Tarjetas del Marketplace */
+
     .tarjeta-mudanza-premium {
+
         background-color: #FFFFFF !important;
+
         border: 1px solid #E2E8F0 !important;
+
         box-shadow:
+
             0 4px 12px -1px rgba(15, 23, 42, 0.08),
+
             0 2px 6px -1px rgba(15, 23, 42, 0.04) !important;
+
         margin-bottom: 12px !important;
+
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
     }
+
+ 
 
     .tarjeta-mudanza-premium:hover {
+
         transform: translateY(-2px);
+
         box-shadow:
+
             0 12px 20px -3px rgba(15, 23, 42, 0.12),
+
             0 4px 12px -2px rgba(15, 23, 42, 0.06) !important;
+
         border-color: #CBD5E1 !important;
+
     }
+
 </style>
 
+ 
+
 </head>
+
+ 
 
 <body class="flex h-screen overflow-hidden">
 
+ 
+
 <div
+
     id="mobile-overlay"
+
     class="fixed inset-0 bg-gray-900/60 z-40 hidden md:hidden backdrop-blur-sm"
+
     onclick="cerrarMenuMovil()">
+
 </div>
 
+ 
+
 <!-- ========================================================
+
      BARRA LATERAL DE MENÚS
+
      ======================================================== -->
 
+ 
+
 <aside
+
     id="sidebar"
+
     class="w-64 flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col bg-white">
 
+ 
+
     <div class="w-full bg-white flex items-center justify-center px-6 py-5 flex-shrink-0">
+
         <img
+
             src="images/logo-rodax-nuevo.png"
+
             id="logoRodaxSide"
+
             alt="RODAX MUDANZAS"
+
             class="h-[68px] object-contain transition-transform duration-200 hover:scale-105">
+
     </div>
 
+ 
+
     <div class="flex-1 flex flex-col mx-3 mb-4 rounded-2xl bg-gradient-to-b from-[#0b1e5b] to-[#163562] text-white shadow-xl overflow-hidden">
+
         
+
         <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-3 custom-scrollbar text-sm">
 
+ 
+
             <!-- MARKETPLACE -->
+
             <div>
+
                 <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
+
                     Marketplace
+
                 </div>
+
+ 
 
                 <div class="space-y-1">
 
+ 
+
                     <button
+
                         onclick="cambiarTab('disponibles')"
+
                         class="nav-marketplace-tab w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 text-slate-300/90 hover:bg-white/10 hover:text-white"
+
                         id="nav-disponibles">
 
+ 
+
                         <div class="flex items-center space-x-2.5">
+
                             <i data-lucide="search" class="w-4 h-4 text-sky-400"></i>
+
                             <span>Trabajos disponibles</span>
+
                         </div>
 
+ 
+
                         <span
+
                             id="badge-disponibles"
+
                             class="bg-sky-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-md">
+
                             43
+
                         </span>
+
                     </button>
 
+ 
+
                     <button
+
                         onclick="cambiarTab('mis-mudanzas')"
+
                         class="nav-marketplace-tab w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 text-slate-300/90 hover:bg-white/10 hover:text-white"
+
                         id="nav-mis-mudanzas">
 
+ 
+
                         <div class="flex items-center space-x-2.5">
+
                             <i data-lucide="truck" class="w-4 h-4 text-slate-400"></i>
+
                             <span>Mis mudanzas activas</span>
+
                         </div>
 
+ 
+
                         <span
+
                             id="badge-activas"
+
                             class="bg-emerald-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+
                             2
+
                         </span>
+
                     </button>
 
+ 
+
                 </div>
+
             </div>
+
+ 
 
             <!-- OPERACIONES -->
+
             <div>
+
                 <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
+
                     Operaciones
+
                 </div>
+
+ 
 
                 <div class="space-y-1">
 
+ 
+
                     <button
+
                         onclick="cambiarTab('historial-servicios')"
+
                         class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+
                         id="nav-historial-servicios">
 
+ 
+
                         <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
+
                         <span>Historial de servicios</span>
+
                     </button>
 
+ 
+
                 </div>
+
             </div>
+
+ 
 
             <!-- FINANZAS -->
+
             <div>
+
                 <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
+
                     Finanzas
+
                 </div>
+
+ 
 
                 <div class="space-y-1">
 
+ 
+
                     <button
+
                         onclick="cambiarTab('facturacion')"
+
                         class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+
                         id="nav-facturacion">
 
+ 
+
                         <i data-lucide="file-text" class="w-4 h-4 text-slate-400"></i>
+
                         <span>Facturación</span>
+
                     </button>
 
+ 
+
                 </div>
+
             </div>
+
+ 
 
             <!-- MI NEGOCIO -->
+
             <div>
+
                 <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
+
                     Mi Negocio
+
                 </div>
+
+ 
 
                 <div class="space-y-1">
 
+ 
+
                     <button
+
                         onclick="cambiarTab('mis-vehiculos')"
+
                         class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+
                         id="nav-mis-vehiculos">
 
+ 
+
                         <i data-lucide="car" class="w-4 h-4 text-slate-400"></i>
+
                         <span>Mis vehículos</span>
+
                     </button>
 
+ 
+
                 </div>
+
             </div>
 
+ 
+
             <!-- MI CUENTA -->
+
             <div>
+
                 <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
+
                     Mi Cuenta
+
                 </div>
+
+ 
 
                 <div class="space-y-1">
 
+ 
+
                     <button
+
                         onclick="cambiarTab('mi-perfil')"
+
                         class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+
                         id="nav-mi-perfil">
 
+ 
+
                         <i data-lucide="user" class="w-4 h-4 text-slate-400"></i>
+
                         <span>Mi perfil</span>
+
                     </button>
 
+ 
+
                     <button
+
                         onclick="cambiarTab('notificaciones')"
+
                         class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+
                         id="nav-notificaciones">
 
+ 
+
                         <div class="flex items-center space-x-2.5">
+
                             <i data-lucide="bell" class="w-4 h-4 text-slate-400"></i>
+
                             <span>Notificaciones</span>
+
                         </div>
 
+ 
+
                         <span
+
                             id="badge-notificaciones-sidebar"
+
                             class="bg-sky-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+
                             0
+
                         </span>
+
                     </button>
+
+ 
 
                     <button
+
                         onclick="cambiarTab('configuracion')"
+
                         class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+
                         id="nav-configuracion">
 
+ 
+
                         <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
+
                         <span>Configuración</span>
+
                     </button>
 
+ 
+
                 </div>
+
             </div>
+
+ 
 
         </nav>
 
+ 
+
         <div class="p-3 border-t border-white/10">
 
+ 
+
             <button
+
                 onclick="cerrarSesion()"
+
                 class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300 hover:bg-red-500/20 hover:text-red-400 transition-colors duration-200">
 
+ 
+
                 <i data-lucide="log-out" class="w-4 h-4"></i>
+
                 <span>Cerrar sesión</span>
+
+ 
 
             </button>
 
+ 
+
         </div>
 
+ 
+
     </div>
+
+ 
 
 </aside>
 
+ 
+
 <!-- ========================================================
+
      CONTENIDO CENTRAL
+
      ======================================================== -->
+
+ 
 
 <main class="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50 relative w-full">
 
+ 
+
     <!-- FILA SUPERIOR BLANCA -->
+
     <header
+
         class="top-profile-bar-blanca px-6 flex items-center justify-between flex-shrink-0 no-print bg-white border-b border-slate-100">
 
+ 
+
         <button
+
             onclick="abrirMenuMovil()"
+
             class="md:hidden text-slate-600 p-2 bg-slate-100 rounded-lg">
+
+ 
 
             <i data-lucide="menu" class="w-5 h-5"></i>
 
+ 
+
         </button>
+
+ 
 
         <div class="flex items-center gap-4 ml-auto">
 
+ 
+
             <div
+
                 class="relative cursor-pointer p-2 hover:bg-slate-100 rounded-full transition-colors duration-200">
+
+ 
 
                 <i data-lucide="bell" class="w-6 h-6 text-slate-600"></i>
 
+ 
+
                 <span
+
                     id="badge-notificaciones-top"
+
                     class="absolute top-1 right-1 bg-sky-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
+
                     0
+
                 </span>
 
+ 
+
             </div>
+
+ 
 
             <div class="flex flex-col text-right">
 
-                <div
-                    id="profile-name-top"
-                    class="font-bold-premium text-sm text-slate-800 leading-tight">
-                    rodrigo flores
-                </div>
+ 
 
                 <div
+
+                    id="profile-name-top"
+
+                    class="font-bold-premium text-sm text-slate-800 leading-tight">
+
+                    rodrigo flores
+
+                </div>
+
+ 
+
+                <div
+
                     class="flex items-center justify-end gap-1.5 text-[11px] text-emerald-600 font-bold-premium mt-0.5">
+
+ 
 
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
 
+ 
+
                     <span class="text-xs font-medium text-emerald-600">
+
                         Conectado
+
                     </span>
+
+ 
 
                 </div>
 
+ 
+
             </div>
 
+ 
+
             <img
+
                 id="profile-img-top"
+
                 src=""
+
                 alt="Avatar"
+
                 class="w-9 h-9 rounded-full object-cover border border-slate-200">
 
+ 
+
         </div>
+
+ 
 
     </header>
 
+ 
+
     <!-- BARRA SUPERIOR AZUL -->
+
     <div class="px-6 pt-3 pb-1 no-print flex-shrink-0">
 
+ 
+
         <div
+
             class="theme-azul-oscuro-rodax text-white rounded-xl px-5 py-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+
+ 
 
             <div class="flex items-center gap-3.5">
 
+ 
+
                 <i
+
                     data-lucide="truck"
+
                     class="w-5 h-5 text-white/90 flex-shrink-0">
+
                 </i>
+
+ 
 
                 <div class="flex flex-col justify-center">
 
+ 
+
                     <h1
+
                         id="header-title"
+
                         class="text-sm md:text-base font-black tracking-tight leading-none">
+
                         Trabajos Disponibles
+
                     </h1>
 
+ 
+
                     <p
+
                         class="hidden md:block text-[11px] text-white/60 font-semibold mt-1 leading-tight max-w-xs select-none">
+
                         Encuentra y acepta servicios que encajen con tu ruta y disponibilidad.
+
                     </p>
 
+ 
+
                 </div>
+
+ 
 
             </div>
 
+ 
+
             <div
+
                 class="flex flex-wrap items-center gap-3 text-xs font-bold ml-auto md:ml-0">
 
+ 
+
                 <div
+
                     class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-6 py-3.5 rounded-md transition-colors cursor-pointer select-none">
 
+ 
+
                     <i
+
                         data-lucide="box"
+
                         class="w-4 h-4 text-white/70">
+
                     </i>
 
+ 
+
                     <span
+
                         id="banner-contador-trabajos"
+
                         class="font-black text-white text-[11px]">
+
                         0
+
                     </span>
 
+ 
+
                     <span class="text-white/90">
+
                         trabajos disponibles
+
                     </span>
+
+ 
 
                 </div>
 
+ 
+
                 <button
+
     type="button"
+
     id="btn-actualizar-marketplace"
+
     onclick="recargarDatos()"
+
     class="flex items-center gap-2 bg-white/10 hover:bg-white/15 active:bg-white/20 px-6 py-3.5 rounded-md transition-all duration-200 cursor-pointer select-none disabled:opacity-60 disabled:cursor-wait"
+
     title="Actualizar trabajos disponibles">
 
+ 
+
     <i
+
         id="icono-actualizar-marketplace"
+
         data-lucide="refresh-cw"
+
         class="w-4 h-4 text-white/70 transition-transform duration-300">
+
     </i>
 
+ 
+
     <span
+
         id="texto-actualizar-marketplace"
+
         class="text-white/90">
+
         Actualizar
+
     </span>
+
+ 
 
 </button>
 
+ 
+
                 <!-- DISPONIBILIDAD -->
+
                 <div
+
     class="relative h-[48px] min-w-[150px] flex-shrink-0 select-none no-print flex items-end justify-center">
 
+ 
+
                     <span
+
     class="absolute -top-4 left-0 right-0 text-center text-[10px] text-white/60 uppercase font-black tracking-wider">
+
     Disponibilidad
+
 </span>
 
+ 
+
                     <div
+
     class="relative h-[48px] w-full flex items-center bg-white/10 hover:bg-white/15 rounded-md transition-colors border border-white/10 px-3.5">
 
+ 
+
                         <span
+
                             id="disponibilidad-indicador-color"
+
                             class="w-2.5 h-2.5 rounded-full bg-emerald-400 mr-2.5 flex-shrink-0 transition-colors duration-300">
+
                         </span>
 
+ 
+
                         <select
+
                             id="selector-disponibilidad-transportista"
+
                             onchange="actualizarDisponibilidadBaseDatos(this.value)"
+
                             class="bg-transparent text-white font-black text-sm tracking-wide focus:outline-none pr-6 cursor-pointer appearance-none w-full font-sans">
 
-                            <option
-                                value="Disponible"
-                                class="text-slate-900 font-bold">
-                                Disponible
-                            </option>
+ 
 
                             <option
-                                value="No Disponible"
+
+                                value="Disponible"
+
                                 class="text-slate-900 font-bold">
-                                No Disponible
+
+                                Disponible
+
                             </option>
+
+ 
+
+                            <option
+
+                                value="No Disponible"
+
+                                class="text-slate-900 font-bold">
+
+                                No Disponible
+
+                            </option>
+
+ 
 
                         </select>
 
+ 
+
                         <i
+
                             data-lucide="chevron-down"
+
                             class="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/70 w-4 h-4 pointer-events-none">
+
                         </i>
+
+ 
 
                     </div>
 
+ 
+
                 </div>
+
+ 
 
             </div>
 
+ 
+
         </div>
+
+ 
 
     </div>
 
+ 
+
     <!-- FILTROS MARKETPLACE -->
+
     <div
+
         class="w-full bg-[#0b1e5b]/5 border border-[#0b1e5b]/15 rounded-2xl p-4 flex flex-wrap items-center gap-3 backdrop-blur-sm shadow-sm mb-6">
+
+ 
 
         <div class="flex-1 min-w-[200px] relative">
 
+ 
+
             <i
+
                 data-lucide="search"
+
                 class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none">
+
             </i>
 
+ 
+
             <input
+
                 id="filtro-buscar-marketplace"
+
                 type="text"
+
                 placeholder="Buscar origen o destino..."
+
                 autocomplete="off"
+
                 class="w-full bg-white text-slate-700 placeholder-slate-400 pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0b1e5b]/20 focus:border-[#0b1e5b]"
+
             >
+
+ 
 
         </div>
 
+ 
+
         <button
+
             type="button"
+
             id="filtro-fecha-marketplace"
+
             data-marketplace-filtro="true"
+
             class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
 
+ 
+
             <i
+
                 data-lucide="calendar"
+
                 class="w-4 h-4 text-slate-400">
+
             </i>
+
+ 
 
             <span>Fecha</span>
 
+ 
+
             <span
+
                 data-filtro-indicador
+
                 class="text-sky-500 font-black">
+
             </span>
 
+ 
+
             <i
+
                 data-lucide="chevron-down"
+
                 class="w-4 h-4 text-slate-400 ml-auto">
+
             </i>
+
+ 
 
         </button>
 
+ 
+
         <button
+
             type="button"
+
             id="filtro-zona-marketplace"
+
             data-marketplace-filtro="true"
+
             class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
 
+ 
+
             <i
+
                 data-lucide="map-pin"
+
                 class="w-4 h-4 text-slate-400">
+
             </i>
+
+ 
 
             <span>Zona</span>
 
+ 
+
             <span
+
                 data-filtro-indicador
+
                 class="text-sky-500 font-black">
+
             </span>
 
+ 
+
             <i
+
                 data-lucide="chevron-down"
+
                 class="w-4 h-4 text-slate-400 ml-auto">
+
             </i>
+
+ 
 
         </button>
 
+ 
+
         <button
+
             type="button"
+
             id="filtro-distancia-marketplace"
+
             data-marketplace-filtro="true"
+
             class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
 
+ 
+
             <i
+
                 data-lucide="navigation"
+
                 class="w-4 h-4 text-slate-400">
+
             </i>
+
+ 
 
             <span>Distancia</span>
 
+ 
+
             <span
+
                 data-filtro-indicador
+
                 class="text-sky-500 font-black">
+
             </span>
 
+ 
+
             <i
+
                 data-lucide="chevron-down"
+
                 class="w-4 h-4 text-slate-400 ml-auto">
+
             </i>
+
+ 
 
         </button>
 
+ 
+
         <button
+
             type="button"
+
             id="filtro-vehiculo-marketplace"
+
             data-marketplace-filtro="true"
+
             class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
 
+ 
+
             <i
+
                 data-lucide="truck"
+
                 class="w-4 h-4 text-slate-400">
+
             </i>
+
+ 
 
             <span>Vehículo</span>
 
+ 
+
             <span
+
                 data-filtro-indicador
+
                 class="text-sky-500 font-black">
+
             </span>
 
+ 
+
             <i
+
                 data-lucide="chevron-down"
+
                 class="w-4 h-4 text-slate-400 ml-auto">
+
             </i>
+
+ 
 
         </button>
 
+ 
+
         <button
+
             type="button"
+
             id="filtro-mas-marketplace"
+
             data-marketplace-filtro="true"
+
             class="ml-auto bg-white hover:bg-slate-50 text-slate-700 font-semibold px-4 py-2 rounded-xl border border-slate-200 text-sm flex items-center gap-2 transition-colors duration-150">
 
+ 
+
             <i
+
                 data-lucide="sliders-horizontal"
+
                 class="w-4 h-4 text-[#0b1e5b]">
+
             </i>
+
+ 
 
             <span>Más filtros</span>
 
+ 
+
             <span
+
                 data-filtro-indicador
+
                 class="text-sky-500 font-black">
+
             </span>
+
+ 
 
         </button>
 
+ 
+
         <button
+
             type="button"
+
             id="limpiar-todos-filtros-marketplace"
+
             class="hidden bg-white hover:bg-red-50 text-slate-500 hover:text-red-600 font-semibold px-3 py-2 rounded-xl border border-slate-200 hover:border-red-200 text-xs flex items-center gap-2 transition-colors">
 
+ 
+
             <i
+
                 data-lucide="rotate-ccw"
+
                 class="w-3.5 h-3.5">
+
             </i>
+
+ 
 
             <span>Limpiar</span>
 
+ 
+
         </button>
+
+ 
 
     </div>
 
+ 
+
     <!-- CONTENEDORES PRINCIPALES -->
+
     <div class="flex-1 overflow-y-auto p-6">
 
+ 
+
         <!-- TRABAJOS DISPONIBLES -->
+
         <div
+
             id="tab-disponibles"
+
             class="fade-in">
 
+ 
+
             <div
+
                 class="grid grid-cols-1 lg:grid-cols-2 gap-5"
+
                 id="contenedor-disponibles">
+
+ 
 
                 <!-- JavaScript inyectará dinámicamente las mudanzas -->
 
+ 
+
             </div>
 
+ 
+
         </div>
+
+ 
 
         <!-- MIS MUDANZAS ACTIVAS -->
+
         <div
+
             id="tab-mis-mudanzas"
+
             class="hidden fade-in">
 
+ 
+
             <div
+
                 id="contenedor-activas"
+
                 class="space-y-5">
+
+ 
 
                 <div
+
                     id="empty-activas"
+
                     class="text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300">
 
+ 
+
                     <i
+
                         data-lucide="inbox"
+
                         class="w-12 h-12 text-gray-300 mx-auto mb-3">
+
                     </i>
 
+ 
+
                     <p class="text-gray-500 font-semibold">
+
                         No tienes ninguna mudanza asignada actualmente.
+
                     </p>
+
+ 
 
                     <p class="text-gray-400 text-sm mt-1">
+
                         Busca trabajos en la pestaña "Trabajos Disponibles".
+
                     </p>
 
+ 
+
                 </div>
+
+ 
 
             </div>
 
+ 
+
         </div>
+
+ 
 
         <!-- HISTORIAL DE SERVICIOS -->
+
         <section
+
             id="tab-historial-servicios"
+
             class="hidden fade-in">
+
             <div
+
                 id="historial-servicios-contenido"
+
                 class="space-y-5">
+
                 <div class="text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300">
+
                     <i data-lucide="history" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
+
                     <p class="text-slate-500 font-semibold">Cargando historial de servicios...</p>
+
                 </div>
+
             </div>
+
         </section>
+
+ 
 
         <!-- FACTURACION + PAGOS -->
+
         <section
+
             id="tab-facturacion"
+
             class="hidden fade-in">
+
             <div id="facturacion-contenido"></div>
+
         </section>
+
+ 
 
         <!-- MI PERFIL + EQUIPO / OPERARIOS -->
+
         <section
+
             id="tab-mi-perfil"
+
             class="hidden fade-in">
+
             <div id="perfil-contenido"></div>
+
         </section>
 
+ 
+
     </div>
+
+ 
 
     <!-- MODAL -->
+
     <div
+
         id="action-modal"
+
         class="fixed inset-0 bg-gray-900/80 z-[100] flex items-center justify-center p-4 hidden backdrop-blur-sm">
 
+ 
+
         <div
+
             class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 text-center"
+
             id="modal-content">
+
         </div>
 
+ 
+
     </div>
 
+ 
+
     <div
+
         id="ficha-print-zone"
+
         style="display:none;">
+
     </div>
+
+ 
 
     <!-- OVERLAY DRAWER -->
+
     <div
+
         id="drawerOverlay"
+
         class="fixed inset-0 bg-black/40 hidden z-40 backdrop-blur-sm cursor-pointer">
+
     </div>
 
+ 
+
     <!-- DRAWER -->
+
     <aside
+
         id="drawerMudanza"
+
         class="fixed top-0 right-0 h-full w-[450px] max-w-full bg-white shadow-2xl translate-x-full transition-transform duration-300 z-50 flex flex-col border-l border-slate-100">
+
+ 
 
         <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
 
+ 
+
             <h2 class="text-base font-bold text-slate-800 tracking-tight">
+
                 Detalles del trabajo
+
             </h2>
 
+ 
+
             <button
+
                 onclick="cerrarDrawer()"
+
                 class="rounded-xl p-2 text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-colors text-sm font-medium">
+
                 ✕
+
             </button>
 
+ 
+
         </div>
+
+ 
 
         <div
+
             class="px-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center w-full no-print flex-shrink-0">
 
+ 
+
             <button
+
                 onclick="cambiarDrawerTab('resumen')"
+
                 id="tab-d-resumen"
+
                 class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-blue-600 text-blue-600 transition-colors">
+
                 Resumen
+
             </button>
 
+ 
+
             <button
+
                 onclick="cambiarDrawerTab('ruta')"
+
                 id="tab-d-ruta"
+
                 class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">
+
                 Ruta
+
             </button>
 
+ 
+
             <button
+
                 onclick="cambiarDrawerTab('inventario')"
+
                 id="tab-d-inventario"
+
                 class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">
+
                 Inventario
+
             </button>
 
+ 
+
             <button
+
                 onclick="cambiarDrawerTab('servicios')"
+
                 id="tab-d-servicios"
+
                 class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">
+
                 Servicios
+
             </button>
 
+ 
+
             <button
+
                 onclick="cambiarDrawerTab('fotos')"
+
                 id="tab-d-fotos"
+
                 class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">
+
                 Fotos
+
             </button>
 
+ 
+
             <button
+
                 onclick="cambiarDrawerTab('indicaciones')"
+
                 id="tab-d-indicaciones"
+
                 class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">
+
                 Indicaciones
+
             </button>
+
+ 
 
         </div>
+
+ 
 
         <div class="flex-1 overflow-y-auto p-6 space-y-5">
 
+ 
+
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
 
+ 
+
                 <span
+
                     id="drawerServicioBadge"
+
                     class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md border">
+
                     —
+
                 </span>
 
+ 
+
                 <span class="text-xs font-medium text-slate-400">
+
                     ID:
+
                     <strong
+
                         id="drawerIdTexto"
+
                         class="text-slate-600 font-semibold">
+
                         —
+
                     </strong>
+
                 </span>
+
+ 
 
             </div>
 
+ 
+
             <!-- RESUMEN -->
+
             <div
+
                 id="pane-d-resumen"
+
                 class="drawer-pane space-y-5">
 
+ 
+
                 <div
+
                     class="relative pl-6 border-l-2 border-dashed border-slate-200 ml-2 space-y-6 my-2">
 
+ 
+
                     <div class="relative">
 
+ 
+
                         <div
+
                             class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-blue-600 border-4 border-white shadow-sm">
+
                         </div>
 
-                        <p
-                            id="drawerOrigenResumen"
-                            class="text-sm font-bold text-slate-800 leading-tight">
-                            —
-                        </p>
+ 
 
                         <p
-                            id="drawerOrigenAcceso"
-                            class="text-xs text-slate-400 mt-0.5">
+
+                            id="drawerOrigenResumen"
+
+                            class="text-sm font-bold text-slate-800 leading-tight">
+
                             —
+
                         </p>
+
+ 
+
+                        <p
+
+                            id="drawerOrigenAcceso"
+
+                            class="text-xs text-slate-400 mt-0.5">
+
+                            —
+
+                        </p>
+
+ 
 
                     </div>
+
+ 
 
                     <div class="relative">
 
+ 
+
                         <div
+
                             class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-orange-500 border-4 border-white shadow-sm">
+
                         </div>
 
-                        <p
-                            id="drawerDestinoResumen"
-                            class="text-sm font-bold text-slate-800 leading-tight">
-                            —
-                        </p>
+ 
 
                         <p
-                            id="drawerDestinoAcceso"
-                            class="text-xs text-slate-400 mt-0.5">
+
+                            id="drawerDestinoResumen"
+
+                            class="text-sm font-bold text-slate-800 leading-tight">
+
                             —
+
                         </p>
+
+ 
+
+                        <p
+
+                            id="drawerDestinoAcceso"
+
+                            class="text-xs text-slate-400 mt-0.5">
+
+                            —
+
+                        </p>
+
+ 
 
                     </div>
+
+ 
 
                 </div>
+
+ 
 
                 <div class="pt-2 border-t border-slate-100">
 
+ 
+
                     <h3
+
                         class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center justify-between w-full">
 
+ 
+
                         <span>
+
                             INVENTARIO
+
                             (<span
+
                                 id="drawerTotalArticulos"
+
                                 class="font-bold">
+
                                 0
+
                             </span>
+
                             ART.)
+
                             —
+
                             <span
+
                                 id="drawerTipoViviendaResumen"
+
                                 class="text-slate-700 font-semibold">
+
                                 —
+
                             </span>
+
                         </span>
 
+ 
+
                         <span
+
                             id="drawerM3Texto"
+
                             class="text-blue-600 font-bold ml-auto">
+
                             0.0 m³
+
                         </span>
+
+ 
 
                     </h3>
 
+ 
+
                     <div
+
                         id="drawerInventarioResumen"
+
                         class="space-y-2">
+
                     </div>
 
+ 
+
                 </div>
+
+ 
 
                 <div class="grid grid-cols-2 gap-3 pt-1">
 
+ 
+
                     <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
 
+ 
+
                         <span
+
                             class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+
                             Distancia
+
                         </span>
+
+ 
 
                         <span
+
                             id="drawerKm"
+
                             class="font-bold text-slate-800 text-sm">
+
                             —
+
                         </span>
 
+ 
+
                     </div>
+
+ 
 
                     <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
 
-                        <span
-                            class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                            Fecha del Servicio
-                        </span>
+ 
 
                         <span
-                            id="drawerFecha"
-                            class="font-bold text-slate-800 text-sm">
-                            —
+
+                            class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+
+                            Fecha del Servicio
+
                         </span>
+
+ 
+
+                        <span
+
+                            id="drawerFecha"
+
+                            class="font-bold text-slate-800 text-sm">
+
+                            —
+
+                        </span>
+
+ 
 
                     </div>
+
+ 
 
                 </div>
+
+ 
 
                 <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
 
-    <span
-        class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-        Horario de recogida
-    </span>
+ 
 
     <span
-        id="drawerFranjaHorariaRecogida"
-        class="font-bold text-slate-800 text-sm">
-        —
+
+        class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+
+        Horario de recogida
+
     </span>
+
+ 
+
+    <span
+
+        id="drawerFranjaHorariaRecogida"
+
+        class="font-bold text-slate-800 text-sm">
+
+        —
+
+    </span>
+
+ 
 
 </div>
 
+ 
+
                 <div
+
                     class="bg-yellow-50/60 border border-yellow-100 rounded-xl p-3 text-xs">
 
+ 
+
                     <span
+
                         class="block text-[10px] font-bold text-amber-600 uppercase tracking-wider mb-1">
+
                         Observaciones preliminares
+
                     </span>
+
+ 
 
                     <p
+
                         id="drawerObservaciones"
+
                         class="text-slate-600 leading-relaxed">
+
                         —
+
                     </p>
 
+ 
+
                 </div>
 
+ 
+
             </div>
+
+ 
 
             <!-- RUTA -->
+
             <div
+
                 id="pane-d-ruta"
+
                 class="drawer-pane space-y-4 hidden">
 
+ 
+
                 <h3
+
                     class="text-xs font-bold uppercase tracking-wider text-slate-400">
+
                     Itinerario y Accesos
+
                 </h3>
 
+ 
+
                 <div
+
                     id="drawerRutaDetalleContenedor"
+
                     class="w-full">
+
                 </div>
 
+ 
+
             </div>
+
+ 
 
             <!-- INVENTARIO -->
+
             <div
+
                 id="pane-d-inventario"
+
                 class="drawer-pane space-y-4 hidden">
 
+ 
+
                 <h3
+
                     class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between w-full">
 
+ 
+
                     <span>
+
                         Desglose Completo de Carga
+
                     </span>
+
+ 
 
                     <span
+
                         id="drawerM3Badge"
+
                         class="text-blue-600 font-bold">
+
                         0.0 m³
+
                     </span>
 
+ 
+
                 </h3>
 
+ 
+
                 <div
+
                     id="drawerInventarioFull"
+
                     class="space-y-1 w-full">
+
                 </div>
 
+ 
+
             </div>
+
+ 
 
             <!-- SERVICIOS -->
+
             <div
+
                 id="pane-d-servicios"
+
                 class="drawer-pane space-y-4 hidden">
 
+ 
+
                 <h3
+
                     class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+
                     Garantías y Extras Incluidos
+
                 </h3>
 
+ 
+
                 <div
+
                     id="drawerServiciosLista"
+
                     class="w-full">
+
                 </div>
 
+ 
+
             </div>
+
+ 
 
             <!-- FOTOS -->
+
             <div
+
                 id="pane-d-fotos"
+
                 class="drawer-pane space-y-4 hidden">
 
+ 
+
                 <h3
+
                     class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+
                     Registro Fotográfico del Cliente
+
                 </h3>
 
+ 
+
                 <div
+
                     id="drawerFotosFull"
+
                     class="w-full">
+
                 </div>
 
+ 
+
             </div>
+
+ 
 
             <!-- INDICACIONES -->
+
             <div
+
                 id="pane-d-indicaciones"
+
                 class="drawer-pane space-y-4 hidden">
 
+ 
+
                 <h3
+
                     class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+
                     Indicaciones Operativas
+
                 </h3>
 
+ 
+
                 <div
+
                     id="drawerIndicacionesContenedor"
+
                     class="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border">
+
                 </div>
 
+ 
+
             </div>
+
+ 
 
         </div>
 
+ 
+
         <div
+
             class="p-4 border-t border-slate-100 bg-slate-50/50 flex flex-col gap-3 flex-shrink-0">
 
+ 
+
             <div
+
                 class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-200/60 shadow-sm">
+
+ 
 
                 <div>
 
+ 
+
                     <span
+
                         class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+
                         PRECIO TOTAL A PAGAR
+
                     </span>
 
+ 
+
                     <span
+
                         id="drawerPrecio"
+
                         class="text-xl font-black text-blue-600 leading-none">
+
                         —
+
                     </span>
 
+ 
+
                     <span
+
                         class="text-[10px] text-slate-400 block mt-0.5">
+
                         IVA incl.
+
                     </span>
+
+ 
 
                 </div>
+
+ 
 
                 <div class="text-right">
 
-                    <span
-                        class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold px-2 py-1 rounded-md block">
-                        Pago Garantizado
-                    </span>
+ 
 
                     <span
-                        class="text-[10px] text-slate-400 font-medium block mt-1">
-                        en 48 horas
+
+                        class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold px-2 py-1 rounded-md block">
+
+                        Pago Garantizado
+
                     </span>
+
+ 
+
+                    <span
+
+                        class="text-[10px] text-slate-400 font-medium block mt-1">
+
+                        en 48 horas
+
+                    </span>
+
+ 
 
                 </div>
 
+ 
+
             </div>
 
+ 
+
             <button
+
                 id="btnAceptarDrawer"
+
                 class="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3.5 font-bold text-sm shadow-md transition-all active:scale-[0.99]">
+
                 Aceptar trabajo
+
             </button>
 
+ 
+
         </div>
+
+ 
 
     </aside>
 
+ 
+
 <script>
+
     lucide.createIcons();
 
+ 
+
     /*
+
      * ==========================================================
+
      * SUPABASE
+
      * ==========================================================
+
      */
+
+ 
 
     const URL_DB =
+
         'https://defvfvfyrydopaybnisg.supabase.co';
 
+ 
+
     const KEY_DB =
+
         'sb_publishable_dKIRJ1_K4u1ypfCNTuylIw_AyAKeZTS';
 
+ 
+
     const dbClient =
+
         window.supabase.createClient(
+
             URL_DB,
+
             KEY_DB
+
         );
 
+ 
+
     let currentUserId = null;
+
     let currentUserNombre = '';
 
+ 
+
     const state = {
+
         disponibles: [],
+
         activas: []
+
     };
+
+ 
 
     /*
+
      * ==========================================================
+
      * EXPOSICIÓN GLOBAL
+
      *
+
      * ESTA ES UNA DE LAS CORRECCIONES PRINCIPALES.
+
      * Los módulos externos marketplace.js / utils.js
+
      * utilizan estas referencias.
+
      * ==========================================================
+
      */
 
+ 
+
     window.Transportista =
+
         window.Transportista || {};
 
+ 
+
     window.dbClient =
+
         dbClient;
+
+ 
 
     window.state =
+
         state;
+
+ 
 
     window.currentUserId =
+
         currentUserId;
+
+ 
 
     window.Transportista.dbClient =
+
         dbClient;
 
+ 
+
     window.Transportista.state =
+
         state;
 
+ 
+
     window.Transportista.currentUserId =
+
         currentUserId;
 
+ 
+
     const UI_TABS = {
+
         tabs: [
+
             'disponibles',
+
             'mis-mudanzas'
+
         ],
 
+ 
+
         titles: {
+
             'disponibles':
+
                 'Trabajos Disponibles',
 
+ 
+
             'mis-mudanzas':
+
                 'Mis Mudanzas Activas'
+
         }
+
     };
+
+ 
 
     function abrirMenuMovil() {
 
-        document
-            .getElementById('sidebar')
-            .classList
-            .remove('-translate-x-full');
+ 
 
         document
-            .getElementById('mobile-overlay')
+
+            .getElementById('sidebar')
+
             .classList
+
+            .remove('-translate-x-full');
+
+ 
+
+        document
+
+            .getElementById('mobile-overlay')
+
+            .classList
+
             .remove('hidden');
+
     }
+
+ 
 
     function cerrarMenuMovil() {
 
-        document
-            .getElementById('sidebar')
-            .classList
-            .add('-translate-x-full');
+ 
 
         document
-            .getElementById('mobile-overlay')
+
+            .getElementById('sidebar')
+
             .classList
+
+            .add('-translate-x-full');
+
+ 
+
+        document
+
+            .getElementById('mobile-overlay')
+
+            .classList
+
             .add('hidden');
+
     }
+
+ 
 
     async function verificarSesion() {
 
+ 
+
         try {
 
+ 
+
             const {
+
                 data: {
+
                     session
+
                 },
+
                 error
+
             } =
+
                 await dbClient.auth.getSession();
 
+ 
+
             console.log(
+
                 "=== DIAGNÓSTICO RODAX ==="
+
             );
 
+ 
+
             console.log(
+
                 "Sesión:",
+
                 session
+
             );
 
+ 
+
             console.log(
+
                 "Usuario:",
+
                 session?.user
+
             );
 
+ 
+
             console.log(
+
                 "dbClient global:",
+
                 Boolean(window.dbClient)
+
             );
 
+ 
+
             console.log(
+
                 "state global:",
+
                 Boolean(window.state)
+
             );
 
+ 
+
             console.log(
+
                 "========================"
+
             );
+
+ 
 
             if (
+
                 error ||
+
                 !session
+
             ) {
 
+ 
+
                 console.error(
+
                     "NO SE DETECTÓ SESIÓN ACTIVA."
+
                 );
+
+ 
 
                 window.location.replace(
+
                     'transportistas.html'
+
                 );
+
+ 
 
                 return;
+
             }
 
+ 
+
             currentUserId =
+
                 session.user.id;
 
+ 
+
             /*
+
              * Mantener sincronizadas
+
              * las referencias globales.
+
              */
+
             window.currentUserId =
+
                 currentUserId;
+
+ 
 
             window.Transportista.currentUserId =
+
                 currentUserId;
 
+ 
+
             console.log(
+
                 "Transportista ID:",
+
                 currentUserId
+
             );
+
+ 
 
             /*
+
              * ==================================================
+
              * AUTOMATIZACIÓN DE LOGIN
+
              * ==================================================
+
              */
 
+ 
+
             console.log(
+
                 "Transportista logueado. " +
+
                 "Sincronizando estado automático: Disponible"
+
             );
 
+ 
+
             await dbClient
+
                 .from('transportistas')
+
                 .update({
+
                     disponibilidad:
+
                         "Disponible",
 
+ 
+
                     ultima_actualizacion_estado:
+
                         new Date().toISOString()
+
                 })
+
                 .eq(
+
                     'id',
+
                     currentUserId
+
                 );
 
+ 
+
             const selectorDisp =
+
                 document.getElementById(
+
                     'selector-disponibilidad-transportista'
+
                 );
+
+ 
 
             if (selectorDisp) {
 
+ 
+
                 selectorDisp.value =
+
                     "Disponible";
+
             }
 
+ 
+
             toggleColorIndicadorDisponibilidad(
+
                 "Disponible"
+
             );
 
+ 
+
             const elLoadingText =
+
                 document.getElementById(
+
                     'loading-text'
+
                 );
+
+ 
 
             if (elLoadingText) {
 
+ 
+
                 elLoadingText.textContent =
+
                     'Cargando tu panel...';
+
             }
+
+ 
 
             await cargarDatosPerfil();
 
+ 
+
             const elLoadingScreen =
+
                 document.getElementById(
+
                     'loading-screen'
+
                 );
+
+ 
 
             if (elLoadingScreen) {
 
+ 
+
                 elLoadingScreen.classList.add(
+
                     'hidden'
+
                 );
+
             }
 
+ 
+
             /*
+
              * ==================================================
+
              * CARGA INICIAL
+
              * ==================================================
+
              */
+
+ 
 
             await cargarTrabajosDisponibles();
 
+ 
+
             await cargarMisMudanzas();
 
+ 
+
             if (typeof window.cargarHistorialServicios === 'function') {
+
                 await window.cargarHistorialServicios();
+
             }
 
+ 
+
             /*
+
              * ==================================================
+
              * ACTUALIZACIÓN AUTOMÁTICA
+
              * ==================================================
+
              */
 
+ 
+
             setInterval(
+
                 () => {
 
+ 
+
                     const tabDisp =
+
                         document.getElementById(
+
                             'tab-disponibles'
+
                         );
 
+ 
+
                     if (
+
                         tabDisp &&
+
                         !tabDisp.classList.contains(
+
                             'hidden'
+
                         )
+
                     ) {
 
+ 
+
                         cargarTrabajosDisponibles();
+
                     }
 
+ 
+
                 },
+
                 30000
+
             );
+
+ 
 
         } catch (err) {
 
+ 
+
             console.error(
+
                 'Error controlado en verificación:',
+
                 err
+
             );
 
+ 
+
             alert(
+
                 "Detalle del error en la sesión: " +
+
                 (
+
                     err?.message ||
+
                     "Error desconocido"
+
                 )
+
             );
+
         }
+
     }
+
+ 
 
     async function cargarDatosPerfil() {
 
+ 
+
         try {
 
+ 
+
             const {
+
                 data: sessionData,
+
                 error: sessionError
+
             } =
+
                 await dbClient.auth.getUser();
 
+ 
+
             if (
+
                 sessionError ||
+
                 !sessionData.user
+
             ) {
 
+ 
+
                 console.error(
+
                     "No hay una sesión activa de Supabase:",
+
                     sessionError
+
                 );
 
+ 
+
                 return;
+
             }
 
+ 
+
             const cleanUserId =
+
                 sessionData.user.id;
 
+ 
+
             console.log(
+
                 "Buscando perfil del transportista con UUID limpio:",
+
                 cleanUserId
+
             );
+
+ 
 
             const {
+
                 data,
+
                 error
+
             } =
+
                 await dbClient
+
                     .from('transportistas')
+
                     .select('nombre')
+
                     .eq(
+
                         'id',
+
                         cleanUserId
+
                     )
+
                     .maybeSingle();
 
+ 
+
             console.log(
+
                 "Perfil transportista recibido:",
+
                 data
+
             );
+
+ 
 
             if (error) {
 
+ 
+
                 console.error(
+
                     "Error al cargar el perfil de la base de datos:",
+
                     error
+
                 );
 
+ 
+
                 return;
+
             }
+
+ 
 
             if (data) {
 
+ 
+
                 currentUserNombre =
+
                     data.nombre ||
+
                     'Transportista';
 
+ 
+
                 const elNameTop =
+
                     document.getElementById(
+
                         'profile-name-top'
+
                     ) ||
+
                     document.getElementById(
+
                         'profile-name'
+
                     );
+
+ 
 
                 if (elNameTop) {
 
+ 
+
                     elNameTop.textContent =
+
                         currentUserNombre;
+
                 }
 
+ 
+
                 const avatarUrl =
+
                     `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUserNombre)}&background=ffffff&color=0b1e5b&bold=true`;
 
+ 
+
                 const imgTop =
+
                     document.getElementById(
+
                         'profile-img-top'
+
                     );
+
+ 
 
                 if (imgTop) {
 
+ 
+
                     imgTop.src =
+
                         avatarUrl;
+
                 }
 
+ 
+
                 const img =
+
                     document.getElementById(
+
                         'profile-img'
+
                     );
+
+ 
 
                 if (img) {
 
+ 
+
                     img.src =
+
                         avatarUrl;
+
                 }
+
+ 
 
             } else {
 
+ 
+
                 console.warn(
+
                     "No existe un registro en la tabla 'transportistas' para este ID."
+
                 );
 
+ 
+
                 const elNameTop =
+
                     document.getElementById(
+
                         'profile-name-top'
+
                     ) ||
+
                     document.getElementById(
+
                         'profile-name'
+
                     );
+
+ 
 
                 if (elNameTop) {
 
+ 
+
                     elNameTop.textContent =
+
                         'Transportista';
+
                 }
+
             }
+
+ 
 
         } catch (err) {
 
+ 
+
             console.error(
+
                 "Error inesperado cargando perfil:",
+
                 err
+
             );
+
         }
+
     }
 
+ 
+
     function actualizarContadorNotificaciones(
+
         cantidad
+
     ) {
 
+ 
+
         const badgeTop =
+
             document.getElementById(
+
                 'badge-notificaciones-top'
+
             );
+
+ 
 
         if (badgeTop) {
 
+ 
+
             badgeTop.textContent =
+
                 cantidad;
 
+ 
+
             if (
+
                 cantidad === 0
+
             ) {
 
+ 
+
                 badgeTop.classList.add(
+
                     'hidden'
+
                 );
+
+ 
 
             } else {
 
+ 
+
                 badgeTop.classList.remove(
+
                     'hidden'
+
                 );
+
             }
+
         }
 
+ 
+
         const badgeSidebar =
+
             document.getElementById(
+
                 'badge-notificaciones-sidebar'
+
             );
+
+ 
 
         if (badgeSidebar) {
 
+ 
+
             badgeSidebar.textContent =
+
                 cantidad;
 
+ 
+
             if (
+
                 cantidad === 0
+
             ) {
 
+ 
+
                 badgeSidebar.classList.add(
+
                     'hidden'
+
                 );
+
+ 
 
             } else {
 
+ 
+
                 badgeSidebar.classList.remove(
+
                     'hidden'
+
                 );
+
             }
+
         }
+
     }
+
+ 
 
     async function cerrarSesion() {
 
+ 
+
         await dbClient.auth.signOut();
 
+ 
+
         window.location.replace(
+
             'transportistas.html'
+
         );
+
     }
+
+ 
 
     let actualizandoMarketplace = false;
 
+ 
+
 function recargarDatos() {
 
+ 
+
     // Evitar dobles clics
+
     if (actualizandoMarketplace) {
+
         return;
+
     }
+
+ 
 
     actualizandoMarketplace = true;
 
+ 
+
     const boton =
+
         document.getElementById(
+
             "btn-actualizar-marketplace"
+
         );
+
+ 
 
     const texto =
+
         document.getElementById(
+
             "texto-actualizar-marketplace"
+
         );
+
+ 
 
     const icono =
+
         document.getElementById(
+
             "icono-actualizar-marketplace"
+
         );
+
+ 
 
     // Estado visual: actualizando
+
     if (boton) {
+
         boton.disabled = true;
+
     }
+
+ 
 
     if (texto) {
+
         texto.textContent = "Actualizando...";
+
     }
+
+ 
 
     if (icono) {
+
         icono.classList.add("animate-spin");
+
     }
 
+ 
+
     // --------------------------------------------------
+
     // RECARGAR LOS DOS BLOQUES
+
     // --------------------------------------------------
 
+ 
+
     try {
+
         cargarTrabajosDisponibles();
+
     } catch (error) {
+
         console.error(
+
             "Error actualizando trabajos disponibles:",
+
             error
+
         );
+
     }
+
+ 
 
     try {
+
         cargarMisMudanzas();
+
     } catch (error) {
+
         console.error(
+
             "Error actualizando mis mudanzas:",
+
             error
+
         );
+
     }
 
+ 
+
     // --------------------------------------------------
+
     // RESTABLECER EL BOTÓN
+
     // --------------------------------------------------
+
+ 
 
     setTimeout(() => {
 
+ 
+
         if (icono) {
+
             icono.classList.remove("animate-spin");
+
         }
 
+ 
+
         if (texto) {
+
             texto.textContent = "Actualizado";
+
         }
+
+ 
 
         setTimeout(() => {
 
+ 
+
             if (texto) {
+
                 texto.textContent = "Actualizar";
+
             }
 
+ 
+
             if (boton) {
+
                 boton.disabled = false;
+
             }
+
+ 
 
             actualizandoMarketplace = false;
 
+ 
+
         }, 800);
 
+ 
+
     }, 1000);
+
 }
 
+ 
+
     function cambiarTab(
+
         tabId
+
     ) {
 
+ 
+
         const tabs = [
+
             'disponibles',
+
             'mis-mudanzas',
+
             'historial-servicios',
+
             'facturacion',
+
             'mi-perfil'
+
         ];
 
+ 
+
         tabs.forEach(
+
             t => {
 
+ 
+
                 const pane =
+
                     document.getElementById(
+
                         `tab-${t}`
+
                     );
+
+ 
 
                 if (pane) {
 
+ 
+
                     pane.classList.add(
+
                         'hidden'
+
                     );
+
                 }
 
+ 
+
                 const nav =
+
                     document.getElementById(
+
                         `nav-${t}`
+
                     );
+
+ 
 
                 if (nav) {
 
+ 
+
                     nav.classList.remove(
+
                         'active'
+
                     );
+
                 }
+
             }
+
         );
 
+ 
+
         const paneActivo =
+
             document.getElementById(
+
                 `tab-${tabId}`
+
             );
+
+ 
 
         if (paneActivo) {
 
+ 
+
             paneActivo.classList.remove(
+
                 'hidden'
+
             );
+
         }
 
+ 
+
         const navActivo =
+
             document.getElementById(
+
                 `nav-${tabId}`
+
             );
+
+ 
 
         if (navActivo) {
 
+ 
+
             navActivo.classList.add(
+
                 'active'
+
             );
+
         }
+
+ 
 
         const titles = {
+
             'disponibles':
+
                 'Trabajos Disponibles',
 
+ 
+
             'mis-mudanzas':
+
                 'Mis Mudanzas Activas',
 
+ 
+
             'historial-servicios':
+
                 'Historial de servicios',
 
+ 
+
             'facturacion':
+
                 'Facturación',
 
+ 
+
             'mi-perfil':
+
                 'Mi perfil'
+
         };
 
+ 
+
         const headerTitle =
+
             document.getElementById(
+
                 'header-title'
+
             );
 
+ 
+
         if (
+
             headerTitle &&
+
             titles[tabId]
+
         ) {
 
+ 
+
             headerTitle.textContent =
+
                 titles[tabId];
+
         }
 
+ 
+
         cerrarMenuMovil();
+
     }
+
+ 
 
     async function cargarMisMudanzas() {
 
-        console.log(
-            "Cargando Mis Mudanzas Activas..."
-        );
+ 
 
         console.log(
-            "Transportista:",
-            currentUserId
+
+            "Cargando Mis Mudanzas Activas..."
+
         );
+
+ 
+
+        console.log(
+
+            "Transportista:",
+
+            currentUserId
+
+        );
+
+ 
 
         if (!currentUserId) {
 
+ 
+
             console.warn(
+
                 "No existe currentUserId todavía."
+
             );
 
+ 
+
             return;
+
         }
 
+ 
+
         const {
+
             data,
+
             error
+
         } =
+
             await dbClient
+
                 .from('mudanzas')
+
                 .select('*')
+
                 .eq(
+
                     'estado',
+
                     'Transportista asignado'
+
                 )
+
                 .eq(
+
                     'transportista_id',
+
                     currentUserId
+
                 )
+
                 .order(
+
                     'fecha',
+
                     {
+
                         ascending: true
+
                     }
+
                 );
 
-        console.log(
-            "Mis Mudanzas Activas:",
-            data
-        );
+ 
 
         console.log(
-            "Error Mis Mudanzas Activas:",
-            error
+
+            "Mis Mudanzas Activas:",
+
+            data
+
         );
+
+ 
+
+        console.log(
+
+            "Error Mis Mudanzas Activas:",
+
+            error
+
+        );
+
+ 
 
         if (error) {
 
+ 
+
             console.error(
+
                 "Error cargando Mis Mudanzas Activas:",
+
                 error
+
             );
 
+ 
+
             state.activas =
+
                 [];
+
+ 
 
             renderizarActivas();
 
+ 
+
             return;
+
         }
 
+ 
+
         state.activas =
+
             data || [];
 
+ 
+
         renderizarActivas();
+
     }
+
+ 
 
     function renderizarActivas() {
 
+ 
+
         const contenedor =
+
             document.getElementById(
+
                 'contenedor-activas'
+
             );
 
+ 
+
         const badge =
+
             document.getElementById(
+
                 'badge-activas'
+
             );
+
+ 
 
         if (!contenedor) {
 
+ 
+
             console.error(
+
                 'No existe #contenedor-activas'
+
             );
 
+ 
+
             return;
+
         }
 
+ 
+
         const trabajos =
+
             Array.isArray(
+
                 state.activas
+
             )
+
                 ? state.activas
+
                 : [];
+
+ 
 
         if (badge) {
 
+ 
+
             badge.textContent =
+
                 trabajos.length;
 
+ 
+
             badge.classList.toggle(
+
                 'hidden',
+
                 trabajos.length === 0
+
             );
+
         }
 
+ 
+
         if (
+
             trabajos.length === 0
+
         ) {
 
+ 
+
             contenedor.innerHTML = `
+
                 <div class="text-center py-16 bg-white rounded-3xl border border-dashed border-gray-300">
 
+ 
+
                     <i
+
                         data-lucide="inbox"
+
                         class="w-14 h-14 text-gray-300 mx-auto mb-4">
+
                     </i>
 
+ 
+
                     <h4 class="text-lg font-bold text-gray-700 mb-2">
+
                         No tienes ninguna mudanza asignada actualmente.
+
                     </h4>
 
+ 
+
                     <p class="text-gray-400 font-medium text-sm">
+
                         Busca trabajos en la pestaña "Trabajos Disponibles".
+
                     </p>
 
+ 
+
                 </div>
+
             `;
+
+ 
 
             if (window.lucide) {
 
+ 
+
                 lucide.createIcons();
+
             }
 
+ 
+
             return;
+
         }
+
+ 
 
         const tarjetas =
+
             window.Transportista
+
                 ?.Tarjetas
+
                 ?.renderizarTarjetasActivas;
 
+ 
+
         if (
+
             typeof tarjetas !==
+
             'function'
+
         ) {
 
+ 
+
             console.error(
+
                 "No está disponible Tarjetas.renderizarTarjetasActivas."
+
             );
+
+ 
 
             return;
+
         }
 
+ 
+
         contenedor.innerHTML =
+
             tarjetas(
+
                 trabajos
+
             );
+
+ 
 
         if (window.lucide) {
 
+ 
+
             lucide.createIcons();
+
         }
+
     }
 
+ 
+
     function imprimirFicha(
+
         id
+
     ) {
 
+ 
+
         let mudanza =
+
             state.activas.find(
+
                 m =>
+
                     Number(m.id) ===
+
                     Number(id)
+
             );
 
+ 
+
         if (!mudanza && Array.isArray(window.RODAX_HISTORIAL_SERVICIOS)) {
+
             mudanza = window.RODAX_HISTORIAL_SERVICIOS.find(
+
                 m => Number(m.id) === Number(id)
+
             );
+
         }
+
+ 
 
         if (!mudanza) {
 
+ 
+
             alert(
+
                 "No se ha encontrado la mudanza."
+
             );
 
+ 
+
             return;
+
         }
 
+ 
+
         const origen =
+
             mudanza.origen ||
+
             "";
+
+ 
 
         const destino =
+
             mudanza.destino ||
+
             "";
 
+ 
+
         const fecha =
+
             mudanza.fecha ||
+
             "";
+
+ 
 
             function formatearFechaFicha(fechaOriginal) {
 
+ 
+
     const texto =
+
         String(fechaOriginal || "").trim();
 
+ 
+
     const match =
+
         texto.match(
+
             /^(\d{4})-(\d{2})-(\d{2})/
+
         );
+
+ 
 
     if (!match) {
+
         return texto || "—";
+
     }
 
+ 
+
     return `${match[3]}-${match[2]}-${match[1]}`;
+
 }
 
+ 
+
 const fechaFicha =
+
     formatearFechaFicha(fecha);
 
+ 
+
         const km =
+
             mudanza.km ||
+
             "";
+
+ 
 
         const precio =
+
             mudanza.preciototal ||
+
             "";
+
+ 
 
         const extras =
+
             mudanza.extras ||
+
             "";
+
+ 
 
         const volumen =
+
             mudanza.volumen ||
+
             "";
+
+ 
 
         const ascensor =
+
             mudanza.ascensor ||
+
             "";
 
+ 
+
         const numeroReserva =
+
             window.Transportista
+
                 .getNumeroReserva(
+
                     mudanza
+
                 );
+
+ 
 
         const numArticulos =
+
     window.Transportista
+
         .getTotalArticulos(
+
             mudanza.inventario,
+
             mudanza.tipo_servicio
+
         );
+
+ 
 
 const totalM3 =
+
     window.Transportista
+
         .getTotalM3(
+
             mudanza.inventario,
+
             mudanza.tipo_servicio
+
         );
 
+ 
+
         const m3Texto =
+
             window.Transportista
+
                 .formatM3(
+
                     totalM3
+
                 );
+
                 /////////////////////////////////////////////////////////
+
 // INVENTARIO PARA FICHA TÉCNICA
+
 /////////////////////////////////////////////////////////
 
+ 
+
 const inventarioOriginal =
+
     Array.isArray(mudanza.inventario)
+
         ? mudanza.inventario
+
         : (() => {
+
             try {
+
                 return JSON.parse(
+
                     mudanza.inventario || "[]"
+
                 );
+
             } catch {
+
                 return [];
+
             }
+
         })();
 
+ 
+
 const esMudanzaTotalFicha =
+
     String(
+
         mudanza.tipo_servicio || ""
+
     )
+
         .toLowerCase()
+
         .includes("total");
 
+ 
+
         const tipoServicioFicha =
+
     esMudanzaTotalFicha
+
         ? "MUDANZA TOTAL"
+
         : "MUDANZA ESTÁNDAR";
 
+ 
+
 const normalizarNombreFicha =
+
     valor =>
+
         String(valor ?? "")
+
             .trim()
+
             .toLowerCase()
+
             .normalize("NFD")
+
             .replace(
+
                 /[\u0300-\u036f]/g,
+
                 ""
+
             );
 
+ 
+
 const nombresExtrasFicha = new Set([
+
     "caja pequena",
+
     "caja mediana",
+
     "caja grande"
+
 ]);
 
+ 
+
 const categoriasFicha =
+
     window.RodaxInventario?.config?.categorias ||
+
     {};
+
+ 
 
 const inventarioPorCategoria = {};
 
+ 
+
 Object.keys(categoriasFicha).forEach(
+
     categoria => {
+
         inventarioPorCategoria[categoria] = [];
+
     }
+
 );
+
+ 
 
 inventarioOriginal.forEach(item => {
 
+ 
+
     const cantidad =
+
         Number.parseInt(
+
             item?.cantidad,
+
             10
+
         ) || 0;
 
+ 
+
     if (cantidad <= 0) {
+
         return;
+
     }
+
+ 
 
     const nombre =
+
         String(
+
             item?.nombre ??
+
             item?.mueble ??
+
             item?.item ??
+
             "Artículo"
+
         ).trim();
 
+ 
+
     /*
+
      * En Mudanza Total:
+
      * las tres cajas de beneficios
+
      * NO forman parte del INVENTARIO.
+
      */
+
     if (
+
         esMudanzaTotalFicha &&
+
         nombresExtrasFicha.has(
+
             normalizarNombreFicha(nombre)
+
         )
+
     ) {
+
         return;
+
     }
 
+ 
+
     let categoriaEncontrada =
+
         item?.categoria ||
+
         item?.grupo ||
+
         item?.seccion ||
+
         "Otros";
+
+ 
 
     let encontradaEnConfig = false;
 
+ 
+
     for (
+
         const [
+
             categoria,
+
             listaItems
+
         ]
+
         of Object.entries(categoriasFicha)
+
     ) {
+
+ 
 
         const coincide =
+
             listaItems.some(
+
                 itemConfigurado =>
+
                     normalizarNombreFicha(
+
                         itemConfigurado
+
                     ) ===
+
                     normalizarNombreFicha(
+
                         nombre
+
                     )
+
             );
 
+ 
+
         if (coincide) {
+
             categoriaEncontrada =
+
                 categoria;
 
+ 
+
             encontradaEnConfig = true;
+
             break;
+
         }
+
     }
 
+ 
+
     if (
+
         !encontradaEnConfig &&
+
         !inventarioPorCategoria[
+
             categoriaEncontrada
+
         ]
+
     ) {
+
         categoriaEncontrada = "Otros";
+
     }
 
+ 
+
     if (
+
         !inventarioPorCategoria[
+
             categoriaEncontrada
+
         ]
+
     ) {
+
         inventarioPorCategoria[
+
             categoriaEncontrada
+
         ] = [];
+
     }
+
+ 
 
     inventarioPorCategoria[
+
         categoriaEncontrada
+
     ].push({
+
         nombre,
+
         cantidad
+
     });
+
 });
 
-/////////////////////////////////////////////////////////
-// HTML INVENTARIO AGRUPADO
+ 
+
 /////////////////////////////////////////////////////////
 
+// HTML INVENTARIO AGRUPADO
+
+/////////////////////////////////////////////////////////
+
+ 
+
 const iconosFicha = {
+
     "Salón": "🛋️",
+
     "Cocina": "🍳",
+
     "Comedor": "🍽️",
+
     "Dormitorio": "🛏️",
+
     "Baño": "🚿",
+
     "Otros": "📦"
+
 };
+
+ 
 
 let htmlInventarioFicha = "";
 
+ 
+
 Object.entries(
+
     inventarioPorCategoria
+
 ).forEach(
+
     ([categoria, items]) => {
 
+ 
+
         if (
+
             !items ||
+
             items.length === 0
+
         ) {
+
             return;
+
         }
 
+ 
+
         const totalCategoria =
+
             items.reduce(
+
                 (
+
                     total,
+
                     item
+
                 ) =>
+
                     total +
+
                     item.cantidad,
+
                 0
+
             );
 
+ 
+
         htmlInventarioFicha += `
+
             <div class="inventario-categoria">
+
                 
+
                 <div class="inventario-categoria-header">
+
                     <span>
+
                         ${
+
                             iconosFicha[
+
                                 categoria
+
                             ] || "📦"
+
                         }
+
                         ${categoria}
+
                     </span>
 
+ 
+
                     <span class="inventario-total">
+
                         ${totalCategoria}
+
                     </span>
+
                 </div>
+
+ 
 
                 <div class="inventario-items">
 
+ 
+
                     ${items
+
                         .map(
+
                             item => `
+
                                 <div class="inventario-item">
+
                                     <span>
+
                                         ${item.nombre}
+
                                     </span>
 
+ 
+
                                     <strong>
+
                                         x${item.cantidad}
+
                                     </strong>
+
                                 </div>
+
                             `
+
                         )
+
                         .join("")
+
                     }
+
+ 
 
                 </div>
 
+ 
+
             </div>
+
         `;
+
     }
+
 );
+
+ 
 
 if (!htmlInventarioFicha) {
 
+ 
+
     htmlInventarioFicha = `
+
         <div class="inventario-vacio">
+
             No se especificó inventario detallado.
+
         </div>
+
     `;
+
 }
 
+ 
+
 /////////////////////////////////////////////////////////
+
 // EXTRAS — SOLO MUDANZA TOTAL
+
 /////////////////////////////////////////////////////////
+
+ 
 
 let htmlExtrasFicha = "";
 
+ 
+
 if (esMudanzaTotalFicha) {
 
+ 
+
     let extrasFicha = {
+
     pequenas: 0,
+
     medianas: 0,
+
     grandes: 0
+
 };
 
+ 
+
     if (
+
         typeof window
+
             .RodaxInventario
+
             ?.obtenerExtrasCajas
+
         === "function"
+
     ) {
+
+ 
 
         extrasFicha =
+
             window.RodaxInventario
+
                 .obtenerExtrasCajas(
+
                     mudanza
+
                 );
+
     }
 
+ 
+
     if (
+
         extrasFicha.pequenas > 0 ||
+
         extrasFicha.medianas > 0 ||
+
         extrasFicha.grandes > 0
+
     ) {
 
+ 
+
         htmlExtrasFicha = `
+
     <div class="seccion">
 
+ 
+
         <div class="seccion-titulo extras-titulo">
+
             📦 EXTRAS
+
         </div>
+
+ 
 
         <div class="extras-ficha">
 
+ 
+
             <div
+
                 style="
+
                     font-size:11px;
+
                     font-weight:800;
+
                     color:#047857;
+
                     text-transform:uppercase;
+
                     letter-spacing:0.04em;
+
                     margin-bottom:10px;
+
                 ">
+
                 PROVEER ESTAS CAJAS Y MATERIALES
+
             </div>
 
+ 
+
             ${
+
                 extrasFicha.pequenas > 0
+
                     ? `
+
                         <div class="extra-fila">
+
                             <span>
+
                                 Cajas pequeñas
+
                             </span>
 
+ 
+
                             <strong>
+
                                 x${extrasFicha.pequenas}
+
                             </strong>
+
                         </div>
+
                     `
+
                     : ""
+
             }
 
+ 
+
             ${
+
                 extrasFicha.medianas > 0
+
                     ? `
+
                         <div class="extra-fila">
+
                             <span>
+
                                 Cajas medianas
+
                             </span>
 
+ 
+
                             <strong>
+
                                 x${extrasFicha.medianas}
+
                             </strong>
+
                         </div>
+
                     `
+
                     : ""
+
             }
+
+ 
 
             ${
+
                 extrasFicha.grandes > 0
+
                     ? `
+
                         <div class="extra-fila">
+
                             <span>
+
                                 Cajas grandes
+
                             </span>
 
+ 
+
                             <strong>
+
                                 x${extrasFicha.grandes}
+
                             </strong>
+
                         </div>
+
                     `
+
                     : ""
+
             }
+
+ 
 
         </div>
 
+ 
+
     </div>
+
 `;
+
     }
+
 }
 
+ 
+
         const accesos =
+
     window.Transportista.getAccesos(mudanza) || {
+
         recogida: "",
+
         entrega: ""
+
     };
 
+ 
+
 /*
+
  * =========================================================
+
  * ACCESOS PARA LA FICHA PDF
+
  * =========================================================
+
  */
+
+ 
 
 function formatearAccesoFicha(valor) {
 
+ 
+
     const texto = String(valor || "").trim();
 
+ 
+
     if (!texto) {
+
         return "Acceso por confirmar";
+
     }
 
+ 
+
     /*
+
      * Normalizamos cualquier variante:
+
      * "sin ascensor", "Sin ascensor", etc.
+
      */
+
     const normalizado = texto
+
         .toLowerCase()
+
         .normalize("NFD")
+
         .replace(/[\u0300-\u036f]/g, "");
 
+ 
+
     /*
+
      * Si aparece "sin ascensor", conservamos
+
      * el piso que ya venga informado.
+
      */
+
     if (normalizado.includes("sin ascensor")) {
 
+ 
+
         const matchPiso =
+
             texto.match(
+
                 /piso\s*[:\-]?\s*([^\s|,;]+)/i
+
             );
+
+ 
 
         if (matchPiso) {
 
+ 
+
             let piso =
+
                 String(matchPiso[1]).trim();
 
+ 
+
             /*
+
              * 0 y E = Bajo
+
              */
+
             if (
+
                 piso === "0" ||
+
                 piso.toUpperCase() === "E"
+
             ) {
+
                 return "Sin ascensor · Bajo";
+
             }
 
+ 
+
             return `Sin ascensor · Piso ${piso}`;
+
         }
 
+ 
+
         return "Sin ascensor";
+
     }
+
+ 
 
     /*
+
      * Si ya indica ascensor,
+
      * lo mostramos de forma limpia.
+
      */
+
     if (
+
         normalizado.includes("con ascensor")
+
     ) {
+
         return "Con ascensor";
+
     }
 
+ 
+
     return texto;
+
 }
 
+ 
+
 const accesoRecogidaFicha =
+
     formatearAccesoFicha(
+
         accesos.recogida
+
     );
+
+ 
 
 const accesoEntregaFicha =
+
     formatearAccesoFicha(
+
         accesos.entrega
+
     );
 
+ 
+
         const nombre =
+
             currentUserNombre ||
+
             'Transportista RODAX';
 
+ 
+
         const fechaHoy =
+
             new Date()
+
                 .toLocaleDateString(
+
                     'es-ES',
+
                     {
+
                         weekday:
+
                             'long',
+
+ 
 
                         year:
+
                             'numeric',
 
+ 
+
                         month:
+
                             'long',
 
+ 
+
                         day:
+
                             'numeric'
+
                     }
+
                 );
 
+ 
+
         /*
+
          * =====================================================
+
          * FICHA IMPRIMIBLE
+
          *
+
          * IMPORTANTE:
+
          * Todo este HTML permanece dentro de `contenido`.
+
          * El script interior está escapado como <\/script>
+
          * para que el navegador NO cierre el script principal.
+
          * =====================================================
+
          */
 
+ 
+
         const contenido =
+
 `<!DOCTYPE html>
+
 <html lang="es">
+
 <head>
+
     <meta charset="UTF-8">
 
+ 
+
     <title>
+
         Ficha Técnica — Mudanza #${id} — RODAX
+
     </title>
+
+ 
 
     <style>
 
+ 
+
         * {
+
             box-sizing: border-box;
+
             margin: 0;
+
             padding: 0;
+
         }
+
+ 
 
         body {
+
             font-family:
+
                 Arial,
+
                 Helvetica,
+
                 sans-serif;
 
+ 
+
             background:
+
                 white;
 
+ 
+
             color:
+
                 #1a1a1a;
 
+ 
+
             padding:
+
                 30px;
 
+ 
+
             font-size:
+
                 14px;
+
         }
+
+ 
 
         .header {
+
             display:
+
                 flex;
+
+ 
 
             justify-content:
+
                 space-between;
 
+ 
+
             align-items:
+
                 flex-start;
 
+ 
+
             border-bottom:
+
                 3px solid #2563eb;
 
+ 
+
             padding-bottom:
+
                 20px;
 
+ 
+
             margin-bottom:
+
                 25px;
+
         }
+
+ 
 
         .logo {
+
             font-size:
+
                 22px;
 
+ 
+
             font-weight:
+
                 900;
 
+ 
+
             color:
+
                 #1e3a5f;
 
+ 
+
             letter-spacing:
+
                 -0.5px;
+
         }
+
+ 
 
         .logo span {
+
             color:
+
                 #2563eb;
+
         }
+
+ 
 
         .ficha-num {
+
             text-align:
+
                 right;
+
         }
+
+ 
 
         .ficha-num h2 {
+
             font-size:
+
                 18px;
 
+ 
+
             font-weight:
+
                 900;
 
+ 
+
             color:
+
                 #2563eb;
+
         }
+
+ 
 
         .ficha-num p {
+
             color:
+
                 #6b7280;
 
+ 
+
             font-size:
+
                 11px;
 
+ 
+
             margin-top:
+
                 4px;
+
         }
+
+ 
 
         .seccion {
+
             margin-bottom:
+
                 20px;
+
         }
+
+ 
 
         .seccion-titulo {
+
             font-size:
+
                 10px;
 
+ 
+
             font-weight:
+
                 900;
 
+ 
+
             text-transform:
+
                 uppercase;
 
+ 
+
             letter-spacing:
+
                 1px;
 
+ 
+
             color:
+
                 #6b7280;
 
+ 
+
             margin-bottom:
+
                 10px;
+
+ 
 
             padding-bottom:
+
                 6px;
 
+ 
+
             border-bottom:
+
                 1px solid #e5e7eb;
+
         }
+
+ 
 
         .grid-2 {
+
             display:
+
                 grid;
 
+ 
+
             grid-template-columns:
+
                 1fr 1fr;
 
+ 
+
             gap:
+
                 16px;
+
         }
+
+ 
 
         .dato-label {
+
             font-size:
+
                 10px;
 
+ 
+
             font-weight:
+
                 700;
 
+ 
+
             color:
+
                 #9ca3af;
+
+ 
 
             text-transform:
+
                 uppercase;
 
+ 
+
             letter-spacing:
+
                 0.5px;
 
+ 
+
             margin-bottom:
+
                 3px;
+
         }
+
+ 
 
         .dato-valor {
+
             font-size:
+
                 15px;
 
+ 
+
             font-weight:
+
                 700;
 
+ 
+
             color:
+
                 #111827;
+
         }
+
+ 
 
         .dato-valor.grande {
+
             font-size:
+
                 24px;
 
+ 
+
             font-weight:
+
                 900;
 
+ 
+
             color:
+
                 #059669;
+
         }
+
+ 
 
         .ruta-box {
+
             background:
+
                 #f0f9ff;
 
+ 
+
             border:
+
                 1px solid #bae6fd;
 
+ 
+
             border-radius:
+
                 12px;
 
+ 
+
             padding:
+
                 16px;
+
         }
+
+ 
 
         .punto {
+
             display:
+
                 flex;
 
+ 
+
             align-items:
+
                 flex-start;
 
+ 
+
             gap:
+
                 10px;
 
+ 
+
             margin-bottom:
+
                 8px;
+
         }
+
+ 
 
         .punto-circulo {
+
             width:
+
                 12px;
+
+ 
 
             height:
+
                 12px;
 
+ 
+
             border-radius:
+
                 50%;
 
+ 
+
             flex-shrink:
+
                 0;
 
+ 
+
             margin-top:
+
                 2px;
+
         }
+
+ 
 
         .punto-circulo.azul {
+
             background:
+
                 #2563eb;
+
         }
+
+ 
 
         .punto-circulo.naranja {
+
             background:
+
                 #ea580c;
+
         }
+
+ 
 
         .km-linea {
+
             font-size:
+
                 11px;
 
+ 
+
             color:
+
                 #6b7280;
 
+ 
+
             margin:
+
                 4px 0 4px 22px;
+
         }
+
+ 
 
         .inventario-categoria {
+
     border: 1px solid #e5e7eb;
+
     border-radius: 10px;
+
     margin-bottom: 10px;
+
     overflow: hidden;
+
     background: #ffffff;
+
 }
+
+ 
 
 .inventario-categoria-header {
+
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
+
     padding: 9px 12px;
+
     background: #f8fafc;
+
     border-bottom: 1px solid #e5e7eb;
+
     font-size: 11px;
+
     font-weight: 900;
+
     color: #1f2937;
+
     text-transform: uppercase;
+
     letter-spacing: 0.5px;
+
 }
+
+ 
 
 .inventario-total {
+
     background: #e5e7eb;
+
     color: #475569;
+
     padding: 2px 7px;
+
     border-radius: 6px;
+
     font-size: 10px;
+
 }
+
+ 
 
 .inventario-items {
+
     padding: 5px 12px;
+
 }
+
+ 
 
 .inventario-item,
+
 .extra-fila {
+
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
+
     gap: 12px;
+
     padding: 6px 0;
+
     border-bottom: 1px solid #f1f5f9;
+
     font-size: 11px;
+
     color: #334155;
+
 }
+
+ 
 
 .inventario-item:last-child,
+
 .extra-fila:last-child {
+
     border-bottom: none;
+
 }
+
+ 
 
 .inventario-item strong,
+
 .extra-fila strong {
+
     min-width: 36px;
+
     text-align: center;
+
     background: #f1f5f9;
+
     color: #334155;
+
     padding: 3px 6px;
+
     border-radius: 5px;
+
     font-size: 10px;
+
 }
+
+ 
 
 .inventario-vacio {
+
     padding: 15px;
+
     text-align: center;
+
     color: #9ca3af;
+
     font-size: 11px;
+
     font-style: italic;
+
     border: 1px solid #e5e7eb;
+
     border-radius: 10px;
+
 }
+
+ 
 
 .extras-titulo {
+
     color: #047857 !important;
+
 }
+
+ 
 
 .extras-ficha {
+
     border: 1px solid #a7f3d0;
+
     background: #ecfdf5;
+
     border-radius: 10px;
+
     padding: 7px 12px;
+
 }
+
+ 
 
 .extra-fila {
+
     color: #065f46;
+
 }
+
+ 
 
 .extra-fila strong {
+
     background: #059669;
+
     color: white;
+
 }
 
+ 
+
         .precio-box {
+
             background:
+
                 #f0fdf4;
 
+ 
+
             border:
+
                 2px solid #86efac;
 
+ 
+
             border-radius:
+
                 12px;
 
+ 
+
             padding:
+
                 16px;
 
+ 
+
             text-align:
+
                 center;
+
         }
+
+ 
 
         .aviso {
+
             background:
+
                 #fefce8;
 
+ 
+
             border:
+
                 1px solid #fde047;
 
+ 
+
             border-radius:
+
                 8px;
 
+ 
+
             padding:
+
                 12px;
+
+ 
 
             font-size:
+
                 12px;
 
+ 
+
             color:
+
                 #713f12;
 
+ 
+
             margin-bottom:
+
                 20px;
+
         }
+
+ 
 
         .footer {
+
             border-top:
+
                 1px solid #e5e7eb;
 
+ 
+
             padding-top:
+
                 16px;
 
+ 
+
             margin-top:
+
                 30px;
 
+ 
+
             text-align:
+
                 center;
 
+ 
+
             font-size:
+
                 11px;
 
+ 
+
             color:
+
                 #9ca3af;
+
         }
+
+ 
 
         .firma-linea {
+
             border-bottom:
+
                 1px solid #d1d5db;
 
+ 
+
             height:
+
                 50px;
 
+ 
+
             margin-bottom:
+
                 6px;
+
         }
+
+ 
 
         .firma-texto {
+
             font-size:
+
                 10px;
 
+ 
+
             color:
+
                 #9ca3af;
 
+ 
+
             text-align:
+
                 center;
+
         }
+
+ 
 
         @media print {
 
+ 
+
     body {
+
         padding: 20px;
+
     }
+
+ 
 
     .no-print {
+
         display: none !important;
+
     }
+
+ 
 
     /*
+
      * ==========================================================
+
      * FIRMAS DEL SERVICIO
+
      * Nunca permitir que este bloque se parta entre páginas.
+
      * Si no cabe completo al final de una página, el navegador
+
      * lo llevará completo a la página siguiente.
+
      * ==========================================================
+
      */
 
+ 
+
     .firmas-finales {
+
         break-inside: avoid !important;
+
         page-break-inside: avoid !important;
+
         -webkit-column-break-inside: avoid !important;
 
+ 
+
         /*
+
          * Mantener título + Recogida + Entrega
+
          * como una sola unidad visual.
+
          */
+
         display: block !important;
+
     }
+
+ 
 
     .firmas-finales > div {
+
         break-inside: avoid !important;
+
         page-break-inside: avoid !important;
+
     }
+
+ 
 
     .firmas-finales .firma-linea,
+
     .firmas-finales .firma-texto {
+
         break-inside: avoid !important;
+
         page-break-inside: avoid !important;
+
     }
+
 }
+
+ 
 
 /* ==========================================================
+
    ESTADO ACTIVO — MENÚ MARKETPLACE
+
    ========================================================== */
 
+ 
+
 .nav-marketplace-tab.active {
+
     background-color: rgba(255, 255, 255, 0.15) !important;
+
     color: #ffffff !important;
+
     font-weight: 700 !important;
+
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
+
     border: 1px solid rgba(255, 255, 255, 0.10) !important;
+
 }
+
+ 
 
 .nav-marketplace-tab.active i,
+
 .nav-marketplace-tab.active svg {
+
     color: #38bdf8 !important;
+
 }
 
+ 
+
 .nav-marketplace-tab:not(.active) {
+
     background-color: transparent !important;
+
     border: 1px solid transparent !important;
+
     box-shadow: none !important;
+
 }
+
     </style>
+
 </head>
+
+ 
 
 <body>
 
+ 
+
     <div class="header">
+
+ 
 
         <div>
 
+ 
+
             <img
+
     src="images/logo-rodax-ficha.png"
+
     alt="RODAX MUDANZAS"
+
     style="
+
         width:280px;
+
         max-width:100%;
+
         height:auto;
+
         display:block;
+
     "
+
 >
 
+ 
+
             <p
+
                 style="
+
                     font-size:11px;
+
                     color:#6b7280;
+
                     margin-top:4px;
+
                 ">
+
                 672 907 012 ·
+
                 rodax.furgo.mudanzas.es@gmail.com
+
             </p>
 
+ 
+
         </div>
+
+ 
 
         <div class="ficha-num">
 
+ 
+
     <h2>
+
         FICHA TÉCNICA
+
     </h2>
 
+ 
+
     <div
+
         style="
+
             display:inline-block;
+
             margin-top:6px;
+
             padding:5px 10px;
+
             border-radius:999px;
+
             font-size:10px;
+
             font-weight:900;
+
             letter-spacing:0.5px;
+
             color:${esMudanzaTotalFicha ? '#047857' : '#1d4ed8'};
+
             background:${esMudanzaTotalFicha ? '#ecfdf5' : '#eff6ff'};
+
             border:1px solid ${esMudanzaTotalFicha ? '#a7f3d0' : '#bfdbfe'};
+
         ">
+
         ${tipoServicioFicha}
+
     </div>
 
+ 
+
     <p>
+
         ID:
+
         <strong>
+
             ${numeroReserva}
+
         </strong>
+
     </p>
 
+ 
+
     <p>
+
         Generada:
+
         ${fechaHoy}
+
     </p>
 
+ 
+
     <p>
+
         Transportista:
+
         <strong>
+
             ${nombre}
+
         </strong>
+
     </p>
+
+ 
 
 </div>
 
+ 
+
     </div>
+
+ 
 
     <div class="aviso">
+
         ⚠️
+
         <strong>
+
             Documento confidencial.
+
         </strong>
 
+ 
+
         No compartir los datos del cliente con terceros.
+
         Los datos de contacto solo son accesibles
+
         24h antes del servicio.
+
     </div>
 
+ 
+
     <div
+
         class="grid-2"
+
         style="margin-bottom:20px;">
+
+ 
 
         <div class="seccion">
 
+ 
+
             <div class="seccion-titulo">
+
                 📍 Ruta de la Mudanza
+
             </div>
+
+ 
 
             <div class="ruta-box">
 
+ 
+
                 <div class="punto">
 
+ 
+
                     <div
+
                         class="punto-circulo azul">
+
                     </div>
+
+ 
 
                     <div>
 
+ 
+
                         <div class="dato-label">
+
     Recogida (Origen)
+
 </div>
 
+ 
+
 <div
+
     class="dato-valor"
+
     style="font-size:13px;">
+
+ 
 
     ${origen || '—'}
 
+ 
+
     <div
+
         class="dato-valor"
+
         style="
+
             font-size:11px;
+
             margin-top:4px;
+
             color:#64748b;
+
             font-weight:600;
+
         ">
+
         ${accesoRecogidaFicha}
+
     </div>
+
+ 
 
 </div>
 
+ 
+
                 </div>
 
+ 
+
                 <div class="km-linea">
+
                     ↓ ${km || '?'} km en carretera
+
                 </div>
+
+ 
 
                 <div class="punto">
 
+ 
+
                     <div
+
                         class="punto-circulo naranja">
+
                     </div>
+
+ 
 
                     <div>
 
+ 
+
                         <div class="dato-label">
+
     Entrega (Destino)
+
 </div>
 
+ 
+
 <div
+
     class="dato-valor"
+
     style="font-size:13px;">
+
+ 
 
     ${destino || '—'}
 
+ 
+
     <div
+
         class="dato-valor"
+
         style="
+
             font-size:11px;
+
             margin-top:4px;
+
             color:#64748b;
+
             font-weight:600;
+
         ">
+
         ${accesoEntregaFicha}
+
     </div>
+
+ 
 
 </div>
 
+ 
+
                     </div>
+
+ 
 
                 </div>
 
+ 
+
             </div>
 
+ 
+
         </div>
+
+ 
 
         <div class="seccion">
 
+ 
+
             <div class="seccion-titulo">
+
                 📦 Detalles del Servicio
+
             </div>
+
+ 
 
             <div style="margin-bottom:12px;">
 
+ 
+
                 <div class="dato-label">
+
                     Fecha del Servicio
+
                 </div>
 
+ 
+
                 <div class="dato-valor">
+
                     ${fechaFicha}
+
                 </div>
+
+ 
 
             </div>
 
+ 
+
             <div style="margin-bottom:12px;">
 
+ 
+
                 <div class="dato-label">
+
                     Carga
+
                 </div>
+
+ 
 
                 <div class="dato-valor">
+
                     ${numArticulos} ART. · ${m3Texto}
+
                 </div>
 
+ 
+
             </div>
+
+ 
 
             <div style="margin-bottom:12px;">
 
+ 
+
                 <div class="dato-label">
+
                     Tipo de vivienda
+
                 </div>
+
+ 
 
                 <div class="dato-valor">
+
                     ${volumen || '—'}
+
                 </div>
 
+ 
+
             </div>
+
+ 
 
             <div>
 
+ 
+
                 <div class="dato-label">
+
                     Distancia
+
                 </div>
 
+ 
+
                 <div class="dato-valor">
+
                     ${km || '?'} km
+
                 </div>
+
+ 
 
             </div>
 
+ 
+
         </div>
 
+ 
+
     </div>
+
+ 
 
     <div class="seccion">
 
+ 
+
     <div class="seccion-titulo">
+
         📦 Inventario
+
     </div>
 
+ 
+
     <div>
+
         ${htmlInventarioFicha}
+
     </div>
+
+ 
 
 </div>
 
+ 
+
 <div
+
     class="grid-2"
+
     style="align-items:start;">
+
+ 
 
     <!-- ACCESOS — IZQUIERDA -->
 
+ 
+
     <div class="seccion">
 
+ 
+
         <div class="seccion-titulo">
+
             🛗 Accesos
+
         </div>
 
+ 
+
         <div
+
             class="dato-valor"
+
             style="font-size:13px;">
 
+ 
+
             <p>
+
                 <strong>
+
                     Recogida:
+
                 </strong>
 
+ 
+
                 ${accesos.recogida}
+
             </p>
+
+ 
 
             <p style="margin-top:6px;">
 
+ 
+
                 <strong>
+
                     Entrega:
+
                 </strong>
+
+ 
 
                 ${accesos.entrega}
 
+ 
+
             </p>
+
+ 
 
         </div>
 
+ 
+
     </div>
 
+ 
+
+ 
 
     <!-- EXTRAS — DERECHA -->
 
+ 
+
     ${htmlExtrasFicha}
+
+ 
 
 </div>
 
+ 
+
     ${
+
         extras &&
+
         extras !== 'Solo transporte básico'
+
             ? `
+
                 <div class="seccion">
 
+ 
+
                     <div class="seccion-titulo">
+
                         ➕ Servicios Adicionales
+
                     </div>
 
+ 
+
                     <div
+
                         class="dato-valor"
+
                         style="font-size:13px;">
+
+ 
 
                         ${extras}
 
+ 
+
                     </div>
 
+ 
+
                 </div>
+
             `
+
             : ''
+
     }
 
+ 
+
     <div
+
         class="precio-box"
+
         style="margin-bottom:20px;">
 
+ 
+
         <div
+
             class="dato-label"
+
             style="text-align:center;">
+
+ 
 
             COBRO DEL TRANSPORTISTA
 
+ 
+
         </div>
 
+ 
+
         <div
+
             class="dato-valor grande"
+
             style="text-align:center;">
+
+ 
 
             ${precio || '—'}
 
+ 
+
         </div>
 
+ 
+
         <p
+
             style="
+
                 font-size:12px;
+
                 color:#6b7280;
+
                 margin-top:6px;
+
                 text-align:center;
+
             ">
+
+ 
 
             IVA incluido
 
+ 
+
         </p>
 
-    </div>
+ 
 
     </div>
+
+ 
+
+    </div>
+
+ 
 
     <div
+
     class="seccion firmas-finales"
+
     style="
+
         margin-top:28px;
+
         margin-bottom:20px;
+
     ">
 
+ 
+
     <div class="seccion-titulo">
+
         ✍️ FIRMAS DEL SERVICIO
+
     </div>
+
+ 
 
     <div
+
         style="
+
             border:1px solid #e5e7eb;
+
             border-radius:12px;
+
             padding:18px;
+
             background:#ffffff;
+
         ">
 
+ 
+
         <!-- RECOGIDA -->
+
         <div style="margin-bottom:24px;">
 
+ 
+
             <div
+
                 style="
+
                     font-size:11px;
+
                     font-weight:900;
+
                     text-transform:uppercase;
+
                     letter-spacing:0.7px;
+
                     color:#2563eb;
+
                     margin-bottom:12px;
+
                 ">
+
                 Recogida (Origen)
+
             </div>
+
+ 
 
             <div
+
                 style="
+
                     display:grid;
+
                     grid-template-columns:1fr 1fr;
+
                     gap:20px;
+
                 ">
 
+ 
+
                 <div>
+
                     <div class="firma-linea"></div>
 
+ 
+
                     <div class="firma-texto">
+
                         Firma del Transportista
+
                     </div>
+
                 </div>
+
+ 
 
                 <div>
+
                     <div class="firma-linea"></div>
 
+ 
+
                     <div class="firma-texto">
+
                         Firma del Cliente (recogida conforme)
+
                     </div>
+
                 </div>
+
+ 
 
             </div>
+
+ 
 
         </div>
+
+ 
 
         <!-- ENTREGA -->
+
         <div>
 
+ 
+
             <div
+
                 style="
+
                     font-size:11px;
+
                     font-weight:900;
+
                     text-transform:uppercase;
+
                     letter-spacing:0.7px;
+
                     color:#ea580c;
+
                     margin-bottom:12px;
+
                 ">
+
                 Entrega (Destino)
+
             </div>
+
+ 
 
             <div
+
                 style="
+
                     display:grid;
+
                     grid-template-columns:1fr 1fr;
+
                     gap:20px;
+
                 ">
 
+ 
+
                 <div>
+
                     <div class="firma-linea"></div>
 
+ 
+
                     <div class="firma-texto">
+
                         Firma del Transportista
+
                     </div>
+
                 </div>
+
+ 
 
                 <div>
+
                     <div class="firma-linea"></div>
 
+ 
+
                     <div class="firma-texto">
+
                         Firma del Cliente (entrega conforme)
+
                     </div>
+
                 </div>
+
+ 
 
             </div>
+
+ 
 
         </div>
 
+ 
+
     </div>
+
+ 
 
 </div>
 
+ 
+
     <div class="footer">
 
+ 
+
         <p>
+
             RODAX Furgo Mudanzas &copy; 2026 ·
+
             672 907 012 ·
+
             rodax.furgo.mudanzas.es@gmail.com ·
+
             España
+
         </p>
 
+ 
+
         <p style="margin-top:4px;">
+
             Este documento tiene validez como albarán
+
             de servicio entre las partes.
+
         </p>
+
+ 
 
     </div>
 
+ 
+
     <button
+
         class="no-print"
+
         onclick="window.print()"
+
         style="
+
             margin-top:20px;
+
             padding:12px 24px;
+
             background:#2563eb;
+
             color:white;
+
             border:none;
+
             border-radius:8px;
+
             font-weight:700;
+
             cursor:pointer;
+
             font-size:15px;
+
         ">
+
+ 
 
         🖨️ Imprimir / Guardar PDF
 
+ 
+
     </button>
 
+ 
+
     <script>
+
         window.onload = function() {
+
             setTimeout(
+
                 () => window.print(),
+
                 500
+
             );
+
         };
+
     <\/script>
 
+ 
+
 </body>
+
 </html>`;
 
+ 
+
         const ventana =
+
             window.open(
+
                 '',
+
                 '_blank',
+
                 'width=800,height=900'
+
             );
+
+ 
 
         if (ventana) {
 
+ 
+
             ventana.document.write(
+
                 contenido
+
             );
+
+ 
 
             ventana.document.close();
 
+ 
+
         } else {
 
+ 
+
             alert(
+
                 'Tu navegador bloqueó la ventana emergente. ' +
+
                 'Permite las ventanas emergentes e inténtalo de nuevo.'
+
             );
+
         }
+
     }
 
+ 
+
     const actionModal =
+
         document.getElementById(
+
             'action-modal'
+
         );
 
+ 
+
     const modalContent =
+
         document.getElementById(
+
             'modal-content'
+
         );
+
+ 
 
     function cerrarModal() {
 
+ 
+
         if (actionModal) {
 
+ 
+
             actionModal.classList.add(
+
                 'hidden'
+
             );
+
         }
+
     }
 
+ 
+
     function confirmarAceptar(
+
         id
+
     ) {
+
+ 
 
         if (!modalContent) {
 
+ 
+
             console.error(
+
                 "No existe #modal-content"
+
             );
 
+ 
+
             return;
+
         }
+
+ 
 
         modalContent.innerHTML = `
 
+ 
+
             <div
+
                 class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
 
+ 
+
                 <i
+
                     data-lucide="briefcase"
+
                     class="w-8 h-8 text-blue-600">
+
                 </i>
+
+ 
 
             </div>
 
+ 
+
             <h3
+
                 class="text-xl font-black text-gray-900 mb-2">
+
+ 
 
                 ¿Aceptar este trabajo?
 
+ 
+
             </h3>
 
+ 
+
             <p
+
                 class="text-gray-500 text-sm mb-4 leading-relaxed">
 
+ 
+
                 Al aceptar, la mudanza pasará a
+
                 <strong>
+
                     "Mis Mudanzas Activas"
+
                 </strong>.
+
+ 
 
                 <br>
 
+ 
+
                 Los datos del cliente estarán disponibles
+
                 <strong>
+
                     24h antes
+
                 </strong>
+
                 del servicio.
+
+ 
 
             </p>
 
+ 
+
             <div
+
                 class="text-left bg-amber-50 border border-amber-200 rounded-xl p-3.5 mb-4">
 
+ 
+
                 <div
+
                     class="flex items-start gap-2.5">
 
+ 
+
                     <i
+
                         data-lucide="alert-triangle"
+
                         class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5">
+
                     </i>
+
+ 
 
                     <div>
 
+ 
+
                         <p
+
                             class="text-xs font-black text-amber-800 mb-1">
+
+ 
 
                             Compromiso del transportista
 
+ 
+
                         </p>
 
+ 
+
                         <p
+
                             class="text-xs text-amber-700 leading-relaxed">
 
+ 
+
                             Al aceptar este trabajo,
+
                             confirmas tu disponibilidad
+
                             y compromiso para realizar
+
                             el servicio en las
+
                             condiciones indicadas.
+
+ 
 
                         </p>
 
+ 
+
                         <p
+
                             class="text-xs text-amber-700 leading-relaxed mt-1.5">
 
+ 
+
                             Una posterior desasignación
+
                             o cancelación injustificada
+
                             podrá dar lugar a las consecuencias
+
                             y penalizaciones previstas en las
 
+ 
+
                             <a
+
                                 href="condiciones-transportista.html"
+
                                 target="_blank"
+
                                 rel="noopener noreferrer"
+
                                 class="font-bold text-blue-600 underline hover:text-blue-800">
 
+ 
+
                                 Condiciones de Registro
+
                                 del Transportista
+
+ 
 
                             </a>.
 
+ 
+
                         </p>
 
+ 
+
                     </div>
+
+ 
 
                 </div>
 
+ 
+
             </div>
+
+ 
 
             <div class="flex gap-3">
 
+ 
+
                 <button
+
                     onclick="cerrarModal()"
+
                     class="flex-1 bg-gray-100 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors">
+
+ 
 
                     Cancelar
 
+ 
+
                 </button>
 
+ 
+
                 <button
+
                     onclick="procesarAceptacion(${id})"
+
                     class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md transition-colors">
+
+ 
 
                     ✅ Aceptar
 
+ 
+
                 </button>
 
+ 
+
             </div>
+
         `;
+
+ 
 
         if (window.lucide) {
 
+ 
+
             lucide.createIcons();
+
         }
+
+ 
 
         if (actionModal) {
 
+ 
+
             actionModal.classList.remove(
+
                 'hidden'
+
             );
+
         }
+
     }
 
+ 
+
     async function marcarCompletada(
+
         id
+
     ) {
 
+ 
+
         const confirmar =
+
             confirm(
+
                 '¿Confirmas que has terminado este servicio y que el cliente ha pagado el resto?\n\n' +
+
                 'La mudanza desaparecerá de tu panel activo.'
+
             );
+
+ 
 
         if (!confirmar) {
 
+ 
+
             return;
+
         }
 
+ 
+
         console.log(
+
             '===================================='
+
         );
 
+ 
+
         console.log(
+
             'FINALIZANDO MUDANZA:',
+
             id
+
         );
 
+ 
+
         console.log(
+
             'TRANSPORTISTA:',
+
             currentUserId
+
         );
+
+ 
 
         const {
+
             data,
+
             error
+
         } =
+
             await dbClient
+
                 .from('mudanzas')
+
                 .update({
+
                     estado:
+
                         'Completada'
+
                 })
+
                 .eq(
+
                     'id',
+
                     id
+
                 )
+
                 .eq(
+
                     'transportista_id',
+
                     currentUserId
+
                 )
+
                 .select();
 
+ 
+
         console.log(
+
             'RESULTADO UPDATE:',
+
             data
+
         );
 
+ 
+
         console.log(
+
             'ERROR UPDATE:',
+
             error
+
         );
 
+ 
+
         console.log(
+
             '===================================='
+
         );
+
+ 
 
         if (error) {
 
+ 
+
             console.error(
+
                 'Error al finalizar:',
+
                 error
+
             );
+
+ 
 
             alert(
+
                 'No se pudo marcar la mudanza como completada.\n\n' +
+
                 error.message
+
             );
 
+ 
+
             return;
+
         }
+
+ 
 
         if (
+
             !data ||
+
             data.length === 0
+
         ) {
 
+ 
+
             console.error(
+
                 'El UPDATE no modificó ninguna fila.'
+
             );
+
+ 
 
             alert(
+
                 'Supabase no ha actualizado la mudanza.\n\n' +
+
                 'Posible causa: una política RLS está bloqueando la actualización.'
+
             );
+
+ 
 
             return;
+
         }
 
+ 
+
         state.activas =
+
             state.activas.filter(
+
                 mudanza =>
+
                     Number(mudanza.id) !==
+
                     Number(id)
+
             );
+
+ 
 
         renderizarActivas();
 
+ 
+
         await cargarMisMudanzas();
 
+ 
+
         console.log(
+
             'Mudanza finalizada correctamente:',
+
             id
+
         );
+
     }
 
+ 
+
     window.onload =
+
         verificarSesion;
+
+ 
 
 </script>
 
+ 
+
 <script>
 
+ 
+
 console.log(
+
     "SCRIPT EXTERNO CARGADO"
+
 );
 
+ 
+
 async function actualizarDisponibilidadBaseDatos(
+
     nuevoEstado
+
 ) {
+
+ 
 
     try {
 
+ 
+
         console.log(
+
             "Cambio manual de disponibilidad detectado:",
+
             nuevoEstado
+
         );
+
+ 
 
         toggleColorIndicadorDisponibilidad(
+
             nuevoEstado
+
         );
 
+ 
+
         const {
+
             error
+
         } =
+
             await window.dbClient
+
                 .from('transportistas')
+
                 .update({
+
                     disponibilidad:
+
                         nuevoEstado,
 
+ 
+
                     ultima_actualizacion_estado:
+
                         new Date().toISOString()
+
                 })
+
                 .eq(
+
                     'id',
+
                     window.currentUserId
+
                 );
+
+ 
 
         if (error) {
 
+ 
+
             console.error(
+
                 "Error al actualizar la disponibilidad:",
+
                 error
+
             );
+
+ 
 
             alert(
+
                 "Hubo un problema de conexión con el servidor. " +
+
                 "Tu estado no se pudo guardar."
+
             );
 
+ 
+
             return;
+
         }
 
+ 
+
         console.log(
+
             "Disponibilidad guardada correctamente en Supabase."
+
         );
+
+ 
 
     } catch (err) {
 
+ 
+
         console.error(
+
             "Fallo en el selector interactivo:",
+
             err
+
         );
+
     }
+
 }
 
+ 
+
 function toggleColorIndicadorDisponibilidad(
+
     estado
+
 ) {
 
+ 
+
     const indicador =
+
         document.getElementById(
+
             'disponibilidad-indicador-color'
+
         );
+
+ 
 
     if (!indicador) {
 
+ 
+
         return;
+
     }
 
+ 
+
     if (
+
         estado ===
+
         "Disponible"
+
     ) {
 
+ 
+
         indicador.className =
+
             "w-2.5 h-2.5 rounded-full " +
+
             "bg-emerald-400 mr-2.5 " +
+
             "flex-shrink-0 " +
+
             "transition-colors duration-300";
+
+ 
 
     } else {
 
+ 
+
         indicador.className =
+
             "w-2.5 h-2.5 rounded-full " +
+
             "bg-rose-500 mr-2.5 " +
+
             "flex-shrink-0 " +
+
             "transition-colors duration-300";
+
     }
+
 }
 
+ 
+
 window.actualizarDisponibilidadBaseDatos =
+
     actualizarDisponibilidadBaseDatos;
 
+ 
+
 window.toggleColorIndicadorDisponibilidad =
+
     toggleColorIndicadorDisponibilidad;
+
+ 
 
 </script>
 
+ 
+
 <!-- ===================================================== -->
+
 <!-- CORE -->
+
 <!-- ===================================================== -->
+
+ 
 
 <script src="js/core/rodax.js"></script>
+
 <script src="js/core/events.js"></script>
+
 <script src="js/core/state.js"></script>
+
 <script src="js/core/registry.js"></script>
 
+ 
+
 <!-- ===================================================== -->
+
 <!-- TRANSPORTISTA -->
+
 <!-- ===================================================== -->
+
+ 
 
 <script src="js/transportista/utils.js"></script>
 
+ 
+
 <script>
 
+ 
+
 console.log(
+
     "RODAX utils.js cargado"
+
 );
 
+ 
+
 console.log(
+
     "Transportista API:",
+
     window.Transportista
+
 );
 
+ 
+
 console.log(
+
     "dbClient global:",
+
     Boolean(window.dbClient)
+
 );
 
+ 
+
 console.log(
+
     "state global:",
+
     Boolean(window.state)
+
 );
 
+ 
+
 console.log(
+
     "currentUserId global:",
+
     Boolean(window.currentUserId)
+
 );
 
+ 
+
 console.log(
+
     "getTotalArticulos:",
+
     typeof window.Transportista?.getTotalArticulos
+
 );
 
+ 
+
 console.log(
+
     "getTotalM3:",
+
     typeof window.Transportista?.getTotalM3
+
 );
 
+ 
+
 console.log(
+
     "getAccesos:",
+
     typeof window.Transportista?.getAccesos
+
 );
+
+ 
 
 </script>
 
+ 
+
 <script src="js/transportista/drawer.js"></script>
+
 <script src="js/transportista/drawerRuta.js"></script>
+
 <script src="js/transportista/drawerServicios.js"></script>
+
 <script src="js/transportista/drawerInventario.js"></script>
+
 <script src="js/transportista/drawerFotos.js"></script>
+
 <script src="js/transportista/drawerIndicaciones.js"></script>
+
 <script src="js/transportista/tarjetas.js"></script>
+
 <script src="js/transportista/historialServicios.js"></script>
+
 <script src="js/transportista/facturacion.js"></script>
+
 <script src="js/transportista/perfil.js"></script>
 
+ 
+
 <!-- MARKETPLACE -->
+
 <script src="js/transportista/marketplace.js"></script>
 
+ 
+
 <!-- ROUTER -->
+
 <script src="js/core/router.js"></script>
 
+ 
+
 </body>
+
 </html>
-
-2. js/transportista/historialServicios.js
-
-/**
- * RODAX Marketplace
- * Archivo: js/transportista/historialServicios.js
- * Módulo: Historial de servicios
- *
- * Única responsabilidad:
- * - Consultar las mudanzas del transportista.
- * - Mostrar únicamente tarjetas de historial.
- * - Botón Ficha PDF.
- */
-(function (window) {
-    "use strict";
-
-    const HISTORIAL = [];
-
-    function clienteSupabase() {
-        return window.dbClient || window.supabaseClient || null;
-    }
-
-    function escapar(valor) {
-        return String(valor ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
-    function fechaTexto(fecha) {
-        if (!fecha) return "Fecha pendiente";
-        const p = String(fecha).split("-");
-        return p.length === 3 ? `${p[2]}-${p[1]}-${p[0]}` : String(fecha);
-    }
-
-    function acceso(ascensor, piso) {
-        const n = Number(piso);
-        if (Number.isFinite(n) && n === 0) return "Un Bajo";
-        const a = String(ascensor || "").trim();
-        if (a && Number.isFinite(n)) {
-            if (a.toLowerCase().includes("sin")) return `Sin ascensor · Piso ${n}`;
-            if (a.toLowerCase().includes("con")) return `Con ascensor · Piso ${n}`;
-            return `${a} · Piso ${n}`;
-        }
-        if (a) return a;
-        if (Number.isFinite(n)) return n === 0 ? "Un Bajo" : `Piso ${n}`;
-        return "Acceso por confirmar";
-    }
-
-    function estadoTexto(estado) {
-        const s = String(estado || "").toLowerCase();
-        if (s.includes("final") || s === "completada") return "Completada";
-        if (s.includes("ruta")) return "En ruta";
-        if (s.includes("transportista asignado") || s === "asignada") return "Transportista asignado";
-        if (s.includes("pendiente de asign")) return "Pendiente de asignación";
-        if (s.includes("pago confirmado")) return "Pago confirmado";
-        if (s.includes("pendiente de pago")) return "Pendiente de pago";
-        return estado || "Estado pendiente";
-    }
-
-    function renderizar() {
-        const cont = document.getElementById("historial-servicios-contenido");
-        if (!cont) return;
-
-        if (!HISTORIAL.length) {
-            cont.innerHTML = `
-                <div class="text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300">
-                    <i data-lucide="history" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
-                    <p class="text-slate-500 font-semibold">No tienes servicios en el historial.</p>
-                </div>`;
-            if (window.lucide) window.lucide.createIcons();
-            return;
-        }
-
-        cont.innerHTML = HISTORIAL.map(m => {
-            const tipo = String(m.tipo_servicio || "").toLowerCase().includes("total") ? "Mudanza Total" : "Mudanza Estándar";
-            const origenAcceso = acceso(m.ascensor_origen, m.piso_origen);
-            const destinoAcceso = acceso(m.ascensor_destino, m.piso_destino);
-            return `
-                <article class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-                    <div class="p-5">
-                        <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
-                            <div>
-                                <div class="text-xs uppercase tracking-wider font-black text-slate-400">${escapar(fechaTexto(m.fecha))}</div>
-                                <div class="text-lg font-black text-slate-800 mt-1">${escapar(tipo)}</div>
-                                <div class="text-xs text-slate-400 mt-1">ID: ${escapar(m.numero_reserva || m.id || "—")}</div>
-                            </div>
-                            <span class="inline-flex px-3 py-1.5 rounded-full text-[11px] font-black border border-emerald-200 bg-emerald-50 text-emerald-700">
-                                ${escapar(estadoTexto(m.estado))}
-                            </span>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="rounded-xl border border-blue-100 bg-blue-50/60 p-4">
-                                <div class="text-[10px] uppercase font-black tracking-wider text-blue-600">Origen</div>
-                                <div class="font-bold text-slate-800 mt-1">${escapar(m.origen || "—")}</div>
-                                <div class="text-xs text-slate-500 mt-2">${escapar(origenAcceso)}</div>
-                            </div>
-                            <div class="rounded-xl border border-orange-100 bg-orange-50/60 p-4">
-                                <div class="text-[10px] uppercase font-black tracking-wider text-orange-600">Destino</div>
-                                <div class="font-bold text-slate-800 mt-1">${escapar(m.destino || "—")}</div>
-                                <div class="text-xs text-slate-500 mt-2">${escapar(destinoAcceso)}</div>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-wrap gap-4 text-xs font-semibold text-slate-500 mt-4">
-                            <span><i data-lucide="clock-3" class="inline w-3.5 h-3.5 mr-1"></i>${escapar(m.franja_horaria_recogida || "Horario pendiente")}</span>
-                            <span><i data-lucide="route" class="inline w-3.5 h-3.5 mr-1"></i>${escapar(m.km ?? "—")} km</span>
-                            <span><i data-lucide="box" class="inline w-3.5 h-3.5 mr-1"></i>${escapar(m.volumen || "—")}</span>
-                        </div>
-
-                        <div class="mt-5 flex items-center justify-between gap-4 border-t border-slate-100 pt-4">
-                            <div>
-                                <div class="text-[10px] uppercase tracking-wider font-black text-slate-400">Cobro</div>
-                                <div class="text-lg font-black text-emerald-600 mt-1">${escapar(m.importe_total ?? m.preciototal ?? "—")} €</div>
-                            </div>
-                            <button type="button"
-                                onclick="window.imprimirFicha(${Number(m.id) || 0})"
-                                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm shadow-sm transition-colors">
-                                <i data-lucide="file-text" class="w-4 h-4"></i>
-                                Ficha PDF
-                            </button>
-                        </div>
-                    </div>
-                </article>`;
-        }).join("");
-
-        window.RODAX_HISTORIAL_SERVICIOS = HISTORIAL.slice();
-        if (window.lucide) window.lucide.createIcons();
-    }
-
-    async function cargarHistorialServicios() {
-        const cont = document.getElementById("historial-servicios-contenido");
-        const db = clienteSupabase();
-        const uid = window.currentUserId || window.Transportista?.currentUserId;
-        if (!cont || !db || !uid) return;
-
-        cont.innerHTML = `<div class="text-center py-16 text-slate-400">Cargando historial de servicios...</div>`;
-
-        try {
-            const { data, error } = await db
-                .from("mudanzas")
-                .select("*")
-                .eq("transportista_id", uid)
-                .order("fecha", { ascending: false });
-
-            if (error) throw error;
-            HISTORIAL.splice(0, HISTORIAL.length, ...(Array.isArray(data) ? data : []));
-            renderizar();
-        } catch (error) {
-            console.error("Historial de servicios:", error);
-            cont.innerHTML = `
-                <div class="py-16 text-center bg-white rounded-2xl border border-red-100">
-                    <p class="text-red-600 font-bold">No se pudo cargar el historial de servicios.</p>
-                    <p class="text-sm text-slate-400 mt-1">${escapar(error.message || "Error desconocido")}</p>
-                </div>`;
-        }
-    }
-
-    window.cargarHistorialServicios = cargarHistorialServicios;
-    window.renderHistorialServicios = renderizar;
-})(window);
-
-3. js/transportista/facturacion.js
-
-/**
- * RODAX Marketplace
- * Archivo: js/transportista/facturacion.js
- * Módulo: Facturación y Pagos
- *
- * Los pagos del cliente siguen perteneciendo a Stripe.
- * Este módulo muestra la liquidación económica del transportista.
- */
-(function (window) {
-    "use strict";
-
-    function db() { return window.dbClient || window.supabaseClient || null; }
-    function esc(v) {
-        return String(v ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-    }
-    function euro(v) {
-        const n = Number(v);
-        return Number.isFinite(n) ? `${n.toFixed(2)} €` : "—";
-    }
-
-    async function cargarFacturacion() {
-        const cont = document.getElementById("facturacion-contenido");
-        if (!cont) return;
-        const cliente = db();
-        const uid = window.currentUserId || window.Transportista?.currentUserId;
-        if (!cliente || !uid) return;
-
-        cont.innerHTML = `<div class="py-12 text-center text-slate-400">Cargando facturación...</div>`;
-
-        try {
-            const { data, error } = await cliente
-                .from("pagos_transportistas")
-                .select("*")
-                .eq("transportista_id", uid)
-                .order("fecha_programada", { ascending: false });
-
-            if (error) throw error;
-            const pagos = Array.isArray(data) ? data : [];
-            const pendiente = pagos.filter(p => ["pendiente","programado","en proceso"].includes(String(p.estado_pago || "").toLowerCase()))
-                .reduce((s,p) => s + Number(p.importe_transportista || 0), 0);
-            const pagado = pagos.filter(p => String(p.estado_pago || "").toLowerCase() === "pagado")
-                .reduce((s,p) => s + Number(p.importe_transportista || 0), 0);
-
-            cont.innerHTML = `
-                <div class="space-y-5">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
-                                    <i data-lucide="wallet" class="w-5 h-5 text-amber-600"></i>
-                                </div>
-                                <div><div class="text-xs uppercase tracking-wider text-slate-400 font-black">Pagos pendientes</div><div class="text-2xl font-black text-slate-800 mt-1">${euro(pendiente)}</div></div>
-                            </div>
-                        </div>
-                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
-                                    <i data-lucide="circle-check" class="w-5 h-5 text-emerald-600"></i>
-                                </div>
-                                <div><div class="text-xs uppercase tracking-wider text-slate-400 font-black">Pagos realizados</div><div class="text-2xl font-black text-slate-800 mt-1">${euro(pagado)}</div></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                        <div class="flex items-center gap-3 mb-5">
-                            <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center"><i data-lucide="receipt" class="w-5 h-5 text-blue-600"></i></div>
-                            <div><h2 class="text-lg font-black text-slate-800">Facturas y liquidaciones</h2><p class="text-xs text-slate-500">Historial económico de tus servicios.</p></div>
-                        </div>
-                        ${pagos.length ? `
-                        <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-xs uppercase tracking-wider text-slate-400 border-b"><th class="py-3 pr-4">Reserva</th><th class="py-3 pr-4">Estado</th><th class="py-3 pr-4">Importe</th><th class="py-3">Fecha</th></tr></thead><tbody>
-                        ${pagos.map(p => `<tr class="border-b last:border-0"><td class="py-3 pr-4 font-bold text-slate-700">${esc(p.numero_reserva || p.reserva_id || "—")}</td><td class="py-3 pr-4">${esc(p.estado_pago || "Pendiente")}</td><td class="py-3 pr-4 font-black">${euro(p.importe_transportista)}</td><td class="py-3 text-slate-500">${esc(p.fecha_pagado || p.fecha_programada || "—")}</td></tr>`).join("")}
-                        </tbody></table></div>` : `<div class="py-10 text-center text-slate-400">Todavía no hay registros de pagos para este transportista.</div>`}
-                    </div>
-                    <div class="bg-slate-50 rounded-2xl border border-slate-200 p-5 text-sm text-slate-600">
-                        <div class="font-black text-slate-800 mb-1">Nota</div>
-                        Los pagos del cliente se verifican mediante Stripe. Aquí solo se muestran las cantidades que RODAX debe liquidar al transportista.
-                    </div>
-                </div>`;
-            if (window.lucide) window.lucide.createIcons();
-        } catch (error) {
-            console.error("Facturación:", error);
-            cont.innerHTML = `<div class="bg-white rounded-2xl border border-red-100 p-8 text-center"><p class="text-red-600 font-bold">No se pudo cargar Facturación.</p><p class="text-sm text-slate-400 mt-1">${esc(error.message || "Error desconocido")}</p></div>`;
-        }
-    }
-
-    window.cargarFacturacion = cargarFacturacion;
-})(window);
-
-4. js/transportista/perfil.js
-
-/**
- * RODAX Marketplace
- * Archivo: js/transportista/perfil.js
- * Módulo: Mi perfil + Equipo / Operarios
- *
- * No se asume una tabla de operarios que todavía no existe.
- * La sección se deja preparada dentro del perfil.
- */
-(function (window) {
-    "use strict";
-
-    function db() { return window.dbClient || window.supabaseClient || null; }
-    function esc(v) { return String(v ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
-
-    async function cargarPerfil() {
-        const cont = document.getElementById("perfil-contenido");
-        if (!cont) return;
-        const cliente = db();
-        const uid = window.currentUserId || window.Transportista?.currentUserId;
-        if (!cliente || !uid) return;
-
-        cont.innerHTML = `<div class="py-12 text-center text-slate-400">Cargando perfil...</div>`;
-        try {
-            const { data, error } = await cliente.from("transportistas").select("*").eq("id", uid).maybeSingle();
-            if (error) throw error;
-            const p = data || {};
-            cont.innerHTML = `
-                <div class="space-y-5">
-                    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                        <div class="flex items-center gap-3 mb-6">
-                            <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center"><i data-lucide="user" class="w-5 h-5 text-blue-600"></i></div>
-                            <div><h2 class="text-lg font-black text-slate-800">Mi perfil</h2><p class="text-xs text-slate-500">Información de tu cuenta de transportista.</p></div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="rounded-xl bg-slate-50 border border-slate-200 p-4"><div class="text-[10px] uppercase tracking-wider text-slate-400 font-black">Nombre</div><div class="font-bold text-slate-800 mt-1">${esc(p.nombre || "—")}</div></div>
-                            <div class="rounded-xl bg-slate-50 border border-slate-200 p-4"><div class="text-[10px] uppercase tracking-wider text-slate-400 font-black">Email</div><div class="font-bold text-slate-800 mt-1">${esc(p.email || "—")}</div></div>
-                            <div class="rounded-xl bg-slate-50 border border-slate-200 p-4"><div class="text-[10px] uppercase tracking-wider text-slate-400 font-black">Teléfono</div><div class="font-bold text-slate-800 mt-1">${esc(p.telefono || p.phone || "—")}</div></div>
-                            <div class="rounded-xl bg-slate-50 border border-slate-200 p-4"><div class="text-[10px] uppercase tracking-wider text-slate-400 font-black">Disponibilidad</div><div class="font-bold text-emerald-600 mt-1">${esc(p.disponibilidad || "—")}</div></div>
-                        </div>
-                    </section>
-
-                    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                        <div class="flex items-center gap-3 mb-5">
-                            <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center"><i data-lucide="users" class="w-5 h-5 text-violet-600"></i></div>
-                            <div><h2 class="text-lg font-black text-slate-800">Equipo / Operarios</h2><p class="text-xs text-slate-500">Gestiona los miembros que trabajan contigo.</p></div>
-                        </div>
-                        <div id="equipo-contenido" class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-500">
-                            <div class="flex items-start gap-3"><i data-lucide="users-round" class="w-5 h-5 text-violet-500 mt-0.5"></i><div><div class="font-bold text-slate-700">Sin operarios registrados</div><div class="mt-1">La interfaz está preparada para este apartado. No se realiza ninguna consulta hasta que la tabla de operarios y sus permisos se definan en Supabase.</div></div></div>
-                        </div>
-                    </section>
-                </div>`;
-            if (window.lucide) window.lucide.createIcons();
-        } catch (error) {
-            console.error("Perfil:", error);
-            cont.innerHTML = `<div class="bg-white rounded-2xl border border-red-100 p-8 text-center"><p class="text-red-600 font-bold">No se pudo cargar Mi perfil.</p><p class="text-sm text-slate-400 mt-1">${esc(error.message || "Error desconocido")}</p></div>`;
-        }
-    }
-
-    window.cargarPerfil = cargarPerfil;
-})(window);
