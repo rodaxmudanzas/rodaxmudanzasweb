@@ -231,21 +231,12 @@
                 <div class="space-y-1">
 
                     <button
-                        onclick="cambiarTab('mi-agenda')"
+                        onclick="cambiarTab('historial-servicios')"
                         class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
-                        id="nav-mi-agenda">
+                        id="nav-historial-servicios">
 
                         <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
-                        <span>Mi agenda</span>
-                    </button>
-
-                    <button
-                        onclick="cambiarTab('mis-rutas')"
-                        class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
-                        id="nav-mis-rutas">
-
-                        <i data-lucide="map-pin" class="w-4 h-4 text-slate-400"></i>
-                        <span>Mis rutas</span>
+                        <span>Historial de servicios</span>
                     </button>
 
                 </div>
@@ -258,15 +249,6 @@
                 </div>
 
                 <div class="space-y-1">
-
-                    <button
-                        onclick="cambiarTab('pagos')"
-                        class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
-                        id="nav-pagos">
-
-                        <i data-lucide="wallet" class="w-4 h-4 text-slate-400"></i>
-                        <span>Pagos</span>
-                    </button>
 
                     <button
                         onclick="cambiarTab('facturacion')"
@@ -295,15 +277,6 @@
 
                         <i data-lucide="car" class="w-4 h-4 text-slate-400"></i>
                         <span>Mis vehículos</span>
-                    </button>
-
-                    <button
-                        onclick="cambiarTab('equipo')"
-                        class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
-                        id="nav-equipo">
-
-                        <i data-lucide="users" class="w-4 h-4 text-slate-400"></i>
-                        <span>Equipo / Operarios</span>
                     </button>
 
                 </div>
@@ -770,29 +743,35 @@
 
         </div>
 
-    </div>
-
-            <!-- MI AGENDA -->
-        <div
-            id="tab-mi-agenda"
+        <!-- HISTORIAL DE SERVICIOS -->
+        <section
+            id="tab-historial-servicios"
             class="hidden fade-in">
-
-            <div class="mb-5">
-                <h2 class="text-lg font-black text-slate-800">
-                    Mi Agenda
-                </h2>
-
-                <p class="text-sm text-slate-500 mt-1">
-                    Organiza y consulta tus mudanzas programadas.
-                </p>
-            </div>
-
             <div
-                id="contenedor-agenda"
-                class="space-y-4">
+                id="historial-servicios-contenido"
+                class="space-y-5">
+                <div class="text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300">
+                    <i data-lucide="history" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
+                    <p class="text-slate-500 font-semibold">Cargando historial de servicios...</p>
+                </div>
             </div>
+        </section>
 
-        </div>
+        <!-- FACTURACION + PAGOS -->
+        <section
+            id="tab-facturacion"
+            class="hidden fade-in">
+            <div id="facturacion-contenido"></div>
+        </section>
+
+        <!-- MI PERFIL + EQUIPO / OPERARIOS -->
+        <section
+            id="tab-mi-perfil"
+            class="hidden fade-in">
+            <div id="perfil-contenido"></div>
+        </section>
+
+    </div>
 
     <!-- MODAL -->
     <div
@@ -1456,6 +1435,10 @@
 
             await cargarMisMudanzas();
 
+            if (typeof window.cargarHistorialServicios === 'function') {
+                await window.cargarHistorialServicios();
+            }
+
             /*
              * ==================================================
              * ACTUALIZACIÓN AUTOMÁTICA
@@ -1798,10 +1781,12 @@ function recargarDatos() {
     ) {
 
         const tabs = [
-    'disponibles',
-    'mis-mudanzas',
-    'mi-agenda'
-];
+            'disponibles',
+            'mis-mudanzas',
+            'historial-servicios',
+            'facturacion',
+            'mi-perfil'
+        ];
 
         tabs.forEach(
             t => {
@@ -1857,15 +1842,21 @@ function recargarDatos() {
         }
 
         const titles = {
-    'disponibles':
-        'Trabajos Disponibles',
+            'disponibles':
+                'Trabajos Disponibles',
 
-    'mis-mudanzas':
-        'Mis Mudanzas Activas',
+            'mis-mudanzas':
+                'Mis Mudanzas Activas',
 
-    'mi-agenda':
-        'Mi Agenda'
-};
+            'historial-servicios':
+                'Historial de servicios',
+
+            'facturacion':
+                'Facturación',
+
+            'mi-perfil':
+                'Mi perfil'
+        };
 
         const headerTitle =
             document.getElementById(
@@ -1873,22 +1864,15 @@ function recargarDatos() {
             );
 
         if (
-    headerTitle &&
-    titles[tabId]
-) {
+            headerTitle &&
+            titles[tabId]
+        ) {
 
-    headerTitle.textContent =
-        titles[tabId];
-}
+            headerTitle.textContent =
+                titles[tabId];
+        }
 
-if (
-    tabId === 'mi-agenda' &&
-    window.Transportista?.Agenda
-) {
-    window.Transportista.Agenda.cargar();
-}
-
-cerrarMenuMovil();
+        cerrarMenuMovil();
     }
 
     async function cargarMisMudanzas() {
@@ -2066,12 +2050,18 @@ cerrarMenuMovil();
         id
     ) {
 
-        const mudanza =
+        let mudanza =
             state.activas.find(
                 m =>
                     Number(m.id) ===
                     Number(id)
             );
+
+        if (!mudanza && Array.isArray(window.RODAX_HISTORIAL_SERVICIOS)) {
+            mudanza = window.RODAX_HISTORIAL_SERVICIOS.find(
+                m => Number(m.id) === Number(id)
+            );
+        }
 
         if (!mudanza) {
 
@@ -3379,24 +3369,36 @@ const accesoEntregaFicha =
 
     <div class="seccion">
 
-    <div class="seccion-titulo">
-        📝 Indicaciones
+        <div class="seccion-titulo">
+            🛗 Accesos
+        </div>
+
+        <div
+            class="dato-valor"
+            style="font-size:13px;">
+
+            <p>
+                <strong>
+                    Recogida:
+                </strong>
+
+                ${accesos.recogida}
+            </p>
+
+            <p style="margin-top:6px;">
+
+                <strong>
+                    Entrega:
+                </strong>
+
+                ${accesos.entrega}
+
+            </p>
+
+        </div>
+
     </div>
 
-    <div
-        class="dato-valor"
-        style="
-            font-size:13px;
-            white-space:pre-wrap;
-            line-height:1.6;
-        ">
-
-        ${mudanza.observaciones ||
-            "El cliente no ha añadido observaciones."}
-
-    </div>
-
-</div>
 
     <!-- EXTRAS — DERECHA -->
 
@@ -4094,13 +4096,332 @@ console.log(
 <script src="js/transportista/drawerFotos.js"></script>
 <script src="js/transportista/drawerIndicaciones.js"></script>
 <script src="js/transportista/tarjetas.js"></script>
+<script src="js/transportista/historialServicios.js"></script>
+<script src="js/transportista/facturacion.js"></script>
+<script src="js/transportista/perfil.js"></script>
 
 <!-- MARKETPLACE -->
 <script src="js/transportista/marketplace.js"></script>
-<script src="js/transportista/agenda.js"></script>
 
 <!-- ROUTER -->
 <script src="js/core/router.js"></script>
 
 </body>
 </html>
+
+2. js/transportista/historialServicios.js
+
+/**
+ * RODAX Marketplace
+ * Archivo: js/transportista/historialServicios.js
+ * Módulo: Historial de servicios
+ *
+ * Única responsabilidad:
+ * - Consultar las mudanzas del transportista.
+ * - Mostrar únicamente tarjetas de historial.
+ * - Botón Ficha PDF.
+ */
+(function (window) {
+    "use strict";
+
+    const HISTORIAL = [];
+
+    function clienteSupabase() {
+        return window.dbClient || window.supabaseClient || null;
+    }
+
+    function escapar(valor) {
+        return String(valor ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function fechaTexto(fecha) {
+        if (!fecha) return "Fecha pendiente";
+        const p = String(fecha).split("-");
+        return p.length === 3 ? `${p[2]}-${p[1]}-${p[0]}` : String(fecha);
+    }
+
+    function acceso(ascensor, piso) {
+        const n = Number(piso);
+        if (Number.isFinite(n) && n === 0) return "Un Bajo";
+        const a = String(ascensor || "").trim();
+        if (a && Number.isFinite(n)) {
+            if (a.toLowerCase().includes("sin")) return `Sin ascensor · Piso ${n}`;
+            if (a.toLowerCase().includes("con")) return `Con ascensor · Piso ${n}`;
+            return `${a} · Piso ${n}`;
+        }
+        if (a) return a;
+        if (Number.isFinite(n)) return n === 0 ? "Un Bajo" : `Piso ${n}`;
+        return "Acceso por confirmar";
+    }
+
+    function estadoTexto(estado) {
+        const s = String(estado || "").toLowerCase();
+        if (s.includes("final") || s === "completada") return "Completada";
+        if (s.includes("ruta")) return "En ruta";
+        if (s.includes("transportista asignado") || s === "asignada") return "Transportista asignado";
+        if (s.includes("pendiente de asign")) return "Pendiente de asignación";
+        if (s.includes("pago confirmado")) return "Pago confirmado";
+        if (s.includes("pendiente de pago")) return "Pendiente de pago";
+        return estado || "Estado pendiente";
+    }
+
+    function renderizar() {
+        const cont = document.getElementById("historial-servicios-contenido");
+        if (!cont) return;
+
+        if (!HISTORIAL.length) {
+            cont.innerHTML = `
+                <div class="text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300">
+                    <i data-lucide="history" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
+                    <p class="text-slate-500 font-semibold">No tienes servicios en el historial.</p>
+                </div>`;
+            if (window.lucide) window.lucide.createIcons();
+            return;
+        }
+
+        cont.innerHTML = HISTORIAL.map(m => {
+            const tipo = String(m.tipo_servicio || "").toLowerCase().includes("total") ? "Mudanza Total" : "Mudanza Estándar";
+            const origenAcceso = acceso(m.ascensor_origen, m.piso_origen);
+            const destinoAcceso = acceso(m.ascensor_destino, m.piso_destino);
+            return `
+                <article class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                    <div class="p-5">
+                        <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                            <div>
+                                <div class="text-xs uppercase tracking-wider font-black text-slate-400">${escapar(fechaTexto(m.fecha))}</div>
+                                <div class="text-lg font-black text-slate-800 mt-1">${escapar(tipo)}</div>
+                                <div class="text-xs text-slate-400 mt-1">ID: ${escapar(m.numero_reserva || m.id || "—")}</div>
+                            </div>
+                            <span class="inline-flex px-3 py-1.5 rounded-full text-[11px] font-black border border-emerald-200 bg-emerald-50 text-emerald-700">
+                                ${escapar(estadoTexto(m.estado))}
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="rounded-xl border border-blue-100 bg-blue-50/60 p-4">
+                                <div class="text-[10px] uppercase font-black tracking-wider text-blue-600">Origen</div>
+                                <div class="font-bold text-slate-800 mt-1">${escapar(m.origen || "—")}</div>
+                                <div class="text-xs text-slate-500 mt-2">${escapar(origenAcceso)}</div>
+                            </div>
+                            <div class="rounded-xl border border-orange-100 bg-orange-50/60 p-4">
+                                <div class="text-[10px] uppercase font-black tracking-wider text-orange-600">Destino</div>
+                                <div class="font-bold text-slate-800 mt-1">${escapar(m.destino || "—")}</div>
+                                <div class="text-xs text-slate-500 mt-2">${escapar(destinoAcceso)}</div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-4 text-xs font-semibold text-slate-500 mt-4">
+                            <span><i data-lucide="clock-3" class="inline w-3.5 h-3.5 mr-1"></i>${escapar(m.franja_horaria_recogida || "Horario pendiente")}</span>
+                            <span><i data-lucide="route" class="inline w-3.5 h-3.5 mr-1"></i>${escapar(m.km ?? "—")} km</span>
+                            <span><i data-lucide="box" class="inline w-3.5 h-3.5 mr-1"></i>${escapar(m.volumen || "—")}</span>
+                        </div>
+
+                        <div class="mt-5 flex items-center justify-between gap-4 border-t border-slate-100 pt-4">
+                            <div>
+                                <div class="text-[10px] uppercase tracking-wider font-black text-slate-400">Cobro</div>
+                                <div class="text-lg font-black text-emerald-600 mt-1">${escapar(m.importe_total ?? m.preciototal ?? "—")} €</div>
+                            </div>
+                            <button type="button"
+                                onclick="window.imprimirFicha(${Number(m.id) || 0})"
+                                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm shadow-sm transition-colors">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                Ficha PDF
+                            </button>
+                        </div>
+                    </div>
+                </article>`;
+        }).join("");
+
+        window.RODAX_HISTORIAL_SERVICIOS = HISTORIAL.slice();
+        if (window.lucide) window.lucide.createIcons();
+    }
+
+    async function cargarHistorialServicios() {
+        const cont = document.getElementById("historial-servicios-contenido");
+        const db = clienteSupabase();
+        const uid = window.currentUserId || window.Transportista?.currentUserId;
+        if (!cont || !db || !uid) return;
+
+        cont.innerHTML = `<div class="text-center py-16 text-slate-400">Cargando historial de servicios...</div>`;
+
+        try {
+            const { data, error } = await db
+                .from("mudanzas")
+                .select("*")
+                .eq("transportista_id", uid)
+                .order("fecha", { ascending: false });
+
+            if (error) throw error;
+            HISTORIAL.splice(0, HISTORIAL.length, ...(Array.isArray(data) ? data : []));
+            renderizar();
+        } catch (error) {
+            console.error("Historial de servicios:", error);
+            cont.innerHTML = `
+                <div class="py-16 text-center bg-white rounded-2xl border border-red-100">
+                    <p class="text-red-600 font-bold">No se pudo cargar el historial de servicios.</p>
+                    <p class="text-sm text-slate-400 mt-1">${escapar(error.message || "Error desconocido")}</p>
+                </div>`;
+        }
+    }
+
+    window.cargarHistorialServicios = cargarHistorialServicios;
+    window.renderHistorialServicios = renderizar;
+})(window);
+
+3. js/transportista/facturacion.js
+
+/**
+ * RODAX Marketplace
+ * Archivo: js/transportista/facturacion.js
+ * Módulo: Facturación y Pagos
+ *
+ * Los pagos del cliente siguen perteneciendo a Stripe.
+ * Este módulo muestra la liquidación económica del transportista.
+ */
+(function (window) {
+    "use strict";
+
+    function db() { return window.dbClient || window.supabaseClient || null; }
+    function esc(v) {
+        return String(v ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+    function euro(v) {
+        const n = Number(v);
+        return Number.isFinite(n) ? `${n.toFixed(2)} €` : "—";
+    }
+
+    async function cargarFacturacion() {
+        const cont = document.getElementById("facturacion-contenido");
+        if (!cont) return;
+        const cliente = db();
+        const uid = window.currentUserId || window.Transportista?.currentUserId;
+        if (!cliente || !uid) return;
+
+        cont.innerHTML = `<div class="py-12 text-center text-slate-400">Cargando facturación...</div>`;
+
+        try {
+            const { data, error } = await cliente
+                .from("pagos_transportistas")
+                .select("*")
+                .eq("transportista_id", uid)
+                .order("fecha_programada", { ascending: false });
+
+            if (error) throw error;
+            const pagos = Array.isArray(data) ? data : [];
+            const pendiente = pagos.filter(p => ["pendiente","programado","en proceso"].includes(String(p.estado_pago || "").toLowerCase()))
+                .reduce((s,p) => s + Number(p.importe_transportista || 0), 0);
+            const pagado = pagos.filter(p => String(p.estado_pago || "").toLowerCase() === "pagado")
+                .reduce((s,p) => s + Number(p.importe_transportista || 0), 0);
+
+            cont.innerHTML = `
+                <div class="space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+                                    <i data-lucide="wallet" class="w-5 h-5 text-amber-600"></i>
+                                </div>
+                                <div><div class="text-xs uppercase tracking-wider text-slate-400 font-black">Pagos pendientes</div><div class="text-2xl font-black text-slate-800 mt-1">${euro(pendiente)}</div></div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
+                                    <i data-lucide="circle-check" class="w-5 h-5 text-emerald-600"></i>
+                                </div>
+                                <div><div class="text-xs uppercase tracking-wider text-slate-400 font-black">Pagos realizados</div><div class="text-2xl font-black text-slate-800 mt-1">${euro(pagado)}</div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center"><i data-lucide="receipt" class="w-5 h-5 text-blue-600"></i></div>
+                            <div><h2 class="text-lg font-black text-slate-800">Facturas y liquidaciones</h2><p class="text-xs text-slate-500">Historial económico de tus servicios.</p></div>
+                        </div>
+                        ${pagos.length ? `
+                        <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-xs uppercase tracking-wider text-slate-400 border-b"><th class="py-3 pr-4">Reserva</th><th class="py-3 pr-4">Estado</th><th class="py-3 pr-4">Importe</th><th class="py-3">Fecha</th></tr></thead><tbody>
+                        ${pagos.map(p => `<tr class="border-b last:border-0"><td class="py-3 pr-4 font-bold text-slate-700">${esc(p.numero_reserva || p.reserva_id || "—")}</td><td class="py-3 pr-4">${esc(p.estado_pago || "Pendiente")}</td><td class="py-3 pr-4 font-black">${euro(p.importe_transportista)}</td><td class="py-3 text-slate-500">${esc(p.fecha_pagado || p.fecha_programada || "—")}</td></tr>`).join("")}
+                        </tbody></table></div>` : `<div class="py-10 text-center text-slate-400">Todavía no hay registros de pagos para este transportista.</div>`}
+                    </div>
+                    <div class="bg-slate-50 rounded-2xl border border-slate-200 p-5 text-sm text-slate-600">
+                        <div class="font-black text-slate-800 mb-1">Nota</div>
+                        Los pagos del cliente se verifican mediante Stripe. Aquí solo se muestran las cantidades que RODAX debe liquidar al transportista.
+                    </div>
+                </div>`;
+            if (window.lucide) window.lucide.createIcons();
+        } catch (error) {
+            console.error("Facturación:", error);
+            cont.innerHTML = `<div class="bg-white rounded-2xl border border-red-100 p-8 text-center"><p class="text-red-600 font-bold">No se pudo cargar Facturación.</p><p class="text-sm text-slate-400 mt-1">${esc(error.message || "Error desconocido")}</p></div>`;
+        }
+    }
+
+    window.cargarFacturacion = cargarFacturacion;
+})(window);
+
+4. js/transportista/perfil.js
+
+/**
+ * RODAX Marketplace
+ * Archivo: js/transportista/perfil.js
+ * Módulo: Mi perfil + Equipo / Operarios
+ *
+ * No se asume una tabla de operarios que todavía no existe.
+ * La sección se deja preparada dentro del perfil.
+ */
+(function (window) {
+    "use strict";
+
+    function db() { return window.dbClient || window.supabaseClient || null; }
+    function esc(v) { return String(v ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+    async function cargarPerfil() {
+        const cont = document.getElementById("perfil-contenido");
+        if (!cont) return;
+        const cliente = db();
+        const uid = window.currentUserId || window.Transportista?.currentUserId;
+        if (!cliente || !uid) return;
+
+        cont.innerHTML = `<div class="py-12 text-center text-slate-400">Cargando perfil...</div>`;
+        try {
+            const { data, error } = await cliente.from("transportistas").select("*").eq("id", uid).maybeSingle();
+            if (error) throw error;
+            const p = data || {};
+            cont.innerHTML = `
+                <div class="space-y-5">
+                    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center"><i data-lucide="user" class="w-5 h-5 text-blue-600"></i></div>
+                            <div><h2 class="text-lg font-black text-slate-800">Mi perfil</h2><p class="text-xs text-slate-500">Información de tu cuenta de transportista.</p></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="rounded-xl bg-slate-50 border border-slate-200 p-4"><div class="text-[10px] uppercase tracking-wider text-slate-400 font-black">Nombre</div><div class="font-bold text-slate-800 mt-1">${esc(p.nombre || "—")}</div></div>
+                            <div class="rounded-xl bg-slate-50 border border-slate-200 p-4"><div class="text-[10px] uppercase tracking-wider text-slate-400 font-black">Email</div><div class="font-bold text-slate-800 mt-1">${esc(p.email || "—")}</div></div>
+                            <div class="rounded-xl bg-slate-50 border border-slate-200 p-4"><div class="text-[10px] uppercase tracking-wider text-slate-400 font-black">Teléfono</div><div class="font-bold text-slate-800 mt-1">${esc(p.telefono || p.phone || "—")}</div></div>
+                            <div class="rounded-xl bg-slate-50 border border-slate-200 p-4"><div class="text-[10px] uppercase tracking-wider text-slate-400 font-black">Disponibilidad</div><div class="font-bold text-emerald-600 mt-1">${esc(p.disponibilidad || "—")}</div></div>
+                        </div>
+                    </section>
+
+                    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center"><i data-lucide="users" class="w-5 h-5 text-violet-600"></i></div>
+                            <div><h2 class="text-lg font-black text-slate-800">Equipo / Operarios</h2><p class="text-xs text-slate-500">Gestiona los miembros que trabajan contigo.</p></div>
+                        </div>
+                        <div id="equipo-contenido" class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-500">
+                            <div class="flex items-start gap-3"><i data-lucide="users-round" class="w-5 h-5 text-violet-500 mt-0.5"></i><div><div class="font-bold text-slate-700">Sin operarios registrados</div><div class="mt-1">La interfaz está preparada para este apartado. No se realiza ninguna consulta hasta que la tabla de operarios y sus permisos se definan en Supabase.</div></div></div>
+                        </div>
+                    </section>
+                </div>`;
+            if (window.lucide) window.lucide.createIcons();
+        } catch (error) {
+            console.error("Perfil:", error);
+            cont.innerHTML = `<div class="bg-white rounded-2xl border border-red-100 p-8 text-center"><p class="text-red-600 font-bold">No se pudo cargar Mi perfil.</p><p class="text-sm text-slate-400 mt-1">${esc(error.message || "Error desconocido")}</p></div>`;
+        }
+    }
+
+    window.cargarPerfil = cargarPerfil;
+})(window);
