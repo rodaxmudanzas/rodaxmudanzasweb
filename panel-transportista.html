@@ -10,7 +10,6 @@
 
     <title>Panel de Control — RODAX Transportistas</title>
 
- 
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -18,7 +17,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
- 
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -26,7 +24,6 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
 
- 
 
 <style>
 
@@ -48,7 +45,6 @@
 
     }
 
- 
 
     .banner-azul-rodax,
 
@@ -58,7 +54,6 @@
 
     }
 
- 
 
     /* Error 3: Área del logo con fondo estrictamente BLANCO */
 
@@ -74,7 +69,6 @@
 
     }
 
- 
 
     /* Error 4: Fila superior blanca de Perfil y Conectividad */
 
@@ -90,7 +84,6 @@
 
     }
 
- 
 
     /* Error 1: Botones y palabras completas en la barra lateral */
 
@@ -120,7 +113,6 @@
 
     }
 
- 
 
     .nav-item-premium i,
 
@@ -134,7 +126,6 @@
 
     }
 
- 
 
     .nav-item-premium:hover:not(.disabled) {
 
@@ -146,7 +137,6 @@
 
     }
 
- 
 
     .nav-item-premium.active {
 
@@ -158,7 +148,6 @@
 
     }
 
- 
 
     .nav-item-premium.disabled {
 
@@ -168,7 +157,6 @@
 
     }
 
- 
 
     .menu-title {
 
@@ -190,7 +178,6 @@
 
     }
 
- 
 
     .badge-menu-premium {
 
@@ -210,7 +197,6 @@
 
     }
 
- 
 
     /* Error 5: Refuerzo de tipografía */
 
@@ -246,7 +232,6 @@
 
     }
 
- 
 
     .font-black-premium {
 
@@ -254,7 +239,6 @@
 
     }
 
- 
 
     /* Error 6: Tarjetas del Marketplace */
 
@@ -276,7 +260,6 @@
 
     }
 
- 
 
     .tarjeta-mudanza-premium:hover {
 
@@ -294,15 +277,12 @@
 
 </style>
 
- 
 
 </head>
 
- 
 
 <body class="flex h-screen overflow-hidden">
 
- 
 
 <div
 
@@ -314,7 +294,6 @@
 
 </div>
 
- 
 
 <!-- ========================================================
 
@@ -322,7 +301,6 @@
 
      ======================================================== -->
 
- 
 
 <aside
 
@@ -330,7 +308,6 @@
 
     class="w-64 flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col bg-white">
 
- 
 
     <div class="w-full bg-white flex items-center justify-center px-6 py-5 flex-shrink-0">
 
@@ -346,7 +323,6 @@
 
     </div>
 
- 
 
     <div class="flex-1 flex flex-col mx-3 mb-4 rounded-2xl bg-gradient-to-b from-[#0b1e5b] to-[#163562] text-white shadow-xl overflow-hidden">
 
@@ -354,7 +330,6 @@
 
         <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-3 custom-scrollbar text-sm">
 
- 
 
             <!-- MARKETPLACE -->
 
@@ -366,11 +341,9 @@
 
                 </div>
 
- 
 
                 <div class="space-y-1">
 
- 
 
                     <button
 
@@ -380,7 +353,6 @@
 
                         id="nav-disponibles">
 
- 
 
                         <div class="flex items-center space-x-2.5">
 
@@ -390,7 +362,6 @@
 
                         </div>
 
- 
 
                         <span
 
@@ -404,7 +375,6 @@
 
                     </button>
 
- 
 
                     <button
 
@@ -414,7 +384,6 @@
 
                         id="nav-mis-mudanzas">
 
- 
 
                         <div class="flex items-center space-x-2.5">
 
@@ -424,7 +393,6 @@
 
                         </div>
 
- 
 
                         <span
 
@@ -438,13 +406,11 @@
 
                     </button>
 
- 
 
                 </div>
 
             </div>
 
- 
 
             <!-- OPERACIONES -->
 
@@ -456,11 +422,9 @@
 
                 </div>
 
- 
 
                 <div class="space-y-1">
 
- 
 
                     <button
 
@@ -470,7 +434,6 @@
 
                         id="nav-historial-servicios">
 
- 
 
                         <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
 
@@ -478,13 +441,11 @@
 
                     </button>
 
- 
 
                 </div>
 
             </div>
 
- 
 
             <!-- FINANZAS -->
 
@@ -496,11 +457,9 @@
 
                 </div>
 
- 
 
                 <div class="space-y-1">
 
- 
 
                     <button
 
@@ -510,7 +469,6 @@
 
                         id="nav-facturacion">
 
- 
 
                         <i data-lucide="file-text" class="w-4 h-4 text-slate-400"></i>
 
@@ -518,13 +476,11 @@
 
                     </button>
 
- 
 
                 </div>
 
             </div>
 
- 
 
             <!-- MI NEGOCIO -->
 
@@ -536,11 +492,9 @@
 
                 </div>
 
- 
 
                 <div class="space-y-1">
 
- 
 
                     <button
 
@@ -550,7 +504,6 @@
 
                         id="nav-mis-vehiculos">
 
- 
 
                         <i data-lucide="car" class="w-4 h-4 text-slate-400"></i>
 
@@ -558,13 +511,11 @@
 
                     </button>
 
- 
 
                 </div>
 
             </div>
 
- 
 
             <!-- MI CUENTA -->
 
@@ -576,11 +527,9 @@
 
                 </div>
 
- 
 
                 <div class="space-y-1">
 
- 
 
                     <button
 
@@ -590,7 +539,6 @@
 
                         id="nav-mi-perfil">
 
- 
 
                         <i data-lucide="user" class="w-4 h-4 text-slate-400"></i>
 
@@ -598,7 +546,6 @@
 
                     </button>
 
- 
 
                     <button
 
@@ -608,7 +555,6 @@
 
                         id="nav-notificaciones">
 
- 
 
                         <div class="flex items-center space-x-2.5">
 
@@ -618,7 +564,6 @@
 
                         </div>
 
- 
 
                         <span
 
@@ -632,7 +577,6 @@
 
                     </button>
 
- 
 
                     <button
 
@@ -642,7 +586,6 @@
 
                         id="nav-configuracion">
 
- 
 
                         <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
 
@@ -650,21 +593,17 @@
 
                     </button>
 
- 
 
                 </div>
 
             </div>
 
- 
 
         </nav>
 
- 
 
         <div class="p-3 border-t border-white/10">
 
- 
 
             <button
 
@@ -672,29 +611,23 @@
 
                 class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300 hover:bg-red-500/20 hover:text-red-400 transition-colors duration-200">
 
- 
 
                 <i data-lucide="log-out" class="w-4 h-4"></i>
 
                 <span>Cerrar sesión</span>
 
- 
 
             </button>
 
- 
 
         </div>
 
- 
 
     </div>
 
- 
 
 </aside>
 
- 
 
 <!-- ========================================================
 
@@ -702,11 +635,9 @@
 
      ======================================================== -->
 
- 
 
 <main class="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50 relative w-full">
 
- 
 
     <!-- FILA SUPERIOR BLANCA -->
 
@@ -714,7 +645,6 @@
 
         class="top-profile-bar-blanca px-6 flex items-center justify-between flex-shrink-0 no-print bg-white border-b border-slate-100">
 
- 
 
         <button
 
@@ -722,29 +652,23 @@
 
             class="md:hidden text-slate-600 p-2 bg-slate-100 rounded-lg">
 
- 
 
             <i data-lucide="menu" class="w-5 h-5"></i>
 
- 
 
         </button>
 
- 
 
         <div class="flex items-center gap-4 ml-auto">
 
- 
 
             <div
 
                 class="relative cursor-pointer p-2 hover:bg-slate-100 rounded-full transition-colors duration-200">
 
- 
 
                 <i data-lucide="bell" class="w-6 h-6 text-slate-600"></i>
 
- 
 
                 <span
 
@@ -756,15 +680,12 @@
 
                 </span>
 
- 
 
             </div>
 
- 
 
             <div class="flex flex-col text-right">
 
- 
 
                 <div
 
@@ -776,17 +697,14 @@
 
                 </div>
 
- 
 
                 <div
 
                     class="flex items-center justify-end gap-1.5 text-[11px] text-emerald-600 font-bold-premium mt-0.5">
 
- 
 
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
 
- 
 
                     <span class="text-xs font-medium text-emerald-600">
 
@@ -794,15 +712,12 @@
 
                     </span>
 
- 
 
                 </div>
 
- 
 
             </div>
 
- 
 
             <img
 
@@ -814,31 +729,25 @@
 
                 class="w-9 h-9 rounded-full object-cover border border-slate-200">
 
- 
 
         </div>
 
- 
 
     </header>
 
- 
 
     <!-- BARRA SUPERIOR AZUL -->
 
     <div class="px-6 pt-3 pb-1 no-print flex-shrink-0">
 
- 
 
         <div
 
             class="theme-azul-oscuro-rodax text-white rounded-xl px-5 py-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
 
- 
 
             <div class="flex items-center gap-3.5">
 
- 
 
                 <i
 
@@ -848,11 +757,9 @@
 
                 </i>
 
- 
 
                 <div class="flex flex-col justify-center">
 
- 
 
                     <h1
 
@@ -864,7 +771,6 @@
 
                     </h1>
 
- 
 
                     <p
 
@@ -874,27 +780,22 @@
 
                     </p>
 
- 
 
                 </div>
 
- 
 
             </div>
 
- 
 
             <div
 
                 class="flex flex-wrap items-center gap-3 text-xs font-bold ml-auto md:ml-0">
 
- 
 
                 <div
 
                     class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-6 py-3.5 rounded-md transition-colors cursor-pointer select-none">
 
- 
 
                     <i
 
@@ -904,7 +805,6 @@
 
                     </i>
 
- 
 
                     <span
 
@@ -916,7 +816,6 @@
 
                     </span>
 
- 
 
                     <span class="text-white/90">
 
@@ -924,11 +823,9 @@
 
                     </span>
 
- 
 
                 </div>
 
- 
 
                 <button
 
@@ -942,7 +839,6 @@
 
     title="Actualizar trabajos disponibles">
 
- 
 
     <i
 
@@ -954,7 +850,6 @@
 
     </i>
 
- 
 
     <span
 
@@ -966,11 +861,9 @@
 
     </span>
 
- 
 
 </button>
 
- 
 
                 <!-- DISPONIBILIDAD -->
 
@@ -978,7 +871,6 @@
 
     class="relative h-[48px] min-w-[150px] flex-shrink-0 select-none no-print flex items-end justify-center">
 
- 
 
                     <span
 
@@ -988,13 +880,11 @@
 
 </span>
 
- 
 
                     <div
 
     class="relative h-[48px] w-full flex items-center bg-white/10 hover:bg-white/15 rounded-md transition-colors border border-white/10 px-3.5">
 
- 
 
                         <span
 
@@ -1004,7 +894,6 @@
 
                         </span>
 
- 
 
                         <select
 
@@ -1014,7 +903,6 @@
 
                             class="bg-transparent text-white font-black text-sm tracking-wide focus:outline-none pr-6 cursor-pointer appearance-none w-full font-sans">
 
- 
 
                             <option
 
@@ -1026,7 +914,6 @@
 
                             </option>
 
- 
 
                             <option
 
@@ -1038,11 +925,9 @@
 
                             </option>
 
- 
 
                         </select>
 
- 
 
                         <i
 
@@ -1052,27 +937,21 @@
 
                         </i>
 
- 
 
                     </div>
 
- 
 
                 </div>
 
- 
 
             </div>
 
- 
 
         </div>
 
- 
 
     </div>
 
- 
 
     <!-- FILTROS MARKETPLACE -->
 
@@ -1080,11 +959,9 @@
 
         class="w-full bg-[#0b1e5b]/5 border border-[#0b1e5b]/15 rounded-2xl p-4 flex flex-wrap items-center gap-3 backdrop-blur-sm shadow-sm mb-6">
 
- 
 
         <div class="flex-1 min-w-[200px] relative">
 
- 
 
             <i
 
@@ -1094,7 +971,6 @@
 
             </i>
 
- 
 
             <input
 
@@ -1110,11 +986,9 @@
 
             >
 
- 
 
         </div>
 
- 
 
         <button
 
@@ -1126,7 +1000,6 @@
 
             class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
 
- 
 
             <i
 
@@ -1136,11 +1009,9 @@
 
             </i>
 
- 
 
             <span>Fecha</span>
 
- 
 
             <span
 
@@ -1150,7 +1021,6 @@
 
             </span>
 
- 
 
             <i
 
@@ -1160,11 +1030,9 @@
 
             </i>
 
- 
 
         </button>
 
- 
 
         <button
 
@@ -1176,7 +1044,6 @@
 
             class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
 
- 
 
             <i
 
@@ -1186,11 +1053,9 @@
 
             </i>
 
- 
 
             <span>Zona</span>
 
- 
 
             <span
 
@@ -1200,7 +1065,6 @@
 
             </span>
 
- 
 
             <i
 
@@ -1210,11 +1074,9 @@
 
             </i>
 
- 
 
         </button>
 
- 
 
         <button
 
@@ -1226,7 +1088,6 @@
 
             class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
 
- 
 
             <i
 
@@ -1236,11 +1097,9 @@
 
             </i>
 
- 
 
             <span>Distancia</span>
 
- 
 
             <span
 
@@ -1250,7 +1109,6 @@
 
             </span>
 
- 
 
             <i
 
@@ -1260,11 +1118,9 @@
 
             </i>
 
- 
 
         </button>
 
- 
 
         <button
 
@@ -1276,7 +1132,6 @@
 
             class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
 
- 
 
             <i
 
@@ -1286,11 +1141,9 @@
 
             </i>
 
- 
 
             <span>Vehículo</span>
 
- 
 
             <span
 
@@ -1300,7 +1153,6 @@
 
             </span>
 
- 
 
             <i
 
@@ -1310,11 +1162,9 @@
 
             </i>
 
- 
 
         </button>
 
- 
 
         <button
 
@@ -1326,7 +1176,6 @@
 
             class="ml-auto bg-white hover:bg-slate-50 text-slate-700 font-semibold px-4 py-2 rounded-xl border border-slate-200 text-sm flex items-center gap-2 transition-colors duration-150">
 
- 
 
             <i
 
@@ -1336,11 +1185,9 @@
 
             </i>
 
- 
 
             <span>Más filtros</span>
 
- 
 
             <span
 
@@ -1350,11 +1197,9 @@
 
             </span>
 
- 
 
         </button>
 
- 
 
         <button
 
@@ -1364,7 +1209,6 @@
 
             class="hidden bg-white hover:bg-red-50 text-slate-500 hover:text-red-600 font-semibold px-3 py-2 rounded-xl border border-slate-200 hover:border-red-200 text-xs flex items-center gap-2 transition-colors">
 
- 
 
             <i
 
@@ -1374,25 +1218,20 @@
 
             </i>
 
- 
 
             <span>Limpiar</span>
 
- 
 
         </button>
 
- 
 
     </div>
 
- 
 
     <!-- CONTENEDORES PRINCIPALES -->
 
     <div class="flex-1 overflow-y-auto p-6">
 
- 
 
         <!-- TRABAJOS DISPONIBLES -->
 
@@ -1402,7 +1241,6 @@
 
             class="fade-in">
 
- 
 
             <div
 
@@ -1410,19 +1248,15 @@
 
                 id="contenedor-disponibles">
 
- 
 
                 <!-- JavaScript inyectará dinámicamente las mudanzas -->
 
- 
 
             </div>
 
- 
 
         </div>
 
- 
 
         <!-- MIS MUDANZAS ACTIVAS -->
 
@@ -1432,7 +1266,6 @@
 
             class="hidden fade-in">
 
- 
 
             <div
 
@@ -1440,7 +1273,6 @@
 
                 class="space-y-5">
 
- 
 
                 <div
 
@@ -1448,7 +1280,6 @@
 
                     class="text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300">
 
- 
 
                     <i
 
@@ -1458,7 +1289,6 @@
 
                     </i>
 
- 
 
                     <p class="text-gray-500 font-semibold">
 
@@ -1466,7 +1296,6 @@
 
                     </p>
 
- 
 
                     <p class="text-gray-400 text-sm mt-1">
 
@@ -1474,19 +1303,15 @@
 
                     </p>
 
- 
 
                 </div>
 
- 
 
             </div>
 
- 
 
         </div>
 
- 
 
         <!-- HISTORIAL DE SERVICIOS -->
 
@@ -1514,7 +1339,6 @@
 
         </section>
 
- 
 
         <!-- FACTURACION + PAGOS -->
 
@@ -1528,7 +1352,6 @@
 
         </section>
 
- 
 
         <!-- MI PERFIL + EQUIPO / OPERARIOS -->
 
@@ -1542,11 +1365,9 @@
 
         </section>
 
- 
 
     </div>
 
- 
 
     <!-- MODAL -->
 
@@ -1556,7 +1377,6 @@
 
         class="fixed inset-0 bg-gray-900/80 z-[100] flex items-center justify-center p-4 hidden backdrop-blur-sm">
 
- 
 
         <div
 
@@ -1566,11 +1386,9 @@
 
         </div>
 
- 
 
     </div>
 
- 
 
     <div
 
@@ -1580,7 +1398,6 @@
 
     </div>
 
- 
 
     <!-- OVERLAY DRAWER -->
 
@@ -1592,7 +1409,6 @@
 
     </div>
 
- 
 
     <!-- DRAWER -->
 
@@ -1602,11 +1418,9 @@
 
         class="fixed top-0 right-0 h-full w-[450px] max-w-full bg-white shadow-2xl translate-x-full transition-transform duration-300 z-50 flex flex-col border-l border-slate-100">
 
- 
 
         <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
 
- 
 
             <h2 class="text-base font-bold text-slate-800 tracking-tight">
 
@@ -1614,7 +1428,6 @@
 
             </h2>
 
- 
 
             <button
 
@@ -1626,17 +1439,14 @@
 
             </button>
 
- 
 
         </div>
 
- 
 
         <div
 
             class="px-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center w-full no-print flex-shrink-0">
 
- 
 
             <button
 
@@ -1650,7 +1460,6 @@
 
             </button>
 
- 
 
             <button
 
@@ -1664,7 +1473,6 @@
 
             </button>
 
- 
 
             <button
 
@@ -1678,7 +1486,6 @@
 
             </button>
 
- 
 
             <button
 
@@ -1692,7 +1499,6 @@
 
             </button>
 
- 
 
             <button
 
@@ -1706,7 +1512,6 @@
 
             </button>
 
- 
 
             <button
 
@@ -1720,19 +1525,15 @@
 
             </button>
 
- 
 
         </div>
 
- 
 
         <div class="flex-1 overflow-y-auto p-6 space-y-5">
 
- 
 
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
 
- 
 
                 <span
 
@@ -1744,7 +1545,6 @@
 
                 </span>
 
- 
 
                 <span class="text-xs font-medium text-slate-400">
 
@@ -1762,11 +1562,9 @@
 
                 </span>
 
- 
 
             </div>
 
- 
 
             <!-- RESUMEN -->
 
@@ -1776,17 +1574,14 @@
 
                 class="drawer-pane space-y-5">
 
- 
 
                 <div
 
                     class="relative pl-6 border-l-2 border-dashed border-slate-200 ml-2 space-y-6 my-2">
 
- 
 
                     <div class="relative">
 
- 
 
                         <div
 
@@ -1794,7 +1589,6 @@
 
                         </div>
 
- 
 
                         <p
 
@@ -1806,7 +1600,6 @@
 
                         </p>
 
- 
 
                         <p
 
@@ -1818,15 +1611,12 @@
 
                         </p>
 
- 
 
                     </div>
 
- 
 
                     <div class="relative">
 
- 
 
                         <div
 
@@ -1834,7 +1624,6 @@
 
                         </div>
 
- 
 
                         <p
 
@@ -1846,7 +1635,6 @@
 
                         </p>
 
- 
 
                         <p
 
@@ -1858,25 +1646,20 @@
 
                         </p>
 
- 
 
                     </div>
 
- 
 
                 </div>
 
- 
 
                 <div class="pt-2 border-t border-slate-100">
 
- 
 
                     <h3
 
                         class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center justify-between w-full">
 
- 
 
                         <span>
 
@@ -1908,7 +1691,6 @@
 
                         </span>
 
- 
 
                         <span
 
@@ -1920,11 +1702,9 @@
 
                         </span>
 
- 
 
                     </h3>
 
- 
 
                     <div
 
@@ -1934,19 +1714,15 @@
 
                     </div>
 
- 
 
                 </div>
 
- 
 
                 <div class="grid grid-cols-2 gap-3 pt-1">
 
- 
 
                     <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
 
- 
 
                         <span
 
@@ -1956,7 +1732,6 @@
 
                         </span>
 
- 
 
                         <span
 
@@ -1968,15 +1743,12 @@
 
                         </span>
 
- 
 
                     </div>
 
- 
 
                     <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
 
- 
 
                         <span
 
@@ -1986,7 +1758,6 @@
 
                         </span>
 
- 
 
                         <span
 
@@ -1998,19 +1769,15 @@
 
                         </span>
 
- 
 
                     </div>
 
- 
 
                 </div>
 
- 
 
                 <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
 
- 
 
     <span
 
@@ -2020,7 +1787,6 @@
 
     </span>
 
- 
 
     <span
 
@@ -2032,17 +1798,14 @@
 
     </span>
 
- 
 
 </div>
 
- 
 
                 <div
 
                     class="bg-yellow-50/60 border border-yellow-100 rounded-xl p-3 text-xs">
 
- 
 
                     <span
 
@@ -2052,7 +1815,6 @@
 
                     </span>
 
- 
 
                     <p
 
@@ -2064,15 +1826,12 @@
 
                     </p>
 
- 
 
                 </div>
 
- 
 
             </div>
 
- 
 
             <!-- RUTA -->
 
@@ -2082,7 +1841,6 @@
 
                 class="drawer-pane space-y-4 hidden">
 
- 
 
                 <h3
 
@@ -2092,7 +1850,6 @@
 
                 </h3>
 
- 
 
                 <div
 
@@ -2102,11 +1859,9 @@
 
                 </div>
 
- 
 
             </div>
 
- 
 
             <!-- INVENTARIO -->
 
@@ -2116,13 +1871,11 @@
 
                 class="drawer-pane space-y-4 hidden">
 
- 
 
                 <h3
 
                     class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between w-full">
 
- 
 
                     <span>
 
@@ -2130,7 +1883,6 @@
 
                     </span>
 
- 
 
                     <span
 
@@ -2142,11 +1894,9 @@
 
                     </span>
 
- 
 
                 </h3>
 
- 
 
                 <div
 
@@ -2156,11 +1906,9 @@
 
                 </div>
 
- 
 
             </div>
 
- 
 
             <!-- SERVICIOS -->
 
@@ -2170,7 +1918,6 @@
 
                 class="drawer-pane space-y-4 hidden">
 
- 
 
                 <h3
 
@@ -2180,7 +1927,6 @@
 
                 </h3>
 
- 
 
                 <div
 
@@ -2190,11 +1936,9 @@
 
                 </div>
 
- 
 
             </div>
 
- 
 
             <!-- FOTOS -->
 
@@ -2204,7 +1948,6 @@
 
                 class="drawer-pane space-y-4 hidden">
 
- 
 
                 <h3
 
@@ -2214,7 +1957,6 @@
 
                 </h3>
 
- 
 
                 <div
 
@@ -2224,11 +1966,9 @@
 
                 </div>
 
- 
 
             </div>
 
- 
 
             <!-- INDICACIONES -->
 
@@ -2238,7 +1978,6 @@
 
                 class="drawer-pane space-y-4 hidden">
 
- 
 
                 <h3
 
@@ -2248,7 +1987,6 @@
 
                 </h3>
 
- 
 
                 <div
 
@@ -2258,31 +1996,25 @@
 
                 </div>
 
- 
 
             </div>
 
- 
 
         </div>
 
- 
 
         <div
 
             class="p-4 border-t border-slate-100 bg-slate-50/50 flex flex-col gap-3 flex-shrink-0">
 
- 
 
             <div
 
                 class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-200/60 shadow-sm">
 
- 
 
                 <div>
 
- 
 
                     <span
 
@@ -2292,7 +2024,6 @@
 
                     </span>
 
- 
 
                     <span
 
@@ -2304,7 +2035,6 @@
 
                     </span>
 
- 
 
                     <span
 
@@ -2314,15 +2044,12 @@
 
                     </span>
 
- 
 
                 </div>
 
- 
 
                 <div class="text-right">
 
- 
 
                     <span
 
@@ -2332,7 +2059,6 @@
 
                     </span>
 
- 
 
                     <span
 
@@ -2342,15 +2068,12 @@
 
                     </span>
 
- 
 
                 </div>
 
- 
 
             </div>
 
- 
 
             <button
 
@@ -2362,21 +2085,17 @@
 
             </button>
 
- 
 
         </div>
 
- 
 
     </aside>
 
- 
 
 <script>
 
     lucide.createIcons();
 
- 
 
     /*
 
@@ -2388,19 +2107,16 @@
 
      */
 
- 
 
     const URL_DB =
 
         'https://defvfvfyrydopaybnisg.supabase.co';
 
- 
 
     const KEY_DB =
 
         'sb_publishable_dKIRJ1_K4u1ypfCNTuylIw_AyAKeZTS';
 
- 
 
     const dbClient =
 
@@ -2412,13 +2128,11 @@
 
         );
 
- 
 
     let currentUserId = null;
 
     let currentUserNombre = '';
 
- 
 
     const state = {
 
@@ -2428,7 +2142,6 @@
 
     };
 
- 
 
     /*
 
@@ -2448,49 +2161,41 @@
 
      */
 
- 
 
     window.Transportista =
 
         window.Transportista || {};
 
- 
 
     window.dbClient =
 
         dbClient;
 
- 
 
     window.state =
 
         state;
 
- 
 
     window.currentUserId =
 
         currentUserId;
 
- 
 
     window.Transportista.dbClient =
 
         dbClient;
 
- 
 
     window.Transportista.state =
 
         state;
 
- 
 
     window.Transportista.currentUserId =
 
         currentUserId;
 
- 
 
     const UI_TABS = {
 
@@ -2502,7 +2207,6 @@
 
         ],
 
- 
 
         titles: {
 
@@ -2510,7 +2214,6 @@
 
                 'Trabajos Disponibles',
 
- 
 
             'mis-mudanzas':
 
@@ -2520,11 +2223,9 @@
 
     };
 
- 
 
     function abrirMenuMovil() {
 
- 
 
         document
 
@@ -2534,7 +2235,6 @@
 
             .remove('-translate-x-full');
 
- 
 
         document
 
@@ -2546,11 +2246,9 @@
 
     }
 
- 
 
     function cerrarMenuMovil() {
 
- 
 
         document
 
@@ -2560,7 +2258,6 @@
 
             .add('-translate-x-full');
 
- 
 
         document
 
@@ -2572,15 +2269,12 @@
 
     }
 
- 
 
     async function verificarSesion() {
 
- 
 
         try {
 
- 
 
             const {
 
@@ -2596,7 +2290,6 @@
 
                 await dbClient.auth.getSession();
 
- 
 
             console.log(
 
@@ -2604,7 +2297,6 @@
 
             );
 
- 
 
             console.log(
 
@@ -2614,7 +2306,6 @@
 
             );
 
- 
 
             console.log(
 
@@ -2624,7 +2315,6 @@
 
             );
 
- 
 
             console.log(
 
@@ -2634,7 +2324,6 @@
 
             );
 
- 
 
             console.log(
 
@@ -2644,7 +2333,6 @@
 
             );
 
- 
 
             console.log(
 
@@ -2652,7 +2340,6 @@
 
             );
 
- 
 
             if (
 
@@ -2662,7 +2349,6 @@
 
             ) {
 
- 
 
                 console.error(
 
@@ -2670,7 +2356,6 @@
 
                 );
 
- 
 
                 window.location.replace(
 
@@ -2678,19 +2363,16 @@
 
                 );
 
- 
 
                 return;
 
             }
 
- 
 
             currentUserId =
 
                 session.user.id;
 
- 
 
             /*
 
@@ -2704,13 +2386,11 @@
 
                 currentUserId;
 
- 
 
             window.Transportista.currentUserId =
 
                 currentUserId;
 
- 
 
             console.log(
 
@@ -2720,7 +2400,6 @@
 
             );
 
- 
 
             /*
 
@@ -2732,7 +2411,6 @@
 
              */
 
- 
 
             console.log(
 
@@ -2742,7 +2420,6 @@
 
             );
 
- 
 
             await dbClient
 
@@ -2754,7 +2431,6 @@
 
                         "Disponible",
 
- 
 
                     ultima_actualizacion_estado:
 
@@ -2770,7 +2446,6 @@
 
                 );
 
- 
 
             const selectorDisp =
 
@@ -2780,11 +2455,9 @@
 
                 );
 
- 
 
             if (selectorDisp) {
 
- 
 
                 selectorDisp.value =
 
@@ -2792,7 +2465,6 @@
 
             }
 
- 
 
             toggleColorIndicadorDisponibilidad(
 
@@ -2800,7 +2472,6 @@
 
             );
 
- 
 
             const elLoadingText =
 
@@ -2810,11 +2481,9 @@
 
                 );
 
- 
 
             if (elLoadingText) {
 
- 
 
                 elLoadingText.textContent =
 
@@ -2822,11 +2491,9 @@
 
             }
 
- 
 
             await cargarDatosPerfil();
 
- 
 
             const elLoadingScreen =
 
@@ -2836,11 +2503,9 @@
 
                 );
 
- 
 
             if (elLoadingScreen) {
 
- 
 
                 elLoadingScreen.classList.add(
 
@@ -2850,7 +2515,6 @@
 
             }
 
- 
 
             /*
 
@@ -2862,15 +2526,12 @@
 
              */
 
- 
 
             await cargarTrabajosDisponibles();
 
- 
 
             await cargarMisMudanzas();
 
- 
 
             if (typeof window.cargarHistorialServicios === 'function') {
 
@@ -2878,7 +2539,6 @@
 
             }
 
- 
 
             /*
 
@@ -2890,13 +2550,11 @@
 
              */
 
- 
 
             setInterval(
 
                 () => {
 
- 
 
                     const tabDisp =
 
@@ -2906,7 +2564,6 @@
 
                         );
 
- 
 
                     if (
 
@@ -2920,13 +2577,11 @@
 
                     ) {
 
- 
 
                         cargarTrabajosDisponibles();
 
                     }
 
- 
 
                 },
 
@@ -2934,11 +2589,9 @@
 
             );
 
- 
 
         } catch (err) {
 
- 
 
             console.error(
 
@@ -2948,7 +2601,6 @@
 
             );
 
- 
 
             alert(
 
@@ -2968,15 +2620,12 @@
 
     }
 
- 
 
     async function cargarDatosPerfil() {
 
- 
 
         try {
 
- 
 
             const {
 
@@ -2988,7 +2637,6 @@
 
                 await dbClient.auth.getUser();
 
- 
 
             if (
 
@@ -2998,7 +2646,6 @@
 
             ) {
 
- 
 
                 console.error(
 
@@ -3008,19 +2655,16 @@
 
                 );
 
- 
 
                 return;
 
             }
 
- 
 
             const cleanUserId =
 
                 sessionData.user.id;
 
- 
 
             console.log(
 
@@ -3030,7 +2674,6 @@
 
             );
 
- 
 
             const {
 
@@ -3056,7 +2699,6 @@
 
                     .maybeSingle();
 
- 
 
             console.log(
 
@@ -3066,11 +2708,9 @@
 
             );
 
- 
 
             if (error) {
 
- 
 
                 console.error(
 
@@ -3080,17 +2720,14 @@
 
                 );
 
- 
 
                 return;
 
             }
 
- 
 
             if (data) {
 
- 
 
                 currentUserNombre =
 
@@ -3098,7 +2735,6 @@
 
                     'Transportista';
 
- 
 
                 const elNameTop =
 
@@ -3114,11 +2750,9 @@
 
                     );
 
- 
 
                 if (elNameTop) {
 
- 
 
                     elNameTop.textContent =
 
@@ -3126,13 +2760,11 @@
 
                 }
 
- 
 
                 const avatarUrl =
 
                     `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUserNombre)}&background=ffffff&color=0b1e5b&bold=true`;
 
- 
 
                 const imgTop =
 
@@ -3142,11 +2774,9 @@
 
                     );
 
- 
 
                 if (imgTop) {
 
- 
 
                     imgTop.src =
 
@@ -3154,7 +2784,6 @@
 
                 }
 
- 
 
                 const img =
 
@@ -3164,11 +2793,9 @@
 
                     );
 
- 
 
                 if (img) {
 
- 
 
                     img.src =
 
@@ -3176,11 +2803,9 @@
 
                 }
 
- 
 
             } else {
 
- 
 
                 console.warn(
 
@@ -3188,7 +2813,6 @@
 
                 );
 
- 
 
                 const elNameTop =
 
@@ -3204,11 +2828,9 @@
 
                     );
 
- 
 
                 if (elNameTop) {
 
- 
 
                     elNameTop.textContent =
 
@@ -3218,11 +2840,9 @@
 
             }
 
- 
 
         } catch (err) {
 
- 
 
             console.error(
 
@@ -3236,7 +2856,6 @@
 
     }
 
- 
 
     function actualizarContadorNotificaciones(
 
@@ -3244,7 +2863,6 @@
 
     ) {
 
- 
 
         const badgeTop =
 
@@ -3254,17 +2872,14 @@
 
             );
 
- 
 
         if (badgeTop) {
 
- 
 
             badgeTop.textContent =
 
                 cantidad;
 
- 
 
             if (
 
@@ -3272,7 +2887,6 @@
 
             ) {
 
- 
 
                 badgeTop.classList.add(
 
@@ -3280,11 +2894,9 @@
 
                 );
 
- 
 
             } else {
 
- 
 
                 badgeTop.classList.remove(
 
@@ -3296,7 +2908,6 @@
 
         }
 
- 
 
         const badgeSidebar =
 
@@ -3306,17 +2917,14 @@
 
             );
 
- 
 
         if (badgeSidebar) {
 
- 
 
             badgeSidebar.textContent =
 
                 cantidad;
 
- 
 
             if (
 
@@ -3324,7 +2932,6 @@
 
             ) {
 
- 
 
                 badgeSidebar.classList.add(
 
@@ -3332,11 +2939,9 @@
 
                 );
 
- 
 
             } else {
 
- 
 
                 badgeSidebar.classList.remove(
 
@@ -3350,15 +2955,12 @@
 
     }
 
- 
 
     async function cerrarSesion() {
 
- 
 
         await dbClient.auth.signOut();
 
- 
 
         window.location.replace(
 
@@ -3368,15 +2970,12 @@
 
     }
 
- 
 
     let actualizandoMarketplace = false;
 
- 
 
 function recargarDatos() {
 
- 
 
     // Evitar dobles clics
 
@@ -3386,11 +2985,9 @@ function recargarDatos() {
 
     }
 
- 
 
     actualizandoMarketplace = true;
 
- 
 
     const boton =
 
@@ -3400,7 +2997,6 @@ function recargarDatos() {
 
         );
 
- 
 
     const texto =
 
@@ -3410,7 +3006,6 @@ function recargarDatos() {
 
         );
 
- 
 
     const icono =
 
@@ -3420,7 +3015,6 @@ function recargarDatos() {
 
         );
 
- 
 
     // Estado visual: actualizando
 
@@ -3430,7 +3024,6 @@ function recargarDatos() {
 
     }
 
- 
 
     if (texto) {
 
@@ -3438,7 +3031,6 @@ function recargarDatos() {
 
     }
 
- 
 
     if (icono) {
 
@@ -3446,7 +3038,6 @@ function recargarDatos() {
 
     }
 
- 
 
     // --------------------------------------------------
 
@@ -3454,7 +3045,6 @@ function recargarDatos() {
 
     // --------------------------------------------------
 
- 
 
     try {
 
@@ -3472,7 +3062,6 @@ function recargarDatos() {
 
     }
 
- 
 
     try {
 
@@ -3490,7 +3079,6 @@ function recargarDatos() {
 
     }
 
- 
 
     // --------------------------------------------------
 
@@ -3498,11 +3086,9 @@ function recargarDatos() {
 
     // --------------------------------------------------
 
- 
 
     setTimeout(() => {
 
- 
 
         if (icono) {
 
@@ -3510,7 +3096,6 @@ function recargarDatos() {
 
         }
 
- 
 
         if (texto) {
 
@@ -3518,11 +3103,9 @@ function recargarDatos() {
 
         }
 
- 
 
         setTimeout(() => {
 
- 
 
             if (texto) {
 
@@ -3530,7 +3113,6 @@ function recargarDatos() {
 
             }
 
- 
 
             if (boton) {
 
@@ -3538,21 +3120,17 @@ function recargarDatos() {
 
             }
 
- 
 
             actualizandoMarketplace = false;
 
- 
 
         }, 800);
 
- 
 
     }, 1000);
 
 }
 
- 
 
     function cambiarTab(
 
@@ -3560,7 +3138,6 @@ function recargarDatos() {
 
     ) {
 
- 
 
         const tabs = [
 
@@ -3576,13 +3153,11 @@ function recargarDatos() {
 
         ];
 
- 
 
         tabs.forEach(
 
             t => {
 
- 
 
                 const pane =
 
@@ -3592,11 +3167,9 @@ function recargarDatos() {
 
                     );
 
- 
 
                 if (pane) {
 
- 
 
                     pane.classList.add(
 
@@ -3606,7 +3179,6 @@ function recargarDatos() {
 
                 }
 
- 
 
                 const nav =
 
@@ -3616,11 +3188,9 @@ function recargarDatos() {
 
                     );
 
- 
 
                 if (nav) {
 
- 
 
                     nav.classList.remove(
 
@@ -3634,7 +3204,6 @@ function recargarDatos() {
 
         );
 
- 
 
         const paneActivo =
 
@@ -3644,11 +3213,9 @@ function recargarDatos() {
 
             );
 
- 
 
         if (paneActivo) {
 
- 
 
             paneActivo.classList.remove(
 
@@ -3658,7 +3225,6 @@ function recargarDatos() {
 
         }
 
- 
 
         const navActivo =
 
@@ -3668,11 +3234,9 @@ function recargarDatos() {
 
             );
 
- 
 
         if (navActivo) {
 
- 
 
             navActivo.classList.add(
 
@@ -3682,7 +3246,6 @@ function recargarDatos() {
 
         }
 
- 
 
         const titles = {
 
@@ -3690,25 +3253,21 @@ function recargarDatos() {
 
                 'Trabajos Disponibles',
 
- 
 
             'mis-mudanzas':
 
                 'Mis Mudanzas Activas',
 
- 
 
             'historial-servicios':
 
                 'Historial de servicios',
 
- 
 
             'facturacion':
 
                 'Facturación',
 
- 
 
             'mi-perfil':
 
@@ -3716,7 +3275,6 @@ function recargarDatos() {
 
         };
 
- 
 
         const headerTitle =
 
@@ -3726,7 +3284,6 @@ function recargarDatos() {
 
             );
 
- 
 
         if (
 
@@ -3736,7 +3293,6 @@ function recargarDatos() {
 
         ) {
 
- 
 
             headerTitle.textContent =
 
@@ -3744,17 +3300,14 @@ function recargarDatos() {
 
         }
 
- 
 
         cerrarMenuMovil();
 
     }
 
- 
 
     async function cargarMisMudanzas() {
 
- 
 
         console.log(
 
@@ -3762,7 +3315,6 @@ function recargarDatos() {
 
         );
 
- 
 
         console.log(
 
@@ -3772,11 +3324,9 @@ function recargarDatos() {
 
         );
 
- 
 
         if (!currentUserId) {
 
- 
 
             console.warn(
 
@@ -3784,13 +3334,11 @@ function recargarDatos() {
 
             );
 
- 
 
             return;
 
         }
 
- 
 
         const {
 
@@ -3834,7 +3382,6 @@ function recargarDatos() {
 
                 );
 
- 
 
         console.log(
 
@@ -3844,7 +3391,6 @@ function recargarDatos() {
 
         );
 
- 
 
         console.log(
 
@@ -3854,11 +3400,9 @@ function recargarDatos() {
 
         );
 
- 
 
         if (error) {
 
- 
 
             console.error(
 
@@ -3868,39 +3412,32 @@ function recargarDatos() {
 
             );
 
- 
 
             state.activas =
 
                 [];
 
- 
 
             renderizarActivas();
 
- 
 
             return;
 
         }
 
- 
 
         state.activas =
 
             data || [];
 
- 
 
         renderizarActivas();
 
     }
 
- 
 
     function renderizarActivas() {
 
- 
 
         const contenedor =
 
@@ -3910,7 +3447,6 @@ function recargarDatos() {
 
             );
 
- 
 
         const badge =
 
@@ -3920,11 +3456,9 @@ function recargarDatos() {
 
             );
 
- 
 
         if (!contenedor) {
 
- 
 
             console.error(
 
@@ -3932,13 +3466,11 @@ function recargarDatos() {
 
             );
 
- 
 
             return;
 
         }
 
- 
 
         const trabajos =
 
@@ -3952,17 +3484,14 @@ function recargarDatos() {
 
                 : [];
 
- 
 
         if (badge) {
 
- 
 
             badge.textContent =
 
                 trabajos.length;
 
- 
 
             badge.classList.toggle(
 
@@ -3974,7 +3503,6 @@ function recargarDatos() {
 
         }
 
- 
 
         if (
 
@@ -3982,13 +3510,11 @@ function recargarDatos() {
 
         ) {
 
- 
 
             contenedor.innerHTML = `
 
                 <div class="text-center py-16 bg-white rounded-3xl border border-dashed border-gray-300">
 
- 
 
                     <i
 
@@ -3998,7 +3524,6 @@ function recargarDatos() {
 
                     </i>
 
- 
 
                     <h4 class="text-lg font-bold text-gray-700 mb-2">
 
@@ -4006,7 +3531,6 @@ function recargarDatos() {
 
                     </h4>
 
- 
 
                     <p class="text-gray-400 font-medium text-sm">
 
@@ -4014,29 +3538,24 @@ function recargarDatos() {
 
                     </p>
 
- 
 
                 </div>
 
             `;
 
- 
 
             if (window.lucide) {
 
- 
 
                 lucide.createIcons();
 
             }
 
- 
 
             return;
 
         }
 
- 
 
         const tarjetas =
 
@@ -4046,7 +3565,6 @@ function recargarDatos() {
 
                 ?.renderizarTarjetasActivas;
 
- 
 
         if (
 
@@ -4056,7 +3574,6 @@ function recargarDatos() {
 
         ) {
 
- 
 
             console.error(
 
@@ -4064,13 +3581,11 @@ function recargarDatos() {
 
             );
 
- 
 
             return;
 
         }
 
- 
 
         contenedor.innerHTML =
 
@@ -4080,11 +3595,9 @@ function recargarDatos() {
 
             );
 
- 
 
         if (window.lucide) {
 
- 
 
             lucide.createIcons();
 
@@ -4092,7 +3605,6 @@ function recargarDatos() {
 
     }
 
- 
 
     function imprimirFicha(
 
@@ -4100,7 +3612,6 @@ function recargarDatos() {
 
     ) {
 
- 
 
         let mudanza =
 
@@ -4114,7 +3625,6 @@ function recargarDatos() {
 
             );
 
- 
 
         if (!mudanza && Array.isArray(window.RODAX_HISTORIAL_SERVICIOS)) {
 
@@ -4126,11 +3636,9 @@ function recargarDatos() {
 
         }
 
- 
 
         if (!mudanza) {
 
- 
 
             alert(
 
@@ -4138,13 +3646,11 @@ function recargarDatos() {
 
             );
 
- 
 
             return;
 
         }
 
- 
 
         const origen =
 
@@ -4152,7 +3658,6 @@ function recargarDatos() {
 
             "";
 
- 
 
         const destino =
 
@@ -4160,7 +3665,6 @@ function recargarDatos() {
 
             "";
 
- 
 
         const fecha =
 
@@ -4168,17 +3672,14 @@ function recargarDatos() {
 
             "";
 
- 
 
             function formatearFechaFicha(fechaOriginal) {
 
- 
 
     const texto =
 
         String(fechaOriginal || "").trim();
 
- 
 
     const match =
 
@@ -4188,7 +3689,6 @@ function recargarDatos() {
 
         );
 
- 
 
     if (!match) {
 
@@ -4196,19 +3696,16 @@ function recargarDatos() {
 
     }
 
- 
 
     return `${match[3]}-${match[2]}-${match[1]}`;
 
 }
 
- 
 
 const fechaFicha =
 
     formatearFechaFicha(fecha);
 
- 
 
         const km =
 
@@ -4216,7 +3713,6 @@ const fechaFicha =
 
             "";
 
- 
 
         const precio =
 
@@ -4224,7 +3720,6 @@ const fechaFicha =
 
             "";
 
- 
 
         const extras =
 
@@ -4232,7 +3727,6 @@ const fechaFicha =
 
             "";
 
- 
 
         const volumen =
 
@@ -4240,7 +3734,6 @@ const fechaFicha =
 
             "";
 
- 
 
         const ascensor =
 
@@ -4248,7 +3741,6 @@ const fechaFicha =
 
             "";
 
- 
 
         const numeroReserva =
 
@@ -4260,7 +3752,6 @@ const fechaFicha =
 
                 );
 
- 
 
         const numArticulos =
 
@@ -4274,7 +3765,6 @@ const fechaFicha =
 
         );
 
- 
 
 const totalM3 =
 
@@ -4288,7 +3778,6 @@ const totalM3 =
 
         );
 
- 
 
         const m3Texto =
 
@@ -4306,7 +3795,6 @@ const totalM3 =
 
 /////////////////////////////////////////////////////////
 
- 
 
 const inventarioOriginal =
 
@@ -4332,7 +3820,6 @@ const inventarioOriginal =
 
         })();
 
- 
 
 const esMudanzaTotalFicha =
 
@@ -4346,7 +3833,6 @@ const esMudanzaTotalFicha =
 
         .includes("total");
 
- 
 
         const tipoServicioFicha =
 
@@ -4356,7 +3842,6 @@ const esMudanzaTotalFicha =
 
         : "MUDANZA ESTÁNDAR";
 
- 
 
 const normalizarNombreFicha =
 
@@ -4378,7 +3863,6 @@ const normalizarNombreFicha =
 
             );
 
- 
 
 const nombresExtrasFicha = new Set([
 
@@ -4390,7 +3874,6 @@ const nombresExtrasFicha = new Set([
 
 ]);
 
- 
 
 const categoriasFicha =
 
@@ -4398,11 +3881,9 @@ const categoriasFicha =
 
     {};
 
- 
 
 const inventarioPorCategoria = {};
 
- 
 
 Object.keys(categoriasFicha).forEach(
 
@@ -4414,11 +3895,9 @@ Object.keys(categoriasFicha).forEach(
 
 );
 
- 
 
 inventarioOriginal.forEach(item => {
 
- 
 
     const cantidad =
 
@@ -4430,7 +3909,6 @@ inventarioOriginal.forEach(item => {
 
         ) || 0;
 
- 
 
     if (cantidad <= 0) {
 
@@ -4438,7 +3916,6 @@ inventarioOriginal.forEach(item => {
 
     }
 
- 
 
     const nombre =
 
@@ -4454,7 +3931,6 @@ inventarioOriginal.forEach(item => {
 
         ).trim();
 
- 
 
     /*
 
@@ -4482,7 +3958,6 @@ inventarioOriginal.forEach(item => {
 
     }
 
- 
 
     let categoriaEncontrada =
 
@@ -4494,11 +3969,9 @@ inventarioOriginal.forEach(item => {
 
         "Otros";
 
- 
 
     let encontradaEnConfig = false;
 
- 
 
     for (
 
@@ -4514,7 +3987,6 @@ inventarioOriginal.forEach(item => {
 
     ) {
 
- 
 
         const coincide =
 
@@ -4536,7 +4008,6 @@ inventarioOriginal.forEach(item => {
 
             );
 
- 
 
         if (coincide) {
 
@@ -4544,7 +4015,6 @@ inventarioOriginal.forEach(item => {
 
                 categoria;
 
- 
 
             encontradaEnConfig = true;
 
@@ -4554,7 +4024,6 @@ inventarioOriginal.forEach(item => {
 
     }
 
- 
 
     if (
 
@@ -4572,7 +4041,6 @@ inventarioOriginal.forEach(item => {
 
     }
 
- 
 
     if (
 
@@ -4592,7 +4060,6 @@ inventarioOriginal.forEach(item => {
 
     }
 
- 
 
     inventarioPorCategoria[
 
@@ -4608,7 +4075,6 @@ inventarioOriginal.forEach(item => {
 
 });
 
- 
 
 /////////////////////////////////////////////////////////
 
@@ -4616,7 +4082,6 @@ inventarioOriginal.forEach(item => {
 
 /////////////////////////////////////////////////////////
 
- 
 
 const iconosFicha = {
 
@@ -4634,11 +4099,9 @@ const iconosFicha = {
 
 };
 
- 
 
 let htmlInventarioFicha = "";
 
- 
 
 Object.entries(
 
@@ -4648,7 +4111,6 @@ Object.entries(
 
     ([categoria, items]) => {
 
- 
 
         if (
 
@@ -4662,7 +4124,6 @@ Object.entries(
 
         }
 
- 
 
         const totalCategoria =
 
@@ -4684,7 +4145,6 @@ Object.entries(
 
             );
 
- 
 
         htmlInventarioFicha += `
 
@@ -4710,7 +4170,6 @@ Object.entries(
 
                     </span>
 
- 
 
                     <span class="inventario-total">
 
@@ -4720,11 +4179,9 @@ Object.entries(
 
                 </div>
 
- 
 
                 <div class="inventario-items">
 
- 
 
                     ${items
 
@@ -4740,7 +4197,6 @@ Object.entries(
 
                                     </span>
 
- 
 
                                     <strong>
 
@@ -4758,11 +4214,9 @@ Object.entries(
 
                     }
 
- 
 
                 </div>
 
- 
 
             </div>
 
@@ -4772,11 +4226,9 @@ Object.entries(
 
 );
 
- 
 
 if (!htmlInventarioFicha) {
 
- 
 
     htmlInventarioFicha = `
 
@@ -4790,7 +4242,6 @@ if (!htmlInventarioFicha) {
 
 }
 
- 
 
 /////////////////////////////////////////////////////////
 
@@ -4798,15 +4249,12 @@ if (!htmlInventarioFicha) {
 
 /////////////////////////////////////////////////////////
 
- 
 
 let htmlExtrasFicha = "";
 
- 
 
 if (esMudanzaTotalFicha) {
 
- 
 
     let extrasFicha = {
 
@@ -4818,7 +4266,6 @@ if (esMudanzaTotalFicha) {
 
 };
 
- 
 
     if (
 
@@ -4832,7 +4279,6 @@ if (esMudanzaTotalFicha) {
 
     ) {
 
- 
 
         extrasFicha =
 
@@ -4846,7 +4292,6 @@ if (esMudanzaTotalFicha) {
 
     }
 
- 
 
     if (
 
@@ -4858,13 +4303,11 @@ if (esMudanzaTotalFicha) {
 
     ) {
 
- 
 
         htmlExtrasFicha = `
 
     <div class="seccion">
 
- 
 
         <div class="seccion-titulo extras-titulo">
 
@@ -4872,11 +4315,9 @@ if (esMudanzaTotalFicha) {
 
         </div>
 
- 
 
         <div class="extras-ficha">
 
- 
 
             <div
 
@@ -4900,7 +4341,6 @@ if (esMudanzaTotalFicha) {
 
             </div>
 
- 
 
             ${
 
@@ -4916,7 +4356,6 @@ if (esMudanzaTotalFicha) {
 
                             </span>
 
- 
 
                             <strong>
 
@@ -4932,7 +4371,6 @@ if (esMudanzaTotalFicha) {
 
             }
 
- 
 
             ${
 
@@ -4948,7 +4386,6 @@ if (esMudanzaTotalFicha) {
 
                             </span>
 
- 
 
                             <strong>
 
@@ -4964,7 +4401,6 @@ if (esMudanzaTotalFicha) {
 
             }
 
- 
 
             ${
 
@@ -4980,7 +4416,6 @@ if (esMudanzaTotalFicha) {
 
                             </span>
 
- 
 
                             <strong>
 
@@ -4996,11 +4431,9 @@ if (esMudanzaTotalFicha) {
 
             }
 
- 
 
         </div>
 
- 
 
     </div>
 
@@ -5010,7 +4443,6 @@ if (esMudanzaTotalFicha) {
 
 }
 
- 
 
         const accesos =
 
@@ -5022,7 +4454,6 @@ if (esMudanzaTotalFicha) {
 
     };
 
- 
 
 /*
 
@@ -5034,15 +4465,12 @@ if (esMudanzaTotalFicha) {
 
  */
 
- 
 
 function formatearAccesoFicha(valor) {
 
- 
 
     const texto = String(valor || "").trim();
 
- 
 
     if (!texto) {
 
@@ -5050,7 +4478,6 @@ function formatearAccesoFicha(valor) {
 
     }
 
- 
 
     /*
 
@@ -5068,7 +4495,6 @@ function formatearAccesoFicha(valor) {
 
         .replace(/[\u0300-\u036f]/g, "");
 
- 
 
     /*
 
@@ -5080,7 +4506,6 @@ function formatearAccesoFicha(valor) {
 
     if (normalizado.includes("sin ascensor")) {
 
- 
 
         const matchPiso =
 
@@ -5090,17 +4515,14 @@ function formatearAccesoFicha(valor) {
 
             );
 
- 
 
         if (matchPiso) {
 
- 
 
             let piso =
 
                 String(matchPiso[1]).trim();
 
- 
 
             /*
 
@@ -5120,19 +4542,16 @@ function formatearAccesoFicha(valor) {
 
             }
 
- 
 
             return `Sin ascensor · Piso ${piso}`;
 
         }
 
- 
 
         return "Sin ascensor";
 
     }
 
- 
 
     /*
 
@@ -5152,13 +4571,11 @@ function formatearAccesoFicha(valor) {
 
     }
 
- 
 
     return texto;
 
 }
 
- 
 
 const accesoRecogidaFicha =
 
@@ -5168,7 +4585,6 @@ const accesoRecogidaFicha =
 
     );
 
- 
 
 const accesoEntregaFicha =
 
@@ -5178,7 +4594,6 @@ const accesoEntregaFicha =
 
     );
 
- 
 
         const nombre =
 
@@ -5186,7 +4601,6 @@ const accesoEntregaFicha =
 
             'Transportista RODAX';
 
- 
 
         const fechaHoy =
 
@@ -5202,19 +4616,16 @@ const accesoEntregaFicha =
 
                             'long',
 
- 
 
                         year:
 
                             'numeric',
 
- 
 
                         month:
 
                             'long',
 
- 
 
                         day:
 
@@ -5224,7 +4635,6 @@ const accesoEntregaFicha =
 
                 );
 
- 
 
         /*
 
@@ -5246,7 +4656,6 @@ const accesoEntregaFicha =
 
          */
 
- 
 
         const contenido =
 
@@ -5258,7 +4667,6 @@ const accesoEntregaFicha =
 
     <meta charset="UTF-8">
 
- 
 
     <title>
 
@@ -5266,11 +4674,9 @@ const accesoEntregaFicha =
 
     </title>
 
- 
 
     <style>
 
- 
 
         * {
 
@@ -5282,7 +4688,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         body {
 
@@ -5294,25 +4699,21 @@ const accesoEntregaFicha =
 
                 sans-serif;
 
- 
 
             background:
 
                 white;
 
- 
 
             color:
 
                 #1a1a1a;
 
- 
 
             padding:
 
                 30px;
 
- 
 
             font-size:
 
@@ -5320,7 +4721,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .header {
 
@@ -5328,31 +4728,26 @@ const accesoEntregaFicha =
 
                 flex;
 
- 
 
             justify-content:
 
                 space-between;
 
- 
 
             align-items:
 
                 flex-start;
 
- 
 
             border-bottom:
 
                 3px solid #2563eb;
 
- 
 
             padding-bottom:
 
                 20px;
 
- 
 
             margin-bottom:
 
@@ -5360,7 +4755,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .logo {
 
@@ -5368,19 +4762,16 @@ const accesoEntregaFicha =
 
                 22px;
 
- 
 
             font-weight:
 
                 900;
 
- 
 
             color:
 
                 #1e3a5f;
 
- 
 
             letter-spacing:
 
@@ -5388,7 +4779,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .logo span {
 
@@ -5398,7 +4788,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .ficha-num {
 
@@ -5408,7 +4797,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .ficha-num h2 {
 
@@ -5416,13 +4804,11 @@ const accesoEntregaFicha =
 
                 18px;
 
- 
 
             font-weight:
 
                 900;
 
- 
 
             color:
 
@@ -5430,7 +4816,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .ficha-num p {
 
@@ -5438,13 +4823,11 @@ const accesoEntregaFicha =
 
                 #6b7280;
 
- 
 
             font-size:
 
                 11px;
 
- 
 
             margin-top:
 
@@ -5452,7 +4835,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .seccion {
 
@@ -5462,7 +4844,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .seccion-titulo {
 
@@ -5470,43 +4851,36 @@ const accesoEntregaFicha =
 
                 10px;
 
- 
 
             font-weight:
 
                 900;
 
- 
 
             text-transform:
 
                 uppercase;
 
- 
 
             letter-spacing:
 
                 1px;
 
- 
 
             color:
 
                 #6b7280;
 
- 
 
             margin-bottom:
 
                 10px;
 
- 
 
             padding-bottom:
 
                 6px;
 
- 
 
             border-bottom:
 
@@ -5514,7 +4888,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .grid-2 {
 
@@ -5522,13 +4895,11 @@ const accesoEntregaFicha =
 
                 grid;
 
- 
 
             grid-template-columns:
 
                 1fr 1fr;
 
- 
 
             gap:
 
@@ -5536,7 +4907,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .dato-label {
 
@@ -5544,31 +4914,26 @@ const accesoEntregaFicha =
 
                 10px;
 
- 
 
             font-weight:
 
                 700;
 
- 
 
             color:
 
                 #9ca3af;
 
- 
 
             text-transform:
 
                 uppercase;
 
- 
 
             letter-spacing:
 
                 0.5px;
 
- 
 
             margin-bottom:
 
@@ -5576,7 +4941,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .dato-valor {
 
@@ -5584,13 +4948,11 @@ const accesoEntregaFicha =
 
                 15px;
 
- 
 
             font-weight:
 
                 700;
 
- 
 
             color:
 
@@ -5598,7 +4960,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .dato-valor.grande {
 
@@ -5606,13 +4967,11 @@ const accesoEntregaFicha =
 
                 24px;
 
- 
 
             font-weight:
 
                 900;
 
- 
 
             color:
 
@@ -5620,7 +4979,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .ruta-box {
 
@@ -5628,19 +4986,16 @@ const accesoEntregaFicha =
 
                 #f0f9ff;
 
- 
 
             border:
 
                 1px solid #bae6fd;
 
- 
 
             border-radius:
 
                 12px;
 
- 
 
             padding:
 
@@ -5648,7 +5003,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .punto {
 
@@ -5656,19 +5010,16 @@ const accesoEntregaFicha =
 
                 flex;
 
- 
 
             align-items:
 
                 flex-start;
 
- 
 
             gap:
 
                 10px;
 
- 
 
             margin-bottom:
 
@@ -5676,7 +5027,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .punto-circulo {
 
@@ -5684,25 +5034,21 @@ const accesoEntregaFicha =
 
                 12px;
 
- 
 
             height:
 
                 12px;
 
- 
 
             border-radius:
 
                 50%;
 
- 
 
             flex-shrink:
 
                 0;
 
- 
 
             margin-top:
 
@@ -5710,7 +5056,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .punto-circulo.azul {
 
@@ -5720,7 +5065,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .punto-circulo.naranja {
 
@@ -5730,7 +5074,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .km-linea {
 
@@ -5738,13 +5081,11 @@ const accesoEntregaFicha =
 
                 11px;
 
- 
 
             color:
 
                 #6b7280;
 
- 
 
             margin:
 
@@ -5752,7 +5093,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .inventario-categoria {
 
@@ -5768,7 +5108,6 @@ const accesoEntregaFicha =
 
 }
 
- 
 
 .inventario-categoria-header {
 
@@ -5796,7 +5135,6 @@ const accesoEntregaFicha =
 
 }
 
- 
 
 .inventario-total {
 
@@ -5812,7 +5150,6 @@ const accesoEntregaFicha =
 
 }
 
- 
 
 .inventario-items {
 
@@ -5820,7 +5157,6 @@ const accesoEntregaFicha =
 
 }
 
- 
 
 .inventario-item,
 
@@ -5844,7 +5180,6 @@ const accesoEntregaFicha =
 
 }
 
- 
 
 .inventario-item:last-child,
 
@@ -5854,7 +5189,6 @@ const accesoEntregaFicha =
 
 }
 
- 
 
 .inventario-item strong,
 
@@ -5876,7 +5210,6 @@ const accesoEntregaFicha =
 
 }
 
- 
 
 .inventario-vacio {
 
@@ -5896,7 +5229,6 @@ const accesoEntregaFicha =
 
 }
 
- 
 
 .extras-titulo {
 
@@ -5904,7 +5236,6 @@ const accesoEntregaFicha =
 
 }
 
- 
 
 .extras-ficha {
 
@@ -5918,7 +5249,6 @@ const accesoEntregaFicha =
 
 }
 
- 
 
 .extra-fila {
 
@@ -5926,7 +5256,6 @@ const accesoEntregaFicha =
 
 }
 
- 
 
 .extra-fila strong {
 
@@ -5936,7 +5265,6 @@ const accesoEntregaFicha =
 
 }
 
- 
 
         .precio-box {
 
@@ -5944,25 +5272,21 @@ const accesoEntregaFicha =
 
                 #f0fdf4;
 
- 
 
             border:
 
                 2px solid #86efac;
 
- 
 
             border-radius:
 
                 12px;
 
- 
 
             padding:
 
                 16px;
 
- 
 
             text-align:
 
@@ -5970,7 +5294,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .aviso {
 
@@ -5978,37 +5301,31 @@ const accesoEntregaFicha =
 
                 #fefce8;
 
- 
 
             border:
 
                 1px solid #fde047;
 
- 
 
             border-radius:
 
                 8px;
 
- 
 
             padding:
 
                 12px;
 
- 
 
             font-size:
 
                 12px;
 
- 
 
             color:
 
                 #713f12;
 
- 
 
             margin-bottom:
 
@@ -6016,7 +5333,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .footer {
 
@@ -6024,31 +5340,26 @@ const accesoEntregaFicha =
 
                 1px solid #e5e7eb;
 
- 
 
             padding-top:
 
                 16px;
 
- 
 
             margin-top:
 
                 30px;
 
- 
 
             text-align:
 
                 center;
 
- 
 
             font-size:
 
                 11px;
 
- 
 
             color:
 
@@ -6056,7 +5367,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .firma-linea {
 
@@ -6064,13 +5374,11 @@ const accesoEntregaFicha =
 
                 1px solid #d1d5db;
 
- 
 
             height:
 
                 50px;
 
- 
 
             margin-bottom:
 
@@ -6078,7 +5386,6 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         .firma-texto {
 
@@ -6086,13 +5393,11 @@ const accesoEntregaFicha =
 
                 10px;
 
- 
 
             color:
 
                 #9ca3af;
 
- 
 
             text-align:
 
@@ -6100,11 +5405,9 @@ const accesoEntregaFicha =
 
         }
 
- 
 
         @media print {
 
- 
 
     body {
 
@@ -6112,7 +5415,6 @@ const accesoEntregaFicha =
 
     }
 
- 
 
     .no-print {
 
@@ -6120,7 +5422,6 @@ const accesoEntregaFicha =
 
     }
 
- 
 
     /*
 
@@ -6138,7 +5439,6 @@ const accesoEntregaFicha =
 
      */
 
- 
 
     .firmas-finales {
 
@@ -6148,7 +5448,6 @@ const accesoEntregaFicha =
 
         -webkit-column-break-inside: avoid !important;
 
- 
 
         /*
 
@@ -6162,7 +5461,6 @@ const accesoEntregaFicha =
 
     }
 
- 
 
     .firmas-finales > div {
 
@@ -6172,7 +5470,6 @@ const accesoEntregaFicha =
 
     }
 
- 
 
     .firmas-finales .firma-linea,
 
@@ -6186,7 +5483,6 @@ const accesoEntregaFicha =
 
 }
 
- 
 
 /* ==========================================================
 
@@ -6194,7 +5490,6 @@ const accesoEntregaFicha =
 
    ========================================================== */
 
- 
 
 .nav-marketplace-tab.active {
 
@@ -6210,7 +5505,6 @@ const accesoEntregaFicha =
 
 }
 
- 
 
 .nav-marketplace-tab.active i,
 
@@ -6220,7 +5514,6 @@ const accesoEntregaFicha =
 
 }
 
- 
 
 .nav-marketplace-tab:not(.active) {
 
@@ -6236,19 +5529,15 @@ const accesoEntregaFicha =
 
 </head>
 
- 
 
 <body>
 
- 
 
     <div class="header">
 
- 
 
         <div>
 
- 
 
             <img
 
@@ -6270,7 +5559,6 @@ const accesoEntregaFicha =
 
 >
 
- 
 
             <p
 
@@ -6290,15 +5578,12 @@ const accesoEntregaFicha =
 
             </p>
 
- 
 
         </div>
 
- 
 
         <div class="ficha-num">
 
- 
 
     <h2>
 
@@ -6306,7 +5591,6 @@ const accesoEntregaFicha =
 
     </h2>
 
- 
 
     <div
 
@@ -6338,7 +5622,6 @@ const accesoEntregaFicha =
 
     </div>
 
- 
 
     <p>
 
@@ -6352,7 +5635,6 @@ const accesoEntregaFicha =
 
     </p>
 
- 
 
     <p>
 
@@ -6362,7 +5644,6 @@ const accesoEntregaFicha =
 
     </p>
 
- 
 
     <p>
 
@@ -6376,15 +5657,12 @@ const accesoEntregaFicha =
 
     </p>
 
- 
 
 </div>
 
- 
 
     </div>
 
- 
 
     <div class="aviso">
 
@@ -6396,7 +5674,6 @@ const accesoEntregaFicha =
 
         </strong>
 
- 
 
         No compartir los datos del cliente con terceros.
 
@@ -6406,7 +5683,6 @@ const accesoEntregaFicha =
 
     </div>
 
- 
 
     <div
 
@@ -6414,11 +5690,9 @@ const accesoEntregaFicha =
 
         style="margin-bottom:20px;">
 
- 
 
         <div class="seccion">
 
- 
 
             <div class="seccion-titulo">
 
@@ -6426,15 +5700,12 @@ const accesoEntregaFicha =
 
             </div>
 
- 
 
             <div class="ruta-box">
 
- 
 
                 <div class="punto">
 
- 
 
                     <div
 
@@ -6442,11 +5713,9 @@ const accesoEntregaFicha =
 
                     </div>
 
- 
 
                     <div>
 
- 
 
                         <div class="dato-label">
 
@@ -6454,7 +5723,6 @@ const accesoEntregaFicha =
 
 </div>
 
- 
 
 <div
 
@@ -6462,11 +5730,9 @@ const accesoEntregaFicha =
 
     style="font-size:13px;">
 
- 
 
     ${origen || '—'}
 
- 
 
     <div
 
@@ -6488,15 +5754,12 @@ const accesoEntregaFicha =
 
     </div>
 
- 
 
 </div>
 
- 
 
                 </div>
 
- 
 
                 <div class="km-linea">
 
@@ -6504,11 +5767,9 @@ const accesoEntregaFicha =
 
                 </div>
 
- 
 
                 <div class="punto">
 
- 
 
                     <div
 
@@ -6516,11 +5777,9 @@ const accesoEntregaFicha =
 
                     </div>
 
- 
 
                     <div>
 
- 
 
                         <div class="dato-label">
 
@@ -6528,7 +5787,6 @@ const accesoEntregaFicha =
 
 </div>
 
- 
 
 <div
 
@@ -6536,11 +5794,9 @@ const accesoEntregaFicha =
 
     style="font-size:13px;">
 
- 
 
     ${destino || '—'}
 
- 
 
     <div
 
@@ -6562,31 +5818,24 @@ const accesoEntregaFicha =
 
     </div>
 
- 
 
 </div>
 
- 
 
                     </div>
 
- 
 
                 </div>
 
- 
 
             </div>
 
- 
 
         </div>
 
- 
 
         <div class="seccion">
 
- 
 
             <div class="seccion-titulo">
 
@@ -6594,11 +5843,9 @@ const accesoEntregaFicha =
 
             </div>
 
- 
 
             <div style="margin-bottom:12px;">
 
- 
 
                 <div class="dato-label">
 
@@ -6606,7 +5853,6 @@ const accesoEntregaFicha =
 
                 </div>
 
- 
 
                 <div class="dato-valor">
 
@@ -6614,15 +5860,12 @@ const accesoEntregaFicha =
 
                 </div>
 
- 
 
             </div>
 
- 
 
             <div style="margin-bottom:12px;">
 
- 
 
                 <div class="dato-label">
 
@@ -6630,7 +5873,6 @@ const accesoEntregaFicha =
 
                 </div>
 
- 
 
                 <div class="dato-valor">
 
@@ -6638,15 +5880,12 @@ const accesoEntregaFicha =
 
                 </div>
 
- 
 
             </div>
 
- 
 
             <div style="margin-bottom:12px;">
 
- 
 
                 <div class="dato-label">
 
@@ -6654,7 +5893,6 @@ const accesoEntregaFicha =
 
                 </div>
 
- 
 
                 <div class="dato-valor">
 
@@ -6662,15 +5900,12 @@ const accesoEntregaFicha =
 
                 </div>
 
- 
 
             </div>
 
- 
 
             <div>
 
- 
 
                 <div class="dato-label">
 
@@ -6678,7 +5913,6 @@ const accesoEntregaFicha =
 
                 </div>
 
- 
 
                 <div class="dato-valor">
 
@@ -6686,23 +5920,18 @@ const accesoEntregaFicha =
 
                 </div>
 
- 
 
             </div>
 
- 
 
         </div>
 
- 
 
     </div>
 
- 
 
     <div class="seccion">
 
- 
 
     <div class="seccion-titulo">
 
@@ -6710,7 +5939,6 @@ const accesoEntregaFicha =
 
     </div>
 
- 
 
     <div>
 
@@ -6718,11 +5946,9 @@ const accesoEntregaFicha =
 
     </div>
 
- 
 
 </div>
 
- 
 
 <div
 
@@ -6730,15 +5956,12 @@ const accesoEntregaFicha =
 
     style="align-items:start;">
 
- 
 
     <!-- ACCESOS — IZQUIERDA -->
 
- 
 
     <div class="seccion">
 
- 
 
         <div class="seccion-titulo">
 
@@ -6746,7 +5969,6 @@ const accesoEntregaFicha =
 
         </div>
 
- 
 
         <div
 
@@ -6754,7 +5976,6 @@ const accesoEntregaFicha =
 
             style="font-size:13px;">
 
- 
 
             <p>
 
@@ -6764,17 +5985,14 @@ const accesoEntregaFicha =
 
                 </strong>
 
- 
 
                 ${accesos.recogida}
 
             </p>
 
- 
 
             <p style="margin-top:6px;">
 
- 
 
                 <strong>
 
@@ -6782,37 +6000,28 @@ const accesoEntregaFicha =
 
                 </strong>
 
- 
 
                 ${accesos.entrega}
 
- 
 
             </p>
 
- 
 
         </div>
 
- 
 
     </div>
 
- 
 
- 
 
     <!-- EXTRAS — DERECHA -->
 
- 
 
     ${htmlExtrasFicha}
 
- 
 
 </div>
 
- 
 
     ${
 
@@ -6824,7 +6033,6 @@ const accesoEntregaFicha =
 
                 <div class="seccion">
 
- 
 
                     <div class="seccion-titulo">
 
@@ -6832,7 +6040,6 @@ const accesoEntregaFicha =
 
                     </div>
 
- 
 
                     <div
 
@@ -6840,15 +6047,12 @@ const accesoEntregaFicha =
 
                         style="font-size:13px;">
 
- 
 
                         ${extras}
 
- 
 
                     </div>
 
- 
 
                 </div>
 
@@ -6858,7 +6062,6 @@ const accesoEntregaFicha =
 
     }
 
- 
 
     <div
 
@@ -6866,7 +6069,6 @@ const accesoEntregaFicha =
 
         style="margin-bottom:20px;">
 
- 
 
         <div
 
@@ -6874,15 +6076,12 @@ const accesoEntregaFicha =
 
             style="text-align:center;">
 
- 
 
             COBRO DEL TRANSPORTISTA
 
- 
 
         </div>
 
- 
 
         <div
 
@@ -6890,15 +6089,12 @@ const accesoEntregaFicha =
 
             style="text-align:center;">
 
- 
 
             ${precio || '—'}
 
- 
 
         </div>
 
- 
 
         <p
 
@@ -6914,23 +6110,18 @@ const accesoEntregaFicha =
 
             ">
 
- 
 
             IVA incluido
 
- 
 
         </p>
 
- 
 
     </div>
 
- 
 
     </div>
 
- 
 
     <div
 
@@ -6944,7 +6135,6 @@ const accesoEntregaFicha =
 
     ">
 
- 
 
     <div class="seccion-titulo">
 
@@ -6952,7 +6142,6 @@ const accesoEntregaFicha =
 
     </div>
 
- 
 
     <div
 
@@ -6968,13 +6157,11 @@ const accesoEntregaFicha =
 
         ">
 
- 
 
         <!-- RECOGIDA -->
 
         <div style="margin-bottom:24px;">
 
- 
 
             <div
 
@@ -6998,7 +6185,6 @@ const accesoEntregaFicha =
 
             </div>
 
- 
 
             <div
 
@@ -7012,13 +6198,11 @@ const accesoEntregaFicha =
 
                 ">
 
- 
 
                 <div>
 
                     <div class="firma-linea"></div>
 
- 
 
                     <div class="firma-texto">
 
@@ -7028,13 +6212,11 @@ const accesoEntregaFicha =
 
                 </div>
 
- 
 
                 <div>
 
                     <div class="firma-linea"></div>
 
- 
 
                     <div class="firma-texto">
 
@@ -7044,21 +6226,17 @@ const accesoEntregaFicha =
 
                 </div>
 
- 
 
             </div>
 
- 
 
         </div>
 
- 
 
         <!-- ENTREGA -->
 
         <div>
 
- 
 
             <div
 
@@ -7082,7 +6260,6 @@ const accesoEntregaFicha =
 
             </div>
 
- 
 
             <div
 
@@ -7096,13 +6273,11 @@ const accesoEntregaFicha =
 
                 ">
 
- 
 
                 <div>
 
                     <div class="firma-linea"></div>
 
- 
 
                     <div class="firma-texto">
 
@@ -7112,13 +6287,11 @@ const accesoEntregaFicha =
 
                 </div>
 
- 
 
                 <div>
 
                     <div class="firma-linea"></div>
 
- 
 
                     <div class="firma-texto">
 
@@ -7128,27 +6301,21 @@ const accesoEntregaFicha =
 
                 </div>
 
- 
 
             </div>
 
- 
 
         </div>
 
- 
 
     </div>
 
- 
 
 </div>
 
- 
 
     <div class="footer">
 
- 
 
         <p>
 
@@ -7162,7 +6329,6 @@ const accesoEntregaFicha =
 
         </p>
 
- 
 
         <p style="margin-top:4px;">
 
@@ -7172,11 +6338,9 @@ const accesoEntregaFicha =
 
         </p>
 
- 
 
     </div>
 
- 
 
     <button
 
@@ -7206,15 +6370,12 @@ const accesoEntregaFicha =
 
         ">
 
- 
 
         🖨️ Imprimir / Guardar PDF
 
- 
 
     </button>
 
- 
 
     <script>
 
@@ -7232,13 +6393,11 @@ const accesoEntregaFicha =
 
     <\/script>
 
- 
 
 </body>
 
 </html>`;
 
- 
 
         const ventana =
 
@@ -7252,11 +6411,9 @@ const accesoEntregaFicha =
 
             );
 
- 
 
         if (ventana) {
 
- 
 
             ventana.document.write(
 
@@ -7264,15 +6421,12 @@ const accesoEntregaFicha =
 
             );
 
- 
 
             ventana.document.close();
 
- 
 
         } else {
 
- 
 
             alert(
 
@@ -7286,7 +6440,6 @@ const accesoEntregaFicha =
 
     }
 
- 
 
     const actionModal =
 
@@ -7296,7 +6449,6 @@ const accesoEntregaFicha =
 
         );
 
- 
 
     const modalContent =
 
@@ -7306,15 +6458,12 @@ const accesoEntregaFicha =
 
         );
 
- 
 
     function cerrarModal() {
 
- 
 
         if (actionModal) {
 
- 
 
             actionModal.classList.add(
 
@@ -7326,7 +6475,6 @@ const accesoEntregaFicha =
 
     }
 
- 
 
     function confirmarAceptar(
 
@@ -7334,11 +6482,9 @@ const accesoEntregaFicha =
 
     ) {
 
- 
 
         if (!modalContent) {
 
- 
 
             console.error(
 
@@ -7346,23 +6492,19 @@ const accesoEntregaFicha =
 
             );
 
- 
 
             return;
 
         }
 
- 
 
         modalContent.innerHTML = `
 
- 
 
             <div
 
                 class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
 
- 
 
                 <i
 
@@ -7372,31 +6514,25 @@ const accesoEntregaFicha =
 
                 </i>
 
- 
 
             </div>
 
- 
 
             <h3
 
                 class="text-xl font-black text-gray-900 mb-2">
 
- 
 
                 ¿Aceptar este trabajo?
 
- 
 
             </h3>
 
- 
 
             <p
 
                 class="text-gray-500 text-sm mb-4 leading-relaxed">
 
- 
 
                 Al aceptar, la mudanza pasará a
 
@@ -7406,11 +6542,9 @@ const accesoEntregaFicha =
 
                 </strong>.
 
- 
 
                 <br>
 
- 
 
                 Los datos del cliente estarán disponibles
 
@@ -7422,23 +6556,19 @@ const accesoEntregaFicha =
 
                 del servicio.
 
- 
 
             </p>
 
- 
 
             <div
 
                 class="text-left bg-amber-50 border border-amber-200 rounded-xl p-3.5 mb-4">
 
- 
 
                 <div
 
                     class="flex items-start gap-2.5">
 
- 
 
                     <i
 
@@ -7448,31 +6578,25 @@ const accesoEntregaFicha =
 
                     </i>
 
- 
 
                     <div>
 
- 
 
                         <p
 
                             class="text-xs font-black text-amber-800 mb-1">
 
- 
 
                             Compromiso del transportista
 
- 
 
                         </p>
 
- 
 
                         <p
 
                             class="text-xs text-amber-700 leading-relaxed">
 
- 
 
                             Al aceptar este trabajo,
 
@@ -7484,17 +6608,14 @@ const accesoEntregaFicha =
 
                             condiciones indicadas.
 
- 
 
                         </p>
 
- 
 
                         <p
 
                             class="text-xs text-amber-700 leading-relaxed mt-1.5">
 
- 
 
                             Una posterior desasignación
 
@@ -7504,7 +6625,6 @@ const accesoEntregaFicha =
 
                             y penalizaciones previstas en las
 
- 
 
                             <a
 
@@ -7516,37 +6636,29 @@ const accesoEntregaFicha =
 
                                 class="font-bold text-blue-600 underline hover:text-blue-800">
 
- 
 
                                 Condiciones de Registro
 
                                 del Transportista
 
- 
 
                             </a>.
 
- 
 
                         </p>
 
- 
 
                     </div>
 
- 
 
                 </div>
 
- 
 
             </div>
 
- 
 
             <div class="flex gap-3">
 
- 
 
                 <button
 
@@ -7554,15 +6666,12 @@ const accesoEntregaFicha =
 
                     class="flex-1 bg-gray-100 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors">
 
- 
 
                     Cancelar
 
- 
 
                 </button>
 
- 
 
                 <button
 
@@ -7570,35 +6679,28 @@ const accesoEntregaFicha =
 
                     class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md transition-colors">
 
- 
 
                     ✅ Aceptar
 
- 
 
                 </button>
 
- 
 
             </div>
 
         `;
 
- 
 
         if (window.lucide) {
 
- 
 
             lucide.createIcons();
 
         }
 
- 
 
         if (actionModal) {
 
- 
 
             actionModal.classList.remove(
 
@@ -7610,7 +6712,6 @@ const accesoEntregaFicha =
 
     }
 
- 
 
     async function marcarCompletada(
 
@@ -7618,7 +6719,6 @@ const accesoEntregaFicha =
 
     ) {
 
- 
 
         const confirmar =
 
@@ -7630,17 +6730,14 @@ const accesoEntregaFicha =
 
             );
 
- 
 
         if (!confirmar) {
 
- 
 
             return;
 
         }
 
- 
 
         console.log(
 
@@ -7648,7 +6745,6 @@ const accesoEntregaFicha =
 
         );
 
- 
 
         console.log(
 
@@ -7658,7 +6754,6 @@ const accesoEntregaFicha =
 
         );
 
- 
 
         console.log(
 
@@ -7668,7 +6763,6 @@ const accesoEntregaFicha =
 
         );
 
- 
 
         const {
 
@@ -7708,7 +6802,6 @@ const accesoEntregaFicha =
 
                 .select();
 
- 
 
         console.log(
 
@@ -7718,7 +6811,6 @@ const accesoEntregaFicha =
 
         );
 
- 
 
         console.log(
 
@@ -7728,7 +6820,6 @@ const accesoEntregaFicha =
 
         );
 
- 
 
         console.log(
 
@@ -7736,11 +6827,9 @@ const accesoEntregaFicha =
 
         );
 
- 
 
         if (error) {
 
- 
 
             console.error(
 
@@ -7750,7 +6839,6 @@ const accesoEntregaFicha =
 
             );
 
- 
 
             alert(
 
@@ -7760,13 +6848,11 @@ const accesoEntregaFicha =
 
             );
 
- 
 
             return;
 
         }
 
- 
 
         if (
 
@@ -7776,7 +6862,6 @@ const accesoEntregaFicha =
 
         ) {
 
- 
 
             console.error(
 
@@ -7784,7 +6869,6 @@ const accesoEntregaFicha =
 
             );
 
- 
 
             alert(
 
@@ -7794,13 +6878,11 @@ const accesoEntregaFicha =
 
             );
 
- 
 
             return;
 
         }
 
- 
 
         state.activas =
 
@@ -7814,15 +6896,12 @@ const accesoEntregaFicha =
 
             );
 
- 
 
         renderizarActivas();
 
- 
 
         await cargarMisMudanzas();
 
- 
 
         console.log(
 
@@ -7834,21 +6913,17 @@ const accesoEntregaFicha =
 
     }
 
- 
 
     window.onload =
 
         verificarSesion;
 
- 
 
 </script>
 
- 
 
 <script>
 
- 
 
 console.log(
 
@@ -7856,7 +6931,6 @@ console.log(
 
 );
 
- 
 
 async function actualizarDisponibilidadBaseDatos(
 
@@ -7864,11 +6938,9 @@ async function actualizarDisponibilidadBaseDatos(
 
 ) {
 
- 
 
     try {
 
- 
 
         console.log(
 
@@ -7878,7 +6950,6 @@ async function actualizarDisponibilidadBaseDatos(
 
         );
 
- 
 
         toggleColorIndicadorDisponibilidad(
 
@@ -7886,7 +6957,6 @@ async function actualizarDisponibilidadBaseDatos(
 
         );
 
- 
 
         const {
 
@@ -7904,7 +6974,6 @@ async function actualizarDisponibilidadBaseDatos(
 
                         nuevoEstado,
 
- 
 
                     ultima_actualizacion_estado:
 
@@ -7920,11 +6989,9 @@ async function actualizarDisponibilidadBaseDatos(
 
                 );
 
- 
 
         if (error) {
 
- 
 
             console.error(
 
@@ -7934,7 +7001,6 @@ async function actualizarDisponibilidadBaseDatos(
 
             );
 
- 
 
             alert(
 
@@ -7944,13 +7010,11 @@ async function actualizarDisponibilidadBaseDatos(
 
             );
 
- 
 
             return;
 
         }
 
- 
 
         console.log(
 
@@ -7958,11 +7022,9 @@ async function actualizarDisponibilidadBaseDatos(
 
         );
 
- 
 
     } catch (err) {
 
- 
 
         console.error(
 
@@ -7976,7 +7038,6 @@ async function actualizarDisponibilidadBaseDatos(
 
 }
 
- 
 
 function toggleColorIndicadorDisponibilidad(
 
@@ -7984,7 +7045,6 @@ function toggleColorIndicadorDisponibilidad(
 
 ) {
 
- 
 
     const indicador =
 
@@ -7994,17 +7054,14 @@ function toggleColorIndicadorDisponibilidad(
 
         );
 
- 
 
     if (!indicador) {
 
- 
 
         return;
 
     }
 
- 
 
     if (
 
@@ -8014,7 +7071,6 @@ function toggleColorIndicadorDisponibilidad(
 
     ) {
 
- 
 
         indicador.className =
 
@@ -8026,11 +7082,9 @@ function toggleColorIndicadorDisponibilidad(
 
             "transition-colors duration-300";
 
- 
 
     } else {
 
- 
 
         indicador.className =
 
@@ -8046,23 +7100,19 @@ function toggleColorIndicadorDisponibilidad(
 
 }
 
- 
 
 window.actualizarDisponibilidadBaseDatos =
 
     actualizarDisponibilidadBaseDatos;
 
- 
 
 window.toggleColorIndicadorDisponibilidad =
 
     toggleColorIndicadorDisponibilidad;
 
- 
 
 </script>
 
- 
 
 <!-- ===================================================== -->
 
@@ -8070,7 +7120,6 @@ window.toggleColorIndicadorDisponibilidad =
 
 <!-- ===================================================== -->
 
- 
 
 <script src="js/core/rodax.js"></script>
 
@@ -8080,7 +7129,6 @@ window.toggleColorIndicadorDisponibilidad =
 
 <script src="js/core/registry.js"></script>
 
- 
 
 <!-- ===================================================== -->
 
@@ -8088,15 +7136,12 @@ window.toggleColorIndicadorDisponibilidad =
 
 <!-- ===================================================== -->
 
- 
 
 <script src="js/transportista/utils.js"></script>
 
- 
 
 <script>
 
- 
 
 console.log(
 
@@ -8104,7 +7149,6 @@ console.log(
 
 );
 
- 
 
 console.log(
 
@@ -8114,7 +7158,6 @@ console.log(
 
 );
 
- 
 
 console.log(
 
@@ -8124,7 +7167,6 @@ console.log(
 
 );
 
- 
 
 console.log(
 
@@ -8134,7 +7176,6 @@ console.log(
 
 );
 
- 
 
 console.log(
 
@@ -8144,7 +7185,6 @@ console.log(
 
 );
 
- 
 
 console.log(
 
@@ -8154,7 +7194,6 @@ console.log(
 
 );
 
- 
 
 console.log(
 
@@ -8164,7 +7203,6 @@ console.log(
 
 );
 
- 
 
 console.log(
 
@@ -8174,11 +7212,9 @@ console.log(
 
 );
 
- 
 
 </script>
 
- 
 
 <script src="js/transportista/drawer.js"></script>
 
@@ -8200,19 +7236,16 @@ console.log(
 
 <script src="js/transportista/perfil.js"></script>
 
- 
 
 <!-- MARKETPLACE -->
 
 <script src="js/transportista/marketplace.js"></script>
 
- 
 
 <!-- ROUTER -->
 
 <script src="js/core/router.js"></script>
 
- 
 
 </body>
 
