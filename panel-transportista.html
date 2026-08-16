@@ -4,25 +4,28 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>Panel de Control — RODAX Transportistas</title>
-
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>Panel de Control — RODAX Transportistas</title>
 
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
 
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdn.tailwindcss.com"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
 
 
 <style>
@@ -45,6 +48,7 @@
 
     }
 
+ 
 
     .banner-azul-rodax,
 
@@ -54,6 +58,7 @@
 
     }
 
+ 
 
     /* Error 3: Área del logo con fondo estrictamente BLANCO */
 
@@ -69,6 +74,7 @@
 
     }
 
+ 
 
     /* Error 4: Fila superior blanca de Perfil y Conectividad */
 
@@ -84,6 +90,7 @@
 
     }
 
+ 
 
     /* Error 1: Botones y palabras completas en la barra lateral */
 
@@ -113,6 +120,7 @@
 
     }
 
+ 
 
     .nav-item-premium i,
 
@@ -126,6 +134,7 @@
 
     }
 
+ 
 
     .nav-item-premium:hover:not(.disabled) {
 
@@ -137,6 +146,7 @@
 
     }
 
+ 
 
     .nav-item-premium.active {
 
@@ -148,6 +158,7 @@
 
     }
 
+ 
 
     .nav-item-premium.disabled {
 
@@ -157,6 +168,7 @@
 
     }
 
+ 
 
     .menu-title {
 
@@ -178,6 +190,7 @@
 
     }
 
+ 
 
     .badge-menu-premium {
 
@@ -197,6 +210,7 @@
 
     }
 
+ 
 
     /* Error 5: Refuerzo de tipografía */
 
@@ -232,6 +246,7 @@
 
     }
 
+ 
 
     .font-black-premium {
 
@@ -239,6 +254,7 @@
 
     }
 
+ 
 
     /* Error 6: Tarjetas del Marketplace */
 
@@ -260,6 +276,7 @@
 
     }
 
+ 
 
     .tarjeta-mudanza-premium:hover {
 
@@ -278,21 +295,25 @@
 </style>
 
 
+
 </head>
+
 
 
 <body class="flex h-screen overflow-hidden">
 
 
+
 <div
 
-    id="mobile-overlay"
+id="mobile-overlay"
 
-    class="fixed inset-0 bg-gray-900/60 z-40 hidden md:hidden backdrop-blur-sm"
+class="fixed inset-0 bg-gray-900/60 z-40 hidden md:hidden backdrop-blur-sm"
 
-    onclick="cerrarMenuMovil()">
+onclick="cerrarMenuMovil()">
 
 </div>
+
 
 
 <!-- ========================================================
@@ -302,331 +323,377 @@
      ======================================================== -->
 
 
+
 <aside
 
-    id="sidebar"
+id="sidebar"
 
-    class="w-64 flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col bg-white">
-
-
-    <div class="w-full bg-white flex items-center justify-center px-6 py-5 flex-shrink-0">
-
-        <img
-
-            src="images/logo-rodax-nuevo.png"
-
-            id="logoRodaxSide"
-
-            alt="RODAX MUDANZAS"
-
-            class="h-[68px] object-contain transition-transform duration-200 hover:scale-105">
-
-    </div>
+class="w-64 flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col bg-white">
 
 
-    <div class="flex-1 flex flex-col mx-3 mb-4 rounded-2xl bg-gradient-to-b from-[#0b1e5b] to-[#163562] text-white shadow-xl overflow-hidden">
 
-        
+<div class="w-full bg-white flex items-center justify-center px-6 py-5 flex-shrink-0">
 
-        <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-3 custom-scrollbar text-sm">
+    <img
 
+        src="images/logo-rodax-nuevo.png"
 
-            <!-- MARKETPLACE -->
+        id="logoRodaxSide"
 
-            <div>
+        alt="RODAX MUDANZAS"
 
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
+        class="h-[68px] object-contain transition-transform duration-200 hover:scale-105">
 
-                    Marketplace
-
-                </div>
+</div>
 
 
-                <div class="space-y-1">
+
+<div class="flex-1 flex flex-col mx-3 mb-4 rounded-2xl bg-gradient-to-b from-[#0b1e5b] to-[#163562] text-white shadow-xl overflow-hidden">
+
+    
+
+    <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-3 custom-scrollbar text-sm">
 
 
-                    <button
 
-                        onclick="cambiarTab('disponibles')"
+        <!-- MARKETPLACE -->
 
-                        class="nav-marketplace-tab w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 text-slate-300/90 hover:bg-white/10 hover:text-white"
+        <div>
 
-                        id="nav-disponibles">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
 
-
-                        <div class="flex items-center space-x-2.5">
-
-                            <i data-lucide="search" class="w-4 h-4 text-sky-400"></i>
-
-                            <span>Trabajos disponibles</span>
-
-                        </div>
-
-
-                        <span
-
-                            id="badge-disponibles"
-
-                            class="bg-sky-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-md">
-
-                            43
-
-                        </span>
-
-                    </button>
-
-
-                    <button
-
-                        onclick="cambiarTab('mis-mudanzas')"
-
-                        class="nav-marketplace-tab w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 text-slate-300/90 hover:bg-white/10 hover:text-white"
-
-                        id="nav-mis-mudanzas">
-
-
-                        <div class="flex items-center space-x-2.5">
-
-                            <i data-lucide="truck" class="w-4 h-4 text-slate-400"></i>
-
-                            <span>Mis mudanzas activas</span>
-
-                        </div>
-
-
-                        <span
-
-                            id="badge-activas"
-
-                            class="bg-emerald-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-
-                            2
-
-                        </span>
-
-                    </button>
-
-
-                </div>
+                Marketplace
 
             </div>
 
 
-            <!-- OPERACIONES -->
 
-            <div>
-
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
-
-                    Operaciones
-
-                </div>
+            <div class="space-y-1">
 
 
-                <div class="space-y-1">
+
+                <button
+
+                    onclick="cambiarTab('disponibles')"
+
+                    class="nav-marketplace-tab w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 text-slate-300/90 hover:bg-white/10 hover:text-white"
+
+                    id="nav-disponibles">
 
 
-                    <button
 
-                        onclick="cambiarTab('historial-servicios')"
+                    <div class="flex items-center space-x-2.5">
 
-                        class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+                        <i data-lucide="search" class="w-4 h-4 text-sky-400"></i>
 
-                        id="nav-historial-servicios">
+                        <span>Trabajos disponibles</span>
 
-
-                        <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
-
-                        <span>Historial de servicios</span>
-
-                    </button>
+                    </div>
 
 
-                </div>
 
-            </div>
+                    <span
 
+                        id="badge-disponibles"
 
-            <!-- FINANZAS -->
+                        class="bg-sky-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-md">
 
-            <div>
+                        43
 
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
+                    </span>
 
-                    Finanzas
-
-                </div>
+                </button>
 
 
-                <div class="space-y-1">
+
+                <button
+
+                    onclick="cambiarTab('mis-mudanzas')"
+
+                    class="nav-marketplace-tab w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 text-slate-300/90 hover:bg-white/10 hover:text-white"
+
+                    id="nav-mis-mudanzas">
 
 
-                    <button
 
-                        onclick="cambiarTab('facturacion')"
+                    <div class="flex items-center space-x-2.5">
 
-                        class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+                        <i data-lucide="truck" class="w-4 h-4 text-slate-400"></i>
 
-                        id="nav-facturacion">
+                        <span>Mis mudanzas activas</span>
 
-
-                        <i data-lucide="file-text" class="w-4 h-4 text-slate-400"></i>
-
-                        <span>Facturación</span>
-
-                    </button>
+                    </div>
 
 
-                </div>
 
-            </div>
+                    <span
 
+                        id="badge-activas"
 
-            <!-- MI NEGOCIO -->
+                        class="bg-emerald-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
 
-            <div>
+                        2
 
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
+                    </span>
 
-                    Mi Negocio
-
-                </div>
+                </button>
 
 
-                <div class="space-y-1">
-
-
-                    <button
-
-                        onclick="cambiarTab('mis-vehiculos')"
-
-                        class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
-
-                        id="nav-mis-vehiculos">
-
-
-                        <i data-lucide="car" class="w-4 h-4 text-slate-400"></i>
-
-                        <span>Mis vehículos</span>
-
-                    </button>
-
-
-                </div>
 
             </div>
-
-
-            <!-- MI CUENTA -->
-
-            <div>
-
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
-
-                    Mi Cuenta
-
-                </div>
-
-
-                <div class="space-y-1">
-
-
-                    <button
-
-                        onclick="cambiarTab('mi-perfil')"
-
-                        class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
-
-                        id="nav-mi-perfil">
-
-
-                        <i data-lucide="user" class="w-4 h-4 text-slate-400"></i>
-
-                        <span>Mi perfil</span>
-
-                    </button>
-
-
-                    <button
-
-                        onclick="cambiarTab('notificaciones')"
-
-                        class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
-
-                        id="nav-notificaciones">
-
-
-                        <div class="flex items-center space-x-2.5">
-
-                            <i data-lucide="bell" class="w-4 h-4 text-slate-400"></i>
-
-                            <span>Notificaciones</span>
-
-                        </div>
-
-
-                        <span
-
-                            id="badge-notificaciones-sidebar"
-
-                            class="bg-sky-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-
-                            0
-
-                        </span>
-
-                    </button>
-
-
-                    <button
-
-                        onclick="cambiarTab('configuracion')"
-
-                        class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
-
-                        id="nav-configuracion">
-
-
-                        <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
-
-                        <span>Configuración</span>
-
-                    </button>
-
-
-                </div>
-
-            </div>
-
-
-        </nav>
-
-
-        <div class="p-3 border-t border-white/10">
-
-
-            <button
-
-                onclick="cerrarSesion()"
-
-                class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300 hover:bg-red-500/20 hover:text-red-400 transition-colors duration-200">
-
-
-                <i data-lucide="log-out" class="w-4 h-4"></i>
-
-                <span>Cerrar sesión</span>
-
-
-            </button>
-
 
         </div>
 
 
+
+        <!-- OPERACIONES -->
+
+        <div>
+
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
+
+                Operaciones
+
+            </div>
+
+
+
+            <div class="space-y-1">
+
+
+
+                <button
+
+                    onclick="cambiarTab('historial-servicios')"
+
+                    class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+
+                    id="nav-historial-servicios">
+
+
+
+                    <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
+
+                    <span>Historial de servicios</span>
+
+                </button>
+
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- FINANZAS -->
+
+        <div>
+
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
+
+                Finanzas
+
+            </div>
+
+
+
+            <div class="space-y-1">
+
+
+
+                <button
+
+                    onclick="cambiarTab('facturacion')"
+
+                    class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+
+                    id="nav-facturacion">
+
+
+
+                    <i data-lucide="file-text" class="w-4 h-4 text-slate-400"></i>
+
+                    <span>Facturación</span>
+
+                </button>
+
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- MI NEGOCIO -->
+
+        <div>
+
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
+
+                Mi Negocio
+
+            </div>
+
+
+
+            <div class="space-y-1">
+
+
+
+                <button
+
+                    onclick="cambiarTab('mis-vehiculos')"
+
+                    class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+
+                    id="nav-mis-vehiculos">
+
+
+
+                    <i data-lucide="car" class="w-4 h-4 text-slate-400"></i>
+
+                    <span>Mis vehículos</span>
+
+                </button>
+
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- MI CUENTA -->
+
+        <div>
+
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400/80 px-3 mb-1.5">
+
+                Mi Cuenta
+
+            </div>
+
+
+
+            <div class="space-y-1">
+
+
+
+                <button
+
+                    onclick="cambiarTab('mi-perfil')"
+
+                    class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+
+                    id="nav-mi-perfil">
+
+
+
+                    <i data-lucide="user" class="w-4 h-4 text-slate-400"></i>
+
+                    <span>Mi perfil</span>
+
+                </button>
+
+
+
+                <button
+
+                    onclick="cambiarTab('notificaciones')"
+
+                    class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+
+                    id="nav-notificaciones">
+
+
+
+                    <div class="flex items-center space-x-2.5">
+
+                        <i data-lucide="bell" class="w-4 h-4 text-slate-400"></i>
+
+                        <span>Notificaciones</span>
+
+                    </div>
+
+
+
+                    <span
+
+                        id="badge-notificaciones-sidebar"
+
+                        class="bg-sky-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+
+                        0
+
+                    </span>
+
+                </button>
+
+
+
+                <button
+
+                    onclick="cambiarTab('configuracion')"
+
+                    class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300/90 hover:bg-white/10 hover:text-white transition-all"
+
+                    id="nav-configuracion">
+
+
+
+                    <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
+
+                    <span>Configuración</span>
+
+                </button>
+
+
+
+            </div>
+
+        </div>
+
+
+
+    </nav>
+
+
+
+    <div class="p-3 border-t border-white/10">
+
+
+
+        <button
+
+            onclick="cerrarSesion()"
+
+            class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-slate-300 hover:bg-red-500/20 hover:text-red-400 transition-colors duration-200">
+
+
+
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+
+            <span>Cerrar sesión</span>
+
+
+
+        </button>
+
+
+
     </div>
 
 
+
+</div>
+
+
+
 </aside>
+
 
 
 <!-- ========================================================
@@ -636,1466 +703,1680 @@
      ======================================================== -->
 
 
+
 <main class="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50 relative w-full">
 
 
-    <!-- FILA SUPERIOR BLANCA -->
 
-    <header
+<!-- FILA SUPERIOR BLANCA -->
 
-        class="top-profile-bar-blanca px-6 flex items-center justify-between flex-shrink-0 no-print bg-white border-b border-slate-100">
+<header
 
-
-        <button
-
-            onclick="abrirMenuMovil()"
-
-            class="md:hidden text-slate-600 p-2 bg-slate-100 rounded-lg">
+    class="top-profile-bar-blanca px-6 flex items-center justify-between flex-shrink-0 no-print bg-white border-b border-slate-100">
 
 
-            <i data-lucide="menu" class="w-5 h-5"></i>
+
+    <button
+
+        onclick="abrirMenuMovil()"
+
+        class="md:hidden text-slate-600 p-2 bg-slate-100 rounded-lg">
 
 
-        </button>
+
+        <i data-lucide="menu" class="w-5 h-5"></i>
 
 
-        <div class="flex items-center gap-4 ml-auto">
+
+    </button>
 
 
-            <div
 
-                class="relative cursor-pointer p-2 hover:bg-slate-100 rounded-full transition-colors duration-200">
+    <div class="flex items-center gap-4 ml-auto">
 
-
-                <i data-lucide="bell" class="w-6 h-6 text-slate-600"></i>
-
-
-                <span
-
-                    id="badge-notificaciones-top"
-
-                    class="absolute top-1 right-1 bg-sky-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
-
-                    0
-
-                </span>
-
-
-            </div>
-
-
-            <div class="flex flex-col text-right">
-
-
-                <div
-
-                    id="profile-name-top"
-
-                    class="font-bold-premium text-sm text-slate-800 leading-tight">
-
-                    rodrigo flores
-
-                </div>
-
-
-                <div
-
-                    class="flex items-center justify-end gap-1.5 text-[11px] text-emerald-600 font-bold-premium mt-0.5">
-
-
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-
-
-                    <span class="text-xs font-medium text-emerald-600">
-
-                        Conectado
-
-                    </span>
-
-
-                </div>
-
-
-            </div>
-
-
-            <img
-
-                id="profile-img-top"
-
-                src=""
-
-                alt="Avatar"
-
-                class="w-9 h-9 rounded-full object-cover border border-slate-200">
-
-
-        </div>
-
-
-    </header>
-
-
-    <!-- BARRA SUPERIOR AZUL -->
-
-    <div class="px-6 pt-3 pb-1 no-print flex-shrink-0">
 
 
         <div
 
-            class="theme-azul-oscuro-rodax text-white rounded-xl px-5 py-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+            class="relative cursor-pointer p-2 hover:bg-slate-100 rounded-full transition-colors duration-200">
 
 
-            <div class="flex items-center gap-3.5">
+
+            <i data-lucide="bell" class="w-6 h-6 text-slate-600"></i>
 
 
-                <i
 
-                    data-lucide="truck"
+            <span
 
-                    class="w-5 h-5 text-white/90 flex-shrink-0">
+                id="badge-notificaciones-top"
 
-                </i>
+                class="absolute top-1 right-1 bg-sky-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
 
+                0
 
-                <div class="flex flex-col justify-center">
-
-
-                    <h1
-
-                        id="header-title"
-
-                        class="text-sm md:text-base font-black tracking-tight leading-none">
-
-                        Trabajos Disponibles
-
-                    </h1>
+            </span>
 
 
-                    <p
 
-                        class="hidden md:block text-[11px] text-white/60 font-semibold mt-1 leading-tight max-w-xs select-none">
-
-                        Encuentra y acepta servicios que encajen con tu ruta y disponibilidad.
-
-                    </p>
+        </div>
 
 
-                </div>
 
+        <div class="flex flex-col text-right">
 
-            </div>
 
 
             <div
 
-                class="flex flex-wrap items-center gap-3 text-xs font-bold ml-auto md:ml-0">
+                id="profile-name-top"
 
+                class="font-bold-premium text-sm text-slate-800 leading-tight">
 
-                <div
+                rodrigo flores
 
-                    class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-6 py-3.5 rounded-md transition-colors cursor-pointer select-none">
+            </div>
 
 
-                    <i
 
-                        data-lucide="box"
+            <div
 
-                        class="w-4 h-4 text-white/70">
+                class="flex items-center justify-end gap-1.5 text-[11px] text-emerald-600 font-bold-premium mt-0.5">
 
-                    </i>
 
 
-                    <span
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
 
-                        id="banner-contador-trabajos"
 
-                        class="font-black text-white text-[11px]">
 
-                        0
+                <span class="text-xs font-medium text-emerald-600">
 
-                    </span>
+                    Conectado
 
+                </span>
 
-                    <span class="text-white/90">
-
-                        trabajos disponibles
-
-                    </span>
-
-
-                </div>
-
-
-                <button
-
-    type="button"
-
-    id="btn-actualizar-marketplace"
-
-    onclick="recargarDatos()"
-
-    class="flex items-center gap-2 bg-white/10 hover:bg-white/15 active:bg-white/20 px-6 py-3.5 rounded-md transition-all duration-200 cursor-pointer select-none disabled:opacity-60 disabled:cursor-wait"
-
-    title="Actualizar trabajos disponibles">
-
-
-    <i
-
-        id="icono-actualizar-marketplace"
-
-        data-lucide="refresh-cw"
-
-        class="w-4 h-4 text-white/70 transition-transform duration-300">
-
-    </i>
-
-
-    <span
-
-        id="texto-actualizar-marketplace"
-
-        class="text-white/90">
-
-        Actualizar
-
-    </span>
-
-
-</button>
-
-
-                <!-- DISPONIBILIDAD -->
-
-                <div
-
-    class="relative h-[48px] min-w-[150px] flex-shrink-0 select-none no-print flex items-end justify-center">
-
-
-                    <span
-
-    class="absolute -top-4 left-0 right-0 text-center text-[10px] text-white/60 uppercase font-black tracking-wider">
-
-    Disponibilidad
-
-</span>
-
-
-                    <div
-
-    class="relative h-[48px] w-full flex items-center bg-white/10 hover:bg-white/15 rounded-md transition-colors border border-white/10 px-3.5">
-
-
-                        <span
-
-                            id="disponibilidad-indicador-color"
-
-                            class="w-2.5 h-2.5 rounded-full bg-emerald-400 mr-2.5 flex-shrink-0 transition-colors duration-300">
-
-                        </span>
-
-
-                        <select
-
-                            id="selector-disponibilidad-transportista"
-
-                            onchange="actualizarDisponibilidadBaseDatos(this.value)"
-
-                            class="bg-transparent text-white font-black text-sm tracking-wide focus:outline-none pr-6 cursor-pointer appearance-none w-full font-sans">
-
-
-                            <option
-
-                                value="Disponible"
-
-                                class="text-slate-900 font-bold">
-
-                                Disponible
-
-                            </option>
-
-
-                            <option
-
-                                value="No Disponible"
-
-                                class="text-slate-900 font-bold">
-
-                                No Disponible
-
-                            </option>
-
-
-                        </select>
-
-
-                        <i
-
-                            data-lucide="chevron-down"
-
-                            class="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/70 w-4 h-4 pointer-events-none">
-
-                        </i>
-
-
-                    </div>
-
-
-                </div>
 
 
             </div>
 
 
+
         </div>
+
+
+
+        <img
+
+            id="profile-img-top"
+
+            src=""
+
+            alt="Avatar"
+
+            class="w-9 h-9 rounded-full object-cover border border-slate-200">
+
 
 
     </div>
 
 
-    <!-- FILTROS MARKETPLACE -->
+
+</header>
+
+
+
+<!-- BARRA SUPERIOR AZUL -->
+
+<div class="px-6 pt-3 pb-1 no-print flex-shrink-0">
+
+
 
     <div
 
-        class="w-full bg-[#0b1e5b]/5 border border-[#0b1e5b]/15 rounded-2xl p-4 flex flex-wrap items-center gap-3 backdrop-blur-sm shadow-sm mb-6">
+        class="theme-azul-oscuro-rodax text-white rounded-xl px-5 py-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
 
 
-        <div class="flex-1 min-w-[200px] relative">
 
+        <div class="flex items-center gap-3.5">
 
-            <i
-
-                data-lucide="search"
-
-                class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none">
-
-            </i>
-
-
-            <input
-
-                id="filtro-buscar-marketplace"
-
-                type="text"
-
-                placeholder="Buscar origen o destino..."
-
-                autocomplete="off"
-
-                class="w-full bg-white text-slate-700 placeholder-slate-400 pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0b1e5b]/20 focus:border-[#0b1e5b]"
-
-            >
-
-
-        </div>
-
-
-        <button
-
-            type="button"
-
-            id="filtro-fecha-marketplace"
-
-            data-marketplace-filtro="true"
-
-            class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
-
-
-            <i
-
-                data-lucide="calendar"
-
-                class="w-4 h-4 text-slate-400">
-
-            </i>
-
-
-            <span>Fecha</span>
-
-
-            <span
-
-                data-filtro-indicador
-
-                class="text-sky-500 font-black">
-
-            </span>
-
-
-            <i
-
-                data-lucide="chevron-down"
-
-                class="w-4 h-4 text-slate-400 ml-auto">
-
-            </i>
-
-
-        </button>
-
-
-        <button
-
-            type="button"
-
-            id="filtro-zona-marketplace"
-
-            data-marketplace-filtro="true"
-
-            class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
-
-
-            <i
-
-                data-lucide="map-pin"
-
-                class="w-4 h-4 text-slate-400">
-
-            </i>
-
-
-            <span>Zona</span>
-
-
-            <span
-
-                data-filtro-indicador
-
-                class="text-sky-500 font-black">
-
-            </span>
-
-
-            <i
-
-                data-lucide="chevron-down"
-
-                class="w-4 h-4 text-slate-400 ml-auto">
-
-            </i>
-
-
-        </button>
-
-
-        <button
-
-            type="button"
-
-            id="filtro-distancia-marketplace"
-
-            data-marketplace-filtro="true"
-
-            class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
-
-
-            <i
-
-                data-lucide="navigation"
-
-                class="w-4 h-4 text-slate-400">
-
-            </i>
-
-
-            <span>Distancia</span>
-
-
-            <span
-
-                data-filtro-indicador
-
-                class="text-sky-500 font-black">
-
-            </span>
-
-
-            <i
-
-                data-lucide="chevron-down"
-
-                class="w-4 h-4 text-slate-400 ml-auto">
-
-            </i>
-
-
-        </button>
-
-
-        <button
-
-            type="button"
-
-            id="filtro-vehiculo-marketplace"
-
-            data-marketplace-filtro="true"
-
-            class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
 
 
             <i
 
                 data-lucide="truck"
 
-                class="w-4 h-4 text-slate-400">
+                class="w-5 h-5 text-white/90 flex-shrink-0">
 
             </i>
 
 
-            <span>Vehículo</span>
+
+            <div class="flex flex-col justify-center">
 
 
-            <span
 
-                data-filtro-indicador
+                <h1
 
-                class="text-sky-500 font-black">
+                    id="header-title"
 
-            </span>
+                    class="text-sm md:text-base font-black tracking-tight leading-none">
 
+                    Trabajos Disponibles
 
-            <i
-
-                data-lucide="chevron-down"
-
-                class="w-4 h-4 text-slate-400 ml-auto">
-
-            </i>
+                </h1>
 
 
-        </button>
 
+                <p
 
-        <button
+                    class="hidden md:block text-[11px] text-white/60 font-semibold mt-1 leading-tight max-w-xs select-none">
 
-            type="button"
+                    Encuentra y acepta servicios que encajen con tu ruta y disponibilidad.
 
-            id="filtro-mas-marketplace"
+                </p>
 
-            data-marketplace-filtro="true"
-
-            class="ml-auto bg-white hover:bg-slate-50 text-slate-700 font-semibold px-4 py-2 rounded-xl border border-slate-200 text-sm flex items-center gap-2 transition-colors duration-150">
-
-
-            <i
-
-                data-lucide="sliders-horizontal"
-
-                class="w-4 h-4 text-[#0b1e5b]">
-
-            </i>
-
-
-            <span>Más filtros</span>
-
-
-            <span
-
-                data-filtro-indicador
-
-                class="text-sky-500 font-black">
-
-            </span>
-
-
-        </button>
-
-
-        <button
-
-            type="button"
-
-            id="limpiar-todos-filtros-marketplace"
-
-            class="hidden bg-white hover:bg-red-50 text-slate-500 hover:text-red-600 font-semibold px-3 py-2 rounded-xl border border-slate-200 hover:border-red-200 text-xs flex items-center gap-2 transition-colors">
-
-
-            <i
-
-                data-lucide="rotate-ccw"
-
-                class="w-3.5 h-3.5">
-
-            </i>
-
-
-            <span>Limpiar</span>
-
-
-        </button>
-
-
-    </div>
-
-
-    <!-- CONTENEDORES PRINCIPALES -->
-
-    <div class="flex-1 overflow-y-auto p-6">
-
-
-        <!-- TRABAJOS DISPONIBLES -->
-
-        <div
-
-            id="tab-disponibles"
-
-            class="fade-in">
-
-
-            <div
-
-                class="grid grid-cols-1 lg:grid-cols-2 gap-5"
-
-                id="contenedor-disponibles">
-
-
-                <!-- JavaScript inyectará dinámicamente las mudanzas -->
 
 
             </div>
 
 
+
         </div>
 
 
-        <!-- MIS MUDANZAS ACTIVAS -->
 
         <div
 
-            id="tab-mis-mudanzas"
+            class="flex flex-wrap items-center gap-3 text-xs font-bold ml-auto md:ml-0">
 
-            class="hidden fade-in">
 
 
             <div
 
-                id="contenedor-activas"
+                class="flex items-center gap-2 bg-white/10 hover:bg-white/15 px-6 py-3.5 rounded-md transition-colors cursor-pointer select-none">
 
-                class="space-y-5">
 
 
-                <div
+                <i
 
-                    id="empty-activas"
+                    data-lucide="box"
 
-                    class="text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300">
+                    class="w-4 h-4 text-white/70">
 
+                </i>
 
-                    <i
-
-                        data-lucide="inbox"
-
-                        class="w-12 h-12 text-gray-300 mx-auto mb-3">
-
-                    </i>
-
-
-                    <p class="text-gray-500 font-semibold">
-
-                        No tienes ninguna mudanza asignada actualmente.
-
-                    </p>
-
-
-                    <p class="text-gray-400 text-sm mt-1">
-
-                        Busca trabajos en la pestaña "Trabajos Disponibles".
-
-                    </p>
-
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
-        <!-- HISTORIAL DE SERVICIOS -->
-
-        <section
-
-            id="tab-historial-servicios"
-
-            class="hidden fade-in">
-
-            <div
-
-                id="historial-servicios-contenido"
-
-                class="space-y-5">
-
-                <div class="text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300">
-
-                    <i data-lucide="history" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
-
-                    <p class="text-slate-500 font-semibold">Cargando historial de servicios...</p>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- FACTURACION + PAGOS -->
-
-        <section
-
-            id="tab-facturacion"
-
-            class="hidden fade-in">
-
-            <div id="facturacion-contenido"></div>
-
-        </section>
-
-
-        <!-- MI PERFIL + EQUIPO / OPERARIOS -->
-
-        <section
-
-            id="tab-mi-perfil"
-
-            class="hidden fade-in">
-
-            <div id="perfil-contenido"></div>
-
-        </section>
-
-
-    </div>
-
-
-    <!-- MODAL -->
-
-    <div
-
-        id="action-modal"
-
-        class="fixed inset-0 bg-gray-900/80 z-[100] flex items-center justify-center p-4 hidden backdrop-blur-sm">
-
-
-        <div
-
-            class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 text-center"
-
-            id="modal-content">
-
-        </div>
-
-
-    </div>
-
-
-    <div
-
-        id="ficha-print-zone"
-
-        style="display:none;">
-
-    </div>
-
-
-    <!-- OVERLAY DRAWER -->
-
-    <div
-
-        id="drawerOverlay"
-
-        class="fixed inset-0 bg-black/40 hidden z-40 backdrop-blur-sm cursor-pointer">
-
-    </div>
-
-
-    <!-- DRAWER -->
-
-    <aside
-
-        id="drawerMudanza"
-
-        class="fixed top-0 right-0 h-full w-[450px] max-w-full bg-white shadow-2xl translate-x-full transition-transform duration-300 z-50 flex flex-col border-l border-slate-100">
-
-
-        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-
-
-            <h2 class="text-base font-bold text-slate-800 tracking-tight">
-
-                Detalles del trabajo
-
-            </h2>
-
-
-            <button
-
-                onclick="cerrarDrawer()"
-
-                class="rounded-xl p-2 text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-colors text-sm font-medium">
-
-                ✕
-
-            </button>
-
-
-        </div>
-
-
-        <div
-
-            class="px-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center w-full no-print flex-shrink-0">
-
-
-            <button
-
-                onclick="cambiarDrawerTab('resumen')"
-
-                id="tab-d-resumen"
-
-                class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-blue-600 text-blue-600 transition-colors">
-
-                Resumen
-
-            </button>
-
-
-            <button
-
-                onclick="cambiarDrawerTab('ruta')"
-
-                id="tab-d-ruta"
-
-                class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">
-
-                Ruta
-
-            </button>
-
-
-            <button
-
-                onclick="cambiarDrawerTab('inventario')"
-
-                id="tab-d-inventario"
-
-                class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">
-
-                Inventario
-
-            </button>
-
-
-            <button
-
-                onclick="cambiarDrawerTab('servicios')"
-
-                id="tab-d-servicios"
-
-                class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">
-
-                Servicios
-
-            </button>
-
-
-            <button
-
-                onclick="cambiarDrawerTab('fotos')"
-
-                id="tab-d-fotos"
-
-                class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">
-
-                Fotos
-
-            </button>
-
-
-            <button
-
-                onclick="cambiarDrawerTab('indicaciones')"
-
-                id="tab-d-indicaciones"
-
-                class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">
-
-                Indicaciones
-
-            </button>
-
-
-        </div>
-
-
-        <div class="flex-1 overflow-y-auto p-6 space-y-5">
-
-
-            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
 
 
                 <span
 
-                    id="drawerServicioBadge"
+                    id="banner-contador-trabajos"
 
-                    class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md border">
+                    class="font-black text-white text-[11px]">
 
-                    —
+                    0
+
+                </span>
+
+
+
+                <span class="text-white/90">
+
+                    trabajos disponibles
 
                 </span>
 
-
-                <span class="text-xs font-medium text-slate-400">
-
-                    ID:
-
-                    <strong
-
-                        id="drawerIdTexto"
-
-                        class="text-slate-600 font-semibold">
-
-                        —
-
-                    </strong>
-
-                </span>
 
 
             </div>
 
 
-            <!-- RESUMEN -->
+
+            <button
+
+type="button"
+
+id="btn-actualizar-marketplace"
+
+onclick="recargarDatos()"
+
+class="flex items-center gap-2 bg-white/10 hover:bg-white/15 active:bg-white/20 px-6 py-3.5 rounded-md transition-all duration-200 cursor-pointer select-none disabled:opacity-60 disabled:cursor-wait"
+
+title="Actualizar trabajos disponibles">
+
+
+
+<i
+
+    id="icono-actualizar-marketplace"
+
+    data-lucide="refresh-cw"
+
+    class="w-4 h-4 text-white/70 transition-transform duration-300">
+
+</i>
+
+
+
+<span
+
+    id="texto-actualizar-marketplace"
+
+    class="text-white/90">
+
+    Actualizar
+
+</span>
+
+
+
+</button>
+
+
+
+            <!-- DISPONIBILIDAD -->
 
             <div
 
-                id="pane-d-resumen"
+class="relative h-[48px] min-w-[150px] flex-shrink-0 select-none no-print flex items-end justify-center">
 
-                class="drawer-pane space-y-5">
+
+
+                <span
+
+class="absolute -top-4 left-0 right-0 text-center text-[10px] text-white/60 uppercase font-black tracking-wider">
+
+Disponibilidad
+
+</span>
+
 
 
                 <div
 
-                    class="relative pl-6 border-l-2 border-dashed border-slate-200 ml-2 space-y-6 my-2">
+class="relative h-[48px] w-full flex items-center bg-white/10 hover:bg-white/15 rounded-md transition-colors border border-white/10 px-3.5">
 
 
-                    <div class="relative">
+
+                    <span
+
+                        id="disponibilidad-indicador-color"
+
+                        class="w-2.5 h-2.5 rounded-full bg-emerald-400 mr-2.5 flex-shrink-0 transition-colors duration-300">
+
+                    </span>
 
 
-                        <div
 
-                            class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-blue-600 border-4 border-white shadow-sm">
+                    <select
 
-                        </div>
+                        id="selector-disponibilidad-transportista"
 
+                        onchange="actualizarDisponibilidadBaseDatos(this.value)"
 
-                        <p
-
-                            id="drawerOrigenResumen"
-
-                            class="text-sm font-bold text-slate-800 leading-tight">
-
-                            —
-
-                        </p>
+                        class="bg-transparent text-white font-black text-sm tracking-wide focus:outline-none pr-6 cursor-pointer appearance-none w-full font-sans">
 
 
-                        <p
 
-                            id="drawerOrigenAcceso"
+                        <option
 
-                            class="text-xs text-slate-400 mt-0.5">
+                            value="Disponible"
 
-                            —
+                            class="text-slate-900 font-bold">
 
-                        </p>
+                            Disponible
 
-
-                    </div>
+                        </option>
 
 
-                    <div class="relative">
+
+                        <option
+
+                            value="No Disponible"
+
+                            class="text-slate-900 font-bold">
+
+                            No Disponible
+
+                        </option>
 
 
-                        <div
 
-                            class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-orange-500 border-4 border-white shadow-sm">
-
-                        </div>
+                    </select>
 
 
-                        <p
 
-                            id="drawerDestinoResumen"
+                    <i
 
-                            class="text-sm font-bold text-slate-800 leading-tight">
+                        data-lucide="chevron-down"
 
-                            —
+                        class="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/70 w-4 h-4 pointer-events-none">
 
-                        </p>
+                    </i>
 
-
-                        <p
-
-                            id="drawerDestinoAcceso"
-
-                            class="text-xs text-slate-400 mt-0.5">
-
-                            —
-
-                        </p>
-
-
-                    </div>
 
 
                 </div>
 
 
-                <div class="pt-2 border-t border-slate-100">
 
+            </div>
 
-                    <h3
 
-                        class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center justify-between w-full">
 
+        </div>
 
-                        <span>
 
-                            INVENTARIO
 
-                            (<span
+    </div>
 
-                                id="drawerTotalArticulos"
-
-                                class="font-bold">
-
-                                0
-
-                            </span>
-
-                            ART.)
-
-                            —
-
-                            <span
-
-                                id="drawerTipoViviendaResumen"
-
-                                class="text-slate-700 font-semibold">
-
-                                —
-
-                            </span>
-
-                        </span>
-
-
-                        <span
-
-                            id="drawerM3Texto"
-
-                            class="text-blue-600 font-bold ml-auto">
-
-                            0.0 m³
-
-                        </span>
-
-
-                    </h3>
-
-
-                    <div
-
-                        id="drawerInventarioResumen"
-
-                        class="space-y-2">
-
-                    </div>
-
-
-                </div>
-
-
-                <div class="grid grid-cols-2 gap-3 pt-1">
-
-
-                    <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
-
-
-                        <span
-
-                            class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-
-                            Distancia
-
-                        </span>
-
-
-                        <span
-
-                            id="drawerKm"
-
-                            class="font-bold text-slate-800 text-sm">
-
-                            —
-
-                        </span>
-
-
-                    </div>
-
-
-                    <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
-
-
-                        <span
-
-                            class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-
-                            Fecha del Servicio
-
-                        </span>
-
-
-                        <span
-
-                            id="drawerFecha"
-
-                            class="font-bold text-slate-800 text-sm">
-
-                            —
-
-                        </span>
-
-
-                    </div>
-
-
-                </div>
-
-
-                <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
-
-
-    <span
-
-        class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-
-        Horario de recogida
-
-    </span>
-
-
-    <span
-
-        id="drawerFranjaHorariaRecogida"
-
-        class="font-bold text-slate-800 text-sm">
-
-        —
-
-    </span>
 
 
 </div>
 
 
-                <div
 
-                    class="bg-yellow-50/60 border border-yellow-100 rounded-xl p-3 text-xs">
+<!-- FILTROS MARKETPLACE -->
+
+<div
+
+    class="w-full bg-[#0b1e5b]/5 border border-[#0b1e5b]/15 rounded-2xl p-4 flex flex-wrap items-center gap-3 backdrop-blur-sm shadow-sm mb-6">
 
 
-                    <span
 
-                        class="block text-[10px] font-bold text-amber-600 uppercase tracking-wider mb-1">
+    <div class="flex-1 min-w-[200px] relative">
 
-                        Observaciones preliminares
 
-                    </span>
+
+        <i
+
+            data-lucide="search"
+
+            class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none">
+
+        </i>
+
+
+
+        <input
+
+            id="filtro-buscar-marketplace"
+
+            type="text"
+
+            placeholder="Buscar origen o destino..."
+
+            autocomplete="off"
+
+            class="w-full bg-white text-slate-700 placeholder-slate-400 pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0b1e5b]/20 focus:border-[#0b1e5b]"
+
+        >
+
+
+
+    </div>
+
+
+
+    <button
+
+        type="button"
+
+        id="filtro-fecha-marketplace"
+
+        data-marketplace-filtro="true"
+
+        class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
+
+
+
+        <i
+
+            data-lucide="calendar"
+
+            class="w-4 h-4 text-slate-400">
+
+        </i>
+
+
+
+        <span>Fecha</span>
+
+
+
+        <span
+
+            data-filtro-indicador
+
+            class="text-sky-500 font-black">
+
+        </span>
+
+
+
+        <i
+
+            data-lucide="chevron-down"
+
+            class="w-4 h-4 text-slate-400 ml-auto">
+
+        </i>
+
+
+
+    </button>
+
+
+
+    <button
+
+        type="button"
+
+        id="filtro-zona-marketplace"
+
+        data-marketplace-filtro="true"
+
+        class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
+
+
+
+        <i
+
+            data-lucide="map-pin"
+
+            class="w-4 h-4 text-slate-400">
+
+        </i>
+
+
+
+        <span>Zona</span>
+
+
+
+        <span
+
+            data-filtro-indicador
+
+            class="text-sky-500 font-black">
+
+        </span>
+
+
+
+        <i
+
+            data-lucide="chevron-down"
+
+            class="w-4 h-4 text-slate-400 ml-auto">
+
+        </i>
+
+
+
+    </button>
+
+
+
+    <button
+
+        type="button"
+
+        id="filtro-distancia-marketplace"
+
+        data-marketplace-filtro="true"
+
+        class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
+
+
+
+        <i
+
+            data-lucide="navigation"
+
+            class="w-4 h-4 text-slate-400">
+
+        </i>
+
+
+
+        <span>Distancia</span>
+
+
+
+        <span
+
+            data-filtro-indicador
+
+            class="text-sky-500 font-black">
+
+        </span>
+
+
+
+        <i
+
+            data-lucide="chevron-down"
+
+            class="w-4 h-4 text-slate-400 ml-auto">
+
+        </i>
+
+
+
+    </button>
+
+
+
+    <button
+
+        type="button"
+
+        id="filtro-vehiculo-marketplace"
+
+        data-marketplace-filtro="true"
+
+        class="min-w-[120px] bg-white rounded-xl border border-slate-200 px-3 py-2 flex items-center gap-2 text-sm text-slate-600 cursor-pointer hover:border-[#0b1e5b]/40 hover:bg-slate-50 transition-colors">
+
+
+
+        <i
+
+            data-lucide="truck"
+
+            class="w-4 h-4 text-slate-400">
+
+        </i>
+
+
+
+        <span>Vehículo</span>
+
+
+
+        <span
+
+            data-filtro-indicador
+
+            class="text-sky-500 font-black">
+
+        </span>
+
+
+
+        <i
+
+            data-lucide="chevron-down"
+
+            class="w-4 h-4 text-slate-400 ml-auto">
+
+        </i>
+
+
+
+    </button>
+
+
+
+    <button
+
+        type="button"
+
+        id="filtro-mas-marketplace"
+
+        data-marketplace-filtro="true"
+
+        class="ml-auto bg-white hover:bg-slate-50 text-slate-700 font-semibold px-4 py-2 rounded-xl border border-slate-200 text-sm flex items-center gap-2 transition-colors duration-150">
+
+
+
+        <i
+
+            data-lucide="sliders-horizontal"
+
+            class="w-4 h-4 text-[#0b1e5b]">
+
+        </i>
+
+
+
+        <span>Más filtros</span>
+
+
+
+        <span
+
+            data-filtro-indicador
+
+            class="text-sky-500 font-black">
+
+        </span>
+
+
+
+    </button>
+
+
+
+    <button
+
+        type="button"
+
+        id="limpiar-todos-filtros-marketplace"
+
+        class="hidden bg-white hover:bg-red-50 text-slate-500 hover:text-red-600 font-semibold px-3 py-2 rounded-xl border border-slate-200 hover:border-red-200 text-xs flex items-center gap-2 transition-colors">
+
+
+
+        <i
+
+            data-lucide="rotate-ccw"
+
+            class="w-3.5 h-3.5">
+
+        </i>
+
+
+
+        <span>Limpiar</span>
+
+
+
+    </button>
+
+
+
+</div>
+
+
+
+<!-- CONTENEDORES PRINCIPALES -->
+
+<div class="flex-1 overflow-y-auto p-6">
+
+
+
+    <!-- TRABAJOS DISPONIBLES -->
+
+    <div
+
+        id="tab-disponibles"
+
+        class="fade-in">
+
+
+
+        <div
+
+            class="grid grid-cols-1 lg:grid-cols-2 gap-5"
+
+            id="contenedor-disponibles">
+
+
+
+            <!-- JavaScript inyectará dinámicamente las mudanzas -->
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+    <!-- MIS MUDANZAS ACTIVAS -->
+
+    <div
+
+        id="tab-mis-mudanzas"
+
+        class="hidden fade-in">
+
+
+
+        <div
+
+            id="contenedor-activas"
+
+            class="space-y-5">
+
+
+
+            <div
+
+                id="empty-activas"
+
+                class="text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300">
+
+
+
+                <i
+
+                    data-lucide="inbox"
+
+                    class="w-12 h-12 text-gray-300 mx-auto mb-3">
+
+                </i>
+
+
+
+                <p class="text-gray-500 font-semibold">
+
+                    No tienes ninguna mudanza asignada actualmente.
+
+                </p>
+
+
+
+                <p class="text-gray-400 text-sm mt-1">
+
+                    Busca trabajos en la pestaña "Trabajos Disponibles".
+
+                </p>
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+    <!-- HISTORIAL DE SERVICIOS -->
+
+    <section
+
+        id="tab-historial-servicios"
+
+        class="hidden fade-in">
+
+        <div
+
+            id="historial-servicios-contenido"
+
+            class="space-y-5">
+
+            <div class="text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300">
+
+                <i data-lucide="history" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
+
+                <p class="text-slate-500 font-semibold">Cargando historial de servicios...</p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- FACTURACION + PAGOS -->
+
+    <section
+
+        id="tab-facturacion"
+
+        class="hidden fade-in">
+
+        <div id="facturacion-contenido"></div>
+
+    </section>
+
+
+
+    <!-- MI PERFIL + EQUIPO / OPERARIOS -->
+
+    <section
+
+        id="tab-mi-perfil"
+
+        class="hidden fade-in">
+
+        <div id="perfil-contenido"></div>
+
+    </section>
+
+
+
+</div>
+
+
+
+<!-- MODAL -->
+
+<div
+
+    id="action-modal"
+
+    class="fixed inset-0 bg-gray-900/80 z-[100] flex items-center justify-center p-4 hidden backdrop-blur-sm">
+
+
+
+    <div
+
+        class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 text-center"
+
+        id="modal-content">
+
+    </div>
+
+
+
+</div>
+
+
+
+<div
+
+    id="ficha-print-zone"
+
+    style="display:none;">
+
+</div>
+
+
+
+<!-- OVERLAY DRAWER -->
+
+<div
+
+    id="drawerOverlay"
+
+    class="fixed inset-0 bg-black/40 hidden z-40 backdrop-blur-sm cursor-pointer">
+
+</div>
+
+
+
+<!-- DRAWER -->
+
+<aside
+
+    id="drawerMudanza"
+
+    class="fixed top-0 right-0 h-full w-[450px] max-w-full bg-white shadow-2xl translate-x-full transition-transform duration-300 z-50 flex flex-col border-l border-slate-100">
+
+
+
+    <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+
+
+
+        <h2 class="text-base font-bold text-slate-800 tracking-tight">
+
+            Detalles del trabajo
+
+        </h2>
+
+
+
+        <button
+
+            onclick="cerrarDrawer()"
+
+            class="rounded-xl p-2 text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-colors text-sm font-medium">
+
+            ✕
+
+        </button>
+
+
+
+    </div>
+
+
+
+    <div
+
+        class="px-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center w-full no-print flex-shrink-0">
+
+
+
+        <button
+
+            onclick="cambiarDrawerTab('resumen')"
+
+            id="tab-d-resumen"
+
+            class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-blue-600 text-blue-600 transition-colors">
+
+            Resumen
+
+        </button>
+
+
+
+        <button
+
+            onclick="cambiarDrawerTab('ruta')"
+
+            id="tab-d-ruta"
+
+            class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">
+
+            Ruta
+
+        </button>
+
+
+
+        <button
+
+            onclick="cambiarDrawerTab('inventario')"
+
+            id="tab-d-inventario"
+
+            class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">
+
+            Inventario
+
+        </button>
+
+
+
+        <button
+
+            onclick="cambiarDrawerTab('servicios')"
+
+            id="tab-d-servicios"
+
+            class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">
+
+            Servicios
+
+        </button>
+
+
+
+        <button
+
+            onclick="cambiarDrawerTab('fotos')"
+
+            id="tab-d-fotos"
+
+            class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">
+
+            Fotos
+
+        </button>
+
+
+
+        <button
+
+            onclick="cambiarDrawerTab('indicaciones')"
+
+            id="tab-d-indicaciones"
+
+            class="flex-1 text-center py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">
+
+            Indicaciones
+
+        </button>
+
+
+
+    </div>
+
+
+
+    <div class="flex-1 overflow-y-auto p-6 space-y-5">
+
+
+
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+
+
+
+            <span
+
+                id="drawerServicioBadge"
+
+                class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md border">
+
+                —
+
+            </span>
+
+
+
+            <span class="text-xs font-medium text-slate-400">
+
+                ID:
+
+                <strong
+
+                    id="drawerIdTexto"
+
+                    class="text-slate-600 font-semibold">
+
+                    —
+
+                </strong>
+
+            </span>
+
+
+
+        </div>
+
+
+
+        <!-- RESUMEN -->
+
+        <div
+
+            id="pane-d-resumen"
+
+            class="drawer-pane space-y-5">
+
+
+
+            <div
+
+                class="relative pl-6 border-l-2 border-dashed border-slate-200 ml-2 space-y-6 my-2">
+
+
+
+                <div class="relative">
+
+
+
+                    <div
+
+                        class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-blue-600 border-4 border-white shadow-sm">
+
+                    </div>
+
 
 
                     <p
 
-                        id="drawerObservaciones"
+                        id="drawerOrigenResumen"
 
-                        class="text-slate-600 leading-relaxed">
+                        class="text-sm font-bold text-slate-800 leading-tight">
 
                         —
 
                     </p>
 
 
+
+                    <p
+
+                        id="drawerOrigenAcceso"
+
+                        class="text-xs text-slate-400 mt-0.5">
+
+                        —
+
+                    </p>
+
+
+
                 </div>
+
+
+
+                <div class="relative">
+
+
+
+                    <div
+
+                        class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-orange-500 border-4 border-white shadow-sm">
+
+                    </div>
+
+
+
+                    <p
+
+                        id="drawerDestinoResumen"
+
+                        class="text-sm font-bold text-slate-800 leading-tight">
+
+                        —
+
+                    </p>
+
+
+
+                    <p
+
+                        id="drawerDestinoAcceso"
+
+                        class="text-xs text-slate-400 mt-0.5">
+
+                        —
+
+                    </p>
+
+
+
+                </div>
+
 
 
             </div>
 
 
-            <!-- RUTA -->
 
-            <div
+            <div class="pt-2 border-t border-slate-100">
 
-                id="pane-d-ruta"
-
-                class="drawer-pane space-y-4 hidden">
 
 
                 <h3
 
-                    class="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center justify-between w-full">
 
-                    Itinerario y Accesos
-
-                </h3>
-
-
-                <div
-
-                    id="drawerRutaDetalleContenedor"
-
-                    class="w-full">
-
-                </div>
-
-
-            </div>
-
-
-            <!-- INVENTARIO -->
-
-            <div
-
-                id="pane-d-inventario"
-
-                class="drawer-pane space-y-4 hidden">
-
-
-                <h3
-
-                    class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between w-full">
 
 
                     <span>
 
-                        Desglose Completo de Carga
+                        INVENTARIO
+
+                        (<span
+
+                            id="drawerTotalArticulos"
+
+                            class="font-bold">
+
+                            0
+
+                        </span>
+
+                        ART.)
+
+                        —
+
+                        <span
+
+                            id="drawerTipoViviendaResumen"
+
+                            class="text-slate-700 font-semibold">
+
+                            —
+
+                        </span>
 
                     </span>
 
 
+
                     <span
 
-                        id="drawerM3Badge"
+                        id="drawerM3Texto"
 
-                        class="text-blue-600 font-bold">
+                        class="text-blue-600 font-bold ml-auto">
 
                         0.0 m³
 
                     </span>
 
 
+
                 </h3>
+
 
 
                 <div
 
-                    id="drawerInventarioFull"
+                    id="drawerInventarioResumen"
 
-                    class="space-y-1 w-full">
+                    class="space-y-2">
 
                 </div>
+
 
 
             </div>
 
 
-            <!-- SERVICIOS -->
 
-            <div
-
-                id="pane-d-servicios"
-
-                class="drawer-pane space-y-4 hidden">
+            <div class="grid grid-cols-2 gap-3 pt-1">
 
 
-                <h3
 
-                    class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+                <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
 
-                    Garantías y Extras Incluidos
-
-                </h3>
-
-
-                <div
-
-                    id="drawerServiciosLista"
-
-                    class="w-full">
-
-                </div>
-
-
-            </div>
-
-
-            <!-- FOTOS -->
-
-            <div
-
-                id="pane-d-fotos"
-
-                class="drawer-pane space-y-4 hidden">
-
-
-                <h3
-
-                    class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
-
-                    Registro Fotográfico del Cliente
-
-                </h3>
-
-
-                <div
-
-                    id="drawerFotosFull"
-
-                    class="w-full">
-
-                </div>
-
-
-            </div>
-
-
-            <!-- INDICACIONES -->
-
-            <div
-
-                id="pane-d-indicaciones"
-
-                class="drawer-pane space-y-4 hidden">
-
-
-                <h3
-
-                    class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
-
-                    Indicaciones Operativas
-
-                </h3>
-
-
-                <div
-
-                    id="drawerIndicacionesContenedor"
-
-                    class="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border">
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
-        <div
-
-            class="p-4 border-t border-slate-100 bg-slate-50/50 flex flex-col gap-3 flex-shrink-0">
-
-
-            <div
-
-                class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-200/60 shadow-sm">
-
-
-                <div>
 
 
                     <span
 
                         class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
 
-                        PRECIO TOTAL A PAGAR
+                        Distancia
 
                     </span>
 
 
+
                     <span
 
-                        id="drawerPrecio"
+                        id="drawerKm"
 
-                        class="text-xl font-black text-blue-600 leading-none">
+                        class="font-bold text-slate-800 text-sm">
 
                         —
 
                     </span>
 
 
-                    <span
-
-                        class="text-[10px] text-slate-400 block mt-0.5">
-
-                        IVA incl.
-
-                    </span>
-
 
                 </div>
 
 
-                <div class="text-right">
 
+                <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
 
-                    <span
-
-                        class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold px-2 py-1 rounded-md block">
-
-                        Pago Garantizado
-
-                    </span>
 
 
                     <span
 
-                        class="text-[10px] text-slate-400 font-medium block mt-1">
+                        class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
 
-                        en 48 horas
+                        Fecha del Servicio
 
                     </span>
+
+
+
+                    <span
+
+                        id="drawerFecha"
+
+                        class="font-bold text-slate-800 text-sm">
+
+                        —
+
+                    </span>
+
 
 
                 </div>
+
 
 
             </div>
 
 
-            <button
 
-                id="btnAceptarDrawer"
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
 
-                class="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3.5 font-bold text-sm shadow-md transition-all active:scale-[0.99]">
 
-                Aceptar trabajo
 
-            </button>
+<span
+
+    class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+
+    Horario de recogida
+
+</span>
+
+
+
+<span
+
+    id="drawerFranjaHorariaRecogida"
+
+    class="font-bold text-slate-800 text-sm">
+
+    —
+
+</span>
+
+
+
+</div>
+
+
+
+            <div
+
+                class="bg-yellow-50/60 border border-yellow-100 rounded-xl p-3 text-xs">
+
+
+
+                <span
+
+                    class="block text-[10px] font-bold text-amber-600 uppercase tracking-wider mb-1">
+
+                    Observaciones preliminares
+
+                </span>
+
+
+
+                <p
+
+                    id="drawerObservaciones"
+
+                    class="text-slate-600 leading-relaxed">
+
+                    —
+
+                </p>
+
+
+
+            </div>
+
 
 
         </div>
 
 
-    </aside>
+
+        <!-- RUTA -->
+
+        <div
+
+            id="pane-d-ruta"
+
+            class="drawer-pane space-y-4 hidden">
+
+
+
+            <h3
+
+                class="text-xs font-bold uppercase tracking-wider text-slate-400">
+
+                Itinerario y Accesos
+
+            </h3>
+
+
+
+            <div
+
+                id="drawerRutaDetalleContenedor"
+
+                class="w-full">
+
+            </div>
+
+
+
+        </div>
+
+
+
+        <!-- INVENTARIO -->
+
+        <div
+
+            id="pane-d-inventario"
+
+            class="drawer-pane space-y-4 hidden">
+
+
+
+            <h3
+
+                class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between w-full">
+
+
+
+                <span>
+
+                    Desglose Completo de Carga
+
+                </span>
+
+
+
+                <span
+
+                    id="drawerM3Badge"
+
+                    class="text-blue-600 font-bold">
+
+                    0.0 m³
+
+                </span>
+
+
+
+            </h3>
+
+
+
+            <div
+
+                id="drawerInventarioFull"
+
+                class="space-y-1 w-full">
+
+            </div>
+
+
+
+        </div>
+
+
+
+        <!-- SERVICIOS -->
+
+        <div
+
+            id="pane-d-servicios"
+
+            class="drawer-pane space-y-4 hidden">
+
+
+
+            <h3
+
+                class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+
+                Garantías y Extras Incluidos
+
+            </h3>
+
+
+
+            <div
+
+                id="drawerServiciosLista"
+
+                class="w-full">
+
+            </div>
+
+
+
+        </div>
+
+
+
+        <!-- FOTOS -->
+
+        <div
+
+            id="pane-d-fotos"
+
+            class="drawer-pane space-y-4 hidden">
+
+
+
+            <h3
+
+                class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+
+                Registro Fotográfico del Cliente
+
+            </h3>
+
+
+
+            <div
+
+                id="drawerFotosFull"
+
+                class="w-full">
+
+            </div>
+
+
+
+        </div>
+
+
+
+        <!-- INDICACIONES -->
+
+        <div
+
+            id="pane-d-indicaciones"
+
+            class="drawer-pane space-y-4 hidden">
+
+
+
+            <h3
+
+                class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+
+                Indicaciones Operativas
+
+            </h3>
+
+
+
+            <div
+
+                id="drawerIndicacionesContenedor"
+
+                class="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border">
+
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+    <div
+
+        class="p-4 border-t border-slate-100 bg-slate-50/50 flex flex-col gap-3 flex-shrink-0">
+
+
+
+        <div
+
+            class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-200/60 shadow-sm">
+
+
+
+            <div>
+
+
+
+                <span
+
+                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+
+                    PRECIO TOTAL A PAGAR
+
+                </span>
+
+
+
+                <span
+
+                    id="drawerPrecio"
+
+                    class="text-xl font-black text-blue-600 leading-none">
+
+                    —
+
+                </span>
+
+
+
+                <span
+
+                    class="text-[10px] text-slate-400 block mt-0.5">
+
+                    IVA incl.
+
+                </span>
+
+
+
+            </div>
+
+
+
+            <div class="text-right">
+
+
+
+                <span
+
+                    class="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold px-2 py-1 rounded-md block">
+
+                    Pago Garantizado
+
+                </span>
+
+
+
+                <span
+
+                    class="text-[10px] text-slate-400 font-medium block mt-1">
+
+                    en 48 horas
+
+                </span>
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+        <button
+
+            id="btnAceptarDrawer"
+
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3.5 font-bold text-sm shadow-md transition-all active:scale-[0.99]">
+
+            Aceptar trabajo
+
+        </button>
+
+
+
+    </div>
+
+
+
+</aside>
+
 
 
 <script>
 
     lucide.createIcons();
 
+ 
 
     /*
 
@@ -2107,16 +2388,19 @@
 
      */
 
+ 
 
     const URL_DB =
 
         'https://defvfvfyrydopaybnisg.supabase.co';
 
+ 
 
     const KEY_DB =
 
         'sb_publishable_dKIRJ1_K4u1ypfCNTuylIw_AyAKeZTS';
 
+ 
 
     const dbClient =
 
@@ -2128,11 +2412,13 @@
 
         );
 
+ 
 
     let currentUserId = null;
 
     let currentUserNombre = '';
 
+ 
 
     const state = {
 
@@ -2142,6 +2428,7 @@
 
     };
 
+ 
 
     /*
 
@@ -2161,41 +2448,49 @@
 
      */
 
+ 
 
     window.Transportista =
 
         window.Transportista || {};
 
+ 
 
     window.dbClient =
 
         dbClient;
 
+ 
 
     window.state =
 
         state;
 
+ 
 
     window.currentUserId =
 
         currentUserId;
 
+ 
 
     window.Transportista.dbClient =
 
         dbClient;
 
+ 
 
     window.Transportista.state =
 
         state;
 
+ 
 
     window.Transportista.currentUserId =
 
         currentUserId;
 
+ 
 
     const UI_TABS = {
 
@@ -2207,6 +2502,7 @@
 
         ],
 
+ 
 
         titles: {
 
@@ -2214,6 +2510,7 @@
 
                 'Trabajos Disponibles',
 
+ 
 
             'mis-mudanzas':
 
@@ -2223,9 +2520,11 @@
 
     };
 
+ 
 
     function abrirMenuMovil() {
 
+ 
 
         document
 
@@ -2235,6 +2534,7 @@
 
             .remove('-translate-x-full');
 
+ 
 
         document
 
@@ -2246,9 +2546,11 @@
 
     }
 
+ 
 
     function cerrarMenuMovil() {
 
+ 
 
         document
 
@@ -2258,6 +2560,7 @@
 
             .add('-translate-x-full');
 
+ 
 
         document
 
@@ -2269,12 +2572,15 @@
 
     }
 
+ 
 
     async function verificarSesion() {
 
+ 
 
         try {
 
+ 
 
             const {
 
@@ -2290,6 +2596,7 @@
 
                 await dbClient.auth.getSession();
 
+ 
 
             console.log(
 
@@ -2297,6 +2604,7 @@
 
             );
 
+ 
 
             console.log(
 
@@ -2306,6 +2614,7 @@
 
             );
 
+ 
 
             console.log(
 
@@ -2315,6 +2624,7 @@
 
             );
 
+ 
 
             console.log(
 
@@ -2324,6 +2634,7 @@
 
             );
 
+ 
 
             console.log(
 
@@ -2333,6 +2644,7 @@
 
             );
 
+ 
 
             console.log(
 
@@ -2340,6 +2652,7 @@
 
             );
 
+ 
 
             if (
 
@@ -2349,6 +2662,7 @@
 
             ) {
 
+ 
 
                 console.error(
 
@@ -2356,6 +2670,7 @@
 
                 );
 
+ 
 
                 window.location.replace(
 
@@ -2363,16 +2678,19 @@
 
                 );
 
+ 
 
                 return;
 
             }
 
+ 
 
             currentUserId =
 
                 session.user.id;
 
+ 
 
             /*
 
@@ -2386,11 +2704,13 @@
 
                 currentUserId;
 
+ 
 
             window.Transportista.currentUserId =
 
                 currentUserId;
 
+ 
 
             console.log(
 
@@ -2400,6 +2720,7 @@
 
             );
 
+ 
 
             /*
 
@@ -2411,6 +2732,7 @@
 
              */
 
+ 
 
             console.log(
 
@@ -2420,6 +2742,7 @@
 
             );
 
+ 
 
             await dbClient
 
@@ -2431,6 +2754,7 @@
 
                         "Disponible",
 
+ 
 
                     ultima_actualizacion_estado:
 
@@ -2446,6 +2770,7 @@
 
                 );
 
+ 
 
             const selectorDisp =
 
@@ -2455,9 +2780,11 @@
 
                 );
 
+ 
 
             if (selectorDisp) {
 
+ 
 
                 selectorDisp.value =
 
@@ -2465,6 +2792,7 @@
 
             }
 
+ 
 
             toggleColorIndicadorDisponibilidad(
 
@@ -2472,6 +2800,7 @@
 
             );
 
+ 
 
             const elLoadingText =
 
@@ -2481,9 +2810,11 @@
 
                 );
 
+ 
 
             if (elLoadingText) {
 
+ 
 
                 elLoadingText.textContent =
 
@@ -2491,9 +2822,11 @@
 
             }
 
+ 
 
             await cargarDatosPerfil();
 
+ 
 
             const elLoadingScreen =
 
@@ -2503,9 +2836,11 @@
 
                 );
 
+ 
 
             if (elLoadingScreen) {
 
+ 
 
                 elLoadingScreen.classList.add(
 
@@ -2515,6 +2850,7 @@
 
             }
 
+ 
 
             /*
 
@@ -2526,12 +2862,15 @@
 
              */
 
+ 
 
             await cargarTrabajosDisponibles();
 
+ 
 
             await cargarMisMudanzas();
 
+ 
 
             if (typeof window.cargarHistorialServicios === 'function') {
 
@@ -2539,6 +2878,7 @@
 
             }
 
+ 
 
             /*
 
@@ -2550,11 +2890,13 @@
 
              */
 
+ 
 
             setInterval(
 
                 () => {
 
+ 
 
                     const tabDisp =
 
@@ -2564,6 +2906,7 @@
 
                         );
 
+ 
 
                     if (
 
@@ -2577,11 +2920,13 @@
 
                     ) {
 
+ 
 
                         cargarTrabajosDisponibles();
 
                     }
 
+ 
 
                 },
 
@@ -2589,9 +2934,11 @@
 
             );
 
+ 
 
         } catch (err) {
 
+ 
 
             console.error(
 
@@ -2601,6 +2948,7 @@
 
             );
 
+ 
 
             alert(
 
@@ -2620,12 +2968,15 @@
 
     }
 
+ 
 
     async function cargarDatosPerfil() {
 
+ 
 
         try {
 
+ 
 
             const {
 
@@ -2637,6 +2988,7 @@
 
                 await dbClient.auth.getUser();
 
+ 
 
             if (
 
@@ -2646,6 +2998,7 @@
 
             ) {
 
+ 
 
                 console.error(
 
@@ -2655,16 +3008,19 @@
 
                 );
 
+ 
 
                 return;
 
             }
 
+ 
 
             const cleanUserId =
 
                 sessionData.user.id;
 
+ 
 
             console.log(
 
@@ -2674,6 +3030,7 @@
 
             );
 
+ 
 
             const {
 
@@ -2699,6 +3056,7 @@
 
                     .maybeSingle();
 
+ 
 
             console.log(
 
@@ -2708,9 +3066,11 @@
 
             );
 
+ 
 
             if (error) {
 
+ 
 
                 console.error(
 
@@ -2720,14 +3080,17 @@
 
                 );
 
+ 
 
                 return;
 
             }
 
+ 
 
             if (data) {
 
+ 
 
                 currentUserNombre =
 
@@ -2735,6 +3098,7 @@
 
                     'Transportista';
 
+ 
 
                 const elNameTop =
 
@@ -2750,9 +3114,11 @@
 
                     );
 
+ 
 
                 if (elNameTop) {
 
+ 
 
                     elNameTop.textContent =
 
@@ -2760,11 +3126,13 @@
 
                 }
 
+ 
 
                 const avatarUrl =
 
                     `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUserNombre)}&background=ffffff&color=0b1e5b&bold=true`;
 
+ 
 
                 const imgTop =
 
@@ -2774,9 +3142,11 @@
 
                     );
 
+ 
 
                 if (imgTop) {
 
+ 
 
                     imgTop.src =
 
@@ -2784,6 +3154,7 @@
 
                 }
 
+ 
 
                 const img =
 
@@ -2793,9 +3164,11 @@
 
                     );
 
+ 
 
                 if (img) {
 
+ 
 
                     img.src =
 
@@ -2803,9 +3176,11 @@
 
                 }
 
+ 
 
             } else {
 
+ 
 
                 console.warn(
 
@@ -2813,6 +3188,7 @@
 
                 );
 
+ 
 
                 const elNameTop =
 
@@ -2828,9 +3204,11 @@
 
                     );
 
+ 
 
                 if (elNameTop) {
 
+ 
 
                     elNameTop.textContent =
 
@@ -2840,9 +3218,11 @@
 
             }
 
+ 
 
         } catch (err) {
 
+ 
 
             console.error(
 
@@ -2856,6 +3236,7 @@
 
     }
 
+ 
 
     function actualizarContadorNotificaciones(
 
@@ -2863,6 +3244,7 @@
 
     ) {
 
+ 
 
         const badgeTop =
 
@@ -2872,14 +3254,17 @@
 
             );
 
+ 
 
         if (badgeTop) {
 
+ 
 
             badgeTop.textContent =
 
                 cantidad;
 
+ 
 
             if (
 
@@ -2887,6 +3272,7 @@
 
             ) {
 
+ 
 
                 badgeTop.classList.add(
 
@@ -2894,9 +3280,11 @@
 
                 );
 
+ 
 
             } else {
 
+ 
 
                 badgeTop.classList.remove(
 
@@ -2908,6 +3296,7 @@
 
         }
 
+ 
 
         const badgeSidebar =
 
@@ -2917,14 +3306,17 @@
 
             );
 
+ 
 
         if (badgeSidebar) {
 
+ 
 
             badgeSidebar.textContent =
 
                 cantidad;
 
+ 
 
             if (
 
@@ -2932,6 +3324,7 @@
 
             ) {
 
+ 
 
                 badgeSidebar.classList.add(
 
@@ -2939,9 +3332,11 @@
 
                 );
 
+ 
 
             } else {
 
+ 
 
                 badgeSidebar.classList.remove(
 
@@ -2955,12 +3350,15 @@
 
     }
 
+ 
 
     async function cerrarSesion() {
 
+ 
 
         await dbClient.auth.signOut();
 
+ 
 
         window.location.replace(
 
@@ -2970,12 +3368,15 @@
 
     }
 
+ 
 
     let actualizandoMarketplace = false;
 
+ 
 
 function recargarDatos() {
 
+ 
 
     // Evitar dobles clics
 
@@ -2985,9 +3386,11 @@ function recargarDatos() {
 
     }
 
+ 
 
     actualizandoMarketplace = true;
 
+ 
 
     const boton =
 
@@ -2997,6 +3400,7 @@ function recargarDatos() {
 
         );
 
+ 
 
     const texto =
 
@@ -3006,6 +3410,7 @@ function recargarDatos() {
 
         );
 
+ 
 
     const icono =
 
@@ -3015,6 +3420,7 @@ function recargarDatos() {
 
         );
 
+ 
 
     // Estado visual: actualizando
 
@@ -3024,6 +3430,7 @@ function recargarDatos() {
 
     }
 
+ 
 
     if (texto) {
 
@@ -3031,6 +3438,7 @@ function recargarDatos() {
 
     }
 
+ 
 
     if (icono) {
 
@@ -3038,6 +3446,7 @@ function recargarDatos() {
 
     }
 
+ 
 
     // --------------------------------------------------
 
@@ -3045,6 +3454,7 @@ function recargarDatos() {
 
     // --------------------------------------------------
 
+ 
 
     try {
 
@@ -3062,6 +3472,7 @@ function recargarDatos() {
 
     }
 
+ 
 
     try {
 
@@ -3079,6 +3490,7 @@ function recargarDatos() {
 
     }
 
+ 
 
     // --------------------------------------------------
 
@@ -3086,9 +3498,11 @@ function recargarDatos() {
 
     // --------------------------------------------------
 
+ 
 
     setTimeout(() => {
 
+ 
 
         if (icono) {
 
@@ -3096,6 +3510,7 @@ function recargarDatos() {
 
         }
 
+ 
 
         if (texto) {
 
@@ -3103,9 +3518,11 @@ function recargarDatos() {
 
         }
 
+ 
 
         setTimeout(() => {
 
+ 
 
             if (texto) {
 
@@ -3113,6 +3530,7 @@ function recargarDatos() {
 
             }
 
+ 
 
             if (boton) {
 
@@ -3120,17 +3538,21 @@ function recargarDatos() {
 
             }
 
+ 
 
             actualizandoMarketplace = false;
 
+ 
 
         }, 800);
 
+ 
 
     }, 1000);
 
 }
 
+ 
 
     function cambiarTab(
 
@@ -3138,6 +3560,7 @@ function recargarDatos() {
 
     ) {
 
+ 
 
         const tabs = [
 
@@ -3153,11 +3576,13 @@ function recargarDatos() {
 
         ];
 
+ 
 
         tabs.forEach(
 
             t => {
 
+ 
 
                 const pane =
 
@@ -3167,9 +3592,11 @@ function recargarDatos() {
 
                     );
 
+ 
 
                 if (pane) {
 
+ 
 
                     pane.classList.add(
 
@@ -3179,6 +3606,7 @@ function recargarDatos() {
 
                 }
 
+ 
 
                 const nav =
 
@@ -3188,9 +3616,11 @@ function recargarDatos() {
 
                     );
 
+ 
 
                 if (nav) {
 
+ 
 
                     nav.classList.remove(
 
@@ -3204,6 +3634,7 @@ function recargarDatos() {
 
         );
 
+ 
 
         const paneActivo =
 
@@ -3213,9 +3644,11 @@ function recargarDatos() {
 
             );
 
+ 
 
         if (paneActivo) {
 
+ 
 
             paneActivo.classList.remove(
 
@@ -3225,6 +3658,7 @@ function recargarDatos() {
 
         }
 
+ 
 
         const navActivo =
 
@@ -3234,9 +3668,11 @@ function recargarDatos() {
 
             );
 
+ 
 
         if (navActivo) {
 
+ 
 
             navActivo.classList.add(
 
@@ -3246,6 +3682,7 @@ function recargarDatos() {
 
         }
 
+ 
 
         const titles = {
 
@@ -3253,21 +3690,25 @@ function recargarDatos() {
 
                 'Trabajos Disponibles',
 
+ 
 
             'mis-mudanzas':
 
                 'Mis Mudanzas Activas',
 
+ 
 
             'historial-servicios':
 
                 'Historial de servicios',
 
+ 
 
             'facturacion':
 
                 'Facturación',
 
+ 
 
             'mi-perfil':
 
@@ -3275,6 +3716,7 @@ function recargarDatos() {
 
         };
 
+ 
 
         const headerTitle =
 
@@ -3284,6 +3726,7 @@ function recargarDatos() {
 
             );
 
+ 
 
         if (
 
@@ -3293,6 +3736,7 @@ function recargarDatos() {
 
         ) {
 
+ 
 
             headerTitle.textContent =
 
@@ -3300,14 +3744,17 @@ function recargarDatos() {
 
         }
 
+ 
 
         cerrarMenuMovil();
 
     }
 
+ 
 
     async function cargarMisMudanzas() {
 
+ 
 
         console.log(
 
@@ -3315,6 +3762,7 @@ function recargarDatos() {
 
         );
 
+ 
 
         console.log(
 
@@ -3324,9 +3772,11 @@ function recargarDatos() {
 
         );
 
+ 
 
         if (!currentUserId) {
 
+ 
 
             console.warn(
 
@@ -3334,11 +3784,13 @@ function recargarDatos() {
 
             );
 
+ 
 
             return;
 
         }
 
+ 
 
         const {
 
@@ -3382,6 +3834,7 @@ function recargarDatos() {
 
                 );
 
+ 
 
         console.log(
 
@@ -3391,6 +3844,7 @@ function recargarDatos() {
 
         );
 
+ 
 
         console.log(
 
@@ -3400,9 +3854,11 @@ function recargarDatos() {
 
         );
 
+ 
 
         if (error) {
 
+ 
 
             console.error(
 
@@ -3412,32 +3868,39 @@ function recargarDatos() {
 
             );
 
+ 
 
             state.activas =
 
                 [];
 
+ 
 
             renderizarActivas();
 
+ 
 
             return;
 
         }
 
+ 
 
         state.activas =
 
             data || [];
 
+ 
 
         renderizarActivas();
 
     }
 
+ 
 
     function renderizarActivas() {
 
+ 
 
         const contenedor =
 
@@ -3447,6 +3910,7 @@ function recargarDatos() {
 
             );
 
+ 
 
         const badge =
 
@@ -3456,9 +3920,11 @@ function recargarDatos() {
 
             );
 
+ 
 
         if (!contenedor) {
 
+ 
 
             console.error(
 
@@ -3466,11 +3932,13 @@ function recargarDatos() {
 
             );
 
+ 
 
             return;
 
         }
 
+ 
 
         const trabajos =
 
@@ -3484,14 +3952,17 @@ function recargarDatos() {
 
                 : [];
 
+ 
 
         if (badge) {
 
+ 
 
             badge.textContent =
 
                 trabajos.length;
 
+ 
 
             badge.classList.toggle(
 
@@ -3503,6 +3974,7 @@ function recargarDatos() {
 
         }
 
+ 
 
         if (
 
@@ -3510,11 +3982,13 @@ function recargarDatos() {
 
         ) {
 
+ 
 
             contenedor.innerHTML = `
 
                 <div class="text-center py-16 bg-white rounded-3xl border border-dashed border-gray-300">
 
+ 
 
                     <i
 
@@ -3524,6 +3998,7 @@ function recargarDatos() {
 
                     </i>
 
+ 
 
                     <h4 class="text-lg font-bold text-gray-700 mb-2">
 
@@ -3531,6 +4006,7 @@ function recargarDatos() {
 
                     </h4>
 
+ 
 
                     <p class="text-gray-400 font-medium text-sm">
 
@@ -3538,24 +4014,29 @@ function recargarDatos() {
 
                     </p>
 
+ 
 
                 </div>
 
             `;
 
+ 
 
             if (window.lucide) {
 
+ 
 
                 lucide.createIcons();
 
             }
 
+ 
 
             return;
 
         }
 
+ 
 
         const tarjetas =
 
@@ -3565,6 +4046,7 @@ function recargarDatos() {
 
                 ?.renderizarTarjetasActivas;
 
+ 
 
         if (
 
@@ -3574,6 +4056,7 @@ function recargarDatos() {
 
         ) {
 
+ 
 
             console.error(
 
@@ -3581,11 +4064,13 @@ function recargarDatos() {
 
             );
 
+ 
 
             return;
 
         }
 
+ 
 
         contenedor.innerHTML =
 
@@ -3595,9 +4080,11 @@ function recargarDatos() {
 
             );
 
+ 
 
         if (window.lucide) {
 
+ 
 
             lucide.createIcons();
 
@@ -3605,6 +4092,7 @@ function recargarDatos() {
 
     }
 
+ 
 
     function imprimirFicha(
 
@@ -3612,6 +4100,7 @@ function recargarDatos() {
 
     ) {
 
+ 
 
         let mudanza =
 
@@ -3625,6 +4114,7 @@ function recargarDatos() {
 
             );
 
+ 
 
         if (!mudanza && Array.isArray(window.RODAX_HISTORIAL_SERVICIOS)) {
 
@@ -3636,9 +4126,11 @@ function recargarDatos() {
 
         }
 
+ 
 
         if (!mudanza) {
 
+ 
 
             alert(
 
@@ -3646,11 +4138,13 @@ function recargarDatos() {
 
             );
 
+ 
 
             return;
 
         }
 
+ 
 
         const origen =
 
@@ -3658,6 +4152,7 @@ function recargarDatos() {
 
             "";
 
+ 
 
         const destino =
 
@@ -3665,6 +4160,7 @@ function recargarDatos() {
 
             "";
 
+ 
 
         const fecha =
 
@@ -3672,14 +4168,17 @@ function recargarDatos() {
 
             "";
 
+ 
 
             function formatearFechaFicha(fechaOriginal) {
 
+ 
 
     const texto =
 
         String(fechaOriginal || "").trim();
 
+ 
 
     const match =
 
@@ -3689,6 +4188,7 @@ function recargarDatos() {
 
         );
 
+ 
 
     if (!match) {
 
@@ -3696,16 +4196,19 @@ function recargarDatos() {
 
     }
 
+ 
 
     return `${match[3]}-${match[2]}-${match[1]}`;
 
 }
 
+ 
 
 const fechaFicha =
 
     formatearFechaFicha(fecha);
 
+ 
 
         const km =
 
@@ -3713,6 +4216,7 @@ const fechaFicha =
 
             "";
 
+ 
 
         const precio =
 
@@ -3720,6 +4224,7 @@ const fechaFicha =
 
             "";
 
+ 
 
         const extras =
 
@@ -3727,6 +4232,7 @@ const fechaFicha =
 
             "";
 
+ 
 
         const volumen =
 
@@ -3734,6 +4240,7 @@ const fechaFicha =
 
             "";
 
+ 
 
         const ascensor =
 
@@ -3741,6 +4248,7 @@ const fechaFicha =
 
             "";
 
+ 
 
         const numeroReserva =
 
@@ -3752,6 +4260,7 @@ const fechaFicha =
 
                 );
 
+ 
 
         const numArticulos =
 
@@ -3765,6 +4274,7 @@ const fechaFicha =
 
         );
 
+ 
 
 const totalM3 =
 
@@ -3778,6 +4288,7 @@ const totalM3 =
 
         );
 
+ 
 
         const m3Texto =
 
@@ -3795,6 +4306,7 @@ const totalM3 =
 
 /////////////////////////////////////////////////////////
 
+ 
 
 const inventarioOriginal =
 
@@ -3820,6 +4332,7 @@ const inventarioOriginal =
 
         })();
 
+ 
 
 const esMudanzaTotalFicha =
 
@@ -3833,6 +4346,7 @@ const esMudanzaTotalFicha =
 
         .includes("total");
 
+ 
 
         const tipoServicioFicha =
 
@@ -3842,6 +4356,7 @@ const esMudanzaTotalFicha =
 
         : "MUDANZA ESTÁNDAR";
 
+ 
 
 const normalizarNombreFicha =
 
@@ -3863,6 +4378,7 @@ const normalizarNombreFicha =
 
             );
 
+ 
 
 const nombresExtrasFicha = new Set([
 
@@ -3874,6 +4390,7 @@ const nombresExtrasFicha = new Set([
 
 ]);
 
+ 
 
 const categoriasFicha =
 
@@ -3881,9 +4398,11 @@ const categoriasFicha =
 
     {};
 
+ 
 
 const inventarioPorCategoria = {};
 
+ 
 
 Object.keys(categoriasFicha).forEach(
 
@@ -3895,9 +4414,11 @@ Object.keys(categoriasFicha).forEach(
 
 );
 
+ 
 
 inventarioOriginal.forEach(item => {
 
+ 
 
     const cantidad =
 
@@ -3909,6 +4430,7 @@ inventarioOriginal.forEach(item => {
 
         ) || 0;
 
+ 
 
     if (cantidad <= 0) {
 
@@ -3916,6 +4438,7 @@ inventarioOriginal.forEach(item => {
 
     }
 
+ 
 
     const nombre =
 
@@ -3931,6 +4454,7 @@ inventarioOriginal.forEach(item => {
 
         ).trim();
 
+ 
 
     /*
 
@@ -3958,6 +4482,7 @@ inventarioOriginal.forEach(item => {
 
     }
 
+ 
 
     let categoriaEncontrada =
 
@@ -3969,9 +4494,11 @@ inventarioOriginal.forEach(item => {
 
         "Otros";
 
+ 
 
     let encontradaEnConfig = false;
 
+ 
 
     for (
 
@@ -3987,6 +4514,7 @@ inventarioOriginal.forEach(item => {
 
     ) {
 
+ 
 
         const coincide =
 
@@ -4008,6 +4536,7 @@ inventarioOriginal.forEach(item => {
 
             );
 
+ 
 
         if (coincide) {
 
@@ -4015,6 +4544,7 @@ inventarioOriginal.forEach(item => {
 
                 categoria;
 
+ 
 
             encontradaEnConfig = true;
 
@@ -4024,6 +4554,7 @@ inventarioOriginal.forEach(item => {
 
     }
 
+ 
 
     if (
 
@@ -4041,6 +4572,7 @@ inventarioOriginal.forEach(item => {
 
     }
 
+ 
 
     if (
 
@@ -4060,6 +4592,7 @@ inventarioOriginal.forEach(item => {
 
     }
 
+ 
 
     inventarioPorCategoria[
 
@@ -4075,6 +4608,7 @@ inventarioOriginal.forEach(item => {
 
 });
 
+ 
 
 /////////////////////////////////////////////////////////
 
@@ -4082,6 +4616,7 @@ inventarioOriginal.forEach(item => {
 
 /////////////////////////////////////////////////////////
 
+ 
 
 const iconosFicha = {
 
@@ -4099,9 +4634,11 @@ const iconosFicha = {
 
 };
 
+ 
 
 let htmlInventarioFicha = "";
 
+ 
 
 Object.entries(
 
@@ -4111,6 +4648,7 @@ Object.entries(
 
     ([categoria, items]) => {
 
+ 
 
         if (
 
@@ -4124,6 +4662,7 @@ Object.entries(
 
         }
 
+ 
 
         const totalCategoria =
 
@@ -4145,6 +4684,7 @@ Object.entries(
 
             );
 
+ 
 
         htmlInventarioFicha += `
 
@@ -4170,6 +4710,7 @@ Object.entries(
 
                     </span>
 
+ 
 
                     <span class="inventario-total">
 
@@ -4179,9 +4720,11 @@ Object.entries(
 
                 </div>
 
+ 
 
                 <div class="inventario-items">
 
+ 
 
                     ${items
 
@@ -4197,6 +4740,7 @@ Object.entries(
 
                                     </span>
 
+ 
 
                                     <strong>
 
@@ -4214,9 +4758,11 @@ Object.entries(
 
                     }
 
+ 
 
                 </div>
 
+ 
 
             </div>
 
@@ -4226,9 +4772,11 @@ Object.entries(
 
 );
 
+ 
 
 if (!htmlInventarioFicha) {
 
+ 
 
     htmlInventarioFicha = `
 
@@ -4242,6 +4790,7 @@ if (!htmlInventarioFicha) {
 
 }
 
+ 
 
 /////////////////////////////////////////////////////////
 
@@ -4249,12 +4798,15 @@ if (!htmlInventarioFicha) {
 
 /////////////////////////////////////////////////////////
 
+ 
 
 let htmlExtrasFicha = "";
 
+ 
 
 if (esMudanzaTotalFicha) {
 
+ 
 
     let extrasFicha = {
 
@@ -4266,6 +4818,7 @@ if (esMudanzaTotalFicha) {
 
 };
 
+ 
 
     if (
 
@@ -4279,6 +4832,7 @@ if (esMudanzaTotalFicha) {
 
     ) {
 
+ 
 
         extrasFicha =
 
@@ -4292,6 +4846,7 @@ if (esMudanzaTotalFicha) {
 
     }
 
+ 
 
     if (
 
@@ -4303,11 +4858,13 @@ if (esMudanzaTotalFicha) {
 
     ) {
 
+ 
 
         htmlExtrasFicha = `
 
     <div class="seccion">
 
+ 
 
         <div class="seccion-titulo extras-titulo">
 
@@ -4315,9 +4872,11 @@ if (esMudanzaTotalFicha) {
 
         </div>
 
+ 
 
         <div class="extras-ficha">
 
+ 
 
             <div
 
@@ -4341,6 +4900,7 @@ if (esMudanzaTotalFicha) {
 
             </div>
 
+ 
 
             ${
 
@@ -4356,6 +4916,7 @@ if (esMudanzaTotalFicha) {
 
                             </span>
 
+ 
 
                             <strong>
 
@@ -4371,6 +4932,7 @@ if (esMudanzaTotalFicha) {
 
             }
 
+ 
 
             ${
 
@@ -4386,6 +4948,7 @@ if (esMudanzaTotalFicha) {
 
                             </span>
 
+ 
 
                             <strong>
 
@@ -4401,6 +4964,7 @@ if (esMudanzaTotalFicha) {
 
             }
 
+ 
 
             ${
 
@@ -4416,6 +4980,7 @@ if (esMudanzaTotalFicha) {
 
                             </span>
 
+ 
 
                             <strong>
 
@@ -4431,9 +4996,11 @@ if (esMudanzaTotalFicha) {
 
             }
 
+ 
 
         </div>
 
+ 
 
     </div>
 
@@ -4443,6 +5010,7 @@ if (esMudanzaTotalFicha) {
 
 }
 
+ 
 
         const accesos =
 
@@ -4454,6 +5022,7 @@ if (esMudanzaTotalFicha) {
 
     };
 
+ 
 
 /*
 
@@ -4465,12 +5034,15 @@ if (esMudanzaTotalFicha) {
 
  */
 
+ 
 
 function formatearAccesoFicha(valor) {
 
+ 
 
     const texto = String(valor || "").trim();
 
+ 
 
     if (!texto) {
 
@@ -4478,6 +5050,7 @@ function formatearAccesoFicha(valor) {
 
     }
 
+ 
 
     /*
 
@@ -4495,6 +5068,7 @@ function formatearAccesoFicha(valor) {
 
         .replace(/[\u0300-\u036f]/g, "");
 
+ 
 
     /*
 
@@ -4506,6 +5080,7 @@ function formatearAccesoFicha(valor) {
 
     if (normalizado.includes("sin ascensor")) {
 
+ 
 
         const matchPiso =
 
@@ -4515,14 +5090,17 @@ function formatearAccesoFicha(valor) {
 
             );
 
+ 
 
         if (matchPiso) {
 
+ 
 
             let piso =
 
                 String(matchPiso[1]).trim();
 
+ 
 
             /*
 
@@ -4542,16 +5120,19 @@ function formatearAccesoFicha(valor) {
 
             }
 
+ 
 
             return `Sin ascensor · Piso ${piso}`;
 
         }
 
+ 
 
         return "Sin ascensor";
 
     }
 
+ 
 
     /*
 
@@ -4571,11 +5152,13 @@ function formatearAccesoFicha(valor) {
 
     }
 
+ 
 
     return texto;
 
 }
 
+ 
 
 const accesoRecogidaFicha =
 
@@ -4585,6 +5168,7 @@ const accesoRecogidaFicha =
 
     );
 
+ 
 
 const accesoEntregaFicha =
 
@@ -4594,6 +5178,7 @@ const accesoEntregaFicha =
 
     );
 
+ 
 
         const nombre =
 
@@ -4601,6 +5186,7 @@ const accesoEntregaFicha =
 
             'Transportista RODAX';
 
+ 
 
         const fechaHoy =
 
@@ -4616,16 +5202,19 @@ const accesoEntregaFicha =
 
                             'long',
 
+ 
 
                         year:
 
                             'numeric',
 
+ 
 
                         month:
 
                             'long',
 
+ 
 
                         day:
 
@@ -4635,6 +5224,7 @@ const accesoEntregaFicha =
 
                 );
 
+ 
 
         /*
 
@@ -4656,6 +5246,7 @@ const accesoEntregaFicha =
 
          */
 
+ 
 
         const contenido =
 
@@ -4667,6 +5258,7 @@ const accesoEntregaFicha =
 
     <meta charset="UTF-8">
 
+ 
 
     <title>
 
@@ -4674,9 +5266,11 @@ const accesoEntregaFicha =
 
     </title>
 
+ 
 
     <style>
 
+ 
 
         * {
 
@@ -4688,6 +5282,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         body {
 
@@ -4699,21 +5294,25 @@ const accesoEntregaFicha =
 
                 sans-serif;
 
+ 
 
             background:
 
                 white;
 
+ 
 
             color:
 
                 #1a1a1a;
 
+ 
 
             padding:
 
                 30px;
 
+ 
 
             font-size:
 
@@ -4721,6 +5320,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .header {
 
@@ -4728,26 +5328,31 @@ const accesoEntregaFicha =
 
                 flex;
 
+ 
 
             justify-content:
 
                 space-between;
 
+ 
 
             align-items:
 
                 flex-start;
 
+ 
 
             border-bottom:
 
                 3px solid #2563eb;
 
+ 
 
             padding-bottom:
 
                 20px;
 
+ 
 
             margin-bottom:
 
@@ -4755,6 +5360,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .logo {
 
@@ -4762,16 +5368,19 @@ const accesoEntregaFicha =
 
                 22px;
 
+ 
 
             font-weight:
 
                 900;
 
+ 
 
             color:
 
                 #1e3a5f;
 
+ 
 
             letter-spacing:
 
@@ -4779,6 +5388,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .logo span {
 
@@ -4788,6 +5398,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .ficha-num {
 
@@ -4797,6 +5408,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .ficha-num h2 {
 
@@ -4804,11 +5416,13 @@ const accesoEntregaFicha =
 
                 18px;
 
+ 
 
             font-weight:
 
                 900;
 
+ 
 
             color:
 
@@ -4816,6 +5430,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .ficha-num p {
 
@@ -4823,11 +5438,13 @@ const accesoEntregaFicha =
 
                 #6b7280;
 
+ 
 
             font-size:
 
                 11px;
 
+ 
 
             margin-top:
 
@@ -4835,6 +5452,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .seccion {
 
@@ -4844,6 +5462,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .seccion-titulo {
 
@@ -4851,36 +5470,43 @@ const accesoEntregaFicha =
 
                 10px;
 
+ 
 
             font-weight:
 
                 900;
 
+ 
 
             text-transform:
 
                 uppercase;
 
+ 
 
             letter-spacing:
 
                 1px;
 
+ 
 
             color:
 
                 #6b7280;
 
+ 
 
             margin-bottom:
 
                 10px;
 
+ 
 
             padding-bottom:
 
                 6px;
 
+ 
 
             border-bottom:
 
@@ -4888,6 +5514,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .grid-2 {
 
@@ -4895,11 +5522,13 @@ const accesoEntregaFicha =
 
                 grid;
 
+ 
 
             grid-template-columns:
 
                 1fr 1fr;
 
+ 
 
             gap:
 
@@ -4907,6 +5536,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .dato-label {
 
@@ -4914,26 +5544,31 @@ const accesoEntregaFicha =
 
                 10px;
 
+ 
 
             font-weight:
 
                 700;
 
+ 
 
             color:
 
                 #9ca3af;
 
+ 
 
             text-transform:
 
                 uppercase;
 
+ 
 
             letter-spacing:
 
                 0.5px;
 
+ 
 
             margin-bottom:
 
@@ -4941,6 +5576,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .dato-valor {
 
@@ -4948,11 +5584,13 @@ const accesoEntregaFicha =
 
                 15px;
 
+ 
 
             font-weight:
 
                 700;
 
+ 
 
             color:
 
@@ -4960,6 +5598,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .dato-valor.grande {
 
@@ -4967,11 +5606,13 @@ const accesoEntregaFicha =
 
                 24px;
 
+ 
 
             font-weight:
 
                 900;
 
+ 
 
             color:
 
@@ -4979,6 +5620,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .ruta-box {
 
@@ -4986,16 +5628,19 @@ const accesoEntregaFicha =
 
                 #f0f9ff;
 
+ 
 
             border:
 
                 1px solid #bae6fd;
 
+ 
 
             border-radius:
 
                 12px;
 
+ 
 
             padding:
 
@@ -5003,6 +5648,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .punto {
 
@@ -5010,16 +5656,19 @@ const accesoEntregaFicha =
 
                 flex;
 
+ 
 
             align-items:
 
                 flex-start;
 
+ 
 
             gap:
 
                 10px;
 
+ 
 
             margin-bottom:
 
@@ -5027,6 +5676,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .punto-circulo {
 
@@ -5034,21 +5684,25 @@ const accesoEntregaFicha =
 
                 12px;
 
+ 
 
             height:
 
                 12px;
 
+ 
 
             border-radius:
 
                 50%;
 
+ 
 
             flex-shrink:
 
                 0;
 
+ 
 
             margin-top:
 
@@ -5056,6 +5710,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .punto-circulo.azul {
 
@@ -5065,6 +5720,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .punto-circulo.naranja {
 
@@ -5074,6 +5730,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .km-linea {
 
@@ -5081,11 +5738,13 @@ const accesoEntregaFicha =
 
                 11px;
 
+ 
 
             color:
 
                 #6b7280;
 
+ 
 
             margin:
 
@@ -5093,6 +5752,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .inventario-categoria {
 
@@ -5108,6 +5768,7 @@ const accesoEntregaFicha =
 
 }
 
+ 
 
 .inventario-categoria-header {
 
@@ -5135,6 +5796,7 @@ const accesoEntregaFicha =
 
 }
 
+ 
 
 .inventario-total {
 
@@ -5150,6 +5812,7 @@ const accesoEntregaFicha =
 
 }
 
+ 
 
 .inventario-items {
 
@@ -5157,6 +5820,7 @@ const accesoEntregaFicha =
 
 }
 
+ 
 
 .inventario-item,
 
@@ -5180,6 +5844,7 @@ const accesoEntregaFicha =
 
 }
 
+ 
 
 .inventario-item:last-child,
 
@@ -5189,6 +5854,7 @@ const accesoEntregaFicha =
 
 }
 
+ 
 
 .inventario-item strong,
 
@@ -5210,6 +5876,7 @@ const accesoEntregaFicha =
 
 }
 
+ 
 
 .inventario-vacio {
 
@@ -5229,6 +5896,7 @@ const accesoEntregaFicha =
 
 }
 
+ 
 
 .extras-titulo {
 
@@ -5236,6 +5904,7 @@ const accesoEntregaFicha =
 
 }
 
+ 
 
 .extras-ficha {
 
@@ -5249,6 +5918,7 @@ const accesoEntregaFicha =
 
 }
 
+ 
 
 .extra-fila {
 
@@ -5256,6 +5926,7 @@ const accesoEntregaFicha =
 
 }
 
+ 
 
 .extra-fila strong {
 
@@ -5265,6 +5936,7 @@ const accesoEntregaFicha =
 
 }
 
+ 
 
         .precio-box {
 
@@ -5272,21 +5944,25 @@ const accesoEntregaFicha =
 
                 #f0fdf4;
 
+ 
 
             border:
 
                 2px solid #86efac;
 
+ 
 
             border-radius:
 
                 12px;
 
+ 
 
             padding:
 
                 16px;
 
+ 
 
             text-align:
 
@@ -5294,6 +5970,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .aviso {
 
@@ -5301,31 +5978,37 @@ const accesoEntregaFicha =
 
                 #fefce8;
 
+ 
 
             border:
 
                 1px solid #fde047;
 
+ 
 
             border-radius:
 
                 8px;
 
+ 
 
             padding:
 
                 12px;
 
+ 
 
             font-size:
 
                 12px;
 
+ 
 
             color:
 
                 #713f12;
 
+ 
 
             margin-bottom:
 
@@ -5333,6 +6016,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .footer {
 
@@ -5340,26 +6024,31 @@ const accesoEntregaFicha =
 
                 1px solid #e5e7eb;
 
+ 
 
             padding-top:
 
                 16px;
 
+ 
 
             margin-top:
 
                 30px;
 
+ 
 
             text-align:
 
                 center;
 
+ 
 
             font-size:
 
                 11px;
 
+ 
 
             color:
 
@@ -5367,6 +6056,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .firma-linea {
 
@@ -5374,11 +6064,13 @@ const accesoEntregaFicha =
 
                 1px solid #d1d5db;
 
+ 
 
             height:
 
                 50px;
 
+ 
 
             margin-bottom:
 
@@ -5386,6 +6078,7 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         .firma-texto {
 
@@ -5393,11 +6086,13 @@ const accesoEntregaFicha =
 
                 10px;
 
+ 
 
             color:
 
                 #9ca3af;
 
+ 
 
             text-align:
 
@@ -5405,9 +6100,11 @@ const accesoEntregaFicha =
 
         }
 
+ 
 
         @media print {
 
+ 
 
     body {
 
@@ -5415,6 +6112,7 @@ const accesoEntregaFicha =
 
     }
 
+ 
 
     .no-print {
 
@@ -5422,6 +6120,7 @@ const accesoEntregaFicha =
 
     }
 
+ 
 
     /*
 
@@ -5439,6 +6138,7 @@ const accesoEntregaFicha =
 
      */
 
+ 
 
     .firmas-finales {
 
@@ -5448,6 +6148,7 @@ const accesoEntregaFicha =
 
         -webkit-column-break-inside: avoid !important;
 
+ 
 
         /*
 
@@ -5461,6 +6162,7 @@ const accesoEntregaFicha =
 
     }
 
+ 
 
     .firmas-finales > div {
 
@@ -5470,6 +6172,7 @@ const accesoEntregaFicha =
 
     }
 
+ 
 
     .firmas-finales .firma-linea,
 
@@ -5483,6 +6186,7 @@ const accesoEntregaFicha =
 
 }
 
+ 
 
 /* ==========================================================
 
@@ -5490,6 +6194,7 @@ const accesoEntregaFicha =
 
    ========================================================== */
 
+ 
 
 .nav-marketplace-tab.active {
 
@@ -5505,6 +6210,7 @@ const accesoEntregaFicha =
 
 }
 
+ 
 
 .nav-marketplace-tab.active i,
 
@@ -5514,6 +6220,7 @@ const accesoEntregaFicha =
 
 }
 
+ 
 
 .nav-marketplace-tab:not(.active) {
 
@@ -5530,868 +6237,1001 @@ const accesoEntregaFicha =
 </head>
 
 
+
 <body>
 
 
-    <div class="header">
 
+<div class="header">
 
-        <div>
-
-
-            <img
-
-    src="images/logo-rodax-ficha.png"
-
-    alt="RODAX MUDANZAS"
-
-    style="
-
-        width:280px;
-
-        max-width:100%;
-
-        height:auto;
-
-        display:block;
-
-    "
-
->
-
-
-            <p
-
-                style="
-
-                    font-size:11px;
-
-                    color:#6b7280;
-
-                    margin-top:4px;
-
-                ">
-
-                672 907 012 ·
-
-                rodax.furgo.mudanzas.es@gmail.com
-
-            </p>
-
-
-        </div>
-
-
-        <div class="ficha-num">
-
-
-    <h2>
-
-        FICHA TÉCNICA
-
-    </h2>
-
-
-    <div
-
-        style="
-
-            display:inline-block;
-
-            margin-top:6px;
-
-            padding:5px 10px;
-
-            border-radius:999px;
-
-            font-size:10px;
-
-            font-weight:900;
-
-            letter-spacing:0.5px;
-
-            color:${esMudanzaTotalFicha ? '#047857' : '#1d4ed8'};
-
-            background:${esMudanzaTotalFicha ? '#ecfdf5' : '#eff6ff'};
-
-            border:1px solid ${esMudanzaTotalFicha ? '#a7f3d0' : '#bfdbfe'};
-
-        ">
-
-        ${tipoServicioFicha}
-
-    </div>
-
-
-    <p>
-
-        ID:
-
-        <strong>
-
-            ${numeroReserva}
-
-        </strong>
-
-    </p>
-
-
-    <p>
-
-        Generada:
-
-        ${fechaHoy}
-
-    </p>
-
-
-    <p>
-
-        Transportista:
-
-        <strong>
-
-            ${nombre}
-
-        </strong>
-
-    </p>
-
-
-</div>
-
-
-    </div>
-
-
-    <div class="aviso">
-
-        ⚠️
-
-        <strong>
-
-            Documento confidencial.
-
-        </strong>
-
-
-        No compartir los datos del cliente con terceros.
-
-        Los datos de contacto solo son accesibles
-
-        24h antes del servicio.
-
-    </div>
-
-
-    <div
-
-        class="grid-2"
-
-        style="margin-bottom:20px;">
-
-
-        <div class="seccion">
-
-
-            <div class="seccion-titulo">
-
-                📍 Ruta de la Mudanza
-
-            </div>
-
-
-            <div class="ruta-box">
-
-
-                <div class="punto">
-
-
-                    <div
-
-                        class="punto-circulo azul">
-
-                    </div>
-
-
-                    <div>
-
-
-                        <div class="dato-label">
-
-    Recogida (Origen)
-
-</div>
-
-
-<div
-
-    class="dato-valor"
-
-    style="font-size:13px;">
-
-
-    ${origen || '—'}
-
-
-    <div
-
-        class="dato-valor"
-
-        style="
-
-            font-size:11px;
-
-            margin-top:4px;
-
-            color:#64748b;
-
-            font-weight:600;
-
-        ">
-
-        ${accesoRecogidaFicha}
-
-    </div>
-
-
-</div>
-
-
-                </div>
-
-
-                <div class="km-linea">
-
-                    ↓ ${km || '?'} km en carretera
-
-                </div>
-
-
-                <div class="punto">
-
-
-                    <div
-
-                        class="punto-circulo naranja">
-
-                    </div>
-
-
-                    <div>
-
-
-                        <div class="dato-label">
-
-    Entrega (Destino)
-
-</div>
-
-
-<div
-
-    class="dato-valor"
-
-    style="font-size:13px;">
-
-
-    ${destino || '—'}
-
-
-    <div
-
-        class="dato-valor"
-
-        style="
-
-            font-size:11px;
-
-            margin-top:4px;
-
-            color:#64748b;
-
-            font-weight:600;
-
-        ">
-
-        ${accesoEntregaFicha}
-
-    </div>
-
-
-</div>
-
-
-                    </div>
-
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
-        <div class="seccion">
-
-
-            <div class="seccion-titulo">
-
-                📦 Detalles del Servicio
-
-            </div>
-
-
-            <div style="margin-bottom:12px;">
-
-
-                <div class="dato-label">
-
-                    Fecha del Servicio
-
-                </div>
-
-
-                <div class="dato-valor">
-
-                    ${fechaFicha}
-
-                </div>
-
-
-            </div>
-
-
-            <div style="margin-bottom:12px;">
-
-
-                <div class="dato-label">
-
-                    Carga
-
-                </div>
-
-
-                <div class="dato-valor">
-
-                    ${numArticulos} ART. · ${m3Texto}
-
-                </div>
-
-
-            </div>
-
-
-            <div style="margin-bottom:12px;">
-
-
-                <div class="dato-label">
-
-                    Tipo de vivienda
-
-                </div>
-
-
-                <div class="dato-valor">
-
-                    ${volumen || '—'}
-
-                </div>
-
-
-            </div>
-
-
-            <div>
-
-
-                <div class="dato-label">
-
-                    Distancia
-
-                </div>
-
-
-                <div class="dato-valor">
-
-                    ${km || '?'} km
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
-    </div>
-
-
-    <div class="seccion">
-
-
-    <div class="seccion-titulo">
-
-        📦 Inventario
-
-    </div>
 
 
     <div>
 
-        ${htmlInventarioFicha}
 
-    </div>
 
+        <img
 
-</div>
+src="images/logo-rodax-ficha.png"
 
+alt="RODAX MUDANZAS"
 
-<div
+style="
 
-    class="grid-2"
+    width:280px;
 
-    style="align-items:start;">
+    max-width:100%;
 
+    height:auto;
 
-    <!-- ACCESOS — IZQUIERDA -->
+    display:block;
 
+"
 
-    <div class="seccion">
 
 
-        <div class="seccion-titulo">
-
-            🛗 Accesos
-
-        </div>
-
-
-        <div
-
-            class="dato-valor"
-
-            style="font-size:13px;">
-
-
-            <p>
-
-                <strong>
-
-                    Recogida:
-
-                </strong>
-
-
-                ${accesos.recogida}
-
-            </p>
-
-
-            <p style="margin-top:6px;">
-
-
-                <strong>
-
-                    Entrega:
-
-                </strong>
-
-
-                ${accesos.entrega}
-
-
-            </p>
-
-
-        </div>
-
-
-    </div>
-
-
-
-    <!-- EXTRAS — DERECHA -->
-
-
-    ${htmlExtrasFicha}
-
-
-</div>
-
-
-    ${
-
-        extras &&
-
-        extras !== 'Solo transporte básico'
-
-            ? `
-
-                <div class="seccion">
-
-
-                    <div class="seccion-titulo">
-
-                        ➕ Servicios Adicionales
-
-                    </div>
-
-
-                    <div
-
-                        class="dato-valor"
-
-                        style="font-size:13px;">
-
-
-                        ${extras}
-
-
-                    </div>
-
-
-                </div>
-
-            `
-
-            : ''
-
-    }
-
-
-    <div
-
-        class="precio-box"
-
-        style="margin-bottom:20px;">
-
-
-        <div
-
-            class="dato-label"
-
-            style="text-align:center;">
-
-
-            COBRO DEL TRANSPORTISTA
-
-
-        </div>
-
-
-        <div
-
-            class="dato-valor grande"
-
-            style="text-align:center;">
-
-
-            ${precio || '—'}
-
-
-        </div>
 
 
         <p
 
             style="
 
-                font-size:12px;
+                font-size:11px;
 
                 color:#6b7280;
 
-                margin-top:6px;
-
-                text-align:center;
+                margin-top:4px;
 
             ">
 
+            672 907 012 ·
 
-            IVA incluido
-
+            rodax.furgo.mudanzas.es@gmail.com
 
         </p>
 
 
-    </div>
-
 
     </div>
 
 
-    <div
 
-    class="seccion firmas-finales"
+    <div class="ficha-num">
+
+
+
+<h2>
+
+    FICHA TÉCNICA
+
+</h2>
+
+
+
+<div
 
     style="
 
-        margin-top:28px;
+        display:inline-block;
 
-        margin-bottom:20px;
+        margin-top:6px;
+
+        padding:5px 10px;
+
+        border-radius:999px;
+
+        font-size:10px;
+
+        font-weight:900;
+
+        letter-spacing:0.5px;
+
+        color:${esMudanzaTotalFicha ? '#047857' : '#1d4ed8'};
+
+        background:${esMudanzaTotalFicha ? '#ecfdf5' : '#eff6ff'};
+
+        border:1px solid ${esMudanzaTotalFicha ? '#a7f3d0' : '#bfdbfe'};
 
     ">
 
+    ${tipoServicioFicha}
 
-    <div class="seccion-titulo">
+</div>
 
-        ✍️ FIRMAS DEL SERVICIO
 
-    </div>
 
+<p>
 
-    <div
+    ID:
 
-        style="
+    <strong>
 
-            border:1px solid #e5e7eb;
+        ${numeroReserva}
 
-            border-radius:12px;
+    </strong>
 
-            padding:18px;
+</p>
 
-            background:#ffffff;
 
-        ">
 
+<p>
 
-        <!-- RECOGIDA -->
+    Generada:
 
-        <div style="margin-bottom:24px;">
+    ${fechaHoy}
 
+</p>
 
-            <div
 
-                style="
 
-                    font-size:11px;
+<p>
 
-                    font-weight:900;
+    Transportista:
 
-                    text-transform:uppercase;
+    <strong>
 
-                    letter-spacing:0.7px;
+        ${nombre}
 
-                    color:#2563eb;
+    </strong>
 
-                    margin-bottom:12px;
+</p>
 
-                ">
-
-                Recogida (Origen)
-
-            </div>
-
-
-            <div
-
-                style="
-
-                    display:grid;
-
-                    grid-template-columns:1fr 1fr;
-
-                    gap:20px;
-
-                ">
-
-
-                <div>
-
-                    <div class="firma-linea"></div>
-
-
-                    <div class="firma-texto">
-
-                        Firma del Transportista
-
-                    </div>
-
-                </div>
-
-
-                <div>
-
-                    <div class="firma-linea"></div>
-
-
-                    <div class="firma-texto">
-
-                        Firma del Cliente (recogida conforme)
-
-                    </div>
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
-        <!-- ENTREGA -->
-
-        <div>
-
-
-            <div
-
-                style="
-
-                    font-size:11px;
-
-                    font-weight:900;
-
-                    text-transform:uppercase;
-
-                    letter-spacing:0.7px;
-
-                    color:#ea580c;
-
-                    margin-bottom:12px;
-
-                ">
-
-                Entrega (Destino)
-
-            </div>
-
-
-            <div
-
-                style="
-
-                    display:grid;
-
-                    grid-template-columns:1fr 1fr;
-
-                    gap:20px;
-
-                ">
-
-
-                <div>
-
-                    <div class="firma-linea"></div>
-
-
-                    <div class="firma-texto">
-
-                        Firma del Transportista
-
-                    </div>
-
-                </div>
-
-
-                <div>
-
-                    <div class="firma-linea"></div>
-
-
-                    <div class="firma-texto">
-
-                        Firma del Cliente (entrega conforme)
-
-                    </div>
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
-    </div>
 
 
 </div>
 
 
-    <div class="footer">
+
+</div>
 
 
-        <p>
 
-            RODAX Furgo Mudanzas &copy; 2026 ·
+<div class="aviso">
 
-            672 907 012 ·
+    ⚠️
 
-            rodax.furgo.mudanzas.es@gmail.com ·
+    <strong>
 
-            España
+        Documento confidencial.
 
-        </p>
+    </strong>
 
 
-        <p style="margin-top:4px;">
 
-            Este documento tiene validez como albarán
+    No compartir los datos del cliente con terceros.
 
-            de servicio entre las partes.
+    Los datos de contacto solo son accesibles
 
-        </p>
+    24h antes del servicio.
+
+</div>
+
+
+
+<div
+
+    class="grid-2"
+
+    style="margin-bottom:20px;">
+
+
+
+    <div class="seccion">
+
+
+
+        <div class="seccion-titulo">
+
+            📍 Ruta de la Mudanza
+
+        </div>
+
+
+
+        <div class="ruta-box">
+
+
+
+            <div class="punto">
+
+
+
+                <div
+
+                    class="punto-circulo azul">
+
+                </div>
+
+
+
+                <div>
+
+
+
+                    <div class="dato-label">
+
+Recogida (Origen)
+
+</div>
+
+
+
+<div
+
+class="dato-valor"
+
+style="font-size:13px;">
+
+
+
+${origen || '—'}
+
+
+
+<div
+
+    class="dato-valor"
+
+    style="
+
+        font-size:11px;
+
+        margin-top:4px;
+
+        color:#64748b;
+
+        font-weight:600;
+
+    ">
+
+    ${accesoRecogidaFicha}
+
+</div>
+
+
+
+</div>
+
+
+
+            </div>
+
+
+
+            <div class="km-linea">
+
+                ↓ ${km || '?'} km en carretera
+
+            </div>
+
+
+
+            <div class="punto">
+
+
+
+                <div
+
+                    class="punto-circulo naranja">
+
+                </div>
+
+
+
+                <div>
+
+
+
+                    <div class="dato-label">
+
+Entrega (Destino)
+
+</div>
+
+
+
+<div
+
+class="dato-valor"
+
+style="font-size:13px;">
+
+
+
+${destino || '—'}
+
+
+
+<div
+
+    class="dato-valor"
+
+    style="
+
+        font-size:11px;
+
+        margin-top:4px;
+
+        color:#64748b;
+
+        font-weight:600;
+
+    ">
+
+    ${accesoEntregaFicha}
+
+</div>
+
+
+
+</div>
+
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+        </div>
+
 
 
     </div>
 
 
-    <button
 
-        class="no-print"
+    <div class="seccion">
 
-        onclick="window.print()"
+
+
+        <div class="seccion-titulo">
+
+            📦 Detalles del Servicio
+
+        </div>
+
+
+
+        <div style="margin-bottom:12px;">
+
+
+
+            <div class="dato-label">
+
+                Fecha del Servicio
+
+            </div>
+
+
+
+            <div class="dato-valor">
+
+                ${fechaFicha}
+
+            </div>
+
+
+
+        </div>
+
+
+
+        <div style="margin-bottom:12px;">
+
+
+
+            <div class="dato-label">
+
+                Carga
+
+            </div>
+
+
+
+            <div class="dato-valor">
+
+                ${numArticulos} ART. · ${m3Texto}
+
+            </div>
+
+
+
+        </div>
+
+
+
+        <div style="margin-bottom:12px;">
+
+
+
+            <div class="dato-label">
+
+                Tipo de vivienda
+
+            </div>
+
+
+
+            <div class="dato-valor">
+
+                ${volumen || '—'}
+
+            </div>
+
+
+
+        </div>
+
+
+
+        <div>
+
+
+
+            <div class="dato-label">
+
+                Distancia
+
+            </div>
+
+
+
+            <div class="dato-valor">
+
+                ${km || '?'} km
+
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+</div>
+
+
+
+<div class="seccion">
+
+
+
+<div class="seccion-titulo">
+
+    📦 Inventario
+
+</div>
+
+
+
+<div>
+
+    ${htmlInventarioFicha}
+
+</div>
+
+
+
+</div>
+
+
+
+<div
+
+class="grid-2"
+
+style="align-items:start;">
+
+
+
+<!-- ACCESOS — IZQUIERDA -->
+
+
+
+<div class="seccion">
+
+
+
+    <div class="seccion-titulo">
+
+        🛗 Accesos
+
+    </div>
+
+
+
+    <div
+
+        class="dato-valor"
+
+        style="font-size:13px;">
+
+
+
+        <p>
+
+            <strong>
+
+                Recogida:
+
+            </strong>
+
+
+
+            ${accesos.recogida}
+
+        </p>
+
+
+
+        <p style="margin-top:6px;">
+
+
+
+            <strong>
+
+                Entrega:
+
+            </strong>
+
+
+
+            ${accesos.entrega}
+
+
+
+        </p>
+
+
+
+    </div>
+
+
+
+</div>
+
+
+
+
+
+<!-- EXTRAS — DERECHA -->
+
+
+
+${htmlExtrasFicha}
+
+
+
+</div>
+
+
+
+${
+
+    extras &&
+
+    extras !== 'Solo transporte básico'
+
+        ? `
+
+            <div class="seccion">
+
+
+
+                <div class="seccion-titulo">
+
+                    ➕ Servicios Adicionales
+
+                </div>
+
+
+
+                <div
+
+                    class="dato-valor"
+
+                    style="font-size:13px;">
+
+
+
+                    ${extras}
+
+
+
+                </div>
+
+
+
+            </div>
+
+        `
+
+        : ''
+
+}
+
+
+
+<div
+
+    class="precio-box"
+
+    style="margin-bottom:20px;">
+
+
+
+    <div
+
+        class="dato-label"
+
+        style="text-align:center;">
+
+
+
+        COBRO DEL TRANSPORTISTA
+
+
+
+    </div>
+
+
+
+    <div
+
+        class="dato-valor grande"
+
+        style="text-align:center;">
+
+
+
+        ${precio || '—'}
+
+
+
+    </div>
+
+
+
+    <p
 
         style="
 
-            margin-top:20px;
+            font-size:12px;
 
-            padding:12px 24px;
+            color:#6b7280;
 
-            background:#2563eb;
+            margin-top:6px;
 
-            color:white;
-
-            border:none;
-
-            border-radius:8px;
-
-            font-weight:700;
-
-            cursor:pointer;
-
-            font-size:15px;
+            text-align:center;
 
         ">
 
 
-        🖨️ Imprimir / Guardar PDF
+
+        IVA incluido
 
 
-    </button>
+
+    </p>
 
 
-    <script>
 
-        window.onload = function() {
+</div>
 
-            setTimeout(
 
-                () => window.print(),
 
-                500
+</div>
 
-            );
 
-        };
 
-    <\/script>
+<div
+
+class="seccion firmas-finales"
+
+style="
+
+    margin-top:28px;
+
+    margin-bottom:20px;
+
+">
+
+
+
+<div class="seccion-titulo">
+
+    ✍️ FIRMAS DEL SERVICIO
+
+</div>
+
+
+
+<div
+
+    style="
+
+        border:1px solid #e5e7eb;
+
+        border-radius:12px;
+
+        padding:18px;
+
+        background:#ffffff;
+
+    ">
+
+
+
+    <!-- RECOGIDA -->
+
+    <div style="margin-bottom:24px;">
+
+
+
+        <div
+
+            style="
+
+                font-size:11px;
+
+                font-weight:900;
+
+                text-transform:uppercase;
+
+                letter-spacing:0.7px;
+
+                color:#2563eb;
+
+                margin-bottom:12px;
+
+            ">
+
+            Recogida (Origen)
+
+        </div>
+
+
+
+        <div
+
+            style="
+
+                display:grid;
+
+                grid-template-columns:1fr 1fr;
+
+                gap:20px;
+
+            ">
+
+
+
+            <div>
+
+                <div class="firma-linea"></div>
+
+
+
+                <div class="firma-texto">
+
+                    Firma del Transportista
+
+                </div>
+
+            </div>
+
+
+
+            <div>
+
+                <div class="firma-linea"></div>
+
+
+
+                <div class="firma-texto">
+
+                    Firma del Cliente (recogida conforme)
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+    <!-- ENTREGA -->
+
+    <div>
+
+
+
+        <div
+
+            style="
+
+                font-size:11px;
+
+                font-weight:900;
+
+                text-transform:uppercase;
+
+                letter-spacing:0.7px;
+
+                color:#ea580c;
+
+                margin-bottom:12px;
+
+            ">
+
+            Entrega (Destino)
+
+        </div>
+
+
+
+        <div
+
+            style="
+
+                display:grid;
+
+                grid-template-columns:1fr 1fr;
+
+                gap:20px;
+
+            ">
+
+
+
+            <div>
+
+                <div class="firma-linea"></div>
+
+
+
+                <div class="firma-texto">
+
+                    Firma del Transportista
+
+                </div>
+
+            </div>
+
+
+
+            <div>
+
+                <div class="firma-linea"></div>
+
+
+
+                <div class="firma-texto">
+
+                    Firma del Cliente (entrega conforme)
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+<div class="footer">
+
+
+
+    <p>
+
+        RODAX Furgo Mudanzas &copy; 2026 ·
+
+        672 907 012 ·
+
+        rodax.furgo.mudanzas.es@gmail.com ·
+
+        España
+
+    </p>
+
+
+
+    <p style="margin-top:4px;">
+
+        Este documento tiene validez como albarán
+
+        de servicio entre las partes.
+
+    </p>
+
+
+
+</div>
+
+
+
+<button
+
+    class="no-print"
+
+    onclick="window.print()"
+
+    style="
+
+        margin-top:20px;
+
+        padding:12px 24px;
+
+        background:#2563eb;
+
+        color:white;
+
+        border:none;
+
+        border-radius:8px;
+
+        font-weight:700;
+
+        cursor:pointer;
+
+        font-size:15px;
+
+    ">
+
+
+
+    🖨️ Imprimir / Guardar PDF
+
+
+
+</button>
+
+
+
+<script>
+
+    window.onload = function() {
+
+        setTimeout(
+
+            () => window.print(),
+
+            500
+
+        );
+
+    };
+
+<\/script>
+
 
 
 </body>
@@ -6399,531 +7239,616 @@ const accesoEntregaFicha =
 </html>`;
 
 
-        const ventana =
 
-            window.open(
+    const ventana =
 
-                '',
+        window.open(
 
-                '_blank',
+            '',
 
-                'width=800,height=900'
+            '_blank',
 
-            );
-
-
-        if (ventana) {
-
-
-            ventana.document.write(
-
-                contenido
-
-            );
-
-
-            ventana.document.close();
-
-
-        } else {
-
-
-            alert(
-
-                'Tu navegador bloqueó la ventana emergente. ' +
-
-                'Permite las ventanas emergentes e inténtalo de nuevo.'
-
-            );
-
-        }
-
-    }
-
-
-    const actionModal =
-
-        document.getElementById(
-
-            'action-modal'
+            'width=800,height=900'
 
         );
 
 
-    const modalContent =
 
-        document.getElementById(
+    if (ventana) {
 
-            'modal-content'
+
+
+        ventana.document.write(
+
+            contenido
 
         );
 
 
-    function cerrarModal() {
+
+        ventana.document.close();
 
 
-        if (actionModal) {
+
+    } else {
 
 
-            actionModal.classList.add(
 
-                'hidden'
+        alert(
 
-            );
+            'Tu navegador bloqueó la ventana emergente. ' +
 
-        }
+            'Permite las ventanas emergentes e inténtalo de nuevo.'
+
+        );
+
+    }
+
+}
+
+
+
+const actionModal =
+
+    document.getElementById(
+
+        'action-modal'
+
+    );
+
+
+
+const modalContent =
+
+    document.getElementById(
+
+        'modal-content'
+
+    );
+
+
+
+function cerrarModal() {
+
+
+
+    if (actionModal) {
+
+
+
+        actionModal.classList.add(
+
+            'hidden'
+
+        );
+
+    }
+
+}
+
+
+
+function confirmarAceptar(
+
+    id
+
+) {
+
+
+
+    if (!modalContent) {
+
+
+
+        console.error(
+
+            "No existe #modal-content"
+
+        );
+
+
+
+        return;
 
     }
 
 
-    function confirmarAceptar(
 
-        id
-
-    ) {
+    modalContent.innerHTML = `
 
 
-        if (!modalContent) {
+
+        <div
+
+            class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
 
 
-            console.error(
 
-                "No existe #modal-content"
+            <i
 
-            );
+                data-lucide="briefcase"
 
+                class="w-8 h-8 text-blue-600">
 
-            return;
-
-        }
+            </i>
 
 
-        modalContent.innerHTML = `
+
+        </div>
+
+
+
+        <h3
+
+            class="text-xl font-black text-gray-900 mb-2">
+
+
+
+            ¿Aceptar este trabajo?
+
+
+
+        </h3>
+
+
+
+        <p
+
+            class="text-gray-500 text-sm mb-4 leading-relaxed">
+
+
+
+            Al aceptar, la mudanza pasará a
+
+            <strong>
+
+                "Mis Mudanzas Activas"
+
+            </strong>.
+
+
+
+            <br>
+
+
+
+            Los datos del cliente estarán disponibles
+
+            <strong>
+
+                24h antes
+
+            </strong>
+
+            del servicio.
+
+
+
+        </p>
+
+
+
+        <div
+
+            class="text-left bg-amber-50 border border-amber-200 rounded-xl p-3.5 mb-4">
+
 
 
             <div
 
-                class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                class="flex items-start gap-2.5">
+
 
 
                 <i
 
-                    data-lucide="briefcase"
+                    data-lucide="alert-triangle"
 
-                    class="w-8 h-8 text-blue-600">
+                    class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5">
 
                 </i>
 
 
-            </div>
 
+                <div>
 
-            <h3
 
-                class="text-xl font-black text-gray-900 mb-2">
 
+                    <p
 
-                ¿Aceptar este trabajo?
+                        class="text-xs font-black text-amber-800 mb-1">
 
 
-            </h3>
 
+                        Compromiso del transportista
 
-            <p
 
-                class="text-gray-500 text-sm mb-4 leading-relaxed">
 
+                    </p>
 
-                Al aceptar, la mudanza pasará a
 
-                <strong>
 
-                    "Mis Mudanzas Activas"
+                    <p
 
-                </strong>.
+                        class="text-xs text-amber-700 leading-relaxed">
 
 
-                <br>
 
+                        Al aceptar este trabajo,
 
-                Los datos del cliente estarán disponibles
+                        confirmas tu disponibilidad
 
-                <strong>
+                        y compromiso para realizar
 
-                    24h antes
+                        el servicio en las
 
-                </strong>
+                        condiciones indicadas.
 
-                del servicio.
 
 
-            </p>
+                    </p>
 
 
-            <div
 
-                class="text-left bg-amber-50 border border-amber-200 rounded-xl p-3.5 mb-4">
+                    <p
 
+                        class="text-xs text-amber-700 leading-relaxed mt-1.5">
 
-                <div
 
-                    class="flex items-start gap-2.5">
 
+                        Una posterior desasignación
 
-                    <i
+                        o cancelación injustificada
 
-                        data-lucide="alert-triangle"
+                        podrá dar lugar a las consecuencias
 
-                        class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5">
+                        y penalizaciones previstas en las
 
-                    </i>
 
 
-                    <div>
+                        <a
 
+                            href="condiciones-transportista.html"
 
-                        <p
+                            target="_blank"
 
-                            class="text-xs font-black text-amber-800 mb-1">
+                            rel="noopener noreferrer"
 
+                            class="font-bold text-blue-600 underline hover:text-blue-800">
 
-                            Compromiso del transportista
 
 
-                        </p>
+                            Condiciones de Registro
 
+                            del Transportista
 
-                        <p
 
-                            class="text-xs text-amber-700 leading-relaxed">
 
+                        </a>.
 
-                            Al aceptar este trabajo,
 
-                            confirmas tu disponibilidad
 
-                            y compromiso para realizar
+                    </p>
 
-                            el servicio en las
-
-                            condiciones indicadas.
-
-
-                        </p>
-
-
-                        <p
-
-                            class="text-xs text-amber-700 leading-relaxed mt-1.5">
-
-
-                            Una posterior desasignación
-
-                            o cancelación injustificada
-
-                            podrá dar lugar a las consecuencias
-
-                            y penalizaciones previstas en las
-
-
-                            <a
-
-                                href="condiciones-transportista.html"
-
-                                target="_blank"
-
-                                rel="noopener noreferrer"
-
-                                class="font-bold text-blue-600 underline hover:text-blue-800">
-
-
-                                Condiciones de Registro
-
-                                del Transportista
-
-
-                            </a>.
-
-
-                        </p>
-
-
-                    </div>
 
 
                 </div>
 
 
-            </div>
-
-
-            <div class="flex gap-3">
-
-
-                <button
-
-                    onclick="cerrarModal()"
-
-                    class="flex-1 bg-gray-100 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors">
-
-
-                    Cancelar
-
-
-                </button>
-
-
-                <button
-
-                    onclick="procesarAceptacion(${id})"
-
-                    class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md transition-colors">
-
-
-                    ✅ Aceptar
-
-
-                </button>
-
 
             </div>
 
-        `;
 
 
-        if (window.lucide) {
+        </div>
 
 
-            lucide.createIcons();
 
-        }
-
-
-        if (actionModal) {
+        <div class="flex gap-3">
 
 
-            actionModal.classList.remove(
 
-                'hidden'
+            <button
 
-            );
+                onclick="cerrarModal()"
 
-        }
+                class="flex-1 bg-gray-100 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors">
+
+
+
+                Cancelar
+
+
+
+            </button>
+
+
+
+            <button
+
+                onclick="procesarAceptacion(${id})"
+
+                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md transition-colors">
+
+
+
+                ✅ Aceptar
+
+
+
+            </button>
+
+
+
+        </div>
+
+    `;
+
+
+
+    if (window.lucide) {
+
+
+
+        lucide.createIcons();
 
     }
 
 
-    async function marcarCompletada(
+
+    if (actionModal) {
+
+
+
+        actionModal.classList.remove(
+
+            'hidden'
+
+        );
+
+    }
+
+}
+
+
+
+async function marcarCompletada(
+
+    id
+
+) {
+
+
+
+    const confirmar =
+
+        confirm(
+
+            '¿Confirmas que has terminado este servicio y que el cliente ha pagado el resto?\n\n' +
+
+            'La mudanza desaparecerá de tu panel activo.'
+
+        );
+
+
+
+    if (!confirmar) {
+
+
+
+        return;
+
+    }
+
+
+
+    console.log(
+
+        '===================================='
+
+    );
+
+
+
+    console.log(
+
+        'FINALIZANDO MUDANZA:',
 
         id
+
+    );
+
+
+
+    console.log(
+
+        'TRANSPORTISTA:',
+
+        currentUserId
+
+    );
+
+
+
+    const {
+
+        data,
+
+        error
+
+    } =
+
+        await dbClient
+
+            .from('mudanzas')
+
+            .update({
+
+                estado:
+
+                    'Completada'
+
+            })
+
+            .eq(
+
+                'id',
+
+                id
+
+            )
+
+            .eq(
+
+                'transportista_id',
+
+                currentUserId
+
+            )
+
+            .select();
+
+
+
+    console.log(
+
+        'RESULTADO UPDATE:',
+
+        data
+
+    );
+
+
+
+    console.log(
+
+        'ERROR UPDATE:',
+
+        error
+
+    );
+
+
+
+    console.log(
+
+        '===================================='
+
+    );
+
+
+
+    if (error) {
+
+
+
+        console.error(
+
+            'Error al finalizar:',
+
+            error
+
+        );
+
+
+
+        alert(
+
+            'No se pudo marcar la mudanza como completada.\n\n' +
+
+            error.message
+
+        );
+
+
+
+        return;
+
+    }
+
+
+
+    if (
+
+        !data ||
+
+        data.length === 0
 
     ) {
 
 
-        const confirmar =
 
-            confirm(
+        console.error(
 
-                '¿Confirmas que has terminado este servicio y que el cliente ha pagado el resto?\n\n' +
-
-                'La mudanza desaparecerá de tu panel activo.'
-
-            );
-
-
-        if (!confirmar) {
-
-
-            return;
-
-        }
-
-
-        console.log(
-
-            '===================================='
+            'El UPDATE no modificó ninguna fila.'
 
         );
 
 
-        console.log(
 
-            'FINALIZANDO MUDANZA:',
+        alert(
 
-            id
+            'Supabase no ha actualizado la mudanza.\n\n' +
 
-        );
-
-
-        console.log(
-
-            'TRANSPORTISTA:',
-
-            currentUserId
+            'Posible causa: una política RLS está bloqueando la actualización.'
 
         );
 
 
-        const {
 
-            data,
-
-            error
-
-        } =
-
-            await dbClient
-
-                .from('mudanzas')
-
-                .update({
-
-                    estado:
-
-                        'Completada'
-
-                })
-
-                .eq(
-
-                    'id',
-
-                    id
-
-                )
-
-                .eq(
-
-                    'transportista_id',
-
-                    currentUserId
-
-                )
-
-                .select();
-
-
-        console.log(
-
-            'RESULTADO UPDATE:',
-
-            data
-
-        );
-
-
-        console.log(
-
-            'ERROR UPDATE:',
-
-            error
-
-        );
-
-
-        console.log(
-
-            '===================================='
-
-        );
-
-
-        if (error) {
-
-
-            console.error(
-
-                'Error al finalizar:',
-
-                error
-
-            );
-
-
-            alert(
-
-                'No se pudo marcar la mudanza como completada.\n\n' +
-
-                error.message
-
-            );
-
-
-            return;
-
-        }
-
-
-        if (
-
-            !data ||
-
-            data.length === 0
-
-        ) {
-
-
-            console.error(
-
-                'El UPDATE no modificó ninguna fila.'
-
-            );
-
-
-            alert(
-
-                'Supabase no ha actualizado la mudanza.\n\n' +
-
-                'Posible causa: una política RLS está bloqueando la actualización.'
-
-            );
-
-
-            return;
-
-        }
-
-
-        state.activas =
-
-            state.activas.filter(
-
-                mudanza =>
-
-                    Number(mudanza.id) !==
-
-                    Number(id)
-
-            );
-
-
-        renderizarActivas();
-
-
-        await cargarMisMudanzas();
-
-
-        console.log(
-
-            'Mudanza finalizada correctamente:',
-
-            id
-
-        );
+        return;
 
     }
 
 
-    window.onload =
 
-        verificarSesion;
+    state.activas =
+
+        state.activas.filter(
+
+            mudanza =>
+
+                Number(mudanza.id) !==
+
+                Number(id)
+
+        );
+
+
+
+    renderizarActivas();
+
+
+
+    await cargarMisMudanzas();
+
+
+
+    console.log(
+
+        'Mudanza finalizada correctamente:',
+
+        id
+
+    );
+
+}
+
+
+
+window.onload =
+
+    verificarSesion;
+
 
 
 </script>
 
 
+
 <script>
 
+ 
 
 console.log(
 
@@ -6931,6 +7856,7 @@ console.log(
 
 );
 
+ 
 
 async function actualizarDisponibilidadBaseDatos(
 
@@ -6938,9 +7864,11 @@ async function actualizarDisponibilidadBaseDatos(
 
 ) {
 
+ 
 
     try {
 
+ 
 
         console.log(
 
@@ -6950,6 +7878,7 @@ async function actualizarDisponibilidadBaseDatos(
 
         );
 
+ 
 
         toggleColorIndicadorDisponibilidad(
 
@@ -6957,6 +7886,7 @@ async function actualizarDisponibilidadBaseDatos(
 
         );
 
+ 
 
         const {
 
@@ -6974,6 +7904,7 @@ async function actualizarDisponibilidadBaseDatos(
 
                         nuevoEstado,
 
+ 
 
                     ultima_actualizacion_estado:
 
@@ -6989,9 +7920,11 @@ async function actualizarDisponibilidadBaseDatos(
 
                 );
 
+ 
 
         if (error) {
 
+ 
 
             console.error(
 
@@ -7001,6 +7934,7 @@ async function actualizarDisponibilidadBaseDatos(
 
             );
 
+ 
 
             alert(
 
@@ -7010,11 +7944,13 @@ async function actualizarDisponibilidadBaseDatos(
 
             );
 
+ 
 
             return;
 
         }
 
+ 
 
         console.log(
 
@@ -7022,9 +7958,11 @@ async function actualizarDisponibilidadBaseDatos(
 
         );
 
+ 
 
     } catch (err) {
 
+ 
 
         console.error(
 
@@ -7038,6 +7976,7 @@ async function actualizarDisponibilidadBaseDatos(
 
 }
 
+ 
 
 function toggleColorIndicadorDisponibilidad(
 
@@ -7045,6 +7984,7 @@ function toggleColorIndicadorDisponibilidad(
 
 ) {
 
+ 
 
     const indicador =
 
@@ -7054,14 +7994,17 @@ function toggleColorIndicadorDisponibilidad(
 
         );
 
+ 
 
     if (!indicador) {
 
+ 
 
         return;
 
     }
 
+ 
 
     if (
 
@@ -7071,6 +8014,7 @@ function toggleColorIndicadorDisponibilidad(
 
     ) {
 
+ 
 
         indicador.className =
 
@@ -7082,9 +8026,11 @@ function toggleColorIndicadorDisponibilidad(
 
             "transition-colors duration-300";
 
+ 
 
     } else {
 
+ 
 
         indicador.className =
 
@@ -7100,18 +8046,22 @@ function toggleColorIndicadorDisponibilidad(
 
 }
 
+ 
 
 window.actualizarDisponibilidadBaseDatos =
 
     actualizarDisponibilidadBaseDatos;
 
+ 
 
 window.toggleColorIndicadorDisponibilidad =
 
     toggleColorIndicadorDisponibilidad;
 
+ 
 
 </script>
+
 
 
 <!-- ===================================================== -->
@@ -7119,6 +8069,7 @@ window.toggleColorIndicadorDisponibilidad =
 <!-- CORE -->
 
 <!-- ===================================================== -->
+
 
 
 <script src="js/core/rodax.js"></script>
@@ -7130,6 +8081,7 @@ window.toggleColorIndicadorDisponibilidad =
 <script src="js/core/registry.js"></script>
 
 
+
 <!-- ===================================================== -->
 
 <!-- TRANSPORTISTA -->
@@ -7137,11 +8089,14 @@ window.toggleColorIndicadorDisponibilidad =
 <!-- ===================================================== -->
 
 
+
 <script src="js/transportista/utils.js"></script>
+
 
 
 <script>
 
+ 
 
 console.log(
 
@@ -7149,6 +8104,7 @@ console.log(
 
 );
 
+ 
 
 console.log(
 
@@ -7158,6 +8114,7 @@ console.log(
 
 );
 
+ 
 
 console.log(
 
@@ -7167,6 +8124,7 @@ console.log(
 
 );
 
+ 
 
 console.log(
 
@@ -7176,6 +8134,7 @@ console.log(
 
 );
 
+ 
 
 console.log(
 
@@ -7185,6 +8144,7 @@ console.log(
 
 );
 
+ 
 
 console.log(
 
@@ -7194,6 +8154,7 @@ console.log(
 
 );
 
+ 
 
 console.log(
 
@@ -7203,6 +8164,7 @@ console.log(
 
 );
 
+ 
 
 console.log(
 
@@ -7212,8 +8174,10 @@ console.log(
 
 );
 
+ 
 
 </script>
+
 
 
 <script src="js/transportista/drawer.js"></script>
@@ -7237,14 +8201,17 @@ console.log(
 <script src="js/transportista/perfil.js"></script>
 
 
+
 <!-- MARKETPLACE -->
 
 <script src="js/transportista/marketplace.js"></script>
 
 
+
 <!-- ROUTER -->
 
 <script src="js/core/router.js"></script>
+
 
 
 </body>
