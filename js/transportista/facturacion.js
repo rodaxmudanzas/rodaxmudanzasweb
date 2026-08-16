@@ -365,71 +365,44 @@
 
             }
 
- 
-
- 
-
-            ////////////////////////////////////////////////////
-
-            // CONSULTAR PAGOS DEL TRANSPORTISTA
-
-            ////////////////////////////////////////////////////
-
- 
-
             const {
+    data,
+    error
+} = await supabase
 
-                data,
+    .from("mudanzas")
 
-                error
+    .select(`
+        numero_reserva,
+        transportista_id,
+        estado_pago,
+        fecha,
+        fecha_pago_30,
+        fecha_cobro_70,
+        importe_total,
+        importe_reserva,
+        importe_restante,
+        preciototal,
+        precioreserva
+    `)
 
-            } = await supabase
+    .eq(
+        "transportista_id",
+        transportistaId
+    )
 
- 
-
-                .from("pagos_transportistas")
-
- 
-
-                .select("*")
-
- 
-
-                .eq(
-
-                    "transportista_id",
-
-                    transportistaId
-
-                )
-
- 
-
-                .order(
-
-                    "fecha_programada",
-
-                    {
-
-                        ascending: false
-
-                    }
-
-                );
-
- 
-
- 
+    .order(
+        "fecha",
+        {
+            ascending: false
+        }
+    );
 
             if (error) {
 
                 throw error;
 
             }
-
- 
-
- 
 
             const pagos =
 
@@ -495,13 +468,11 @@
 
                             return total +
 
-                                Number(
-
-                                    pago.importe_transportista
-
-                                || 0
-
-                                );
+                               Number(
+    pago.importe_total
+    || pago.preciototal
+    || 0
+);
 
                         },
 
@@ -560,12 +531,10 @@
                             return total +
 
                                 Number(
-
-                                    pago.importe_transportista
-
-                                || 0
-
-                                );
+    pago.importe_total
+    || pago.preciototal
+    || 0
+);
 
                         },
 
@@ -637,9 +606,8 @@
 
                         formatearFecha(
 
-                            pago.fecha_pagado ||
-
-                            pago.fecha_programada
+                           pago.fecha_pago_30 ||
+pago.fecha
 
                         );
 
