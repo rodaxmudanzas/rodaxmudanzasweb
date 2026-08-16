@@ -3346,36 +3346,24 @@ const accesoEntregaFicha =
 
     <div class="seccion">
 
-        <div class="seccion-titulo">
-            🛗 Accesos
-        </div>
+    <div class="seccion-titulo">
+        📝 Indicaciones
+    </div>
 
-        <div
-            class="dato-valor"
-            style="font-size:13px;">
+    <div
+        class="dato-valor"
+        style="
+            font-size:13px;
+            white-space:pre-wrap;
+            line-height:1.6;
+        ">
 
-            <p>
-                <strong>
-                    Recogida:
-                </strong>
-
-                ${accesos.recogida}
-            </p>
-
-            <p style="margin-top:6px;">
-
-                <strong>
-                    Entrega:
-                </strong>
-
-                ${accesos.entrega}
-
-            </p>
-
-        </div>
+        ${mudanza.observaciones ||
+            "El cliente no ha añadido observaciones."}
 
     </div>
 
+</div>
 
     <!-- EXTRAS — DERECHA -->
 
