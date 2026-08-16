@@ -153,6 +153,10 @@ console.log("session.id:", session.id);
 console.log("payment_intent:", session.payment_intent);
 console.log("metadata completa:");
 console.log(session.metadata);
+console.log(
+    "FRANJA HORARIA RECIBIDA:",
+    session.metadata?.franja_horaria_recogida
+);
 console.log("================================");
 
 const { data: reserva, error: errorReserva } = await supabase
