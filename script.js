@@ -1159,6 +1159,18 @@ function obtenerDatosFormulario({
 franja_horaria_recogida:
     franjaHorariaRecogida,
 
+ascensor_origen:
+    ascOrigen,
+
+piso_origen:
+    pisoOrigen,
+
+ascensor_destino:
+    ascDestino,
+
+piso_destino:
+    pisoDestino,
+
 volumen:
     volumenTexto,
 
@@ -1372,7 +1384,10 @@ if (!respuestaReserva.ok) {
 
         fecha: document.getElementById("fecha").value,
 
-        volumen: volumenTexto,
+franja_horaria_recogida:
+    franjaHorariaRecogida,
+
+volumen: volumenTexto,
 
         ascensor:
 
