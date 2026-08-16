@@ -57,42 +57,97 @@ const session = await stripe.checkout.sessions.create({
     customer_email: email,
 
     metadata: {
-        numero_reserva: numero_reserva,
+
+        numero_reserva:
+            String(numero_reserva || ""),
+
         franja_horaria_recogida:
-            req.body.franja_horaria_recogida || ""
-    },    
+            String(
+                req.body.franja_horaria_recogida || ""
+            ),
 
-    nombre,
-    email,
-    telefono,
+        nombre:
+            String(nombre || ""),
 
-    importe: importe.toString(),
+        telefono:
+            String(telefono || ""),
 
-    origen: req.body.origen || "",
-    destino: req.body.destino || "",
-    km: (req.body.km || "").toString(),
+        origen:
+            String(req.body.origen || ""),
 
-    fecha: req.body.fecha || "",
+        destino:
+            String(req.body.destino || ""),
 
-    volumen: req.body.volumen || "",
+        km:
+            String(req.body.km || ""),
 
-    ascensor: req.body.ascensor || "",
+        fecha:
+            String(req.body.fecha || ""),
 
-    extras: req.body.extras || "",
+        volumen:
+            String(req.body.volumen || ""),
 
-    observaciones: req.body.observaciones || "",
+        ascensor:
+            String(req.body.ascensor || ""),
 
-    tipo_servicio: req.body.tipo_servicio || "",
+        extras:
+            String(req.body.extras || ""),
 
-    preciototal: req.body.preciototal || "",
+        observaciones:
+            String(req.body.observaciones || ""),
 
-    precioreserva: req.body.precioreserva || "",
+        tipo_servicio:
+            String(req.body.tipo_servicio || ""),
 
-    urls_fotos: req.body.urls_fotos || "",
+        preciototal:
+            String(req.body.preciototal || ""),
 
-inventario: JSON.stringify(req.body.inventario || []),
+        precioreserva:
+            String(req.body.precioreserva || ""),
 
-},
+        urls_fotos:
+            String(req.body.urls_fotos || ""),
+
+        inventario:
+            String(req.body.inventario || "")
+
+    },
+
+    line_items: [
+
+        {
+
+            price_data: {
+
+                currency: "eur",
+
+                product_data: {
+
+                    name:
+                        "Reserva Mudanza RODAX"
+
+                },
+
+                unit_amount:
+                    Math.round(
+                        importe * 100
+                    )
+
+            },
+
+            quantity: 1
+
+        }
+
+    ],
+
+    success_url:
+        "https://rodaxmudanzasweb.vercel.app/confirmacion.html?session_id={CHECKOUT_SESSION_ID}",
+
+    cancel_url:
+        "https://rodaxmudanzasweb.vercel.app/?pago=cancel"
+
+});
 
             line_items: [
 

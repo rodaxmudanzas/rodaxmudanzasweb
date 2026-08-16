@@ -179,7 +179,20 @@ const { data, error } = await supabase
 
     ascensor: datos.ascensor,
 
-    extras: datos.extras,
+ascensor_origen:
+    datos.ascensor_origen,
+
+piso_origen:
+    Number(datos.piso_origen) || 0,
+
+ascensor_destino:
+    datos.ascensor_destino,
+
+piso_destino:
+    Number(datos.piso_destino) || 0,
+
+extras:
+    datos.extras,
 
     observaciones: datos.observaciones,
 
