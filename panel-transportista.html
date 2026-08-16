@@ -3744,7 +3744,19 @@ function recargarDatos() {
 
         }
 
- 
+ if (
+    tabId === "facturacion" &&
+    typeof window.cargarFacturacion === "function"
+) {
+    window.cargarFacturacion();
+}
+
+if (
+    tabId === "mi-perfil" &&
+    typeof window.cargarPerfil === "function"
+) {
+    window.cargarPerfil();
+}
 
         cerrarMenuMovil();
 

@@ -1246,26 +1246,5 @@
 
     ////////////////////////////////////////////////////////////
 
- 
-
-    document.addEventListener(
-
-        "DOMContentLoaded",
-
-        function () {
-
- 
-
-            cargarFacturacion();
-
- 
-
-        }
-
-    );
-
- 
-
- 
 
 })(window);

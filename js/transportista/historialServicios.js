@@ -1840,7 +1840,10 @@
 
             historial;
 
- 
+ window.RODAX_HISTORIAL_SERVICIOS =
+    Array.isArray(historial)
+        ? historial.slice()
+        : [];
 
         if (!historial.length) {
 
@@ -1936,13 +1939,22 @@
 
  
 
-            contenedor.innerHTML =
-
-                historial
-
-                    .map(crearTarjetaHistorial)
-
-                    .join("");
+            contenedor.innerHTML = `
+    <div class="
+        grid
+        grid-cols-1
+        lg:grid-cols-2
+        gap-5
+        bg-[#eef4ff]
+        border border-blue-100
+        rounded-3xl
+        p-4
+    ">
+        ${historial
+            .map(crearTarjetaHistorial)
+            .join("")}
+    </div>
+`;
 
         }
 
