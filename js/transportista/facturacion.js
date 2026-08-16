@@ -48,55 +48,32 @@
 
     ////////////////////////////////////////////////////////////
 
- 
+ function obtenerSupabase() {
 
-    function obtenerSupabase() {
-
- 
-
-        if (window.supabaseClient) {
-
-            return window.supabaseClient;
-
-        }
-
- 
-
-        if (
-
-            window.RODAX &&
-
-            window.RODAX.supabase
-
-        ) {
-
-            return window.RODAX.supabase;
-
-        }
-
- 
-
-        if (
-
-            window.RODAX &&
-
-            window.RODAX.supabaseClient
-
-        ) {
-
-            return window.RODAX.supabaseClient;
-
-        }
-
- 
-
-        return null;
-
+    if (window.dbClient) {
+        return window.dbClient;
     }
 
- 
+    if (window.supabaseClient) {
+        return window.supabaseClient;
+    }
 
- 
+    if (
+        window.RODAX &&
+        window.RODAX.supabase
+    ) {
+        return window.RODAX.supabase;
+    }
+
+    if (
+        window.RODAX &&
+        window.RODAX.supabaseClient
+    ) {
+        return window.RODAX.supabaseClient;
+    }
+
+    return null;
+}
 
     ////////////////////////////////////////////////////////////
 
@@ -1225,13 +1202,6 @@
  
 
     window.cargarFacturacion =
-
-        cargarFacturacion;
-
- 
-
- 
-
-    window.cargarFacturacion = cargarFacturacion;
+    cargarFacturacion;
 
 })(window);
