@@ -404,7 +404,66 @@
 
     }
 
- 
+ function obtenerUbicacionHistorial(mudanza, tipo) {
+
+    const origen = tipo === "origen";
+
+    const ciudad = origen
+        ? (
+            mudanza?.ciudad_origen ??
+            mudanza?.localidad_origen ??
+            mudanza?.municipio_origen ??
+            mudanza?.poblacion_origen ??
+            ""
+        )
+        : (
+            mudanza?.ciudad_destino ??
+            mudanza?.localidad_destino ??
+            mudanza?.municipio_destino ??
+            mudanza?.poblacion_destino ??
+            ""
+        );
+
+    const codigoPostal = origen
+        ? (
+            mudanza?.codigo_postal_origen ??
+            mudanza?.cp_origen ??
+            mudanza?.postal_origen ??
+            ""
+        )
+        : (
+            mudanza?.codigo_postal_destino ??
+            mudanza?.cp_destino ??
+            mudanza?.postal_destino ??
+            ""
+        );
+
+    const comunidad = origen
+        ? (
+            mudanza?.comunidad_autonoma_origen ??
+            mudanza?.comunidad_origen ??
+            mudanza?.autonomia_origen ??
+            ""
+        )
+        : (
+            mudanza?.comunidad_autonoma_destino ??
+            mudanza?.comunidad_destino ??
+            mudanza?.autonomia_destino ??
+            ""
+        );
+
+    const partes = [
+        ciudad,
+        codigoPostal,
+        comunidad
+    ]
+        .map(valor => String(valor || "").trim())
+        .filter(Boolean);
+
+    return partes.length
+        ? partes.join(", ")
+        : "Ubicación no disponible";
+}
 
     function obtenerAccesoOrigen(mudanza) {
 
@@ -1323,12 +1382,11 @@
                             >
 
                                 ${escaparHTML(
-
-                                    mudanza?.origen ||
-
-                                    "Origen pendiente"
-
-                                )}
+    obtenerUbicacionHistorial(
+        mudanza,
+        "origen"
+    )
+)}
 
                             </div>
 
@@ -1477,12 +1535,11 @@
                             >
 
                                 ${escaparHTML(
-
-                                    mudanza?.destino ||
-
-                                    "Destino pendiente"
-
-                                )}
+    obtenerUbicacionHistorial(
+        mudanza,
+        "destino"
+    )
+)}
 
                             </div>
 
