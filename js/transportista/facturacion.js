@@ -445,19 +445,27 @@
     }
 
     function crearBotonFactura(pago) {
-        const factura = obtenerAutofacturaParaPago(pago);
-        const texto = factura ? "Factura" : "Previsualizar factura";
-        return `
-            <button
-                type="button"
-                class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700"
-                onclick="window.RODAX_facturacion_abrirFactura('${escaparHTML(pago.__key)}')"
-            >
-                <i data-lucide="file-text" class="h-4 w-4"></i>
-                ${texto}
-            </button>
-        `;
+
+    const factura = obtenerAutofacturaParaPago(pago);
+
+    // Regla RODAX:
+    // Si todavía no existe una autofactura real,
+    // no se muestra ningún botón de factura.
+    if (!factura) {
+        return "";
     }
+
+    return `
+        <button
+            type="button"
+            class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700"
+            onclick="window.RODAX_facturacion_abrirFactura('${escaparHTML(pago.__key)}')"
+        >
+            <i data-lucide="file-text" class="h-4 w-4"></i>
+            Factura
+        </button>
+    `;
+}
 
     function renderPagoCard(pago, modo) {
         const mudanza = pago.__mudanza || {};
@@ -517,10 +525,15 @@
 
                 <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
                     <div class="text-xs text-slate-500">
-                        ${procesado
-                            ? (factura ? `Factura ${escaparHTML(factura.numero_factura || "—")}` : "Factura definitiva todavía no registrada")
-                            : "Liquidación prevista en un máximo de 48 horas después del servicio, según el estado de pago."
-                        }
+                        ${
+    procesado
+        ? (
+            factura
+                ? `Factura ${escaparHTML(factura.numero_factura || "—")}`
+                : "Liquidación efectuada. Factura pendiente de registro."
+        )
+        : "La liquidación se realizará 48 horas después de la finalización del servicio."
+}
                     </div>
                     <div>
     ${
