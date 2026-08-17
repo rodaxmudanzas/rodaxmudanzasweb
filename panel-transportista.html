@@ -7816,9 +7816,20 @@ if (!Number.isFinite(importeTransportista)) {
 
         if (!pagoExistente) {
 
-            const fechaProgramada = new Date(
-                Date.now() + (48 * 60 * 60 * 1000)
-            );
+            const fechaServicio = new Date(
+    `${mudanza.fecha}T00:00:00`
+);
+
+if (Number.isNaN(fechaServicio.getTime())) {
+    throw new Error(
+        "No se pudo determinar la fecha del servicio para calcular la liquidación."
+    );
+}
+
+const fechaProgramada = new Date(
+    fechaServicio.getTime() +
+    (48 * 60 * 60 * 1000)
+);
 
             const {
                 data: nuevoPago,
