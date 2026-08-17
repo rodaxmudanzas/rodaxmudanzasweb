@@ -7667,24 +7667,90 @@ async function marcarCompletada(id) {
         console.log("MUDANZA ENCONTRADA:", mudanza);
 
         // =====================================================
-        // 2. CALCULAR EL IMPORTE DEL TRANSPORTISTA
-        // =====================================================
+// 2. OBTENER EL IMPORTE REAL DE "TU COBRO"
+// =====================================================
 
-        const importeTransportista = Number(
-            mudanza.importe_transportista ??
-            mudanza.cobro_transportista ??
-            mudanza.precio_transportista ??
-            mudanza.importe ??
-            mudanza.preciototal ??
-            mudanza.importe_total ??
-            0
-        );
+function convertirImporte(valor) {
 
-        if (!Number.isFinite(importeTransportista)) {
-            throw new Error(
-                "No se pudo determinar el importe del transportista."
-            );
-        }
+    if (valor === null || valor === undefined) {
+        return NaN;
+    }
+
+    if (typeof valor === "number") {
+        return valor;
+    }
+
+    let texto = String(valor).trim();
+
+    if (!texto) {
+        return NaN;
+    }
+
+    // Quitar símbolos habituales
+    texto = texto
+        .replace(/€/g, "")
+        .replace(/\s/g, "");
+
+    // Formato español: 3.250,88
+    if (
+        texto.includes(".") &&
+        texto.includes(",")
+    ) {
+        texto = texto
+            .replace(/\./g, "")
+            .replace(",", ".");
+    }
+
+    // Formato español sin punto de miles: 3250,88
+    else if (texto.includes(",")) {
+        texto = texto.replace(",", ".");
+    }
+
+    return Number(texto);
+}
+
+const candidatosImporte = [
+    mudanza.preciototal,
+    mudanza.importe_transportista,
+    mudanza.cobro_transportista,
+    mudanza.precio_transportista,
+    mudanza.importe,
+    mudanza.importe_total
+];
+
+let importeTransportista = NaN;
+
+for (const candidato of candidatosImporte) {
+
+    const numero = convertirImporte(candidato);
+
+    if (
+        Number.isFinite(numero) &&
+        numero >= 0
+    ) {
+        importeTransportista = numero;
+        break;
+    }
+}
+
+console.log(
+    "IMPORTE TRANSPORTISTA DETECTADO:",
+    importeTransportista
+);
+
+console.log(
+    "PRECIO TOTAL DE LA MUDANZA:",
+    mudanza.preciototal,
+    "tipo:",
+    typeof mudanza.preciototal
+);
+
+if (!Number.isFinite(importeTransportista)) {
+
+    throw new Error(
+        "No se pudo determinar el importe real de TU COBRO."
+    );
+}
 
         console.log(
             "IMPORTE TRANSPORTISTA:",
