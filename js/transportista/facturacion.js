@@ -467,6 +467,82 @@
     `;
 }
 
+function obtenerClaveFechaPago(pago, modo) {
+
+    const fecha = modo === "procesados"
+        ? obtenerFechaPago(pago)
+        : obtenerFechaProgramada(pago);
+
+    if (!fecha) {
+        return "sin-fecha";
+    }
+
+    const d = new Date(fecha);
+
+    if (Number.isNaN(d.getTime())) {
+        return "sin-fecha";
+    }
+
+    return [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, "0"),
+        String(d.getDate()).padStart(2, "0")
+    ].join("-");
+}
+
+function agruparPagosPorFecha(pagos, modo) {
+
+    const grupos = new Map();
+
+    pagos.forEach(function (pago) {
+
+        const clave = obtenerClaveFechaPago(
+            pago,
+            modo
+        );
+
+        if (!grupos.has(clave)) {
+            grupos.set(clave, []);
+        }
+
+        grupos.get(clave).push(pago);
+    });
+
+    return Array.from(grupos.entries())
+        .sort(function (a, b) {
+
+            if (a[0] === "sin-fecha") return 1;
+            if (b[0] === "sin-fecha") return -1;
+
+            return b[0].localeCompare(a[0]);
+        });
+}
+
+function formatearGrupoFecha(fechaClave) {
+
+    if (fechaClave === "sin-fecha") {
+        return "Fecha pendiente";
+    }
+
+    const partes = fechaClave.split("-");
+
+    const fecha = new Date(
+        Number(partes[0]),
+        Number(partes[1]) - 1,
+        Number(partes[2])
+    );
+
+    return fecha.toLocaleDateString(
+        "es-ES",
+        {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        }
+    );
+}
+
     function renderPagoCard(pago, modo) {
         const mudanza = pago.__mudanza || {};
 const procesado = modo === "procesados";
@@ -550,30 +626,98 @@ const factura = procesado
     }
 
     function renderLista(pagos, modo) {
-        if (!pagos.length) {
-            return `
-                <div class="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-                    <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100">
-                        <i data-lucide="inbox" class="h-6 w-6 text-slate-400"></i>
-                    </div>
-                    <div class="mt-3 font-bold text-slate-700">
-                        ${modo === "procesados" ? "Todavía no hay liquidaciones efectuadas." : "No hay liquidaciones previstas actualmente."}
-                    </div>
-                    <div class="mt-1 text-sm text-slate-400">
-                        Los movimientos aparecerán aquí automáticamente cuando RODAX actualice la liquidación.
-                    </div>
-                </div>
-            `;
-        }
 
+    if (!pagos.length) {
         return `
-            <div class="space-y-4">
-                ${pagos.map(function (pago) {
-                    return renderPagoCard(pago, modo);
-                }).join("")}
+            <div class="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100">
+                    <i data-lucide="inbox" class="h-6 w-6 text-slate-400"></i>
+                </div>
+
+                <div class="mt-3 font-bold text-slate-700">
+                    ${
+                        modo === "procesados"
+                            ? "Todavía no hay liquidaciones efectuadas."
+                            : "No hay liquidaciones previstas actualmente."
+                    }
+                </div>
+
+                <div class="mt-1 text-sm text-slate-400">
+                    Los movimientos aparecerán aquí automáticamente cuando RODAX actualice la liquidación.
+                </div>
             </div>
         `;
     }
+
+    const grupos = agruparPagosPorFecha(
+        pagos,
+        modo
+    );
+
+    return `
+        <div class="space-y-6">
+
+            ${grupos.map(function (grupo) {
+
+                const fechaClave = grupo[0];
+                const pagosGrupo = grupo[1];
+
+                return `
+                    <section class="rounded-2xl border border-blue-100 bg-blue-50/70 p-4 md:p-5 shadow-sm">
+
+                        <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+
+                            <div class="flex items-center gap-3">
+
+                                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm">
+                                    <i
+                                        data-lucide="calendar-days"
+                                        class="h-5 w-5 text-blue-600"
+                                    ></i>
+                                </div>
+
+                                <div>
+                                    <div class="text-sm font-black capitalize text-slate-800">
+                                        ${escaparHTML(formatearGrupoFecha(fechaClave))}
+                                    </div>
+
+                                    <div class="mt-0.5 text-xs text-slate-500">
+                                        ${
+                                            pagosGrupo.length
+                                        }
+                                        ${
+                                            pagosGrupo.length === 1
+                                                ? "servicio"
+                                                : "servicios"
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+                            ${pagosGrupo.map(function (pago) {
+
+                                return renderPagoCard(
+                                    pago,
+                                    modo
+                                );
+
+                            }).join("")}
+
+                        </div>
+
+                    </section>
+                `;
+
+            }).join("")}
+
+        </div>
+    `;
+}
 
     function resumenImportes(pagos) {
         return pagos.reduce(function (total, pago) {
