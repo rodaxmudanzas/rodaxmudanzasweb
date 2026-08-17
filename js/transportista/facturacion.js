@@ -469,9 +469,11 @@
 
     function renderPagoCard(pago, modo) {
         const mudanza = pago.__mudanza || {};
-        const procesado = modo === "procesados";
-        const importe = obtenerImportePago(pago);
-        const factura = obtenerAutofacturaParaPago(pago);
+const procesado = modo === "procesados";
+const importe = obtenerImportePago(pago);
+const factura = procesado
+    ? obtenerAutofacturaParaPago(pago)
+    : null;
         const estado = procesado
     ? "Liquidación efectuada"
     : "Liquidación prevista";
