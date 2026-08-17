@@ -464,7 +464,9 @@
         const procesado = modo === "procesados";
         const importe = obtenerImportePago(pago);
         const factura = obtenerAutofacturaParaPago(pago);
-        const estado = escaparHTML(pago.estado_pago || (procesado ? "Pagado" : "Programado"));
+        const estado = procesado
+    ? "Liquidación efectuada"
+    : "Liquidación prevista";
         const reserva = escaparHTML(pago.numero_reserva || mudanza.numero_reserva || "—");
         const descripcion = escaparHTML(
             mudanza.tipo_servicio || (String(mudanza.tipo_servicio || "").toLowerCase().includes("total") ? "Mudanza Total" : "Mudanza")
@@ -498,7 +500,9 @@
 
                 <div class="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
                     <div class="rounded-xl bg-slate-50 p-4">
-                        <div class="text-[10px] font-black uppercase tracking-wider text-slate-400">${procesado ? "Pagado" : "Programado"}</div>
+                        <div class="text-[10px] font-black uppercase tracking-wider text-slate-400">
+    ${procesado ? "Liquidado el" : "Liquidación prevista"}
+</div>
                         <div class="mt-1 text-sm font-bold text-slate-700">${fecha}</div>
                     </div>
                     <div class="rounded-xl bg-slate-50 p-4">
@@ -519,8 +523,12 @@
                         }
                     </div>
                     <div>
-                        ${crearBotonFactura(pago)}
-                    </div>
+    ${
+        procesado
+            ? crearBotonFactura(pago)
+            : ""
+    }
+</div>
                 </div>
             </article>
         `;
@@ -634,16 +642,48 @@
     }
 
     function renderFacturacion(contenedor) {
-        const pagosProgramados = CACHE.pagos.filter(function (pago) {
+
+    const pagosProgramados = CACHE.pagos
+        .filter(function (pago) {
             return !esProcesado(pago);
+        })
+        .sort(function (a, b) {
+
+            const fechaA = new Date(
+                obtenerFechaProgramada(a) || 0
+            ).getTime();
+
+            const fechaB = new Date(
+                obtenerFechaProgramada(b) || 0
+            ).getTime();
+
+            return fechaB - fechaA;
         });
 
-        const pagosProcesados = CACHE.pagos.filter(function (pago) {
+    const pagosProcesados = CACHE.pagos
+        .filter(function (pago) {
             return esProcesado(pago);
+        })
+        .sort(function (a, b) {
+
+            const fechaA = new Date(
+                obtenerFechaPago(a) || 0
+            ).getTime();
+
+            const fechaB = new Date(
+                obtenerFechaPago(b) || 0
+            ).getTime();
+
+            return fechaB - fechaA;
         });
 
-        const totalProgramado = resumenImportes(pagosProgramados);
-        const totalProcesado = resumenImportes(pagosProcesados);
+    const totalProgramado = resumenImportes(
+        pagosProgramados
+    );
+
+    const totalProcesado = resumenImportes(
+        pagosProcesados
+    );
 
         contenedor.innerHTML = `
             <div class="space-y-6">
