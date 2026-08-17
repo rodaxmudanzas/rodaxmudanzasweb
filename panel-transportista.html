@@ -7622,231 +7622,384 @@ function confirmarAceptar(
 
 }
 
+async function marcarCompletada(id) {
 
-
-async function marcarCompletada(
-
-    id
-
-) {
-
-
-
-    const confirmar =
-
-        confirm(
-
-            '¿Confirmas que has terminado este servicio y que el cliente ha pagado el resto?\n\n' +
-
-            'La mudanza desaparecerá de tu panel activo.'
-
-        );
-
-
+    const confirmar = confirm(
+        '¿Confirmas que has terminado este servicio y que el cliente ha pagado el resto?\n\n' +
+        'La mudanza desaparecerá de tu panel activo y se registrará la liquidación del transportista.'
+    );
 
     if (!confirmar) {
-
-
-
         return;
-
     }
 
+    console.log("====================================");
+    console.log("FINALIZANDO MUDANZA:", id);
+    console.log("TRANSPORTISTA:", currentUserId);
+    console.log("====================================");
 
+    try {
 
-    console.log(
+        // =====================================================
+        // 1. OBTENER LA MUDANZA COMPLETA ANTES DE ACTUALIZAR
+        // =====================================================
 
-        '===================================='
+        const {
+            data: mudanza,
+            error: errorMudanza
+        } = await dbClient
+            .from("mudanzas")
+            .select("*")
+            .eq("id", id)
+            .eq("transportista_id", currentUserId)
+            .maybeSingle();
 
-    );
+        if (errorMudanza) {
+            throw errorMudanza;
+        }
 
+        if (!mudanza) {
+            throw new Error(
+                "No se encontró la mudanza o no pertenece a este transportista."
+            );
+        }
 
+        console.log("MUDANZA ENCONTRADA:", mudanza);
 
-    console.log(
+        // =====================================================
+        // 2. CALCULAR EL IMPORTE DEL TRANSPORTISTA
+        // =====================================================
 
-        'FINALIZANDO MUDANZA:',
+        const importeTransportista = Number(
+            mudanza.importe_transportista ??
+            mudanza.cobro_transportista ??
+            mudanza.precio_transportista ??
+            mudanza.importe ??
+            mudanza.preciototal ??
+            mudanza.importe_total ??
+            0
+        );
 
-        id
+        if (!Number.isFinite(importeTransportista)) {
+            throw new Error(
+                "No se pudo determinar el importe del transportista."
+            );
+        }
 
-    );
+        console.log(
+            "IMPORTE TRANSPORTISTA:",
+            importeTransportista
+        );
 
+        // =====================================================
+        // 3. ACTUALIZAR LA MUDANZA A COMPLETADA
+        // =====================================================
 
-
-    console.log(
-
-        'TRANSPORTISTA:',
-
-        currentUserId
-
-    );
-
-
-
-    const {
-
-        data,
-
-        error
-
-    } =
-
-        await dbClient
-
-            .from('mudanzas')
-
+        const {
+            data: dataUpdate,
+            error: errorUpdate
+        } = await dbClient
+            .from("mudanzas")
             .update({
-
-                estado:
-
-                    'Completada'
-
+                estado: "Completada"
             })
+            .eq("id", id)
+            .eq("transportista_id", currentUserId)
+            .select()
+            .maybeSingle();
 
-            .eq(
+        if (errorUpdate) {
+            throw errorUpdate;
+        }
 
-                'id',
+        if (!dataUpdate) {
+            throw new Error(
+                "Supabase no actualizó la mudanza."
+            );
+        }
 
-                id
+        console.log(
+            "MUDANZA MARCADA COMO COMPLETADA:",
+            dataUpdate
+        );
 
-            )
+        // =====================================================
+        // 4. COMPROBAR SI YA EXISTE UN PAGO
+        // =====================================================
 
-            .eq(
+        const {
+            data: pagoExistente,
+            error: errorPagoExistente
+        } = await dbClient
+            .from("pagos_transportistas")
+            .select("id")
+            .eq("mudanza_id", Number(id))
+            .eq("transportista_id", currentUserId)
+            .maybeSingle();
 
-                'transportista_id',
+        if (errorPagoExistente) {
+            throw errorPagoExistente;
+        }
 
-                currentUserId
+        // =====================================================
+        // 5. CREAR LIQUIDACIÓN DEL TRANSPORTISTA
+        //    +48 HORAS DESDE LA FINALIZACIÓN
+        // =====================================================
 
-            )
+        let pagoCreado = pagoExistente;
 
-            .select();
+        if (!pagoExistente) {
 
+            const fechaProgramada = new Date(
+                Date.now() + (48 * 60 * 60 * 1000)
+            );
 
+            const {
+                data: nuevoPago,
+                error: errorNuevoPago
+            } = await dbClient
+                .from("pagos_transportistas")
+                .insert({
+                    transportista_id: currentUserId,
+                    mudanza_id: Number(id),
+                    numero_reserva:
+                        String(
+                            mudanza.numero_reserva || ""
+                        ),
+                    importe_transportista:
+                        importeTransportista,
+                    estado_pago:
+                        "programado",
+                    fecha_programada:
+                        fechaProgramada.toISOString(),
+                    metodo_pago:
+                        "Transferencia bancaria"
+                })
+                .select()
+                .single();
 
-    console.log(
+            if (errorNuevoPago) {
+                throw errorNuevoPago;
+            }
 
-        'RESULTADO UPDATE:',
+            pagoCreado = nuevoPago;
 
-        data
+            console.log(
+                "PAGO DEL TRANSPORTISTA CREADO:",
+                nuevoPago
+            );
 
-    );
+        } else {
 
+            console.log(
+                "Ya existía un pago para esta mudanza:",
+                pagoExistente
+            );
 
+        }
 
-    console.log(
+        // =====================================================
+        // 6. COMPROBAR SI YA EXISTE AUTOFACTURA
+        // =====================================================
 
-        'ERROR UPDATE:',
+        const {
+            data: facturaExistente,
+            error: errorFacturaExistente
+        } = await dbClient
+            .from("autofacturas")
+            .select("id")
+            .eq("mudanza_id", Number(id))
+            .eq("transportista_id", currentUserId)
+            .maybeSingle();
 
-        error
+        if (errorFacturaExistente) {
+            throw errorFacturaExistente;
+        }
 
-    );
+        // =====================================================
+        // 7. CREAR AUTOFACTURA
+        // =====================================================
 
+        if (!facturaExistente) {
 
+            const baseImponible =
+                Number(
+                    (
+                        importeTransportista / 1.21
+                    ).toFixed(2)
+                );
 
-    console.log(
+            const ivaImporte =
+                Number(
+                    (
+                        importeTransportista -
+                        baseImponible
+                    ).toFixed(2)
+                );
 
-        '===================================='
+            const numeroReserva =
+                String(
+                    mudanza.numero_reserva || id
+                );
 
-    );
+            const numeroFactura =
+                `RODAX-${numeroReserva}`;
 
+            const datosTransportista = {
+                id: currentUserId,
+                nombre:
+                    mudanza.transportista_nombre ||
+                    "",
+                email:
+                    mudanza.transportista_email ||
+                    "",
+                telefono:
+                    mudanza.transportista_telefono ||
+                    ""
+            };
 
+            const datosServicio = {
+                numero_reserva:
+                    numeroReserva,
+                mudanza_id:
+                    Number(id),
+                origen:
+                    mudanza.origen || "",
+                destino:
+                    mudanza.destino || "",
+                fecha:
+                    mudanza.fecha || "",
+                tipo_servicio:
+                    mudanza.tipo_servicio || "",
+                importe:
+                    importeTransportista
+            };
 
-    if (error) {
+            const {
+                data: nuevaFactura,
+                error: errorNuevaFactura
+            } = await dbClient
+                .from("autofacturas")
+                .insert({
+                    transportista_id:
+                        currentUserId,
 
+                    mudanza_id:
+                        Number(id),
 
+                    numero_reserva:
+                        numeroReserva,
+
+                    numero_factura:
+                        numeroFactura,
+
+                    fecha_factura:
+                        new Date()
+                            .toISOString()
+                            .slice(0, 10),
+
+                    estado:
+                        "emitida",
+
+                    tipo_factura:
+                        "autofactura",
+
+                    base_imponible:
+                        baseImponible,
+
+                    iva_porcentaje:
+                        21,
+
+                    iva_importe:
+                        ivaImporte,
+
+                    total_factura:
+                        importeTransportista,
+
+                    descripcion_servicio:
+                        `Servicio de mudanza RODAX ${numeroReserva}`,
+
+                    transportista_datos:
+                        datosTransportista,
+
+                    servicio_datos:
+                        datosServicio,
+
+                    observaciones:
+                        "Autofactura generada automáticamente por RODAX."
+                })
+                .select()
+                .single();
+
+            if (errorNuevaFactura) {
+                throw errorNuevaFactura;
+            }
+
+            console.log(
+                "AUTOFACTURA CREADA:",
+                nuevaFactura
+            );
+
+        } else {
+
+            console.log(
+                "Ya existía una autofactura para esta mudanza:",
+                facturaExistente
+            );
+
+        }
+
+        // =====================================================
+        // 8. ACTUALIZAR ESTADO VISUAL DEL PANEL
+        // =====================================================
+
+        state.activas =
+            state.activas.filter(
+                mudanzaActual =>
+                    Number(mudanzaActual.id) !==
+                    Number(id)
+            );
+
+        renderizarActivas();
+
+        await cargarMisMudanzas();
+
+        console.log(
+            "===================================="
+        );
+
+        console.log(
+            "MUDANZA FINALIZADA CORRECTAMENTE:",
+            id
+        );
+
+        console.log(
+            "PAGO PROGRAMADO:",
+            pagoCreado
+        );
+
+        console.log(
+            "===================================="
+        );
+
+        alert(
+            "Servicio finalizado correctamente.\n\n" +
+            "La liquidación del transportista ha quedado programada a 48 horas."
+        );
+
+    } catch (error) {
 
         console.error(
-
-            'Error al finalizar:',
-
+            "ERROR AL FINALIZAR LA MUDANZA:",
             error
-
         );
 
-
-
         alert(
-
-            'No se pudo marcar la mudanza como completada.\n\n' +
-
+            "La mudanza no se pudo finalizar completamente.\n\n" +
             error.message
-
         );
-
-
-
-        return;
-
     }
-
-
-
-    if (
-
-        !data ||
-
-        data.length === 0
-
-    ) {
-
-
-
-        console.error(
-
-            'El UPDATE no modificó ninguna fila.'
-
-        );
-
-
-
-        alert(
-
-            'Supabase no ha actualizado la mudanza.\n\n' +
-
-            'Posible causa: una política RLS está bloqueando la actualización.'
-
-        );
-
-
-
-        return;
-
-    }
-
-
-
-    state.activas =
-
-        state.activas.filter(
-
-            mudanza =>
-
-                Number(mudanza.id) !==
-
-                Number(id)
-
-        );
-
-
-
-    renderizarActivas();
-
-
-
-    await cargarMisMudanzas();
-
-
-
-    console.log(
-
-        'Mudanza finalizada correctamente:',
-
-        id
-
-    );
-
 }
-
-
 
 window.onload =
 
