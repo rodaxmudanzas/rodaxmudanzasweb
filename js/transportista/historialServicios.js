@@ -2059,11 +2059,7 @@
 
  
 
-                                window.imprimirFicha(
-
-                                    id
-
-                                );
+                                window.imprimirFicha(id, true);
 
  
 
