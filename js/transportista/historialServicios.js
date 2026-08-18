@@ -470,49 +470,78 @@
 
  function obtenerUbicacionHistorial(mudanza, tipo) {
 
+    const m = mudanza || {};
     const origen = tipo === "origen";
 
     const ciudad = origen
         ? (
-            mudanza?.ciudad_origen ??
-            mudanza?.localidad_origen ??
-            mudanza?.municipio_origen ??
-            mudanza?.poblacion_origen ??
+            m.origen_ciudad ??
+            m.ciudad_origen ??
+            m.ciudadOrigen ??
+            m.origen_localidad ??
+            m.localidad_origen ??
+            m.localidadOrigen ??
+            m.origen_municipio ??
+            m.municipio_origen ??
+            m.municipioOrigen ??
+            m.origen_poblacion ??
+            m.poblacion_origen ??
+            m.poblacionOrigen ??
             ""
         )
         : (
-            mudanza?.ciudad_destino ??
-            mudanza?.localidad_destino ??
-            mudanza?.municipio_destino ??
-            mudanza?.poblacion_destino ??
+            m.destino_ciudad ??
+            m.ciudad_destino ??
+            m.ciudadDestino ??
+            m.destino_localidad ??
+            m.localidad_destino ??
+            m.localidadDestino ??
+            m.destino_municipio ??
+            m.municipio_destino ??
+            m.municipioDestino ??
+            m.destino_poblacion ??
+            m.poblacion_destino ??
+            m.poblacionDestino ??
             ""
         );
 
     const codigoPostal = origen
         ? (
-            mudanza?.codigo_postal_origen ??
-            mudanza?.cp_origen ??
-            mudanza?.postal_origen ??
+            m.origen_cp ??
+            m.cp_origen ??
+            m.codigo_postal_origen ??
+            m.codigoPostalOrigen ??
+            m.postal_origen ??
+            m.origen_codigo_postal ??
             ""
         )
         : (
-            mudanza?.codigo_postal_destino ??
-            mudanza?.cp_destino ??
-            mudanza?.postal_destino ??
+            m.destino_cp ??
+            m.cp_destino ??
+            m.codigo_postal_destino ??
+            m.codigoPostalDestino ??
+            m.postal_destino ??
+            m.destino_codigo_postal ??
             ""
         );
 
     const comunidad = origen
         ? (
-            mudanza?.comunidad_autonoma_origen ??
-            mudanza?.comunidad_origen ??
-            mudanza?.autonomia_origen ??
+            m.origen_comunidad_autonoma ??
+            m.comunidad_autonoma_origen ??
+            m.comunidadOrigen ??
+            m.origen_comunidad ??
+            m.comunidad_origen ??
+            m.autonomia_origen ??
             ""
         )
         : (
-            mudanza?.comunidad_autonoma_destino ??
-            mudanza?.comunidad_destino ??
-            mudanza?.autonomia_destino ??
+            m.destino_comunidad_autonoma ??
+            m.comunidad_autonoma_destino ??
+            m.comunidadDestino ??
+            m.destino_comunidad ??
+            m.comunidad_destino ??
+            m.autonomia_destino ??
             ""
         );
 
@@ -531,113 +560,122 @@
 
     function obtenerAccesoOrigen(mudanza) {
 
- 
+    const m = mudanza || {};
 
-        if (
+    const ascensor =
+        m.ascensor_origen ??
+        m.origen_ascensor ??
+        m.ascensorOrigen ??
+        m.ascensor_recogida ??
+        m.recogida_ascensor ??
+        null;
 
-            mudanza?.ascensor_origen !== undefined ||
+    const piso =
+        m.piso_origen ??
+        m.origen_piso ??
+        m.pisoOrigen ??
+        m.piso_recogida ??
+        m.recogida_piso ??
+        null;
 
-            mudanza?.piso_origen !== undefined
-
-        ) {
-
- 
-
-            return formatearAcceso(
-
-                mudanza.ascensor_origen,
-
-                mudanza.piso_origen
-
-            );
-
-        }
-
- 
-
-        const texto =
-
-            String(
-
-                mudanza?.ascensor || ""
-
-            );
-
- 
-
-        const coincidencia =
-
-            texto.match(
-
-                /recogida:\s*(.*?)(?:\s*\||$)/i
-
-            );
-
- 
-
-        return coincidencia
-
-            ? coincidencia[1].trim()
-
-            : "Acceso por confirmar";
-
+    if (
+        ascensor !== null ||
+        piso !== null
+    ) {
+        return formatearAcceso(
+            ascensor,
+            piso
+        );
     }
 
- 
+    const texto =
+        String(
+            m.ascensor || ""
+        ).trim();
 
-    function obtenerAccesoDestino(mudanza) {
-
- 
-
-        if (
-
-            mudanza?.ascensor_destino !== undefined ||
-
-            mudanza?.piso_destino !== undefined
-
-        ) {
-
- 
-
-            return formatearAcceso(
-
-                mudanza.ascensor_destino,
-
-                mudanza.piso_destino
-
-            );
-
-        }
-
- 
-
-        const texto =
-
-            String(
-
-                mudanza?.ascensor || ""
-
-            );
-
- 
+    if (texto) {
 
         const coincidencia =
-
             texto.match(
-
-                /entrega:\s*(.*?)(?:\s*\||$)/i
-
+                /recogida\s*:\s*(.*?)(?:\s*\||$)/i
             );
 
- 
+        if (coincidencia) {
+            return formatearAcceso(
+                coincidencia[1].trim(),
+                null
+            );
+        }
 
-        return coincidencia
-
-            ? coincidencia[1].trim()
-
-            : "Acceso por confirmar";
-
+        if (
+            /ascensor/i.test(texto)
+        ) {
+            return normalizarAscensor(texto);
+        }
     }
+
+    return "Acceso por confirmar";
+}
+
+
+function obtenerAccesoDestino(mudanza) {
+
+    const m = mudanza || {};
+
+    const ascensor =
+        m.ascensor_destino ??
+        m.destino_ascensor ??
+        m.ascensorDestino ??
+        m.ascensor_entrega ??
+        m.entrega_ascensor ??
+        null;
+
+    const piso =
+        m.piso_destino ??
+        m.destino_piso ??
+        m.pisoDestino ??
+        m.piso_entrega ??
+        m.entrega_piso ??
+        null;
+
+    if (
+        ascensor !== null ||
+        piso !== null
+    ) {
+        return formatearAcceso(
+            ascensor,
+            piso
+        );
+    }
+
+    const texto =
+        String(
+            m.ascensor || ""
+        ).trim();
+
+    if (texto) {
+
+        const coincidencia =
+            texto.match(
+                /entrega\s*:\s*(.*?)(?:\s*\||$)/i
+            );
+
+        if (coincidencia) {
+            return formatearAcceso(
+                coincidencia[1].trim(),
+                null
+            );
+        }
+
+        if (
+            /ascensor/i.test(texto)
+        ) {
+            return normalizarAscensor(texto);
+        }
+    }
+
+    return "Acceso por confirmar";
+}
 
  
 
