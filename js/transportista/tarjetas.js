@@ -1670,17 +1670,32 @@
             (1000 * 60 * 60);
 
 
-        /*
-         * Los datos completos se muestran cuando quedan
-         * 24 horas o menos para el servicio.
-         */
+        //////////////////////////////////////////////////////////
+// REGLAS DE PRIVACIDAD — MIS MUDANZAS ACTIVAS
+//////////////////////////////////////////////////////////
 
-        const mostrarDatos =
-            !Number.isNaN(diffHoras) &&
-            diffHoras <=
-                TARJETAS_CONFIG
-                    .activas
-                    .horasDesbloqueo;
+const fechaValida =
+    !Number.isNaN(
+        moveDate.getTime()
+    );
+
+const mostrarDireccionExacta =
+    fechaValida &&
+    diffHoras <= 24;
+
+const esMismoDia =
+    fechaValida &&
+    moveDate.getFullYear() === now.getFullYear() &&
+    moveDate.getMonth() === now.getMonth() &&
+    moveDate.getDate() === now.getDate();
+
+const mostrarTelefonoCliente =
+    esMismoDia &&
+    now.getHours() >= 6;
+
+const mostrarTelefonoRodax =
+    mostrarDireccionExacta &&
+    !mostrarTelefonoCliente;
 
 
         //////////////////////////////////////////////////////////
