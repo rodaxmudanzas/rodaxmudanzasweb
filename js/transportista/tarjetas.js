@@ -95,6 +95,90 @@
 
     }
 
+    //////////////////////////////////////////////////////////////
+// UBICACIÓN PÚBLICA — CIUDAD + CP + COMUNIDAD AUTÓNOMA
+//////////////////////////////////////////////////////////////
+
+function obtenerUbicacionPublica(
+    mudanza,
+    tipo
+) {
+
+    const origen =
+        tipo === "origen";
+
+    const ciudad =
+        origen
+            ? (
+                mudanza?.origen_ciudad ??
+                mudanza?.ciudad_origen ??
+                mudanza?.ciudadOrigen ??
+                mudanza?.localidad_origen ??
+                mudanza?.municipio_origen ??
+                mudanza?.poblacion_origen ??
+                ""
+            )
+            : (
+                mudanza?.destino_ciudad ??
+                mudanza?.ciudad_destino ??
+                mudanza?.ciudadDestino ??
+                mudanza?.localidad_destino ??
+                mudanza?.municipio_destino ??
+                mudanza?.poblacion_destino ??
+                ""
+            );
+
+    const codigoPostal =
+        origen
+            ? (
+                mudanza?.origen_cp ??
+                mudanza?.cp_origen ??
+                mudanza?.codigo_postal_origen ??
+                mudanza?.postal_origen ??
+                ""
+            )
+            : (
+                mudanza?.destino_cp ??
+                mudanza?.cp_destino ??
+                mudanza?.codigo_postal_destino ??
+                mudanza?.postal_destino ??
+                ""
+            );
+
+    const comunidad =
+        origen
+            ? (
+                mudanza?.origen_comunidad_autonoma ??
+                mudanza?.comunidad_autonoma_origen ??
+                mudanza?.comunidad_origen ??
+                mudanza?.autonomia_origen ??
+                mudanza?.comunidadOrigen ??
+                ""
+            )
+            : (
+                mudanza?.destino_comunidad_autonoma ??
+                mudanza?.comunidad_autonoma_destino ??
+                mudanza?.comunidad_destino ??
+                mudanza?.autonomia_destino ??
+                mudanza?.comunidadDestino ??
+                ""
+            );
+
+    const partes = [
+        ciudad,
+        codigoPostal,
+        comunidad
+    ]
+        .map(
+            valor =>
+                String(valor || "").trim()
+        )
+        .filter(Boolean);
+
+    return partes.length
+        ? partes.join(" · ")
+        : "Ubicación no disponible";
+}
 
     //////////////////////////////////////////////////////////////
     // DETECTAR MUDANZA TOTAL
@@ -1606,6 +1690,22 @@
         const t =
             mudanza || {};
 
+            //////////////////////////////////////////////////////////
+// UBICACIÓN PÚBLICA
+//////////////////////////////////////////////////////////
+
+const ubicacionOrigenPublica =
+    obtenerUbicacionPublica(
+        t,
+        "origen"
+    );
+
+const ubicacionDestinoPublica =
+    obtenerUbicacionPublica(
+        t,
+        "destino"
+    );
+
 
         //////////////////////////////////////////////////////////
         // FECHA DE LA MUDANZA
@@ -2207,9 +2307,20 @@ const mostrarTelefonoRodax =
                 <div class="mt-3 grid grid-cols-1 items-center gap-3 border-t border-slate-100 pt-3 md:grid-cols-[1fr_auto_1fr]">
                     <div class="min-w-0">
                         <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Origen</div>
-                        <div class="mt-1 truncate text-sm font-bold leading-tight text-slate-800" title="${d.tituloOrigen}">
-                            ${d.origen}
-                        </div>
+                        <div
+    class="mt-1 truncate text-sm font-bold leading-tight text-slate-800"
+    title="${
+        mostrarDireccionExacta
+            ? d.tituloOrigen
+            : ubicacionOrigenPublica
+    }"
+>
+    ${
+        mostrarDireccionExacta
+            ? d.origen
+            : ubicacionOrigenPublica
+    }
+</div>
                         <div class="mt-1 text-[10px] font-semibold text-slate-500">
                             ${d.accesos.recogida}
                         </div>
@@ -2229,9 +2340,20 @@ const mostrarTelefonoRodax =
 
                     <div class="min-w-0 text-left md:text-right">
                         <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Destino</div>
-                        <div class="mt-1 truncate text-sm font-bold leading-tight text-slate-800" title="${d.tituloDestino}">
-                            ${d.destino}
-                        </div>
+                        <div
+    class="mt-1 truncate text-sm font-bold leading-tight text-slate-800"
+    title="${
+        mostrarDireccionExacta
+            ? d.tituloDestino
+            : ubicacionDestinoPublica
+    }"
+>
+    ${
+        mostrarDireccionExacta
+            ? d.destino
+            : ubicacionDestinoPublica
+    }
+</div>
                         <div class="mt-1 text-[10px] font-bold text-red-500">
                             ${d.accesos.entrega}
                         </div>
