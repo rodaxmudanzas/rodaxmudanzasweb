@@ -849,33 +849,36 @@
         //////////////////////////////////////////////////////////
 
         let extrasCajas =
-            extrasCajasExternos &&
-            typeof extrasCajasExternos === "object"
-                ? {
-                    pequenas:
-                        numeroSeguro(
-                            extrasCajasExternos.pequenas ??
-                            extrasCajasExternos.cajas_pequenas ??
-                            extrasCajasExternos.cajasPequenas
-                        ),
+    extrasCajasExternos &&
+    typeof extrasCajasExternos === "object"
+        ? {
+            pequenas:
+                numeroSeguro(
+                    extrasCajasExternos.pequenas ??
+                    extrasCajasExternos.cajas_pequenas ??
+                    extrasCajasExternos.cajasPequenas ??
+                    extrasCajasExternos["Cajas pequeñas"]
+                ),
 
-                    medianas:
-                        numeroSeguro(
-                            extrasCajasExternos.medianas ??
-                            extrasCajasExternos.cajas_medianas ??
-                            extrasCajasExternos.cajasMedianas
-                        ),
+            medianas:
+                numeroSeguro(
+                    extrasCajasExternos.medianas ??
+                    extrasCajasExternos.cajas_medianas ??
+                    extrasCajasExternos.cajasMedianas ??
+                    extrasCajasExternos["Cajas medianas"]
+                ),
 
-                    grandes:
-                        numeroSeguro(
-                            extrasCajasExternos.grandes ??
-                            extrasCajasExternos.cajas_grandes ??
-                            extrasCajasExternos.cajasGrandes
-                        )
-                }
-                : obtenerExtrasCajas(
-                    datosOriginales
-                );
+            grandes:
+                numeroSeguro(
+                    extrasCajasExternos.grandes ??
+                    extrasCajasExternos.cajas_grandes ??
+                    extrasCajasExternos.cajasGrandes ??
+                    extrasCajasExternos["Cajas grandes"]
+                )
+        }
+        : obtenerExtrasCajas(
+            datosOriginales
+        );
 
 
         //////////////////////////////////////////////////////////
