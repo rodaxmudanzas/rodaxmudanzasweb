@@ -2238,26 +2238,42 @@ const mostrarTelefonoRodax =
                     </div>
                 </div>
 
-                <!-- CLIENTE: SOLO CUANDO ESTÁ AUTORIZADO POR TIEMPO -->
-                ${mostrarDatos && d.nombre ? `
-                    <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-slate-50 pt-3 text-[10px] font-semibold text-slate-500">
-                        <span class="inline-flex items-center gap-1.5">
-                            <i data-lucide="user" class="h-3.5 w-3.5 text-slate-400"></i>
-                            ${d.nombre}
-                        </span>
-                        ${d.telefono ? `
-                            <a href="tel:${d.telefono}" onclick="event.stopPropagation()" class="inline-flex items-center gap-1.5 text-blue-600 hover:underline">
-                                <i data-lucide="phone" class="h-3.5 w-3.5"></i>
-                                ${d.telefono}
-                            </a>
-                        ` : ""}
-                    </div>
-                ` : `
-                    <div class="mt-3 inline-flex items-center gap-1.5 border-t border-slate-50 pt-3 text-[10px] font-semibold text-slate-400">
-                        <i data-lucide="lock" class="h-3.5 w-3.5"></i>
-                        Datos de contacto ocultos hasta 24 h antes del servicio
-                    </div>
-                `}
+                <!-- CONTACTO — CONTROLADO POR HORARIO -->
+${mostrarTelefonoCliente && d.telefono ? `
+    <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-slate-50 pt-3 text-[10px] font-semibold text-slate-500">
+
+        <a
+            href="tel:${d.telefono}"
+            onclick="event.stopPropagation()"
+            class="inline-flex items-center gap-1.5 text-blue-600 hover:underline"
+        >
+            <i data-lucide="phone" class="h-3.5 w-3.5"></i>
+            ${d.telefono}
+        </a>
+
+    </div>
+` : mostrarTelefonoRodax ? `
+    <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-slate-50 pt-3 text-[10px] font-semibold text-slate-500">
+
+        <a
+            href="tel:NUMERO_EMPRESA_RODAX"
+            onclick="event.stopPropagation()"
+            class="inline-flex items-center gap-1.5 text-blue-600 hover:underline"
+        >
+            <i data-lucide="phone-call" class="h-3.5 w-3.5"></i>
+            NUMERO_EMPRESA_RODAX
+        </a>
+
+    </div>
+` : `
+    <div class="mt-3 inline-flex items-center gap-1.5 border-t border-slate-50 pt-3 text-[10px] font-semibold text-slate-400">
+
+        <i data-lucide="lock" class="h-3.5 w-3.5"></i>
+
+        Teléfono de contacto disponible 24 h antes del servicio
+
+    </div>
+`}
 
                 <!-- RESUMEN -->
                 <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-50 pt-3 text-[10px] font-semibold text-slate-500">
