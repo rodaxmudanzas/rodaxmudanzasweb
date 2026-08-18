@@ -2984,25 +2984,21 @@ async function procesarAceptacion(
         }
 
         const {
-            data,
-            error
-        } = await cliente
-            .from("mudanzas")
-            .update({
-
-                estado:
-                    "Transportista asignado",
-
-                transportista_id:
-                    transportistaId,
-
-                bloqueada:
-                    true,
-
-                fecha_asignacion:
-                    new Date().toISOString()
-
-            })
+    data,
+    error
+} = await cliente
+    .from("mudanzas")
+    .update({
+        estado: "Transportista asignado",
+        transportista_id: transportistaId,
+        bloqueada: true,
+        fecha_asignacion: new Date().toISOString()
+    })
+    .eq("id", mudanzaId)
+    .eq("estado", "Pendiente de asignación")
+    .is("transportista_id", null)
+    .select()
+    .single();
             .eq(
                 "id",
                 id
