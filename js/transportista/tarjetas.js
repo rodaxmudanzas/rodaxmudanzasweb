@@ -1947,8 +1947,8 @@ const mostrarTelefonoRodax =
 
 
         if (
-            mostrarDatos
-        ) {
+    mostrarTelefonoCliente
+) {
 
             datosClienteHTML = `
 
