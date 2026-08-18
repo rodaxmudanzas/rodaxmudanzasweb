@@ -309,35 +309,252 @@
     // OBTENER EXTRAS
     //////////////////////////////////////////////////////////////
 
-    function obtenerExtrasCajas(datos) {
-        const resultado = { pequenas: 0, medianas: 0, grandes: 0 };
-        const t = datos || {};
-        const tipo = t?.tipo_servicio ?? t?.tipoServicio ?? "";
-        const total = String(tipo).toLowerCase().includes("total");
-        if (!total) return resultado;
+   function obtenerExtrasCajas(datos) {
 
-        const direct = window.Transportista?.obtenerExtrasMudanzaTotal;
-        if (typeof direct === "function") {
-            const r = direct(t);
-            resultado.pequenas = Number(r?.["Cajas pequeñas"]) || 0;
-            resultado.medianas = Number(r?.["Cajas medianas"]) || 0;
-            resultado.grandes = Number(r?.["Cajas grandes"]) || 0;
-            return resultado;
-        }
+    const resultado = {
+        pequenas: 0,
+        medianas: 0,
+        grandes: 0
+    };
 
-        // Fallback: solo los tres nombres exactos de las cajas de beneficios.
-        let arr = t.inventario ?? t;
-        if (typeof arr === "string") { try { arr = JSON.parse(arr); } catch { arr = []; } }
-        if (!Array.isArray(arr)) arr = Array.isArray(arr?.inventario) ? arr.inventario : [];
-        arr.forEach(item => {
-            const nombre = String(item?.nombre ?? item?.mueble ?? item?.item ?? "").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            const cantidad = Number(item?.cantidad) || 0;
-            if (nombre === "caja pequena") resultado.pequenas += cantidad;
-            if (nombre === "caja mediana") resultado.medianas += cantidad;
-            if (nombre === "caja grande") resultado.grandes += cantidad;
-        });
+    const t = datos || {};
+
+    //////////////////////////////////////////////////////////
+    // TIPO DE SERVICIO
+    //////////////////////////////////////////////////////////
+
+    const tipo =
+        t?.tipo_servicio ??
+        t?.tipoServicio ??
+        "";
+
+    const total =
+        String(tipo)
+            .toLowerCase()
+            .includes("total");
+
+    if (!total) {
         return resultado;
     }
+
+
+    //////////////////////////////////////////////////////////
+    // 1. API COMÚN RODAX
+    //////////////////////////////////////////////////////////
+
+    const api =
+        window.Transportista;
+
+
+    if (
+        api &&
+        typeof api.obtenerExtrasMudanzaTotal ===
+            "function"
+    ) {
+
+        const r =
+            api.obtenerExtrasMudanzaTotal(t);
+
+        resultado.pequenas =
+            Number(
+                r?.["Cajas pequeñas"]
+            ) || 0;
+
+        resultado.medianas =
+            Number(
+                r?.["Cajas medianas"]
+            ) || 0;
+
+        resultado.grandes =
+            Number(
+                r?.["Cajas grandes"]
+            ) || 0;
+
+        if (
+            resultado.pequenas > 0 ||
+            resultado.medianas > 0 ||
+            resultado.grandes > 0
+        ) {
+            return resultado;
+        }
+    }
+
+
+    //////////////////////////////////////////////////////////
+    // 2. API DE TARJETAS
+    //
+    // tarjetas.js ahora expone la función dentro de:
+    //
+    // window.Transportista.Tarjetas
+    //////////////////////////////////////////////////////////
+
+    const apiTarjetas =
+        window.Transportista?.Tarjetas;
+
+
+    if (
+        apiTarjetas &&
+        typeof apiTarjetas.obtenerExtrasMudanzaTotal ===
+            "function"
+    ) {
+
+        const r =
+            apiTarjetas.obtenerExtrasMudanzaTotal(t);
+
+        if (Array.isArray(r)) {
+
+            r.forEach(item => {
+
+                const nombre =
+                    String(
+                        item?.nombre || ""
+                    ).trim();
+
+                const cantidad =
+                    Number(
+                        item?.cantidad
+                    ) || 0;
+
+                if (
+                    nombre ===
+                    "Cajas pequeñas"
+                ) {
+                    resultado.pequenas =
+                        cantidad;
+                }
+
+                if (
+                    nombre ===
+                    "Cajas medianas"
+                ) {
+                    resultado.medianas =
+                        cantidad;
+                }
+
+                if (
+                    nombre ===
+                    "Cajas grandes"
+                ) {
+                    resultado.grandes =
+                        cantidad;
+                }
+
+            });
+
+        }
+
+        if (
+            resultado.pequenas > 0 ||
+            resultado.medianas > 0 ||
+            resultado.grandes > 0
+        ) {
+            return resultado;
+        }
+    }
+
+
+    //////////////////////////////////////////////////////////
+    // 3. FALLBACK — INVENTARIO
+    //
+    // Solo las tres cajas de beneficios.
+    //////////////////////////////////////////////////////////
+
+    let arr =
+        t?.inventario ?? t;
+
+
+    if (
+        typeof arr === "string"
+    ) {
+
+        try {
+
+            arr =
+                JSON.parse(arr);
+
+        } catch {
+
+            arr = [];
+
+        }
+
+    }
+
+
+    if (
+        !Array.isArray(arr)
+    ) {
+
+        arr =
+            Array.isArray(
+                arr?.inventario
+            )
+                ? arr.inventario
+                : [];
+
+    }
+
+
+    arr.forEach(item => {
+
+        const nombre =
+            String(
+                item?.nombre ??
+                item?.mueble ??
+                item?.item ??
+                ""
+            )
+            .trim()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(
+                /[\u0300-\u036f]/g,
+                ""
+            );
+
+        const cantidad =
+            Number(
+                item?.cantidad
+            ) || 0;
+
+
+        if (
+            nombre ===
+            "caja pequena"
+        ) {
+
+            resultado.pequenas +=
+                cantidad;
+
+        }
+
+
+        if (
+            nombre ===
+            "caja mediana"
+        ) {
+
+            resultado.medianas +=
+                cantidad;
+
+        }
+
+
+        if (
+            nombre ===
+            "caja grande"
+        ) {
+
+            resultado.grandes +=
+                cantidad;
+
+        }
+
+    });
+
+
+    return resultado;
+}
 
 
     //////////////////////////////////////////////////////////////
@@ -876,9 +1093,23 @@
                     extrasCajasExternos["Cajas grandes"]
                 )
         }
-        : obtenerExtrasCajas(
-            datosOriginales
-        );
+        : obtenerExtrasCajas({
+
+    ...(datosOriginales &&
+    typeof datosOriginales === "object" &&
+    !Array.isArray(datosOriginales)
+        ? datosOriginales
+        : {}),
+
+    inventario:
+        Array.isArray(datosOriginales)
+            ? datosOriginales
+            : datosOriginales?.inventario,
+
+    tipo_servicio:
+        tipoServicioText
+
+});
 
 
         //////////////////////////////////////////////////////////
