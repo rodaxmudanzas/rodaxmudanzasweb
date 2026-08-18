@@ -4154,30 +4154,90 @@ if (
 
  
 
-        const origen =
+        function obtenerUbicacionFicha(mudanza, tipo, desdeHistorial) {
 
-            mudanza.origen ||
+    if (!desdeHistorial) {
 
-            "";
+        return tipo === "origen"
+            ? (mudanza.origen || "")
+            : (mudanza.destino || "");
+
+    }
+
+    const ciudad =
+        tipo === "origen"
+            ? (
+                mudanza.origen_ciudad ||
+                mudanza.ciudad_origen ||
+                mudanza.ciudadOrigen ||
+                ""
+            )
+            : (
+                mudanza.destino_ciudad ||
+                mudanza.ciudad_destino ||
+                mudanza.ciudadDestino ||
+                ""
+            );
+
+    const cp =
+        tipo === "origen"
+            ? (
+                mudanza.origen_cp ||
+                mudanza.cp_origen ||
+                mudanza.codigo_postal_origen ||
+                ""
+            )
+            : (
+                mudanza.destino_cp ||
+                mudanza.cp_destino ||
+                mudanza.codigo_postal_destino ||
+                ""
+            );
+
+    const comunidad =
+        tipo === "origen"
+            ? (
+                mudanza.origen_comunidad_autonoma ||
+                mudanza.comunidad_autonoma_origen ||
+                mudanza.comunidadOrigen ||
+                ""
+            )
+            : (
+                mudanza.destino_comunidad_autonoma ||
+                mudanza.comunidad_autonoma_destino ||
+                mudanza.comunidadDestino ||
+                ""
+            );
+
+    return [
+        ciudad,
+        cp,
+        comunidad
+    ]
+        .map(valor => String(valor || "").trim())
+        .filter(Boolean)
+        .join(", ");
+}
+
+const origen =
+    obtenerUbicacionFicha(
+        mudanza,
+        "origen",
+        desdeHistorial
+    );
+
+const destino =
+    obtenerUbicacionFicha(
+        mudanza,
+        "destino",
+        desdeHistorial
+    );
+
+const fecha =
+    mudanza.fecha ||
+    "";
 
  
-
-        const destino =
-
-            mudanza.destino ||
-
-            "";
-
- 
-
-        const fecha =
-
-            mudanza.fecha ||
-
-            "";
-
- 
-
             function formatearFechaFicha(fechaOriginal) {
 
  

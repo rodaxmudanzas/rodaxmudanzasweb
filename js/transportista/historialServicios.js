@@ -70,7 +70,71 @@
 
     }
 
- 
+ function formatearUbicacionHistorial(
+    mudanza,
+    tipo
+) {
+
+    const prefijo =
+        tipo === "destino"
+            ? "destino"
+            : "origen";
+
+    const ciudad =
+        mudanza?.[`${prefijo}_ciudad`] ||
+        "";
+
+    const cp =
+        mudanza?.[`${prefijo}_cp`] ||
+        "";
+
+    const comunidad =
+        mudanza?.[`${prefijo}_comunidad`] ||
+        "";
+
+    const provincia =
+        mudanza?.[`${prefijo}_provincia`] ||
+        "";
+
+    /*
+     * IMPORTANTE:
+     * Nunca usamos mudanza.origen ni mudanza.destino
+     * como respaldo aquí, porque podrían contener
+     * la dirección exacta del cliente.
+     */
+
+    const partes = [];
+
+    if (ciudad) {
+        partes.push(
+            String(ciudad).trim()
+        );
+    }
+
+    if (cp) {
+        partes.push(
+            String(cp).trim()
+        );
+    }
+
+    if (comunidad) {
+        partes.push(
+            String(comunidad).trim()
+        );
+    } else if (provincia) {
+        /*
+         * Respaldo temporal si todavía no existe
+         * el campo de Comunidad Autónoma.
+         */
+        partes.push(
+            String(provincia).trim()
+        );
+    }
+
+    return partes.length
+        ? partes.join(", ")
+        : "Ubicación no disponible";
+}
 
     function obtenerFecha(mudanza) {
 
