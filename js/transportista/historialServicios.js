@@ -921,7 +921,9 @@ function obtenerAccesoDestino(mudanza) {
 
     function crearTarjetaHistorial(mudanza) {
 
- 
+        console.log("=== MUDANZA HISTORIAL ===");
+console.log(mudanza);
+
 
         const id =
 
