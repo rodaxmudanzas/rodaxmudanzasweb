@@ -3022,13 +3022,23 @@ async function procesarAceptacion(
 
             await cargarTrabajosDisponibles();
 
-            return;
-        }
+return;
 
-        if (
-            !data ||
-            data.length === 0
-        ) {
+}
+catch(error){
+
+    console.error("Error al aceptar mudanza:", error);
+
+    alert("Ha ocurrido un error al aceptar la mudanza.");
+
+    return;
+
+}
+
+if (
+    !data ||
+    data.length === 0
+) {
 
             alert(
                 "Esta mudanza ya no está disponible.\n\n" +
