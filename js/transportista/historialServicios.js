@@ -468,31 +468,29 @@
 
     }
 
- function obtenerUbicacionHistorial(mudanza, tipo){
+function obtenerUbicacionHistorial(mudanza, tipo){
 
     const m = mudanza || {};
-
     const origen = tipo === "origen";
 
     const ciudad = origen
-        ? (m.origen_ciudad ?? m.ciudad_origen ?? m.ciudadOrigen)
-        : (m.destino_ciudad ?? m.ciudad_destino ?? m.ciudadDestino);
+        ? (m.origen_ciudad ?? m.ciudad_origen ?? m.ciudadOrigen ?? "")
+        : (m.destino_ciudad ?? m.ciudad_destino ?? m.ciudadDestino ?? "");
 
     const cp = origen
-        ? (m.origen_cp ?? m.codigo_postal_origen ?? m.cp_origen)
-        : (m.destino_cp ?? m.codigo_postal_destino ?? m.cp_destino);
+        ? (m.origen_cp ?? m.cp_origen ?? m.codigo_postal_origen ?? "")
+        : (m.destino_cp ?? m.cp_destino ?? m.codigo_postal_destino ?? "");
 
     const comunidad = origen
-        ? (m.origen_comunidad ?? m.comunidad_origen)
-        : (m.destino_comunidad ?? m.comunidad_destino);
+        ? (m.origen_comunidad ?? m.comunidad_origen ?? m.ccaa_origen ?? "")
+        : (m.destino_comunidad ?? m.comunidad_destino ?? m.ccaa_destino ?? "");
 
     const partes = [ciudad, cp, comunidad].filter(Boolean);
 
     return partes.length
-        ? partes.join(" · ")
+        ? partes.join(", ")
         : "Ubicación no disponible";
 }
-
 
     function obtenerAccesoOrigen(mudanza) {
 

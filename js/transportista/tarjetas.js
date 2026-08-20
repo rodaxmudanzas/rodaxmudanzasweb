@@ -68,7 +68,36 @@
             .replace(/'/g, "&#039;");
 
     }
+function obtenerUbicacionCompleta(mudanza,tipo){
 
+    const origen = tipo==="origen";
+
+    const ciudad = origen
+        ? (mudanza.origen_ciudad ??
+           mudanza.ciudad_origen ??
+           mudanza.ciudadOrigen)
+        : (mudanza.destino_ciudad ??
+           mudanza.ciudad_destino ??
+           mudanza.ciudadDestino);
+
+    const cp = origen
+        ? (mudanza.origen_cp ??
+           mudanza.cp_origen ??
+           mudanza.codigo_postal_origen)
+        : (mudanza.destino_cp ??
+           mudanza.cp_destino ??
+           mudanza.codigo_postal_destino);
+
+    const comunidad = origen
+        ? (mudanza.origen_comunidad ??
+           mudanza.comunidad_origen)
+        : (mudanza.destino_comunidad ??
+           mudanza.comunidad_destino);
+
+    return [ciudad,cp,comunidad]
+        .filter(Boolean)
+        .join(" · ") || "Ubicación no disponible";
+}
 
     //////////////////////////////////////////////////////////////
     // OBTENER CONFIGURACIÓN
@@ -848,15 +877,38 @@ function obtenerUbicacionPublica(
                     text-center
                 ">
 
-                    <span class="
-                        text-xs
-                        text-slate-400
-                        font-medium
-                    ">
+                    ${
+    obtenerInventarioVisible(mudanza).length
 
-                        No se especificó inventario detallado.
+        ? obtenerInventarioVisible(mudanza)
 
-                    </span>
+            .map(item=>`
+
+                <div class="flex justify-between py-1 border-b border-slate-100">
+
+                    <span>${escapeHtml(item.nombre)}</span>
+
+                    <span>${item.cantidad}</span>
+
+                </div>
+
+            `)
+
+            .join("")
+
+        : `
+
+            <span
+                class="
+                    text-xs
+                    text-slate-400
+                    font-medium
+                ">
+                No se especificó inventario detallado.
+            </span>
+
+        `
+}
 
                 </div>
 
