@@ -3001,6 +3001,8 @@ async function procesarAceptacion(
     .is("transportista_id", null)
     .select();
 
+        if (error) {
+
             console.error(
                 "❌ Error al aceptar mudanza:",
                 error
