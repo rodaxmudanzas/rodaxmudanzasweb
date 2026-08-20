@@ -468,7 +468,12 @@
 
     }
 
- function obtenerUbicacionHistorial(mudanza, tipo) {
+ function obtenerUbicacionHistorial(
+    mudanza,
+    tipo
+) {
+    return "Ubicación no disponible";
+}
 
     const m = mudanza || {};
     const origen = tipo === "origen";
