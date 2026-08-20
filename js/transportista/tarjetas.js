@@ -1695,16 +1695,10 @@ function obtenerUbicacionPublica(
 //////////////////////////////////////////////////////////
 
 const ubicacionOrigenPublica =
-    obtenerUbicacionPublica(
-        t,
-        "origen"
-    );
+    "Ubicación no disponible";
 
 const ubicacionDestinoPublica =
-    obtenerUbicacionPublica(
-        t,
-        "destino"
-    );
+    "Ubicación no disponible";
 
 
         //////////////////////////////////////////////////////////

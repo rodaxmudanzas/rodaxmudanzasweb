@@ -3805,46 +3805,20 @@ if (
  
 
         const {
-
-            data,
-
-            error
-
-        } =
-
-            await dbClient
-
-                .from('mudanzas')
-
-                .select('*')
-
-                .eq(
-
-                    'estado',
-
-                    'Transportista asignado'
-
-                )
-
-                .eq(
-
-                    'transportista_id',
-
-                    currentUserId
-
-                )
-
-                .order(
-
-                    'fecha',
-
-                    {
-
-                        ascending: true
-
-                    }
-
-                );
+    data,
+    error
+} = await dbClient
+    .from('mudanzas')
+    .select('*')
+    .eq('transportista_id', currentUserId)
+    .not(
+        'estado',
+        'in',
+        '("Completada","Finalizada","Mudanza finalizada","Cancelada")'
+    )
+    .order('fecha', {
+        ascending: true
+    });
 
  
 

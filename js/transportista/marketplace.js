@@ -2994,34 +2994,12 @@ async function procesarAceptacion(
         bloqueada: true,
         fecha_asignacion: new Date().toISOString()
     })
-    .eq("id", mudanzaId)
+    .eq("id", id)
     .eq("estado", "Pendiente de asignación")
+    .eq("publicada_marketplace", true)
+    .eq("bloqueada", false)
     .is("transportista_id", null)
-    .select()
-    .single();
-            .eq(
-                "id",
-                id
-            )
-            .eq(
-                "estado",
-                "Pendiente de asignación"
-            )
-            .eq(
-                "publicada_marketplace",
-                true
-            )
-            .eq(
-                "bloqueada",
-                false
-            )
-            .is(
-                "transportista_id",
-                null
-            )
-            .select();
-
-        if (error) {
+    .select();
 
             console.error(
                 "❌ Error al aceptar mudanza:",
