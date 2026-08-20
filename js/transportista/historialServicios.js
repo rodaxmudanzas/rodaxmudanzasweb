@@ -473,22 +473,34 @@ function obtenerUbicacionHistorial(mudanza, tipo){
     const m = mudanza || {};
     const origen = tipo === "origen";
 
-    const ciudad = origen
+    let ciudad = origen
         ? (m.origen_ciudad ?? m.ciudad_origen ?? m.ciudadOrigen ?? "")
         : (m.destino_ciudad ?? m.ciudad_destino ?? m.ciudadDestino ?? "");
 
-    const cp = origen
+    let cp = origen
         ? (m.origen_cp ?? m.cp_origen ?? m.codigo_postal_origen ?? "")
         : (m.destino_cp ?? m.cp_destino ?? m.codigo_postal_destino ?? "");
 
-    const comunidad = origen
+    let comunidad = origen
         ? (m.origen_comunidad ?? m.comunidad_origen ?? m.ccaa_origen ?? "")
         : (m.destino_comunidad ?? m.comunidad_destino ?? m.ccaa_destino ?? "");
 
-    const partes = [ciudad, cp, comunidad].filter(Boolean);
+    // Respaldo usando el texto que ya existe en origen/destino
+    if(!ciudad && (origen ? m.origen : m.destino)){
 
-    return partes.length
-        ? partes.join(", ")
+        const texto = String(origen ? m.origen : m.destino);
+
+        const partes = texto.split(",");
+
+        ciudad = ciudad || partes[0]?.trim() || "";
+        cp = cp || partes.find(p => /\b\d{5}\b/.test(p))?.match(/\d{5}/)?.[0] || "";
+        comunidad = comunidad || partes[partes.length-1]?.trim() || "";
+    }
+
+    const resultado = [ciudad, cp, comunidad].filter(Boolean);
+
+    return resultado.length
+        ? resultado.join(", ")
         : "Ubicación no disponible";
 }
 
