@@ -3003,38 +3003,23 @@ async function procesarAceptacion(
 
         if (error) {
 
-            console.error(
-                "❌ Error al aceptar mudanza:",
-                error
-            );
+    console.error(
+        "❌ Error al aceptar mudanza:",
+        error
+    );
 
-            alert(
-                "No se pudo asignar la mudanza.\n\n" +
-                "Puede que otro transportista la haya aceptado antes."
-            );
+    alert(
+        "No se pudo asignar la mudanza.\n\n" +
+        "Puede que otro transportista la haya aceptado antes."
+    );
 
-            if (
-                actionModalMarketplace
-            ) {
+    if (actionModalMarketplace) {
+        actionModalMarketplace.classList.add("hidden");
+    }
 
-                actionModalMarketplace.classList.add(
-                    "hidden"
-                );
-            }
-
-            await cargarTrabajosDisponibles();
-
-return;
-
-}
-catch(error){
-
-    console.error("Error al aceptar mudanza:", error);
-
-    alert("Ha ocurrido un error al aceptar la mudanza.");
+    await cargarTrabajosDisponibles();
 
     return;
-
 }
 
 if (
