@@ -2,28 +2,54 @@
 
     "use strict";
 
-    function obtenerUbicacionCorta(direccionCompleta) {
+    function obtenerUbicacionCorta(direccionCompleta){
 
-        if (!direccionCompleta || String(direccionCompleta).trim() === "") {
-            return "—";
-        }
+    if(!direccionCompleta||String(direccionCompleta).trim()==="")
+        return "—";
 
-        const texto = String(direccionCompleta).trim();
-        const partes = texto.split(",").map(p => p.trim()).filter(Boolean);
+    const texto=String(direccionCompleta).trim();
 
-        if (partes.length >= 4) {
-            return `${partes[1]}, ${partes[2]}, ${partes[3]}`;
-        }
+    const cp=(texto.match(/\b\d{5}\b/)||[])[0]||"";
 
-        if (partes.length === 3) {
-            return partes.join(", ");
-        }
+    const partes=texto
+        .split(",")
+        .map(p=>p.trim())
+        .filter(Boolean);
 
-        const cp = texto.match(/\b\d{5}\b/);
-        if (cp) return `${texto.replace(cp[0],"").trim()}, ${cp[0]}`;
+    const comunidades=[
+        "Andalucía","Aragón","Asturias","Illes Balears",
+        "Canarias","Cantabria","Castilla-La Mancha",
+        "Castilla y León","Cataluña","Catalunya",
+        "Comunidad Valenciana","Extremadura","Galicia",
+        "Comunidad de Madrid","Madrid","Murcia","Navarra",
+        "País Vasco","La Rioja","Ceuta","Melilla"
+    ];
 
-        return texto;
+    const comunidad=partes.find(p=>
+        comunidades.some(c=>p.includes(c))
+    )||"";
+
+    let ciudad="";
+
+    for(const p of partes){
+
+        if(p===comunidad) continue;
+
+        if(/\d{5}/.test(p)) continue;
+
+        if(/España|Spain|Spania|Spanien/i.test(p)) continue;
+
+        ciudad=p;
     }
+
+    if(ciudad&&cp&&comunidad)
+        return `${ciudad} - CP ${cp} - ${comunidad}`;
+
+    if(ciudad&&cp)
+        return `${ciudad} - CP ${cp}`;
+
+    return texto;
+}
 
 
 

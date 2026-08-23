@@ -69,35 +69,55 @@ function obtenerUbicacionCorta(d){if(window.Transportista?.obtenerUbicacionCorta
             .replace(/'/g, "&#039;");
 
     }
-function obtenerUbicacionCompleta(mudanza,tipo){
+function obtenerUbicacionCorta(d){
 
-    const origen = tipo==="origen";
+    if(window.Transportista?.obtenerUbicacionCorta)
+        return window.Transportista.obtenerUbicacionCorta(d);
 
-    const ciudad = origen
-        ? (mudanza.origen_ciudad ??
-           mudanza.ciudad_origen ??
-           mudanza.ciudadOrigen)
-        : (mudanza.destino_ciudad ??
-           mudanza.ciudad_destino ??
-           mudanza.ciudadDestino);
+    if(!d) return "Ubicación no disponible";
 
-    const cp = origen
-        ? (mudanza.origen_cp ??
-           mudanza.cp_origen ??
-           mudanza.codigo_postal_origen)
-        : (mudanza.destino_cp ??
-           mudanza.cp_destino ??
-           mudanza.codigo_postal_destino);
+    const texto=String(d).trim();
 
-    const comunidad = origen
-        ? (mudanza.origen_comunidad ??
-           mudanza.comunidad_origen)
-        : (mudanza.destino_comunidad ??
-           mudanza.comunidad_destino);
+    const cp=(texto.match(/\b\d{5}\b/)||[])[0]||"";
 
-    return [ciudad,cp,comunidad]
-        .filter(Boolean)
-        .join(" · ") || "Ubicación no disponible";
+    const partes=texto
+        .split(",")
+        .map(x=>x.trim())
+        .filter(Boolean);
+
+    const comunidades=[
+        "Andalucía","Aragón","Asturias","Illes Balears",
+        "Canarias","Cantabria","Castilla-La Mancha",
+        "Castilla y León","Cataluña","Catalunya",
+        "Comunidad Valenciana","Extremadura","Galicia",
+        "Comunidad de Madrid","Madrid","Murcia","Navarra",
+        "País Vasco","La Rioja","Ceuta","Melilla"
+    ];
+
+    const comunidad=partes.find(p=>
+        comunidades.some(c=>p.includes(c))
+    )||"";
+
+    let ciudad="";
+
+    for(const p of partes){
+
+        if(p===comunidad) continue;
+
+        if(/\d{5}/.test(p)) continue;
+
+        if(/España|Spain|Spania|Spanien/i.test(p)) continue;
+
+        ciudad=p;
+    }
+
+    if(ciudad&&cp&&comunidad)
+        return `${ciudad} - CP ${cp} - ${comunidad}`;
+
+    if(ciudad&&cp)
+        return `${ciudad} - CP ${cp}`;
+
+    return texto;
 }
 
     //////////////////////////////////////////////////////////////

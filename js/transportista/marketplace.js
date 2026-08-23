@@ -5134,58 +5134,50 @@ function inicializarFiltrosMarketplace() {
 
 function obtenerUbicacionCorta(direccion){
 
-
-
     if(!direccion) return "Ubicación no disponible";
-
-
 
     const texto=String(direccion).trim();
 
-
+    const cp=(texto.match(/\b\d{5}\b/)||[])[0]||"";
 
     const partes=texto
-
         .split(",")
-
         .map(p=>p.trim())
-
         .filter(Boolean);
 
+    const comunidades=[
+        "Andalucía","Aragón","Asturias","Illes Balears",
+        "Canarias","Cantabria","Castilla-La Mancha",
+        "Castilla y León","Cataluña","Catalunya",
+        "Comunidad Valenciana","Extremadura","Galicia",
+        "Comunidad de Madrid","Madrid","Murcia","Navarra",
+        "País Vasco","La Rioja","Ceuta","Melilla"
+    ];
 
+    const comunidad=partes.find(p=>
+        comunidades.some(c=>p.includes(c))
+    )||"";
 
-    // Calle, Ciudad, CP, Comunidad
+    let ciudad="";
 
-    if(partes.length>=4){
+    for(const p of partes){
 
+        if(p===comunidad) continue;
 
+        if(/\d{5}/.test(p)) continue;
 
-        return `${partes[1]}, ${partes[2]}, ${partes[3]}`;
+        if(/España|Spain|Spania|Spanien/i.test(p)) continue;
 
-
-
+        ciudad=p;
     }
 
+    if(ciudad&&cp&&comunidad)
+        return `${ciudad} - CP ${cp} - ${comunidad}`;
 
-
-    // Ciudad, CP, Comunidad
-
-    if(partes.length===3){
-
-
-
-        return partes.join(", ");
-
-
-
-    }
-
-
+    if(ciudad&&cp)
+        return `${ciudad} - CP ${cp}`;
 
     return texto;
-
-
-
 }
 
 
