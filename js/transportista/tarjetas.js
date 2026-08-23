@@ -68,55 +68,62 @@
             .replace(/'/g, "&#039;");
 
     }
-function obtenerUbicacionCorta(d){
+function obtenerUbicacionCorta(d) {
 
-    if(window.Transportista?.obtenerUbicacionCorta)
-        return window.Transportista.obtenerUbicacionCorta(d);
+    if (!d) return "Ubicación no disponible";
 
-    if(!d) return "Ubicación no disponible";
+    const texto = String(d).trim();
 
-    const texto=String(d).trim();
+    const cp = (texto.match(/\b\d{5}\b/) || [])[0] || "";
 
-    const cp=(texto.match(/\b\d{5}\b/)||[])[0]||"";
-
-    const partes=texto
+    const partes = texto
         .split(",")
-        .map(x=>x.trim())
+        .map(x => x.trim())
         .filter(Boolean);
 
-    const comunidades=[
+    const comunidades = [
         "Andalucía","Aragón","Asturias","Illes Balears",
         "Canarias","Cantabria","Castilla-La Mancha",
         "Castilla y León","Cataluña","Catalunya",
         "Comunidad Valenciana","Extremadura","Galicia",
-        "Comunidad de Madrid","Madrid","Murcia","Navarra",
-        "País Vasco","La Rioja","Ceuta","Melilla"
+        "Comunidad de Madrid","Madrid","Murcia",
+        "Navarra","País Vasco","La Rioja","Ceuta","Melilla"
     ];
 
-    const comunidad=partes.find(p=>
-        comunidades.some(c=>p.includes(c))
-    )||"";
+    const comunidad =
+        partes.find(p =>
+            comunidades.some(c => p.includes(c))
+        ) || "";
 
-    let ciudad="";
+    let ciudad = "";
 
-    for(const p of partes){
+    const indiceCP =
+        partes.findIndex(p => /\b\d{5}\b/.test(p));
 
-        if(p===comunidad) continue;
+    if (indiceCP > 0) {
 
-        if(/\d{5}/.test(p)) continue;
+        ciudad = partes[indiceCP - 1];
 
-        if(/España|Spain|Spania|Spanien/i.test(p)) continue;
+    } else {
 
-        ciudad=p;
+        for (const p of partes) {
+
+            if (p === comunidad) continue;
+            if (/España|Spain|Spania|Spanien/i.test(p)) continue;
+            if (/\d{5}/.test(p)) continue;
+
+            ciudad = p;
+            break;
+        }
     }
 
-    if(ciudad&&cp&&comunidad)
+    if (ciudad && cp && comunidad)
         return `${ciudad} - CP ${cp} - ${comunidad}`;
 
-    if(ciudad&&cp)
+    if (ciudad && cp)
         return `${ciudad} - CP ${cp}`;
 
-    return texto;
+    return ciudad || texto;
 }
 
     //////////////////////////////////////////////////////////////
@@ -214,19 +221,26 @@ function obtenerUbicacionPublica(
             );
 
     const partes = [
-        ciudad,
-        codigoPostal,
-        comunidad
-    ]
-        .map(
-            valor =>
-                String(valor || "").trim()
-        )
-        .filter(Boolean);
+    ciudad,
+    codigoPostal,
+    comunidad
+]
+    .map(valor => String(valor || "").trim())
+    .filter(Boolean);
 
-    return partes.length
-        ? partes.join(" · ")
-        : "Ubicación no disponible";
+if (partes.length === 3) {
+    return `${ciudad} - CP ${codigoPostal} - ${comunidad}`;
+}
+
+if (partes.length === 2 && ciudad && codigoPostal) {
+    return `${ciudad} - CP ${codigoPostal}`;
+}
+
+// Fallback: usar la dirección completa y extraer Ciudad + CP + Comunidad.
+const direccionOriginal =
+    origen ? mudanza?.origen : mudanza?.destino;
+
+return obtenerUbicacionCorta(direccionOriginal);
 }
 
     //////////////////////////////////////////////////////////////
