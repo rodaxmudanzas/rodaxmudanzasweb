@@ -365,10 +365,10 @@ if (elFranjaHorariaRecogida) {
             obtenerMostrarContactoCompleto(mudanza);
 
         const direccionOrigenFinal =
-    extraerCiudadYCP(mudanza.origen);
+    obtenerUbicacionCorta(mudanza.origen);
 
 const direccionDestinoFinal =
-    extraerCiudadYCP(mudanza.destino);
+    obtenerUbicacionCorta(mudanza.destino);
 
 
         ///////////////////////////////////////////////////////
