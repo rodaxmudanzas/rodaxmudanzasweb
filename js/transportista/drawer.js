@@ -377,7 +377,7 @@ if (elFranjaHorariaRecogida) {
         // OBJETO SEGURO PARA LOS RENDERIZADORES
         ///////////////////////////////////////////////////////
 
-        const mudanzaDrawer = {
+        let mudanzaDrawer={
             ...mudanza,
             origen: direccionOrigenFinal,
             destino: direccionDestinoFinal,
