@@ -1,3 +1,4 @@
+function obtenerUbicacionCorta(d){if(window.Transportista?.obtenerUbicacionCorta)return window.Transportista.obtenerUbicacionCorta(d);const p=String(d||"").split(",").map(x=>x.trim()).filter(Boolean);if(p.length>=4)return `${p[1]}, ${p[2]}, ${p[3]}`;if(p.length==3)return p.join(", ");return d||"Ubicación no disponible";}
 /* ============================================================
    RODAX TRANSPORTISTA
    tarjetas.js
@@ -1407,28 +1408,28 @@ function obtenerUbicacionPublica(
 
             origen:
                 escapeHtml(
-                    t.origen ||
+                    obtenerUbicacionCorta(t.origen) ||
                     "—"
                 ),
 
 
             destino:
                 escapeHtml(
-                    t.destino ||
+                    obtenerUbicacionCorta(t.destino) ||
                     "—"
                 ),
 
 
             tituloOrigen:
                 escapeHtml(
-                    t.origen ||
+                    obtenerUbicacionCorta(t.origen) ||
                     "—"
                 ),
 
 
             tituloDestino:
                 escapeHtml(
-                    t.destino ||
+                    obtenerUbicacionCorta(t.destino) ||
                     "—"
                 ),
 

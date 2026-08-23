@@ -334,7 +334,8 @@ if (elFranjaHorariaRecogida) {
         // PRIVACIDAD DE DIRECCIONES Y CONTACTO
         ///////////////////////////////////////////////////////
 
-        const mostrarDireccionCompleta =
+        const obtenerUbicacionCorta=window.Transportista?.obtenerUbicacionCorta||((d)=>d);
+    const mostrarDireccionCompleta =
             obtenerMostrarDireccionCompleta(mudanza);
 
         const mostrarContactoCompleto =

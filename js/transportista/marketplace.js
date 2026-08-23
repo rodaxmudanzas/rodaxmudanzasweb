@@ -5844,9 +5844,8 @@ function renderizarDisponibles() {
 
 
 
-    contenedor.innerHTML =
-
-        renderer(trabajos);
+    const trabajosRender=trabajos.map(t=>({...t,origen:obtenerUbicacionCorta(t.origen),destino:obtenerUbicacionCorta(t.destino)}));
+    contenedor.innerHTML=renderer(trabajosRender);
 
 
 
