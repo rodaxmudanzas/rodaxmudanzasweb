@@ -191,7 +191,7 @@ function obtenerArticulosMarketplace(trabajo) {
             "articulos", "total_articulos", "num_articulos", "cantidad_articulos"
         ])
     );
-} 
+} biographical context
 
 function contarFotosMarketplace(valor) {
     if (!valor) return 0;
@@ -730,21 +730,35 @@ console.log("✅ Filtros Marketplace conectados correctamente.");
 ///////////////////////////////////////////////////////////
 // UTILIDADES
 ///////////////////////////////////////////////////////////
-function obtenerUbicacionCorta(direccion){
-    if(!direccion) return "Ubicación no disponible";
-    const texto=String(direccion).trim();
-    const cp=(texto.match(/\\b\\d{5}\\b/)||[])[0]||"";
-    const partes=texto.split(",").map(p=>p.trim()).filter(Boolean);
-    const comunidades=["Andalucía","Aragón","Asturias","Illes Balears","Canarias","Cantabria","Castilla-La Mancha","Castilla y León","Cataluña","Catalunya","Comunidad Valenciana","Extremadura","Galicia","Comunidad de Madrid","Madrid","Murcia","Navarra","País Vasco","La Rioja","Ceuta","Melilla"];
-    const comunidad=partes.find(p=>comunidades.some(c=>p.includes(c)))||"";
-    let ciudad=""; const indiceCP=partes.findIndex(p=>/\\b\\d{5}\\b/.test(p));
-    if(indiceCP>0){ciudad=partes[indiceCP-1];}else{for(const p of partes){if(p===comunidad)continue;if(/\\d{5}/.test(p))continue;if(/España|Spain|Spania|Spanien/i.test(p))continue;ciudad=p;break;}}
-    if(ciudad&&cp&&comunidad) return `${ciudad} - CP ${cp} - ${comunidad}`;
-    if(ciudad&&cp) return `${ciudad} - CP ${cp}`;
-    return texto;
+function obtenerUbicacionCorta(direccion) {
+if (!direccion) return "Ubicación no disponible";
+const texto = String(direccion).trim();
+const cp = (texto.match(/\b\d{5}\b/)||[])[0] || "";
+const partes = texto.split(",").map(p => p.trim()).filter(Boolean);
+const comunidades = [
+"Andalucía", "Aragón", "Asturias", "Illes Balears", "Canarias", "Cantabria", "Castilla-La Mancha",
+"Castilla y León", "Cataluña", "Catalunya", "Comunidad Valenciana", "Extremadura", "Galicia",
+"Comunidad de Madrid", "Madrid", "Murcia", "Navarra", "País Vasco", "La Rioja", "Ceuta", "Melilla"
+];
+const comunidad = partes.find(p => comunidades.some(c => p.includes(c))) || "";
+let ciudad = "";
+const indiceCP = partes.findIndex(p => /\b\d{5}\b/.test(p));
+if (indiceCP > 0) {
+ciudad = partes[indiceCP - 1];
+} else if (partes.length >= 2) {
+ciudad = partes[1];
 }
-function escapeHtmlMarketplace(valor){
-    return String(valor ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+if (ciudad && cp && comunidad) return ${ciudad} - CP ${cp} - ${comunidad};
+if (ciudad && cp) return ${ciudad} - CP ${cp};
+return texto;
+}
+function escapeHtmlMarketplace(valor) {
+return String(valor ?? "")
+.replace(/&/g, "&")
+.replace(/</g, "<")
+.replace(/>/g, ">")
+.replace(/"/g, """)
+.replace(/'/g, "'");
 }
 window.Transportista.obtenerUbicacionCorta = obtenerUbicacionCorta;
 function apiTransportistaDisponible() {

@@ -306,7 +306,7 @@ function () {
                 "drawerFranjaHorariaRecogida"
             );
 
-                if (elFranjaHorariaRecogida) {
+        if (elFranjaHorariaRecogida) {
             elFranjaHorariaRecogida.textContent =
                 mudanza.franja_horaria_recogida || "—";
         }
@@ -320,7 +320,7 @@ function () {
         }
 
         const elObservaciones =
-            document.getElementById("drawerObservations");
+            document.getElementById("drawerObservaciones");
 
         if (elObservaciones) {
             elObservaciones.textContent =
@@ -342,183 +342,159 @@ function () {
         // CORRECCIÓN DIRECTA: Forzar formato Ciudad - CP - Comunidad Autónoma
         const direccionOrigenFinal = obtenerUbicacionCorta(mudanza.origen);
         const direccionDestinoFinal = obtenerUbicacionCorta(mudanza.destino);
-
-
-        ///////////////////////////////////////////////////////
-        // RESUMEN DE RUTA
-        ///////////////////////////////////////////////////////
-
-        const elOrigenResumen = document.getElementById("drawerOrigenResumen");
-        const elDestinoResumen = document.getElementById("drawerDestinoResumen");
-
-        if (elOrigenResumen) {
-            elOrigenResumen.textContent = direccionOrigenFinal;
-        }
-
-        if (elDestinoResumen) {
-            elDestinoResumen.textContent = direccionDestinoFinal;
-        }
-
-
-        ///////////////////////////////////////////////////////
-        // ACCESOS
-        ///////////////////////////////////////////////////////
-
-        let accesos = api && typeof api.getAccesos === "function"
-            ? api.getAccesos(mudanza)
-            : { recogida: "—", entrega: "—" };
-
-        const elOrigenAcceso = document.getElementById("drawerOrigenAcceso");
-        const elDestinoAcceso = document.getElementById("drawerDestinoAcceso");
-
-        if (elOrigenAcceso) {
-            elOrigenAcceso.textContent = accesos?.recogida || "—";
-        }
-
-        if (elDestinoAcceso) {
-            elDestinoAcceso.textContent = accesos?.entrega || "—";
-        }
-
-
-        ///////////////////////////////////////////////////////
-        // OBJETO SEGURO PARA LOS RENDERIZADORES
-        ///////////////////////////////////////////////////////
-
-        let mudanzaDrawer = {
-            ...mudanza,
-            origen: direccionOrigenFinal,
-            destino: direccionDestinoFinal,
-            __mostrarDireccionCompleta: mostrarDireccionCompleta,
-            __mostrarContactoCompleto: mostrarContactoCompleto
-        };
-
-
-        ///////////////////////////////////////////////////////
-        // RUTA
-        ///////////////////////////////////////////////////////
-
-        if (typeof window.renderRutaDrawer === "function") {
-            window.renderRutaDrawer(mudanzaDrawer);
-        }
-
-
-        ///////////////////////////////////////////////////////
-        // SERVICIOS
-        ///////////////////////////////////////////////////////
-
-        if (typeof window.renderServiciosDrawer === "function") {
-            window.renderServiciosDrawer(mudanzaDrawer);
-        }
-
-
-        ///////////////////////////////////////////////////////
-        // INVENTARIO
-        ///////////////////////////////////////////////////////
-
-        if (typeof window.renderInventarioDrawer === "function") {
-            window.renderInventarioDrawer(mudanza.inventario, mudanza.tipo_servicio);
-        }
-
-
-        ///////////////////////////////////////////////////////
-        // FOTOS
-        ///////////////////////////////////////////////////////
-
-        if (typeof window.renderFotosDrawer === "function") {
-            window.renderFotosDrawer(mudanza.urls_fotos);
-        }
-
-
-        ///////////////////////////////////////////////////////
-        // INDICACIONES
-        ///////////////////////////////////////////////////////
-
-        if (typeof window.renderIndicacionesDrawer === "function") {
-            window.renderIndicacionesDrawer(mudanzaDrawer);
-        } else {
-            const elIndicaciones = document.getElementById("drawerIndicacionesContenedor");
-            if (elIndicaciones) {
-                elIndicaciones.textContent = mudanza.observaciones || "Sin indicaciones adicionales.";
-            }
-        }
-
-
-        ///////////////////////////////////////////////////////
-        // ABRIR SIEMPRE EN RESUMEN
-        ///////////////////////////////////////////////////////
-
-        cambiarDrawerTab("resumen");
-    }
-
-
-    ///////////////////////////////////////////////////////
-    // ABRIR / CERRAR
-    ///////////////////////////////////////////////////////
-
-    function abrirDrawer() {
-        const overlay = document.getElementById("drawerOverlay");
-        const drawer = document.getElementById("drawerMudanza");
-        overlay?.classList.remove("hidden");
-        drawer?.classList.remove("translate-x-full");
-    }
-
-
-    function cerrarDrawer() {
-        const overlay = document.getElementById("drawerOverlay");
-        const drawer = document.getElementById("drawerMudanza");
-        overlay?.classList.add("hidden");
-        drawer?.classList.add("translate-x-full");
-    }
-
-
-    ///////////////////////////////////////////////////////
-    // PESTAÑAS
-    ///////////////////////////////////////////////////////
-
-    function cambiarDrawerTab(tabName) {
-        const tabs = ["resumen", "ruta", "inventario", "servicios", "fotos", "indicaciones"];
-        
-        tabs.forEach(tab => {
-            // CORREGIDO: Se agregaron las comillas invertidas correspondientes para evaluar las variables
-            const btn = document.getElementById(`tab-d-${tab}`);
-            const pane = document.getElementById(`pane-d-${tab}`);
-
-            if (btn) {
-                btn.className = tab === tabName
-                    ? "px-3 py-3 text-xs font-semibold border-b-2 border-blue-600 text-blue-600 transition-colors flex-1 text-center"
-                    : "px-3 py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors flex-1 text-center";
-            }
-
-            if (pane) {
-                if (tab === tabName) {
-                    pane.classList.remove("hidden");
-                } else {
-                    pane.classList.add("hidden");
-                }
-            }
-        });
-    }
-
-
-    ///////////////////////////////////////////////////////
-    // EVENTOS
-    ///////////////////////////////////////////////////////
-
-    document.getElementById("drawerOverlay")?.addEventListener("click", cerrarDrawer);
-
-
-    ///////////////////////////////////////////////////////
-    // API GLOBAL
-    ///////////////////////////////////////////////////////
-
-    window.verDetalleMudanza = verDetalleMudanza;
-    window.abrirDrawer = abrirDrawer;
-    window.cerrarDrawer = cerrarDrawer;
-    window.cambiarDrawerTab = cambiarDrawerTab;
-
-    // Exportación explícita para reutilizar la función en las tarjetas
-    window.obtenerUbicacionCortaGlobal = obtenerUbicacionCorta;
-
-    console.log("✅ Drawer principal cargado correctamente");
-
+///////////////////////////////////////////////////////
+// RESUMEN DE RUTA
+///////////////////////////////////////////////////////
+const elOrigenResumen =
+document.getElementById("drawerOrigenResumen");
+const elDestinoResumen =
+document.getElementById("drawerDestinoResumen");
+if (elOrigenResumen) {
+elOrigenResumen.textContent = direccionOrigenFinal;
+}
+if (elDestinoResumen) {
+elDestinoResumen.textContent = direccionDestinoFinal;
+}
+///////////////////////////////////////////////////////
+// ACCESOS
+///////////////////////////////////////////////////////
+let accesos =
+api && typeof api.getAccesos === "function"
+? api.getAccesos(mudanza)
+: { recogida: "—", entrega: "—" };
+const elOrigenAcceso =
+document.getElementById("drawerOrigenAcceso");
+const elDestinoAcceso =
+document.getElementById("drawerDestinoAcceso");
+if (elOrigenAcceso) {
+elOrigenAcceso.textContent =
+accesos?.recogida || "—";
+}
+if (elDestinoAcceso) {
+elDestinoAcceso.textContent =
+accesos?.entrega || "—";
+}
+///////////////////////////////////////////////////////
+// OBJETO SEGURO PARA LOS RENDERIZADORES
+///////////////////////////////////////////////////////
+let mudanzaDrawer={
+...mudanza,
+origen: direccionOrigenFinal,
+destino: direccionDestinoFinal,
+__mostrarDireccionCompleta: mostrarDireccionCompleta,
+__mostrarContactoCompleto: mostrarContactoCompleto
+};
+///////////////////////////////////////////////////////
+// RUTA
+///////////////////////////////////////////////////////
+if (typeof window.renderRutaDrawer === "function") {
+window.renderRutaDrawer(mudanzaDrawer);
+}
+///////////////////////////////////////////////////////
+// SERVICIOS
+///////////////////////////////////////////////////////
+if (typeof window.renderServiciosDrawer === "function") {
+window.renderServiciosDrawer(mudanzaDrawer);
+}
+///////////////////////////////////////////////////////
+// INVENTARIO
+///////////////////////////////////////////////////////
+if (typeof window.renderInventarioDrawer === "function") {
+window.renderInventarioDrawer(
+mudanza.inventario,
+mudanza.tipo_servicio
+);
+}
+///////////////////////////////////////////////////////
+// FOTOS
+///////////////////////////////////////////////////////
+if (typeof window.renderFotosDrawer === "function") {
+window.renderFotosDrawer(
+mudanza.urls_fotos
+);
+}
+///////////////////////////////////////////////////////
+// INDICACIONES
+///////////////////////////////////////////////////////
+if (typeof window.renderIndicacionesDrawer === "function") {
+window.renderIndicacionesDrawer(mudanzaDrawer);
+} else {
+const elIndicaciones =
+document.getElementById(
+"drawerIndicacionesContenedor"
+);
+if (elIndicaciones) {
+elIndicaciones.textContent =
+mudanza.observaciones ||
+"Sin indicaciones adicionales.";
+}
+}
+///////////////////////////////////////////////////////
+// ABRIR SIEMPRE EN RESUMEN
+///////////////////////////////////////////////////////
+cambiarDrawerTab("resumen");
+}
+///////////////////////////////////////////////////////
+// ABRIR / CERRAR
+///////////////////////////////////////////////////////
+function abrirDrawer() {
+const overlay = document.getElementById("drawerOverlay");
+const drawer = document.getElementById("drawerMudanza");
+overlay?.classList.remove("hidden");
+drawer?.classList.remove("translate-x-full");
+}
+function cerrarDrawer() {
+const overlay = document.getElementById("drawerOverlay");
+const drawer = document.getElementById("drawerMudanza");
+overlay?.classList.add("hidden");
+drawer?.classList.add("translate-x-full");
+}
+///////////////////////////////////////////////////////
+// PESTAÑAS
+///////////////////////////////////////////////////////
+function cambiarDrawerTab(tabName) {
+const tabs = [
+"resumen",
+"ruta",
+"inventario",
+"servicios",
+"fotos",
+"indicaciones"
+];
+tabs.forEach(tab => {
+const btn =
+document.getElementById(tab-d-${tab});
+const pane =
+document.getElementById(pane-d-${tab});
+if (btn) {
+btn.className =
+tab === tabName
+? "px-3 py-3 text-xs font-semibold border-b-2 border-blue-600 text-blue-600 transition-colors flex-1 text-center"
+: "px-3 py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors flex-1 text-center";
+}
+if (pane) {
+if (tab === tabName) {
+pane.classList.remove("hidden");
+} else {
+pane.classList.add("hidden");
+}
+}
+});
+}
+///////////////////////////////////////////////////////
+// EVENTOS
+///////////////////////////////////////////////////////
+document
+.getElementById("drawerOverlay")
+?.addEventListener("click", cerrarDrawer);
+///////////////////////////////////////////////////////
+// API GLOBAL
+///////////////////////////////////////////////////////
+window.verDetalleMudanza = verDetalleMudanza;
+window.abrirDrawer = abrirDrawer;
+window.cerrarDrawer = cerrarDrawer;
+window.cambiarDrawerTab = cambiarDrawerTab;
+// Exportación explícita para reutilizar la función en las tarjetas
+window.obtenerUbicacionCortaGlobal = obtenerUbicacionCorta;
+console.log("✅ Drawer principal cargado correctamente");
 })();
