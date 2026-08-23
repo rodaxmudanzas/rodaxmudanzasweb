@@ -5161,12 +5161,14 @@ function obtenerUbicacionCorta(direccion){
     let ciudad="";
 
 // La ciudad suele ser el elemento inmediatamente anterior al código postal
-const indiceCP=partes.findIndex(p=>/\b\d{5}\b/.test(p));
+const indiceCP = partes.findIndex(p => /\b\d{5}\b/.test(p));
 
-if(indiceCP>0){
-    ciudad=partes[indiceCP-1];
-}else if(partes.length>=2){
-    ciudad=partes[1];
+if (indiceCP > 1) {
+    ciudad = partes[indiceCP - 2];
+} else if (indiceCP > 0) {
+    ciudad = partes[indiceCP - 1];
+} else {
+    ciudad = partes[partes.length - 2] || partes[0];
 }
 
     if(ciudad&&cp&&comunidad)
