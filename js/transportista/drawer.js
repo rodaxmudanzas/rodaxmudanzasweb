@@ -391,6 +391,17 @@ if (elFranjaHorariaRecogida) {
         ///////////////////////////////////////////////////////
 
         if (typeof window.renderRutaDrawer === "function") {
+
+            mudanzaDrawer = {
+
+    ...mudanzaDrawer,
+
+    origen: obtenerUbicacionCorta(mudanzaDrawer.origen),
+
+    destino: obtenerUbicacionCorta(mudanzaDrawer.destino)
+
+};
+
             window.renderRutaDrawer(mudanzaDrawer);
         }
 

@@ -2561,33 +2561,48 @@ function inicializarFiltrosMarketplace() {
     );
 }
 
-
+///////////////////////////////////////////////////////////
 // UTILIDADES
 ///////////////////////////////////////////////////////////
 
-function escapeHtmlMarketplace(valor) {
+function obtenerUbicacionCorta(direccion){
+
+    if(!direccion) return "Ubicación no disponible";
+
+    const texto=String(direccion).trim();
+
+    const partes=texto
+        .split(",")
+        .map(p=>p.trim())
+        .filter(Boolean);
+
+    // Calle, Ciudad, CP, Comunidad
+    if(partes.length>=4){
+
+        return `${partes[1]}, ${partes[2]}, ${partes[3]}`;
+
+    }
+
+    // Ciudad, CP, Comunidad
+    if(partes.length===3){
+
+        return partes.join(", ");
+
+    }
+
+    return texto;
+
+}
+
+function escapeHtmlMarketplace(valor){
 
     return String(valor ?? "")
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
 }
 
 function apiTransportistaDisponible() {
