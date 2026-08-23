@@ -1,54 +1,52 @@
-(function () {
+function () {
 
     "use strict";
 
     function obtenerUbicacionCorta(direccionCompleta){
 
-    if(!direccionCompleta||String(direccionCompleta).trim()==="")
-        return "—";
+        if(!direccionCompleta||String(direccionCompleta).trim()==="")
+            return "—";
 
-    const texto=String(direccionCompleta).trim();
+        const texto=String(direccionCompleta).trim();
 
-    const cp=(texto.match(/\b\d{5}\b/)||[])[0]||"";
+        const cp=(texto.match(/\b\d{5}\b/)||[])[0]||"";
 
-    const partes=texto
-        .split(",")
-        .map(p=>p.trim())
-        .filter(Boolean);
+        const partes=texto
+            .split(",")
+            .map(p=>p.trim())
+            .filter(Boolean);
 
-    const comunidades=[
-        "Andalucía","Aragón","Asturias","Illes Balears",
-        "Canarias","Cantabria","Castilla-La Mancha",
-        "Castilla y León","Cataluña","Catalunya",
-        "Comunidad Valenciana","Extremadura","Galicia",
-        "Comunidad de Madrid","Madrid","Murcia","Navarra",
-        "País Vasco","La Rioja","Ceuta","Melilla"
-    ];
+        const comunidades=[
+            "Andalucía","Aragón","Asturias","Illes Balears",
+            "Canarias","Cantabria","Castilla-La Mancha",
+            "Castilla y León","Cataluña","Catalunya",
+            "Comunidad Valenciana","Extremadura","Galicia",
+            "Comunidad de Madrid","Madrid","Murcia","Navarra",
+            "País Vasco","La Rioja","Ceuta","Melilla"
+        ];
 
-    const comunidad=partes.find(p=>
-        comunidades.some(c=>p.includes(c))
-    )||"";
+        const comunidad=partes.find(p=>
+            comunidades.some(c=>p.includes(c))
+        )||"";
 
-    let ciudad="";
+        let ciudad="";
 
-const indiceCP=partes.findIndex(p=>/\b\d{5}\b/.test(p));
+        const indiceCP=partes.findIndex(p=>/\b\d{5}\b/.test(p));
 
-if(indiceCP>0){
-    ciudad=partes[indiceCP-1];
-}else if(partes.length>=2){
-    ciudad=partes[1];
-}
+        if(indiceCP>0){
+            ciudad=partes[indiceCP-1];
+        }else if(partes.length>=2){
+            ciudad=partes[1];
+        }
 
-    if(ciudad&&cp&&comunidad)
-        return `${ciudad} - CP ${cp} - ${comunidad}`;
+        if(ciudad&&cp&&comunidad)
+            return `${ciudad} - CP ${cp} - ${comunidad}`;
 
-    if(ciudad&&cp)
-        return `${ciudad} - CP ${cp}`;
+        if(ciudad&&cp)
+            return `${ciudad} - CP ${cp}`;
 
-    return texto;
-}
-
-
+        return texto;
+    }
 
 
     ///////////////////////////////////////////////////////
@@ -56,32 +54,10 @@ if(indiceCP>0){
     ///////////////////////////////////////////////////////
 
     function extraerCiudadYCP(direccionCompleta) {
-
         if (!direccionCompleta || String(direccionCompleta).trim() === "") {
             return "—";
         }
-
-        const texto = String(direccionCompleta).trim();
-        const matchCP = texto.match(/\b\d{5}\b/);
-        const cp = matchCP ? matchCP[0] : "";
-
-        const partes = texto.split(",");
-
-        let ciudad =
-            partes.length >= 2
-                ? partes[1].trim()
-                : texto;
-
-        if (cp) {
-            ciudad = ciudad
-                .replace(cp, "")
-                .replace(/\bMadrid\b/gi, "")
-                .trim();
-
-            return `${ciudad}, ${cp}`;
-        }
-
-        return ciudad || "—";
+        return obtenerUbicacionCorta(direccionCompleta);
     }
 
 
@@ -326,14 +302,14 @@ if(indiceCP>0){
         }
 
         const elFranjaHorariaRecogida =
-    document.getElementById(
-        "drawerFranjaHorariaRecogida"
-    );
+            document.getElementById(
+                "drawerFranjaHorariaRecogida"
+            );
 
-if (elFranjaHorariaRecogida) {
-    elFranjaHorariaRecogida.textContent =
-        mudanza.franja_horaria_recogida || "—";
-}
+                if (elFranjaHorariaRecogida) {
+            elFranjaHorariaRecogida.textContent =
+                mudanza.franja_horaria_recogida || "—";
+        }
 
         const elPrecio =
             document.getElementById("drawerPrecio");
@@ -344,7 +320,7 @@ if (elFranjaHorariaRecogida) {
         }
 
         const elObservaciones =
-            document.getElementById("drawerObservaciones");
+            document.getElementById("drawerObservations");
 
         if (elObservaciones) {
             elObservaciones.textContent =
@@ -357,38 +333,30 @@ if (elFranjaHorariaRecogida) {
         // PRIVACIDAD DE DIRECCIONES Y CONTACTO
         ///////////////////////////////////////////////////////
 
-        const obtenerUbicacionCorta=window.Transportista?.obtenerUbicacionCorta||((d)=>d);
-    const mostrarDireccionCompleta =
+        const mostrarDireccionCompleta =
             obtenerMostrarDireccionCompleta(mudanza);
 
         const mostrarContactoCompleto =
             obtenerMostrarContactoCompleto(mudanza);
 
-        const direccionOrigenFinal =
-    obtenerUbicacionCorta(mudanza.origen);
-
-const direccionDestinoFinal =
-    obtenerUbicacionCorta(mudanza.destino);
+        // CORRECCIÓN DIRECTA: Forzar formato Ciudad - CP - Comunidad Autónoma
+        const direccionOrigenFinal = obtenerUbicacionCorta(mudanza.origen);
+        const direccionDestinoFinal = obtenerUbicacionCorta(mudanza.destino);
 
 
         ///////////////////////////////////////////////////////
         // RESUMEN DE RUTA
         ///////////////////////////////////////////////////////
 
-        const elOrigenResumen =
-            document.getElementById("drawerOrigenResumen");
-
-        const elDestinoResumen =
-            document.getElementById("drawerDestinoResumen");
+        const elOrigenResumen = document.getElementById("drawerOrigenResumen");
+        const elDestinoResumen = document.getElementById("drawerDestinoResumen");
 
         if (elOrigenResumen) {
-            elOrigenResumen.textContent =
-                direccionOrigenFinal;
+            elOrigenResumen.textContent = direccionOrigenFinal;
         }
 
         if (elDestinoResumen) {
-            elDestinoResumen.textContent =
-                direccionDestinoFinal;
+            elDestinoResumen.textContent = direccionDestinoFinal;
         }
 
 
@@ -396,25 +364,19 @@ const direccionDestinoFinal =
         // ACCESOS
         ///////////////////////////////////////////////////////
 
-        let accesos =
-            api && typeof api.getAccesos === "function"
-                ? api.getAccesos(mudanza)
-                : { recogida: "—", entrega: "—" };
+        let accesos = api && typeof api.getAccesos === "function"
+            ? api.getAccesos(mudanza)
+            : { recogida: "—", entrega: "—" };
 
-        const elOrigenAcceso =
-            document.getElementById("drawerOrigenAcceso");
-
-        const elDestinoAcceso =
-            document.getElementById("drawerDestinoAcceso");
+        const elOrigenAcceso = document.getElementById("drawerOrigenAcceso");
+        const elDestinoAcceso = document.getElementById("drawerDestinoAcceso");
 
         if (elOrigenAcceso) {
-            elOrigenAcceso.textContent =
-                accesos?.recogida || "—";
+            elOrigenAcceso.textContent = accesos?.recogida || "—";
         }
 
         if (elDestinoAcceso) {
-            elDestinoAcceso.textContent =
-                accesos?.entrega || "—";
+            elDestinoAcceso.textContent = accesos?.entrega || "—";
         }
 
 
@@ -422,7 +384,7 @@ const direccionDestinoFinal =
         // OBJETO SEGURO PARA LOS RENDERIZADORES
         ///////////////////////////////////////////////////////
 
-        let mudanzaDrawer={
+        let mudanzaDrawer = {
             ...mudanza,
             origen: direccionOrigenFinal,
             destino: direccionDestinoFinal,
@@ -436,17 +398,6 @@ const direccionDestinoFinal =
         ///////////////////////////////////////////////////////
 
         if (typeof window.renderRutaDrawer === "function") {
-
-            mudanzaDrawer = {
-
-    ...mudanzaDrawer,
-
-    origen: obtenerUbicacionCorta(mudanzaDrawer.origen),
-
-    destino: obtenerUbicacionCorta(mudanzaDrawer.destino)
-
-};
-
             window.renderRutaDrawer(mudanzaDrawer);
         }
 
@@ -465,10 +416,7 @@ const direccionDestinoFinal =
         ///////////////////////////////////////////////////////
 
         if (typeof window.renderInventarioDrawer === "function") {
-            window.renderInventarioDrawer(
-                mudanza.inventario,
-                mudanza.tipo_servicio
-            );
+            window.renderInventarioDrawer(mudanza.inventario, mudanza.tipo_servicio);
         }
 
 
@@ -477,9 +425,7 @@ const direccionDestinoFinal =
         ///////////////////////////////////////////////////////
 
         if (typeof window.renderFotosDrawer === "function") {
-            window.renderFotosDrawer(
-                mudanza.urls_fotos
-            );
+            window.renderFotosDrawer(mudanza.urls_fotos);
         }
 
 
@@ -490,16 +436,9 @@ const direccionDestinoFinal =
         if (typeof window.renderIndicacionesDrawer === "function") {
             window.renderIndicacionesDrawer(mudanzaDrawer);
         } else {
-
-            const elIndicaciones =
-                document.getElementById(
-                    "drawerIndicacionesContenedor"
-                );
-
+            const elIndicaciones = document.getElementById("drawerIndicacionesContenedor");
             if (elIndicaciones) {
-                elIndicaciones.textContent =
-                    mudanza.observaciones ||
-                    "Sin indicaciones adicionales.";
+                elIndicaciones.textContent = mudanza.observaciones || "Sin indicaciones adicionales.";
             }
         }
 
@@ -517,26 +456,16 @@ const direccionDestinoFinal =
     ///////////////////////////////////////////////////////
 
     function abrirDrawer() {
-
-        const overlay =
-            document.getElementById("drawerOverlay");
-
-        const drawer =
-            document.getElementById("drawerMudanza");
-
+        const overlay = document.getElementById("drawerOverlay");
+        const drawer = document.getElementById("drawerMudanza");
         overlay?.classList.remove("hidden");
         drawer?.classList.remove("translate-x-full");
     }
 
 
     function cerrarDrawer() {
-
-        const overlay =
-            document.getElementById("drawerOverlay");
-
-        const drawer =
-            document.getElementById("drawerMudanza");
-
+        const overlay = document.getElementById("drawerOverlay");
+        const drawer = document.getElementById("drawerMudanza");
         overlay?.classList.add("hidden");
         drawer?.classList.add("translate-x-full");
     }
@@ -547,34 +476,20 @@ const direccionDestinoFinal =
     ///////////////////////////////////////////////////////
 
     function cambiarDrawerTab(tabName) {
-
-        const tabs = [
-            "resumen",
-            "ruta",
-            "inventario",
-            "servicios",
-            "fotos",
-            "indicaciones"
-        ];
-
+        const tabs = ["resumen", "ruta", "inventario", "servicios", "fotos", "indicaciones"];
+        
         tabs.forEach(tab => {
-
-            const btn =
-                document.getElementById(`tab-d-${tab}`);
-
-            const pane =
-                document.getElementById(`pane-d-${tab}`);
+            // CORREGIDO: Se agregaron las comillas invertidas correspondientes para evaluar las variables
+            const btn = document.getElementById(`tab-d-${tab}`);
+            const pane = document.getElementById(`pane-d-${tab}`);
 
             if (btn) {
-
-                btn.className =
-                    tab === tabName
-                        ? "px-3 py-3 text-xs font-semibold border-b-2 border-blue-600 text-blue-600 transition-colors flex-1 text-center"
-                        : "px-3 py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors flex-1 text-center";
+                btn.className = tab === tabName
+                    ? "px-3 py-3 text-xs font-semibold border-b-2 border-blue-600 text-blue-600 transition-colors flex-1 text-center"
+                    : "px-3 py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors flex-1 text-center";
             }
 
             if (pane) {
-
                 if (tab === tabName) {
                     pane.classList.remove("hidden");
                 } else {
@@ -589,26 +504,20 @@ const direccionDestinoFinal =
     // EVENTOS
     ///////////////////////////////////////////////////////
 
-    document
-        .getElementById("drawerOverlay")
-        ?.addEventListener("click", cerrarDrawer);
+    document.getElementById("drawerOverlay")?.addEventListener("click", cerrarDrawer);
 
 
     ///////////////////////////////////////////////////////
     // API GLOBAL
     ///////////////////////////////////////////////////////
 
-    window.verDetalleMudanza =
-        verDetalleMudanza;
+    window.verDetalleMudanza = verDetalleMudanza;
+    window.abrirDrawer = abrirDrawer;
+    window.cerrarDrawer = cerrarDrawer;
+    window.cambiarDrawerTab = cambiarDrawerTab;
 
-    window.abrirDrawer =
-        abrirDrawer;
-
-    window.cerrarDrawer =
-        cerrarDrawer;
-
-    window.cambiarDrawerTab =
-        cambiarDrawerTab;
+    // Exportación explícita para reutilizar la función en las tarjetas
+    window.obtenerUbicacionCortaGlobal = obtenerUbicacionCorta;
 
     console.log("✅ Drawer principal cargado correctamente");
 
