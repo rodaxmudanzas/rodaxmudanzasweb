@@ -118,12 +118,15 @@ function obtenerUbicacionCorta(d) {
     }
 
     if (ciudad && cp && comunidad)
-        return `${ciudad} - CP ${cp} - ${comunidad}`;
+    return `${ciudad} - CP ${cp} - ${comunidad}`;
 
-    if (ciudad && cp)
-        return `${ciudad} - CP ${cp}`;
+if (ciudad && cp)
+    return `${ciudad} - CP ${cp}`;
 
-    return ciudad || texto;
+if (ciudad)
+    return ciudad;
+
+return "Ubicación no disponible";
 }
 
     //////////////////////////////////////////////////////////////
@@ -155,92 +158,14 @@ function obtenerUbicacionCorta(d) {
 // UBICACIÓN PÚBLICA — CIUDAD + CP + COMUNIDAD AUTÓNOMA
 //////////////////////////////////////////////////////////////
 
-function obtenerUbicacionPublica(
-    mudanza,
-    tipo
-) {
+function obtenerUbicacionPublica(mudanza, tipo) {
 
-    const origen =
-        tipo === "origen";
+    const direccion =
+        tipo === "origen"
+            ? mudanza?.origen
+            : mudanza?.destino;
 
-    const ciudad =
-        origen
-            ? (
-                mudanza?.origen_ciudad ??
-                mudanza?.ciudad_origen ??
-                mudanza?.ciudadOrigen ??
-                mudanza?.localidad_origen ??
-                mudanza?.municipio_origen ??
-                mudanza?.poblacion_origen ??
-                ""
-            )
-            : (
-                mudanza?.destino_ciudad ??
-                mudanza?.ciudad_destino ??
-                mudanza?.ciudadDestino ??
-                mudanza?.localidad_destino ??
-                mudanza?.municipio_destino ??
-                mudanza?.poblacion_destino ??
-                ""
-            );
-
-    const codigoPostal =
-        origen
-            ? (
-                mudanza?.origen_cp ??
-                mudanza?.cp_origen ??
-                mudanza?.codigo_postal_origen ??
-                mudanza?.postal_origen ??
-                ""
-            )
-            : (
-                mudanza?.destino_cp ??
-                mudanza?.cp_destino ??
-                mudanza?.codigo_postal_destino ??
-                mudanza?.postal_destino ??
-                ""
-            );
-
-    const comunidad =
-        origen
-            ? (
-                mudanza?.origen_comunidad_autonoma ??
-                mudanza?.comunidad_autonoma_origen ??
-                mudanza?.comunidad_origen ??
-                mudanza?.autonomia_origen ??
-                mudanza?.comunidadOrigen ??
-                ""
-            )
-            : (
-                mudanza?.destino_comunidad_autonoma ??
-                mudanza?.comunidad_autonoma_destino ??
-                mudanza?.comunidad_destino ??
-                mudanza?.autonomia_destino ??
-                mudanza?.comunidadDestino ??
-                ""
-            );
-
-    const partes = [
-    ciudad,
-    codigoPostal,
-    comunidad
-]
-    .map(valor => String(valor || "").trim())
-    .filter(Boolean);
-
-if (partes.length === 3) {
-    return `${ciudad} - CP ${codigoPostal} - ${comunidad}`;
-}
-
-if (partes.length === 2 && ciudad && codigoPostal) {
-    return `${ciudad} - CP ${codigoPostal}`;
-}
-
-// Fallback: usar la dirección completa y extraer Ciudad + CP + Comunidad.
-const direccionOriginal =
-    origen ? mudanza?.origen : mudanza?.destino;
-
-return obtenerUbicacionCorta(direccionOriginal);
+    return obtenerUbicacionCorta(direccion);
 }
 
     //////////////////////////////////////////////////////////////
@@ -1439,28 +1364,21 @@ return obtenerUbicacionCorta(direccionOriginal);
                 ),
 
 
-            origen:
-    escapeHtml(
-        obtenerUbicacionPublica(t,"origen")
-    ),
+            origen: escapeHtml(
+    obtenerUbicacionPublica(t, "origen")
+),
 
+destino: escapeHtml(
+    obtenerUbicacionPublica(t, "destino")
+),
 
-            destino:
-    escapeHtml(
-        obtenerUbicacionPublica(t,"destino")
-    ),
+tituloOrigen: escapeHtml(
+    obtenerUbicacionPublica(t, "origen")
+),
 
-
-            tituloOrigen:
-    escapeHtml(
-        obtenerUbicacionPublica(t,"origen")
-    ),
-
-
-            tituloDestino:
-    escapeHtml(
-        obtenerUbicacionPublica(t,"destino")
-    ),
+tituloDestino: escapeHtml(
+    obtenerUbicacionPublica(t, "destino")
+),
 
 
             fecha:

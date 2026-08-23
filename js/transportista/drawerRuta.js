@@ -7,14 +7,16 @@
         if (!mudanza) return;
 
         const origen =
-    window.Transportista?.obtenerUbicacionCorta
-        ? window.Transportista.obtenerUbicacionCorta(mudanza.origen)
-        : (mudanza.origen || "—");
+    window.Transportista.obtenerUbicacionPublica(
+        mudanza,
+        "origen"
+    );
 
 const destino =
-    window.Transportista?.obtenerUbicacionCorta
-        ? window.Transportista.obtenerUbicacionCorta(mudanza.destino)
-        : (mudanza.destino || "—");
+    window.Transportista.obtenerUbicacionPublica(
+        mudanza,
+        "destino"
+    );
 
         const km =
             mudanza.km !== undefined &&
