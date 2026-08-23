@@ -31,16 +31,13 @@
 
     let ciudad="";
 
-    for(const p of partes){
+const indiceCP=partes.findIndex(p=>/\b\d{5}\b/.test(p));
 
-        if(p===comunidad) continue;
-
-        if(/\d{5}/.test(p)) continue;
-
-        if(/España|Spain|Spania|Spanien/i.test(p)) continue;
-
-        ciudad=p;
-    }
+if(indiceCP>0){
+    ciudad=partes[indiceCP-1];
+}else if(partes.length>=2){
+    ciudad=partes[1];
+}
 
     if(ciudad&&cp&&comunidad)
         return `${ciudad} - CP ${cp} - ${comunidad}`;
