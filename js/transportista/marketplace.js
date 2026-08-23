@@ -3154,4 +3154,3 @@ window.procesarAceptacion =
 console.log(
     "✅ Marketplace cargado correctamente"
 );
-n
