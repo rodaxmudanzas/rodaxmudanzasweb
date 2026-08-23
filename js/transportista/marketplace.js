@@ -1,2616 +1,3156 @@
-/**
+window.Transportista = window.Transportista || {};
 
- * ==========================================================
+let marketplaceCargando = false;
 
- * RODAX Marketplace
+///////////////////////////////////////////////////////////
+// REFERENCIAS SEGURAS DEL PANEL
+///////////////////////////////////////////////////////////
 
- * Archivo : js/transportista/historialServicios.js
+function obtenerDbClientMarketplace() {
 
- * Módulo  : Historial de servicios
+    const candidatos = [
+        window.dbClient,
+        window.supabaseClient,
+        window.Transportista?.dbClient,
+        window.Transportista?.supabaseClient
+    ];
 
- * ----------------------------------------------------------
+    for (const cliente of candidatos) {
 
- * Responsabilidad:
-
- * - Mostrar únicamente servicios finalizados del transportista.
-
- * - Renderizar tarjetas del historial.
-
- * - Mostrar franja horaria y accesos.
-
- * - Mantener un único botón por tarjeta: Ficha PDF.
-
- * ==========================================================
-
- */
-
- 
-
-(function (window) {
-
- 
-
-    "use strict";
-
- 
-
-    const TAB_ID = "tab-historial-servicios";
-
-    const CONTENEDOR_ID = "historial-servicios-contenido";
-
- 
-
-    let cargando = false;
-
- 
-
-    function escaparHTML(valor) {
-
- 
-
-        if (valor === null || valor === undefined) {
-
-            return "";
-
+        if (
+            cliente &&
+            typeof cliente.from === "function"
+        ) {
+            return cliente;
         }
-
- 
-
-        return String(valor)
-
-            .replace(/&/g, "&amp;")
-
-            .replace(/</g, "&lt;")
-
-            .replace(/>/g, "&gt;")
-
-            .replace(/"/g, "&quot;")
-
-            .replace(/'/g, "&#039;");
-
     }
-
- function formatearUbicacionHistorial(
-    mudanza,
-    tipo
-) {
-
-    const prefijo =
-        tipo === "destino"
-            ? "destino"
-            : "origen";
-
-    const ciudad =
-        mudanza?.[`${prefijo}_ciudad`] ||
-        "";
-
-    const cp =
-        mudanza?.[`${prefijo}_cp`] ||
-        "";
-
-    const comunidad =
-        mudanza?.[`${prefijo}_comunidad`] ||
-        "";
-
-    const provincia =
-        mudanza?.[`${prefijo}_provincia`] ||
-        "";
 
     /*
-     * IMPORTANTE:
-     * Nunca usamos mudanza.origen ni mudanza.destino
-     * como respaldo aquí, porque podrían contener
-     * la dirección exacta del cliente.
+     * Compatibilidad con un dbClient declarado con
+     * const/let en otro script clásico de la misma página.
      */
+    try {
 
-    const partes = [];
+        if (
+            typeof dbClient !== "undefined" &&
+            dbClient &&
+            typeof dbClient.from === "function"
+        ) {
+            return dbClient;
+        }
 
-    if (ciudad) {
-        partes.push(
-            String(ciudad).trim()
-        );
+    } catch (_) {
+        // El identificador no existe en este contexto.
     }
 
-    if (cp) {
-        partes.push(
-            String(cp).trim()
-        );
-    }
-
-    if (comunidad) {
-        partes.push(
-            String(comunidad).trim()
-        );
-    } else if (provincia) {
-        /*
-         * Respaldo temporal si todavía no existe
-         * el campo de Comunidad Autónoma.
-         */
-        partes.push(
-            String(provincia).trim()
-        );
-    }
-
-    return partes.length
-        ? partes.join(", ")
-        : "Ubicación no disponible";
+    return null;
 }
 
-    function obtenerFecha(mudanza) {
 
- 
+function obtenerStateMarketplace() {
 
-        return (
-
-            mudanza?.fecha ||
-
-            mudanza?.fecha_servicio ||
-
-            null
-
-        );
-
+    if (
+        window.state &&
+        typeof window.state === "object"
+    ) {
+        return window.state;
     }
 
- 
-
-    function formatearFecha(fecha) {
-
- 
-
-        if (!fecha) {
-
-            return "Fecha pendiente";
-
-        }
-
- 
-
-        const partes =
-
-            String(fecha).split("-");
-
- 
-
-        if (partes.length === 3) {
-
- 
-
-            return (
-
-                `${partes[2]}-${partes[1]}-${partes[0]}`
-
-            );
-
-        }
-
- 
-
-        return escaparHTML(fecha);
-
-    }
-
- 
-
-    function obtenerDia(fecha) {
-
- 
-
-        if (!fecha) {
-
-            return "—";
-
-        }
-
- 
-
-        const partes =
-
-            String(fecha).split("-");
-
- 
-
-        return partes.length === 3
-
-            ? partes[2]
-
-            : "—";
-
-    }
-
- 
-
-    function obtenerMes(fecha) {
-
- 
-
-        if (!fecha) {
-
-            return "---";
-
-        }
-
- 
-
-        const partes =
-
-            String(fecha).split("-");
-
- 
-
-        if (partes.length !== 3) {
-
-            return "---";
-
-        }
-
- 
-
-        const meses = [
-
-            "ENE", "FEB", "MAR", "ABR",
-
-            "MAY", "JUN", "JUL", "AGO",
-
-            "SEP", "OCT", "NOV", "DIC"
-
-        ];
-
- 
-
-        return (
-
-            meses[Number(partes[1]) - 1] ||
-
-            "---"
-
-        );
-
-    }
-
- 
-
-    function esFinalizada(mudanza) {
-
- 
-
-        const estado =
-
-            String(mudanza?.estado || "")
-
-                .trim()
-
-                .toLowerCase();
-
- 
-
-        return (
-
-            estado === "completada" ||
-
-            estado === "finalizada" ||
-
-            estado === "mudanza finalizada"
-
-        );
-
-    }
-
- 
-
-    function obtenerFranja(mudanza) {
-
- 
-
-        return (
-
-            mudanza?.franja_horaria_recogida ||
-
-            "Horario pendiente"
-
-        );
-
-    }
-
- 
-
-    function obtenerTipoServicio(mudanza) {
-
- 
-
-        const tipo =
-
-            String(
-
-                mudanza?.tipo_servicio || ""
-
-            ).toLowerCase();
-
- 
-
-        return tipo.includes("total")
-
-            ? "Mudanza Total"
-
-            : "Mudanza Estándar";
-
-    }
-
- 
-
-    function normalizarAscensor(valor) {
-
- 
-
-        if (!valor) {
-
-            return "";
-
-        }
-
- 
-
-        const texto =
-
-            String(valor)
-
-                .trim()
-
-                .toLowerCase();
-
- 
-
-        if (texto.includes("sin")) {
-
-            return "Sin ascensor";
-
-        }
-
- 
-
-        if (texto.includes("con")) {
-
-            return "Con ascensor";
-
-        }
-
- 
-
-        return String(valor).trim();
-
-    }
-
- 
-
-    function formatearAcceso(ascensor, piso) {
-
- 
-
-        const ascensorTexto =
-
-            normalizarAscensor(ascensor);
-
- 
-
-        const tienePiso =
-
-            piso !== null &&
-
-            piso !== undefined &&
-
-            String(piso).trim() !== "";
-
- 
-
-        const pisoNumero =
-
-            tienePiso
-
-                ? Number(piso)
-
-                : NaN;
-
- 
+    /*
+     * Compatibilidad con un state declarado con
+     * const/let en otro script clásico.
+     */
+    try {
 
         if (
-
-            Number.isFinite(pisoNumero) &&
-
-            pisoNumero === 0
-
+            typeof state !== "undefined" &&
+            state &&
+            typeof state === "object"
         ) {
-
-            return "Un Bajo";
-
+            return state;
         }
 
- 
-
-        if (
-
-            ascensorTexto &&
-
-            Number.isFinite(pisoNumero)
-
-        ) {
-
-            return (
-
-                `${ascensorTexto} · Piso ${pisoNumero}`
-
-            );
-
-        }
-
- 
-
-        if (ascensorTexto) {
-
-            return ascensorTexto;
-
-        }
-
- 
-
-        if (Number.isFinite(pisoNumero)) {
-
-            return pisoNumero === 0
-
-                ? "Un Bajo"
-
-                : `Piso ${pisoNumero}`;
-
-        }
-
- 
-
-        return "Acceso por confirmar";
-
+    } catch (_) {
+        // El identificador no existe en este contexto.
     }
 
- function obtenerUbicacionHistorial(mudanza, tipo) {
+    if (
+        !window.marketplaceStateFallback ||
+        typeof window.marketplaceStateFallback !== "object"
+    ) {
+        window.marketplaceStateFallback = {
+            disponibles: []
+        };
+    }
 
-    const origen = tipo === "origen";
-
-    const ciudad = origen
-        ? (
-            mudanza?.ciudad_origen ??
-            mudanza?.localidad_origen ??
-            mudanza?.municipio_origen ??
-            mudanza?.poblacion_origen ??
-            ""
-        )
-        : (
-            mudanza?.ciudad_destino ??
-            mudanza?.localidad_destino ??
-            mudanza?.municipio_destino ??
-            mudanza?.poblacion_destino ??
-            ""
-        );
-
-    const codigoPostal = origen
-        ? (
-            mudanza?.codigo_postal_origen ??
-            mudanza?.cp_origen ??
-            mudanza?.postal_origen ??
-            ""
-        )
-        : (
-            mudanza?.codigo_postal_destino ??
-            mudanza?.cp_destino ??
-            mudanza?.postal_destino ??
-            ""
-        );
-
-    const comunidad = origen
-        ? (
-            mudanza?.comunidad_autonoma_origen ??
-            mudanza?.comunidad_origen ??
-            mudanza?.autonomia_origen ??
-            ""
-        )
-        : (
-            mudanza?.comunidad_autonoma_destino ??
-            mudanza?.comunidad_destino ??
-            mudanza?.autonomia_destino ??
-            ""
-        );
-
-    const partes = [
-        ciudad,
-        codigoPostal,
-        comunidad
-    ]
-        .map(valor => String(valor || "").trim())
-        .filter(Boolean);
-
-    return partes.length
-        ? partes.join(", ")
-        : "Ubicación no disponible";
+    return window.marketplaceStateFallback;
 }
 
-    function obtenerAccesoOrigen(mudanza) {
 
- 
+function obtenerCurrentUserIdMarketplace() {
 
-        if (
-
-            mudanza?.ascensor_origen !== undefined ||
-
-            mudanza?.piso_origen !== undefined
-
-        ) {
-
- 
-
-            return formatearAcceso(
-
-                mudanza.ascensor_origen,
-
-                mudanza.piso_origen
-
-            );
-
-        }
-
- 
-
-        const texto =
-
-            String(
-
-                mudanza?.ascensor || ""
-
-            );
-
- 
-
-        const coincidencia =
-
-            texto.match(
-
-                /recogida:\s*(.*?)(?:\s*\||$)/i
-
-            );
-
- 
-
-        return coincidencia
-
-            ? coincidencia[1].trim()
-
-            : "Acceso por confirmar";
-
+    if (
+        window.currentUserId !== undefined &&
+        window.currentUserId !== null
+    ) {
+        return window.currentUserId;
     }
 
- 
-
-    function obtenerAccesoDestino(mudanza) {
-
- 
-
-        if (
-
-            mudanza?.ascensor_destino !== undefined ||
-
-            mudanza?.piso_destino !== undefined
-
-        ) {
-
- 
-
-            return formatearAcceso(
-
-                mudanza.ascensor_destino,
-
-                mudanza.piso_destino
-
-            );
-
-        }
-
- 
-
-        const texto =
-
-            String(
-
-                mudanza?.ascensor || ""
-
-            );
-
- 
-
-        const coincidencia =
-
-            texto.match(
-
-                /entrega:\s*(.*?)(?:\s*\||$)/i
-
-            );
-
- 
-
-        return coincidencia
-
-            ? coincidencia[1].trim()
-
-            : "Acceso por confirmar";
-
+    if (
+        window.Transportista &&
+        window.Transportista.currentUserId !== undefined &&
+        window.Transportista.currentUserId !== null
+    ) {
+        return window.Transportista.currentUserId;
     }
 
- 
-
-    function obtenerClienteSupabase() {
-
- 
-
-        if (
-
-            window.dbClient &&
-
-            typeof window.dbClient.from === "function"
-
-        ) {
-
-            return window.dbClient;
-
-        }
-
- 
+    /*
+     * Compatibilidad con currentUserId declarado con
+     * const/let en otro script clásico.
+     */
+    try {
 
         if (
-
-            window.supabaseClient &&
-
-            typeof window.supabaseClient.from === "function"
-
+            typeof currentUserId !== "undefined" &&
+            currentUserId
         ) {
-
-            return window.supabaseClient;
-
+            return currentUserId;
         }
 
- 
+    } catch (_) {
+        // El identificador no existe en este contexto.
+    }
 
+    return null;
+}
+
+
+
+///////////////////////////////////////////////////////////
+// SISTEMA INTEGRAL DE FILTROS MARKETPLACE
+///////////////////////////////////////////////////////////
+
+let filtroMarketplaceBusqueda = "";
+
+const filtrosMarketplace = {
+    fecha: "todas",
+    fechaPersonalizada: "",
+    zona: "todas",
+    distancia: "todas",
+    vehiculo: "todas",
+    tipoServicio: "todos",
+    precio: "todos",
+    volumen: "todos",
+    articulos: "todos",
+    ascensor: "todos",
+    fotos: "todos",
+    servicios: "todos"
+};
+
+let marketplaceFiltroPopover = null;
+
+function normalizarTextoMarketplace(valor) {
+    return String(valor ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+}
+
+function obtenerValorCampoMarketplace(objeto, campos) {
+    if (!objeto || typeof objeto !== "object") return null;
+
+    for (const campo of campos) {
+        const valor = objeto[campo];
+
+        if (
+            valor !== undefined &&
+            valor !== null &&
+            valor !== ""
+        ) {
+            return valor;
+        }
+    }
+
+    return null;
+}
+
+function convertirNumeroMarketplace(valor) {
+
+    if (
+        valor === undefined ||
+        valor === null ||
+        valor === ""
+    ) {
         return null;
-
     }
 
- 
+    if (typeof valor === "number") {
+        return Number.isFinite(valor)
+            ? valor
+            : null;
+    }
 
-    async function obtenerTransportistaId() {
+    const texto = String(valor)
+        .replace(/\s/g, "")
+        .replace(/€/g, "")
+        .replace(/m³|m3|km/gi, "")
+        .replace(/\.(?=\d{3}(?:\D|$))/g, "")
+        .replace(",", ".");
 
- 
+    const numero = parseFloat(texto);
 
-        if (window.currentUserId) {
+    return Number.isFinite(numero)
+        ? numero
+        : null;
+}
 
-            return window.currentUserId;
+function obtenerKmMarketplace(trabajo) {
 
-        }
+    return convertirNumeroMarketplace(
+        obtenerValorCampoMarketplace(
+            trabajo,
+            [
+                "km",
+                "distancia_km",
+                "distanciaKm",
+                "distancia",
+                "kilometros",
+                "kilómetros"
+            ]
+        )
+    );
+}
 
- 
+function obtenerPrecioMarketplace(trabajo) {
+
+    return convertirNumeroMarketplace(
+        obtenerValorCampoMarketplace(
+            trabajo,
+            [
+                "preciototal",
+                "precio_total",
+                "precioTotal",
+                "precio",
+                "total",
+                "importe"
+            ]
+        )
+    );
+}
+
+function obtenerVolumenMarketplace(trabajo) {
+
+    const volumenDirecto =
+        convertirNumeroMarketplace(
+            obtenerValorCampoMarketplace(
+                trabajo,
+                [
+                    "volumen",
+                    "m3",
+                    "metros_cubicos",
+                    "metrosCubicos"
+                ]
+            )
+        );
+
+    if (volumenDirecto !== null) {
+        return volumenDirecto;
+    }
+
+    try {
 
         if (
-
             window.Transportista &&
-
-            window.Transportista.currentUserId
-
+            typeof window.Transportista.getTotalM3 ===
+                "function"
         ) {
 
-            return window.Transportista.currentUserId;
-
-        }
-
- 
-
-        const cliente =
-
-            obtenerClienteSupabase();
-
- 
-
-        if (
-
-            cliente?.auth &&
-
-            typeof cliente.auth.getUser === "function"
-
-        ) {
-
- 
-
-            const {
-
-                data,
-
-                error
-
-            } =
-
-                await cliente.auth.getUser();
-
- 
-
-            if (
-
-                !error &&
-
-                data?.user?.id
-
-            ) {
-
-                return data.user.id;
-
-            }
-
-        }
-
- 
-
-        return null;
-
-    }
-
- 
-
-    async function obtenerMudanzasHistorial() {
-
- 
-
-        const cliente =
-
-            obtenerClienteSupabase();
-
- 
-
-        if (!cliente) {
-
- 
-
-            throw new Error(
-
-                "No se encontró el cliente de Supabase."
-
-            );
-
-        }
-
- 
-
-        const transportistaId =
-
-            await obtenerTransportistaId();
-
- 
-
-        if (!transportistaId) {
-
- 
-
-            throw new Error(
-
-                "No se pudo identificar al transportista."
-
-            );
-
-        }
-
- 
-
-        const {
-
-            data,
-
-            error
-
-        } =
-
-            await cliente
-
-                .from("mudanzas")
-
-                .select("*")
-
-                .eq(
-
-                    "transportista_id",
-
-                    transportistaId
-
-                )
-
-                .order(
-
-                    "fecha",
-
-                    {
-
-                        ascending: false
-
-                    }
-
+            const calculado =
+                window.Transportista.getTotalM3(
+                    trabajo?.inventario,
+                    trabajo?.tipo_servicio
                 );
 
- 
+            const numero =
+                convertirNumeroMarketplace(
+                    calculado
+                );
+
+            if (numero !== null) {
+                return numero;
+            }
+        }
+
+    } catch (error) {
+
+        console.warn(
+            "Marketplace: no se pudo calcular el volumen.",
+            error
+        );
+    }
+
+    return null;
+}
+
+function obtenerArticulosMarketplace(trabajo) {
+
+    try {
+
+        if (
+            window.Transportista &&
+            typeof window.Transportista.getTotalArticulos ===
+                "function"
+        ) {
+
+            const calculado =
+                window.Transportista.getTotalArticulos(
+                    trabajo?.inventario,
+                    trabajo?.tipo_servicio
+                );
+
+            const numero =
+                convertirNumeroMarketplace(
+                    calculado
+                );
+
+            if (numero !== null) {
+                return numero;
+            }
+        }
+
+    } catch (error) {
+
+        console.warn(
+            "Marketplace: no se pudo calcular el número de artículos.",
+            error
+        );
+    }
+
+    return convertirNumeroMarketplace(
+        obtenerValorCampoMarketplace(
+            trabajo,
+            [
+                "articulos",
+                "total_articulos",
+                "num_articulos",
+                "cantidad_articulos"
+            ]
+        )
+    );
+}
+
+function contarFotosMarketplace(valor) {
+
+    if (!valor) {
+        return 0;
+    }
+
+    if (Array.isArray(valor)) {
+        return valor.length;
+    }
+
+    if (typeof valor === "object") {
+        return Object.keys(valor).length;
+    }
+
+    const texto =
+        String(valor).trim();
+
+    if (!texto) {
+        return 0;
+    }
+
+    try {
+
+        const json =
+            JSON.parse(texto);
+
+        if (Array.isArray(json)) {
+            return json.length;
+        }
+
+        if (
+            json &&
+            typeof json === "object"
+        ) {
+            return Object.keys(json).length;
+        }
+
+    } catch (_) {
+        // No es JSON.
+    }
+
+    return texto
+        .split(/[,;\n|]+/)
+        .map(item => item.trim())
+        .filter(Boolean)
+        .length;
+}
+
+function obtenerFotosMarketplace(trabajo) {
+
+    const valor =
+        obtenerValorCampoMarketplace(
+            trabajo,
+            [
+                "urls_fotos",
+                "fotos",
+                "imagenes",
+                "photos",
+                "imagenes_fotos"
+            ]
+        );
+
+    return contarFotosMarketplace(valor);
+}
+
+function obtenerTipoServicioMarketplace(trabajo) {
+
+    const valor =
+        obtenerValorCampoMarketplace(
+            trabajo,
+            [
+                "tipo_servicio",
+                "tipoServicio",
+                "tipo_mudanza",
+                "tipoMudanza",
+                "tipo"
+            ]
+        );
+
+    return valor
+        ? String(valor)
+        : "No especificado";
+}
+
+function obtenerVehiculoMarketplace(trabajo) {
+
+    let valor =
+        obtenerValorCampoMarketplace(
+            trabajo,
+            [
+                "vehiculo",
+                "vehículo",
+                "tipo_vehiculo",
+                "tipoVehiculo",
+                "vehiculo_tipo",
+                "vehiculoTipo",
+                "vehiculo_requerido",
+                "vehiculoRequerido"
+            ]
+        );
+
+    if (
+        valor &&
+        typeof valor === "object"
+    ) {
+
+        valor =
+            valor.nombre ||
+            valor.tipo ||
+            valor.modelo ||
+            valor.descripcion ||
+            "";
+    }
+
+    return valor
+        ? String(valor)
+        : "No especificado";
+}
+
+function obtenerAscensorMarketplace(trabajo) {
+
+    const valor =
+        obtenerValorCampoMarketplace(
+            trabajo,
+            [
+                "ascensor",
+                "ascensores",
+                "ascensor_origen",
+                "ascensor_destino",
+                "ascensorOrigen",
+                "ascensorDestino",
+                "acceso_origen",
+                "acceso_destino"
+            ]
+        );
+
+    return valor
+        ? String(valor)
+        : "";
+}
+
+function obtenerServiciosMarketplace(trabajo) {
+
+    const directo =
+        convertirNumeroMarketplace(
+            obtenerValorCampoMarketplace(
+                trabajo,
+                [
+                    "servicios",
+                    "num_servicios",
+                    "numero_servicios",
+                    "servicios_contratados",
+                    "serviciosContratados"
+                ]
+            )
+        );
+
+    if (directo !== null) {
+        return directo;
+    }
+
+    const tipo =
+        normalizarTextoMarketplace(
+            trabajo?.tipo_servicio
+        );
+
+    if (tipo.includes("total")) {
+        return 6;
+    }
+
+    return tipo ? 1 : 0;
+}
+
+function obtenerZonaMarketplace(trabajo) {
+
+    const textos = [
+        trabajo?.origen,
+        trabajo?.destino
+    ]
+        .filter(Boolean)
+        .map(valor =>
+            String(valor).trim()
+        );
+
+    const zonas =
+        textos
+            .map(texto => {
+
+                const partes =
+                    texto
+                        .split(",")
+                        .map(parte =>
+                            parte.trim()
+                        )
+                        .filter(Boolean);
+
+                if (partes.length >= 2) {
+                    return partes[
+                        partes.length - 2
+                    ];
+                }
+
+                return partes[0] || texto;
+            })
+            .filter(Boolean);
+
+    return zonas;
+}
+
+function fechaLocalMarketplace(fecha) {
+
+    if (!fecha) {
+        return null;
+    }
+
+    const texto =
+        String(fecha).trim();
+
+    const match =
+        texto.match(
+            /^(\d{4})-(\d{2})-(\d{2})/
+        );
+
+    if (match) {
+
+        const fechaLocal =
+            new Date(
+                Number(match[1]),
+                Number(match[2]) - 1,
+                Number(match[3])
+            );
+
+        return Number.isNaN(
+            fechaLocal.getTime()
+        )
+            ? null
+            : fechaLocal;
+    }
+
+    const fechaConvertida =
+        new Date(fecha);
+
+    return Number.isNaN(
+        fechaConvertida.getTime()
+    )
+        ? null
+        : fechaConvertida;
+}
+
+function normalizarDiaMarketplace(fecha) {
+
+    const fechaLocal =
+        fechaLocalMarketplace(fecha);
+
+    if (!fechaLocal) {
+        return null;
+    }
+
+    return new Date(
+        fechaLocal.getFullYear(),
+        fechaLocal.getMonth(),
+        fechaLocal.getDate()
+    );
+}
+
+function mismoDiaMarketplace(a, b) {
+
+    return Boolean(a && b) &&
+        a.getFullYear() ===
+            b.getFullYear() &&
+        a.getMonth() ===
+            b.getMonth() &&
+        a.getDate() ===
+            b.getDate();
+}
+
+function distanciaDentroDeFiltroMarketplace(
+    km,
+    filtro
+) {
+
+    if (filtro === "todas") {
+        return true;
+    }
+
+    if (km === null) {
+        return false;
+    }
+
+    switch (filtro) {
+
+        case "0-100":
+            return km <= 100;
+
+        case "100-300":
+            return km > 100 && km <= 300;
+
+        case "300-600":
+            return km > 300 && km <= 600;
+
+        case "600-1000":
+            return km > 600 && km <= 1000;
+
+        case "1000+":
+            return km > 1000;
+
+        default:
+            return true;
+    }
+}
+
+function precioDentroDeFiltroMarketplace(
+    precio,
+    filtro
+) {
+
+    if (filtro === "todos") {
+        return true;
+    }
+
+    if (precio === null) {
+        return false;
+    }
+
+    switch (filtro) {
+
+        case "0-500":
+            return precio <= 500;
+
+        case "500-1000":
+            return precio > 500 &&
+                precio <= 1000;
+
+        case "1000-2000":
+            return precio > 1000 &&
+                precio <= 2000;
+
+        case "2000-3000":
+            return precio > 2000 &&
+                precio <= 3000;
+
+        case "3000+":
+            return precio > 3000;
+
+        default:
+            return true;
+    }
+}
+
+function volumenDentroDeFiltroMarketplace(
+    volumen,
+    filtro
+) {
+
+    if (filtro === "todos") {
+        return true;
+    }
+
+    if (volumen === null) {
+        return false;
+    }
+
+    switch (filtro) {
+
+    case "0-3":
+        return volumen <= 3;
+
+    case "3-5":
+        return volumen > 3 &&
+            volumen <= 5;
+
+    case "5-7":
+        return volumen > 5 &&
+            volumen <= 7;
+
+    case "7-10":
+        return volumen > 7 &&
+            volumen <= 10;
+
+    case "10-20":
+        return volumen > 10 &&
+            volumen <= 20;
+
+    case "20-40":
+        return volumen > 20 &&
+            volumen <= 40;
+
+    case "40-60":
+        return volumen > 40 &&
+            volumen <= 60;
+
+    case "60-80":
+        return volumen > 60 &&
+            volumen <= 80;
+
+    case "80+":
+        return volumen > 80;
+
+    default:
+        return true;
+}
+}
+
+function articulosDentroDeFiltroMarketplace(
+    articulos,
+    filtro
+) {
+
+    if (filtro === "todos") {
+        return true;
+    }
+
+    if (articulos === null) {
+        return false;
+    }
+
+    switch (filtro) {
+
+    case "0-5":
+        return articulos <= 5;
+
+    case "5-10":
+        return articulos > 5 &&
+            articulos <= 10;
+
+    case "10-20":
+        return articulos > 10 &&
+            articulos <= 20;
+
+    case "20-40":
+        return articulos > 20 &&
+            articulos <= 40;
+
+    case "40-60":
+        return articulos > 40 &&
+            articulos <= 60;
+
+    case "60+":
+        return articulos > 60;
+
+    default:
+        return true;
+}
+}
+
+function obtenerTrabajosFiltradosMarketplace() {
+
+    const trabajos =
+        Array.isArray(obtenerStateMarketplace().disponibles)
+            ? obtenerStateMarketplace().disponibles
+            : [];
+
+    const busqueda =
+        normalizarTextoMarketplace(
+            filtroMarketplaceBusqueda
+        );
+
+    return trabajos.filter(
+        trabajo => {
+
+            // 1. BUSCADOR ORIGEN / DESTINO
+            if (busqueda) {
+
+                const origen =
+                    normalizarTextoMarketplace(
+                        trabajo?.origen
+                    );
+
+                const destino =
+                    normalizarTextoMarketplace(
+                        trabajo?.destino
+                    );
+
+                if (
+                    !origen.includes(busqueda) &&
+                    !destino.includes(busqueda)
+                ) {
+                    return false;
+                }
+            }
+
+            // 2. FECHA
+            const fechaTrabajo =
+                normalizarDiaMarketplace(
+                    trabajo?.fecha
+                );
+
+            const hoy =
+                normalizarDiaMarketplace(
+                    new Date()
+                );
+
+            if (
+                filtrosMarketplace.fecha ===
+                "hoy"
+            ) {
+
+                if (
+                    !mismoDiaMarketplace(
+                        fechaTrabajo,
+                        hoy
+                    )
+                ) {
+                    return false;
+                }
+            }
+
+            if (
+                filtrosMarketplace.fecha ===
+                "manana"
+            ) {
+
+                const manana =
+                    new Date(hoy);
+
+                manana.setDate(
+                    manana.getDate() + 1
+                );
+
+                if (
+                    !mismoDiaMarketplace(
+                        fechaTrabajo,
+                        manana
+                    )
+                ) {
+                    return false;
+                }
+            }
+
+            if (
+                filtrosMarketplace.fecha ===
+                    "7dias" ||
+                filtrosMarketplace.fecha ===
+                    "30dias"
+            ) {
+
+                if (!fechaTrabajo) {
+                    return false;
+                }
+
+                const limite =
+                    new Date(hoy);
+
+                limite.setDate(
+                    limite.getDate() +
+                    (
+                        filtrosMarketplace.fecha ===
+                        "7dias"
+                            ? 7
+                            : 30
+                    )
+                );
+
+                if (
+                    fechaTrabajo < hoy ||
+                    fechaTrabajo > limite
+                ) {
+                    return false;
+                }
+            }
+
+            if (
+                filtrosMarketplace.fecha ===
+                "personalizada"
+            ) {
+
+                if (
+                    !fechaTrabajo ||
+                    !filtrosMarketplace.fechaPersonalizada
+                ) {
+                    return false;
+                }
+
+                const fechaElegida =
+                    normalizarDiaMarketplace(
+                        filtrosMarketplace.fechaPersonalizada
+                    );
+
+                if (
+                    !mismoDiaMarketplace(
+                        fechaTrabajo,
+                        fechaElegida
+                    )
+                ) {
+                    return false;
+                }
+            }
+
+            // 3. ZONA
+            if (
+                filtrosMarketplace.zona !==
+                "todas"
+            ) {
+
+                const zonaBuscada =
+                    normalizarTextoMarketplace(
+                        filtrosMarketplace.zona
+                    );
+
+                const zonasTrabajo =
+                    obtenerZonaMarketplace(
+                        trabajo
+                    ).map(
+                        normalizarTextoMarketplace
+                    );
+
+                if (
+                    !zonasTrabajo.includes(
+                        zonaBuscada
+                    )
+                ) {
+                    return false;
+                }
+            }
+
+            // 4. DISTANCIA
+            if (
+                !distanciaDentroDeFiltroMarketplace(
+                    obtenerKmMarketplace(
+                        trabajo
+                    ),
+                    filtrosMarketplace.distancia
+                )
+            ) {
+                return false;
+            }
+
+            // 5. VEHÍCULO
+            if (
+                filtrosMarketplace.vehiculo !==
+                "todas"
+            ) {
+
+                const vehiculo =
+                    normalizarTextoMarketplace(
+                        obtenerVehiculoMarketplace(
+                            trabajo
+                        )
+                    );
+
+                if (
+                    vehiculo !==
+                    normalizarTextoMarketplace(
+                        filtrosMarketplace.vehiculo
+                    )
+                ) {
+                    return false;
+                }
+            }
+
+            // 6. TIPO DE SERVICIO
+            if (
+                filtrosMarketplace.tipoServicio !==
+                "todos"
+            ) {
+
+                const tipo =
+                    normalizarTextoMarketplace(
+                        obtenerTipoServicioMarketplace(
+                            trabajo
+                        )
+                    );
+
+                if (
+                    tipo !==
+                    normalizarTextoMarketplace(
+                        filtrosMarketplace.tipoServicio
+                    )
+                ) {
+                    return false;
+                }
+            }
+
+            // 7. PRECIO
+            if (
+                !precioDentroDeFiltroMarketplace(
+                    obtenerPrecioMarketplace(
+                        trabajo
+                    ),
+                    filtrosMarketplace.precio
+                )
+            ) {
+                return false;
+            }
+
+            // 8. VOLUMEN
+            if (
+                !volumenDentroDeFiltroMarketplace(
+                    obtenerVolumenMarketplace(
+                        trabajo
+                    ),
+                    filtrosMarketplace.volumen
+                )
+            ) {
+                return false;
+            }
+
+            // 9. ARTÍCULOS
+            if (
+                !articulosDentroDeFiltroMarketplace(
+                    obtenerArticulosMarketplace(
+                        trabajo
+                    ),
+                    filtrosMarketplace.articulos
+                )
+            ) {
+                return false;
+            }
+
+            // 10. ASCENSOR
+            if (
+                filtrosMarketplace.ascensor !==
+                "todos"
+            ) {
+
+                const ascensor =
+                    normalizarTextoMarketplace(
+                        obtenerAscensorMarketplace(
+                            trabajo
+                        )
+                    );
+
+                if (
+                    filtrosMarketplace.ascensor ===
+                    "con"
+                ) {
+
+                    if (
+                        !ascensor.includes(
+                            "con ascensor"
+                        )
+                    ) {
+                        return false;
+                    }
+                }
+
+                if (
+                    filtrosMarketplace.ascensor ===
+                    "sin"
+                ) {
+
+                    if (
+                        !ascensor.includes(
+                            "sin ascensor"
+                        )
+                    ) {
+                        return false;
+                    }
+                }
+            }
+
+            // 11. FOTOS
+            const numeroFotos =
+                obtenerFotosMarketplace(
+                    trabajo
+                );
+
+            if (
+                filtrosMarketplace.fotos ===
+                    "con" &&
+                numeroFotos <= 0
+            ) {
+                return false;
+            }
+
+            if (
+                filtrosMarketplace.fotos ===
+                    "sin" &&
+                numeroFotos > 0
+            ) {
+                return false;
+            }
+
+            // 12. SERVICIOS
+            if (
+                filtrosMarketplace.servicios !==
+                "todos"
+            ) {
+
+                const servicios =
+                    obtenerServiciosMarketplace(
+                        trabajo
+                    );
+
+                if (
+                    filtrosMarketplace.servicios ===
+                        "1" &&
+                    servicios !== 1
+                ) {
+                    return false;
+                }
+
+                if (
+                    filtrosMarketplace.servicios ===
+                        "6" &&
+                    servicios !== 6
+                ) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    );
+}
+
+function aplicarFiltroBusquedaMarketplace() {
+
+    const input =
+        document.getElementById(
+            "filtro-buscar-marketplace"
+        ) ||
+        document.querySelector(
+            'input[placeholder="Buscar origen o destino..."]'
+        );
+
+    if (!input) {
+        return;
+    }
+
+    filtroMarketplaceBusqueda =
+        input.value;
+
+    renderizarDisponibles();
+
+    actualizarEstadoVisualFiltrosMarketplace();
+}
+
+function crearOpcionesDinamicasMarketplace() {
+
+    const trabajos =
+        Array.isArray(obtenerStateMarketplace().disponibles)
+            ? obtenerStateMarketplace().disponibles
+            : [];
+
+    const zonas = new Map();
+    const vehiculos = new Map();
+    const tipos = new Map();
+
+    trabajos.forEach(
+        trabajo => {
+
+            obtenerZonaMarketplace(
+                trabajo
+            ).forEach(
+                zona => {
+
+                    const clave =
+                        normalizarTextoMarketplace(
+                            zona
+                        );
+
+                    if (
+                        clave &&
+                        !zonas.has(clave)
+                    ) {
+                        zonas.set(
+                            clave,
+                            zona
+                        );
+                    }
+                }
+            );
+
+            const vehiculo =
+                obtenerVehiculoMarketplace(
+                    trabajo
+                );
+
+            const claveVehiculo =
+                normalizarTextoMarketplace(
+                    vehiculo
+                );
+
+            if (
+                claveVehiculo &&
+                !vehiculos.has(
+                    claveVehiculo
+                )
+            ) {
+
+                vehiculos.set(
+                    claveVehiculo,
+                    vehiculo
+                );
+            }
+
+            const tipo =
+                obtenerTipoServicioMarketplace(
+                    trabajo
+                );
+
+            const claveTipo =
+                normalizarTextoMarketplace(
+                    tipo
+                );
+
+            if (
+                claveTipo &&
+                !tipos.has(
+                    claveTipo
+                )
+            ) {
+
+                tipos.set(
+                    claveTipo,
+                    tipo
+                );
+            }
+        }
+    );
+
+    return {
+
+        zonas:
+            [...zonas.values()]
+                .sort(
+                    (a, b) =>
+                        String(a).localeCompare(
+                            String(b),
+                            "es"
+                        )
+                ),
+
+        vehiculos:
+            [...vehiculos.values()]
+                .sort(
+                    (a, b) =>
+                        String(a).localeCompare(
+                            String(b),
+                            "es"
+                        )
+                ),
+
+        tipos:
+            [...tipos.values()]
+                .sort(
+                    (a, b) =>
+                        String(a).localeCompare(
+                            String(b),
+                            "es"
+                        )
+                )
+    };
+}
+
+function cerrarPopoverFiltroMarketplace() {
+
+    if (marketplaceFiltroPopover) {
+
+        marketplaceFiltroPopover.remove();
+
+        marketplaceFiltroPopover =
+            null;
+    }
+}
+
+function crearPopoverFiltroMarketplace(
+    config
+) {
+
+    cerrarPopoverFiltroMarketplace();
+
+    const boton =
+        document.getElementById(
+            config.botonId
+        );
+
+    if (!boton) {
+        return;
+    }
+
+    const popover =
+        document.createElement("div");
+
+    popover.id =
+        "marketplace-filtro-popover";
+
+    popover.className =
+        "fixed z-[200] bg-white border border-slate-200 rounded-2xl shadow-2xl p-2 w-[260px] max-w-[calc(100vw-24px)]";
+
+    const titulo =
+        document.createElement("div");
+
+    titulo.className =
+        "px-3 py-2 text-[11px] uppercase tracking-wider font-black text-slate-400";
+
+    titulo.textContent =
+        config.titulo;
+
+    popover.appendChild(titulo);
+
+    config.opciones.forEach(
+        opcion => {
+
+            const button =
+                document.createElement("button");
+
+            button.type =
+                "button";
+
+            button.className =
+                "w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-left text-sm font-semibold text-slate-700 hover:bg-[#0b1e5b]/5 hover:text-[#0b1e5b] transition-colors";
+
+            if (
+                opcion.valor ===
+                config.valorActual
+            ) {
+
+                button.classList.add(
+                    "bg-[#0b1e5b]/10",
+                    "text-[#0b1e5b]"
+                );
+            }
+
+            button.innerHTML = `
+                <span>
+                    ${escapeHtmlMarketplace(
+                        opcion.texto
+                    )}
+                </span>
+
+                ${
+                    opcion.valor ===
+                    config.valorActual
+
+                        ? '<i data-lucide="check" class="w-4 h-4 text-[#0b1e5b]"></i>'
+
+                        : ""
+                }
+            `;
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    config.alSeleccionar(
+                        opcion.valor
+                    );
+
+                    cerrarPopoverFiltroMarketplace();
+                }
+            );
+
+            popover.appendChild(
+                button
+            );
+        }
+    );
+
+    if (config.incluirFecha) {
+
+        const separador =
+            document.createElement("div");
+
+        separador.className =
+            "border-t border-slate-100 my-2";
+
+        popover.appendChild(
+            separador
+        );
+
+        const label =
+            document.createElement("label");
+
+        label.className =
+            "block px-3 pt-1 pb-1 text-[11px] font-black text-slate-400 uppercase tracking-wider";
+
+        label.textContent =
+            "Elegir fecha exacta";
+
+        popover.appendChild(
+            label
+        );
+
+        const dateInput =
+            document.createElement("input");
+
+        dateInput.type =
+            "date";
+
+        dateInput.value =
+            filtrosMarketplace.fechaPersonalizada ||
+            "";
+
+        dateInput.className =
+            "w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0b1e5b]/20 focus:border-[#0b1e5b]";
+
+        dateInput.addEventListener(
+            "change",
+            () => {
+
+                if (!dateInput.value) {
+                    return;
+                }
+
+                filtrosMarketplace.fecha =
+                    "personalizada";
+
+                filtrosMarketplace.fechaPersonalizada =
+                    dateInput.value;
+
+                renderizarDisponibles();
+
+                actualizarEstadoVisualFiltrosMarketplace();
+
+                cerrarPopoverFiltroMarketplace();
+            }
+        );
+
+        popover.appendChild(
+            dateInput
+        );
+    }
+
+    document.body.appendChild(
+        popover
+    );
+
+    marketplaceFiltroPopover =
+        popover;
+
+    const rect =
+        boton.getBoundingClientRect();
+
+    const ancho =
+        Math.min(
+            260,
+            window.innerWidth - 24
+        );
+
+    let left =
+        rect.left;
+
+    let top =
+        rect.bottom + 8;
+
+    if (
+        left + ancho >
+        window.innerWidth - 12
+    ) {
+
+        left =
+            window.innerWidth -
+            ancho -
+            12;
+    }
+
+    if (
+        top + popover.offsetHeight >
+        window.innerHeight - 12
+    ) {
+
+        top =
+            Math.max(
+                12,
+                rect.top -
+                popover.offsetHeight -
+                8
+            );
+    }
+
+    popover.style.left =
+        `${Math.max(12, left)}px`;
+
+    popover.style.top =
+        `${top}px`;
+
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+}
+
+function crearPopoverMasFiltrosMarketplace() {
+
+    cerrarPopoverFiltroMarketplace();
+
+    const boton =
+        document.getElementById(
+            "filtro-mas-marketplace"
+        );
+
+    if (!boton) {
+        return;
+    }
+
+    const dinamicos =
+        crearOpcionesDinamicasMarketplace();
+
+    const popover =
+        document.createElement("div");
+
+    popover.id =
+        "marketplace-filtro-popover";
+
+    popover.className =
+        "fixed z-[200] bg-white border border-slate-200 rounded-2xl shadow-2xl p-4 w-[340px] max-w-[calc(100vw-24px)] max-h-[75vh] overflow-y-auto";
+
+    popover.innerHTML = `
+        <div class="flex items-center justify-between gap-3 mb-3">
+
+            <div>
+
+                <div class="text-sm font-black text-slate-800">
+                    Más filtros
+                </div>
+
+                <div class="text-[11px] font-semibold text-slate-400 mt-0.5">
+                    Combina varios criterios a la vez
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                id="cerrar-mas-filtros-marketplace"
+                class="p-2 rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+            >
+                <i
+                    data-lucide="x"
+                    class="w-4 h-4"
+                ></i>
+            </button>
+
+        </div>
+
+        <div class="space-y-3">
+
+            ${crearSelectAvanzadoMarketplace(
+    "Tipo de mudanza",
+    "filtro-avanzado-tipo",
+    [
+        {
+            valor: "Mudanza Estándar",
+            texto: "Mudanza Estándar"
+        },
+        {
+            valor: "Mudanza Total",
+            texto: "Mudanza Total"
+        }
+    ],
+    filtrosMarketplace.tipoServicio,
+    "todos",
+    "Todos los tipos"
+)}
+
+            ${crearSelectAvanzadoMarketplace(
+                "Precio",
+                "filtro-avanzado-precio",
+                [
+                    {
+                        valor: "todos",
+                        texto: "Cualquier precio"
+                    },
+                    {
+                        valor: "0-500",
+                        texto: "Hasta 500 €"
+                    },
+                    {
+                        valor: "500-1000",
+                        texto: "500 € – 1.000 €"
+                    },
+                    {
+                        valor: "1000-2000",
+                        texto: "1.000 € – 2.000 €"
+                    },
+                    {
+                        valor: "2000-3000",
+                        texto: "2.000 € – 3.000 €"
+                    },
+                    {
+                        valor: "3000+",
+                        texto: "Más de 3.000 €"
+                    }
+                ],
+                filtrosMarketplace.precio,
+                "todos",
+                "Cualquier precio"
+            )}
+
+            ${crearSelectAvanzadoMarketplace(
+                "Volumen",
+                "filtro-avanzado-volumen",
+                [
+    {
+        valor: "todos",
+        texto: "Cualquier volumen"
+    },
+    {
+        valor: "0-3",
+        texto: "Hasta 3 m³"
+    },
+    {
+        valor: "3-5",
+        texto: "3 – 5 m³"
+    },
+    {
+        valor: "5-7",
+        texto: "5 – 7 m³"
+    },
+    {
+        valor: "7-10",
+        texto: "7 – 10 m³"
+    },
+    {
+        valor: "10-20",
+        texto: "10 – 20 m³"
+    },
+    {
+        valor: "20-40",
+        texto: "20 – 40 m³"
+    },
+    {
+        valor: "40-60",
+        texto: "40 – 60 m³"
+    },
+    {
+        valor: "60-80",
+        texto: "60 – 80 m³"
+    },
+    {
+        valor: "80+",
+        texto: "Más de 80 m³"
+    }
+],
+                filtrosMarketplace.volumen,
+                "todos",
+                "Cualquier volumen"
+            )}
+
+           ${crearSelectAvanzadoMarketplace(
+    "Artículos",
+    "filtro-avanzado-articulos",
+    [
+        {
+            valor: "todos",
+            texto: "Cualquier cantidad"
+        },
+        {
+            valor: "0-5",
+            texto: "Hasta 5 artículos"
+        },
+        {
+            valor: "5-10",
+            texto: "5 – 10 artículos"
+        },
+        {
+            valor: "10-20",
+            texto: "10 – 20 artículos"
+        },
+        {
+            valor: "20-40",
+            texto: "20 – 40 artículos"
+        },
+        {
+            valor: "40-60",
+            texto: "40 – 60 artículos"
+        },
+        {
+            valor: "60+",
+            texto: "Más de 60 artículos"
+        }
+    ],
+    filtrosMarketplace.articulos,
+    "todos",
+    "Cualquier cantidad"
+)}
+
+            ${crearSelectAvanzadoMarketplace(
+                "Ascensor",
+                "filtro-avanzado-ascensor",
+                [
+                    {
+                        valor: "todos",
+                        texto: "Cualquier acceso"
+                    },
+                    {
+                        valor: "con",
+                        texto: "Con ascensor"
+                    },
+                    {
+                        valor: "sin",
+                        texto: "Sin ascensor"
+                    }
+                ],
+                filtrosMarketplace.ascensor,
+                "todos",
+                "Cualquier acceso"
+            )}
+
+            ${crearSelectAvanzadoMarketplace(
+                "Fotos",
+                "filtro-avanzado-fotos",
+                [
+                    {
+                        valor: "todos",
+                        texto: "Cualquier cantidad"
+                    },
+                    {
+                        valor: "con",
+                        texto: "Con fotos"
+                    },
+                    {
+                        valor: "sin",
+                        texto: "Sin fotos"
+                    }
+                ],
+                filtrosMarketplace.fotos,
+                "todos",
+                "Cualquier cantidad"
+            )}
+
+        </div>
+
+        <div class="border-t border-slate-100 mt-4 pt-3 flex items-center justify-between gap-2">
+
+            <button
+                type="button"
+                id="limpiar-filtros-marketplace"
+                class="text-xs font-black text-slate-500 hover:text-[#0b1e5b] px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
+            >
+                Limpiar filtros
+            </button>
+
+            <button
+                type="button"
+                id="aplicar-mas-filtros-marketplace"
+                class="bg-[#0b1e5b] hover:bg-[#163562] text-white text-xs font-black px-4 py-2.5 rounded-xl transition-colors shadow-sm"
+            >
+                Aplicar filtros
+            </button>
+
+        </div>
+    `;
+
+    document.body.appendChild(
+        popover
+    );
+
+    marketplaceFiltroPopover =
+        popover;
+
+    const rect =
+        boton.getBoundingClientRect();
+
+    const ancho =
+        Math.min(
+            340,
+            window.innerWidth - 24
+        );
+
+    let left =
+        rect.right - ancho;
+
+    let top =
+        rect.bottom + 8;
+
+    if (left < 12) {
+        left = 12;
+    }
+
+    if (
+        top + popover.offsetHeight >
+        window.innerHeight - 12
+    ) {
+
+        top =
+            Math.max(
+                12,
+                rect.top -
+                popover.offsetHeight -
+                8
+            );
+    }
+
+    popover.style.left =
+        `${left}px`;
+
+    popover.style.top =
+        `${top}px`;
+
+    popover
+        .querySelectorAll(
+            "select[data-marketplace-avanzado]"
+        )
+        .forEach(
+            select => {
+
+                select.addEventListener(
+                    "change",
+                    () => {
+
+                        const campo =
+                            select.dataset.campo;
+
+                        filtrosMarketplace[campo] =
+                            select.value;
+                    }
+                );
+            }
+        );
+
+    popover
+        .querySelector(
+            "#cerrar-mas-filtros-marketplace"
+        )
+        ?.addEventListener(
+            "click",
+            cerrarPopoverFiltroMarketplace
+        );
+
+    popover
+        .querySelector(
+            "#limpiar-filtros-marketplace"
+        )
+        ?.addEventListener(
+            "click",
+            () => {
+
+                limpiarFiltrosMarketplace();
+
+                cerrarPopoverFiltroMarketplace();
+            }
+        );
+
+    popover
+        .querySelector(
+            "#aplicar-mas-filtros-marketplace"
+        )
+        ?.addEventListener(
+            "click",
+            () => {
+
+                renderizarDisponibles();
+
+                actualizarEstadoVisualFiltrosMarketplace();
+
+                cerrarPopoverFiltroMarketplace();
+            }
+        );
+
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+}
+
+function crearSelectAvanzadoMarketplace(
+    etiqueta,
+    id,
+    opciones,
+    valorActual,
+    valorTodos,
+    textoTodos
+) {
+
+    const mapaCampos = {
+
+        "filtro-avanzado-tipo":
+            "tipoServicio",
+
+        "filtro-avanzado-precio":
+            "precio",
+
+        "filtro-avanzado-volumen":
+            "volumen",
+
+        "filtro-avanzado-articulos":
+            "articulos",
+
+        "filtro-avanzado-ascensor":
+            "ascensor",
+
+        "filtro-avanzado-fotos":
+            "fotos",
+
+        "filtro-avanzado-servicios":
+            "servicios"
+    };
+
+    const campo =
+        mapaCampos[id] ||
+        id.replace(
+            "filtro-avanzado-",
+            ""
+        );
+
+    let html = `
+
+        <label class="block">
+
+            <span class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">
+                ${escapeHtmlMarketplace(
+                    etiqueta
+                )}
+            </span>
+
+            <select
+                id="${escapeHtmlMarketplace(id)}"
+                data-marketplace-avanzado="true"
+                data-campo="${escapeHtmlMarketplace(campo)}"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0b1e5b]/20 focus:border-[#0b1e5b]"
+            >
+    `;
+
+    if (
+        !opciones.some(
+            opcion =>
+                opcion.valor ===
+                valorTodos
+        )
+    ) {
+
+        html += `
+
+            <option
+                value="${escapeHtmlMarketplace(
+                    valorTodos
+                )}"
+            >
+                ${escapeHtmlMarketplace(
+                    textoTodos
+                )}
+            </option>
+
+        `;
+    }
+
+    opciones.forEach(
+        opcion => {
+
+            const seleccionado =
+                opcion.valor ===
+                valorActual
+                    ? "selected"
+                    : "";
+
+            html += `
+
+                <option
+                    value="${escapeHtmlMarketplace(
+                        opcion.valor
+                    )}"
+                    ${seleccionado}
+                >
+                    ${escapeHtmlMarketplace(
+                        opcion.texto
+                    )}
+                </option>
+
+            `;
+        }
+    );
+
+    html += `
+
+            </select>
+
+        </label>
+
+    `;
+
+    return html;
+}
+
+function limpiarFiltrosMarketplace() {
+
+    filtroMarketplaceBusqueda =
+        "";
+
+    const input =
+        document.getElementById(
+            "filtro-buscar-marketplace"
+        ) ||
+        document.querySelector(
+            'input[placeholder="Buscar origen o destino..."]'
+        );
+
+    if (input) {
+        input.value = "";
+    }
+
+    Object.assign(
+        filtrosMarketplace,
+        {
+            fecha: "todas",
+            fechaPersonalizada: "",
+            zona: "todas",
+            distancia: "todas",
+            vehiculo: "todas",
+            tipoServicio: "todos",
+            precio: "todos",
+            volumen: "todos",
+            articulos: "todos",
+            ascensor: "todos",
+            fotos: "todos",
+            servicios: "todos"
+        }
+    );
+
+    renderizarDisponibles();
+
+    actualizarEstadoVisualFiltrosMarketplace();
+}
+
+function actualizarEstadoVisualFiltrosMarketplace() {
+
+    const configuracion = [
+
+        [
+            "filtro-fecha-marketplace",
+            filtrosMarketplace.fecha !==
+                "todas"
+        ],
+
+        [
+            "filtro-zona-marketplace",
+            filtrosMarketplace.zona !==
+                "todas"
+        ],
+
+        [
+            "filtro-distancia-marketplace",
+            filtrosMarketplace.distancia !==
+                "todas"
+        ],
+
+        [
+            "filtro-vehiculo-marketplace",
+            filtrosMarketplace.vehiculo !==
+                "todas"
+        ],
+
+        [
+            "filtro-mas-marketplace",
+
+            filtrosMarketplace.tipoServicio !==
+                "todos" ||
+
+            filtrosMarketplace.precio !==
+                "todos" ||
+
+            filtrosMarketplace.volumen !==
+                "todos" ||
+
+            filtrosMarketplace.articulos !==
+                "todos" ||
+
+            filtrosMarketplace.ascensor !==
+                "todos" ||
+
+            filtrosMarketplace.fotos !==
+                "todos" ||
+
+            filtrosMarketplace.servicios !==
+                "todos"
+        ]
+    ];
+
+    configuracion.forEach(
+        ([id, activo]) => {
+
+            const boton =
+                document.getElementById(
+                    id
+                );
+
+            if (!boton) {
+                return;
+            }
+
+            boton.classList.toggle(
+                "border-[#0b1e5b]",
+                activo
+            );
+
+            boton.classList.toggle(
+                "bg-[#0b1e5b]/10",
+                activo
+            );
+
+            boton.classList.toggle(
+                "text-[#0b1e5b]",
+                activo
+            );
+
+            const indicador =
+                boton.querySelector(
+                    "[data-filtro-indicador]"
+                );
+
+            if (indicador) {
+
+                indicador.textContent =
+                    activo
+                        ? "•"
+                        : "";
+
+                indicador.classList.toggle(
+                    "text-sky-500",
+                    activo
+                );
+            }
+        }
+    );
+
+    const hayFiltros =
+        Boolean(
+            normalizarTextoMarketplace(
+                filtroMarketplaceBusqueda
+            )
+        ) ||
+        configuracion.some(
+            ([, activo]) =>
+                activo
+        );
+
+    const limpiar =
+        document.getElementById(
+            "limpiar-todos-filtros-marketplace"
+        );
+
+    if (limpiar) {
+
+        limpiar.classList.toggle(
+            "hidden",
+            !hayFiltros
+        );
+    }
+}
+
+function abrirFiltroMarketplace(tipo) {
+
+    const dinamicos =
+        crearOpcionesDinamicasMarketplace();
+
+    if (tipo === "fecha") {
+
+        crearPopoverFiltroMarketplace({
+
+            botonId:
+                "filtro-fecha-marketplace",
+
+            titulo:
+                "Fecha del servicio",
+
+            valorActual:
+                filtrosMarketplace.fecha,
+
+            incluirFecha:
+                true,
+
+            opciones: [
+
+                {
+                    valor: "todas",
+                    texto: "Todas las fechas"
+                },
+
+                {
+                    valor: "hoy",
+                    texto: "Hoy"
+                },
+
+                {
+                    valor: "manana",
+                    texto: "Mañana"
+                },
+
+                {
+                    valor: "7dias",
+                    texto: "Próximos 7 días"
+                },
+
+                {
+                    valor: "30dias",
+                    texto: "Próximos 30 días"
+                }
+            ],
+
+            alSeleccionar:
+                valor => {
+
+                    filtrosMarketplace.fecha =
+                        valor;
+
+                    if (
+                        valor !==
+                        "personalizada"
+                    ) {
+
+                        filtrosMarketplace.fechaPersonalizada =
+                            "";
+                    }
+
+                    renderizarDisponibles();
+
+                    actualizarEstadoVisualFiltrosMarketplace();
+                }
+        });
+
+        return;
+    }
+
+    if (tipo === "zona") {
+
+        crearPopoverFiltroMarketplace({
+
+            botonId:
+                "filtro-zona-marketplace",
+
+            titulo:
+                "Zona",
+
+            valorActual:
+                filtrosMarketplace.zona,
+
+            opciones: [
+
+                {
+                    valor: "todas",
+                    texto: "Todas las zonas"
+                },
+
+                ...dinamicos.zonas.map(
+                    zona => ({
+                        valor: zona,
+                        texto: zona
+                    })
+                )
+            ],
+
+            alSeleccionar:
+                valor => {
+
+                    filtrosMarketplace.zona =
+                        valor;
+
+                    renderizarDisponibles();
+
+                    actualizarEstadoVisualFiltrosMarketplace();
+                }
+        });
+
+        return;
+    }
+
+    if (tipo === "distancia") {
+
+        crearPopoverFiltroMarketplace({
+
+            botonId:
+                "filtro-distancia-marketplace",
+
+            titulo:
+                "Distancia",
+
+            valorActual:
+                filtrosMarketplace.distancia,
+
+            opciones: [
+
+                {
+                    valor: "todas",
+                    texto: "Cualquier distancia"
+                },
+
+                {
+                    valor: "0-100",
+                    texto: "Hasta 100 km"
+                },
+
+                {
+                    valor: "100-300",
+                    texto: "100 – 300 km"
+                },
+
+                {
+                    valor: "300-600",
+                    texto: "300 – 600 km"
+                },
+
+                {
+                    valor: "600-1000",
+                    texto: "600 – 1.000 km"
+                },
+
+                {
+                    valor: "1000+",
+                    texto: "Más de 1.000 km"
+                }
+            ],
+
+            alSeleccionar:
+                valor => {
+
+                    filtrosMarketplace.distancia =
+                        valor;
+
+                    renderizarDisponibles();
+
+                    actualizarEstadoVisualFiltrosMarketplace();
+                }
+        });
+
+        return;
+    }
+
+    if (tipo === "vehiculo") {
+
+        crearPopoverFiltroMarketplace({
+
+            botonId:
+                "filtro-vehiculo-marketplace",
+
+            titulo:
+                "Vehículo",
+
+            valorActual:
+                filtrosMarketplace.vehiculo,
+
+            opciones: [
+
+                {
+                    valor: "todas",
+                    texto: "Cualquier vehículo"
+                },
+
+                ...dinamicos.vehiculos.map(
+                    vehiculo => ({
+                        valor: vehiculo,
+                        texto: vehiculo
+                    })
+                )
+            ],
+
+            alSeleccionar:
+                valor => {
+
+                    filtrosMarketplace.vehiculo =
+                        valor;
+
+                    renderizarDisponibles();
+
+                    actualizarEstadoVisualFiltrosMarketplace();
+                }
+        });
+
+        return;
+    }
+
+    if (tipo === "mas") {
+
+        crearPopoverMasFiltrosMarketplace();
+    }
+}
+
+function inicializarFiltrosMarketplace() {
+
+    const input =
+        document.getElementById(
+            "filtro-buscar-marketplace"
+        ) ||
+        document.querySelector(
+            'input[placeholder="Buscar origen o destino..."]'
+        );
+
+    if (
+        input &&
+        !input.dataset.marketplaceConectado
+    ) {
+
+        input.dataset.marketplaceConectado =
+            "true";
+
+        input.addEventListener(
+            "input",
+            aplicarFiltroBusquedaMarketplace
+        );
+    }
+
+    const botones = [
+
+        [
+            "filtro-fecha-marketplace",
+            "fecha"
+        ],
+
+        [
+            "filtro-zona-marketplace",
+            "zona"
+        ],
+
+        [
+            "filtro-distancia-marketplace",
+            "distancia"
+        ],
+
+        [
+            "filtro-vehiculo-marketplace",
+            "vehiculo"
+        ],
+
+        [
+            "filtro-mas-marketplace",
+            "mas"
+        ]
+    ];
+
+    botones.forEach(
+        ([id, tipo]) => {
+
+            const boton =
+                document.getElementById(
+                    id
+                );
+
+            if (
+                !boton ||
+                boton.dataset.marketplaceConectado
+            ) {
+                return;
+            }
+
+            boton.dataset.marketplaceConectado =
+                "true";
+
+            boton.addEventListener(
+                "click",
+                event => {
+
+                    event.stopPropagation();
+
+                    if (
+                        marketplaceFiltroPopover &&
+                        marketplaceFiltroPopover.dataset.botonId ===
+                            id
+                    ) {
+
+                        cerrarPopoverFiltroMarketplace();
+
+                        return;
+                    }
+
+                    abrirFiltroMarketplace(
+                        tipo
+                    );
+
+                    if (
+                        marketplaceFiltroPopover
+                    ) {
+
+                        marketplaceFiltroPopover.dataset.botonId =
+                            id;
+                    }
+                }
+            );
+        }
+    );
+
+    const limpiarTodo =
+        document.getElementById(
+            "limpiar-todos-filtros-marketplace"
+        );
+
+    if (
+        limpiarTodo &&
+        !limpiarTodo.dataset.marketplaceConectado
+    ) {
+
+        limpiarTodo.dataset.marketplaceConectado =
+            "true";
+
+        limpiarTodo.addEventListener(
+            "click",
+            limpiarFiltrosMarketplace
+        );
+    }
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            if (
+                !marketplaceFiltroPopover
+            ) {
+                return;
+            }
+
+            if (
+                marketplaceFiltroPopover.contains(
+                    event.target
+                ) ||
+                event.target.closest?.(
+                    "[data-marketplace-filtro]"
+                )
+            ) {
+                return;
+            }
+
+            cerrarPopoverFiltroMarketplace();
+        }
+    );
+
+    window.addEventListener(
+        "resize",
+        cerrarPopoverFiltroMarketplace
+    );
+
+    window.addEventListener(
+        "scroll",
+        cerrarPopoverFiltroMarketplace,
+        true
+    );
+
+    actualizarEstadoVisualFiltrosMarketplace();
+
+    console.log(
+        "✅ Filtros Marketplace conectados correctamente."
+    );
+}
+
+///////////////////////////////////////////////////////////
+// UTILIDADES
+///////////////////////////////////////////////////////////
+
+function obtenerUbicacionCorta(direccion){
+
+    if(!direccion) return "Ubicación no disponible";
+
+    const texto=String(direccion).trim();
+
+    const partes=texto
+        .split(",")
+        .map(p=>p.trim())
+        .filter(Boolean);
+
+    // Calle, Ciudad, CP, Comunidad
+    if(partes.length>=4){
+
+        return `${partes[1]}, ${partes[2]}, ${partes[3]}`;
+
+    }
+
+    // Ciudad, CP, Comunidad
+    if(partes.length===3){
+
+        return partes.join(", ");
+
+    }
+
+    return texto;
+
+}
+
+function escapeHtmlMarketplace(valor){
+
+    return String(valor ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+function apiTransportistaDisponible() {
+
+    const api =
+        window.Transportista;
+
+    return api &&
+        typeof api.getTotalArticulos ===
+            "function" &&
+        typeof api.getTotalM3 ===
+            "function" &&
+        typeof api.formatM3 ===
+            "function" &&
+        typeof api.getAccesos ===
+            "function";
+}
+
+
+// CARGAR TRABAJOS DISPONIBLES
+///////////////////////////////////////////////////////////
+
+async function cargarTrabajosDisponibles() {
+
+    if (marketplaceCargando) {
+
+        console.log(
+            "Marketplace: consulta ya en curso; se evita duplicado."
+        );
+
+        return;
+    }
+
+    const cliente =
+        obtenerDbClientMarketplace();
+
+    if (!cliente) {
+
+        console.error(
+            "Marketplace: no hay un cliente Supabase disponible. " +
+            "Expón window.dbClient = dbClient antes de cargar marketplace.js."
+        );
+
+        obtenerStateMarketplace().disponibles = [];
+
+        renderizarDisponibles();
+
+        return;
+    }
+
+    marketplaceCargando = true;
+
+    try {
+
+        const {
+            data,
+            error
+        } = await cliente
+            .from("mudanzas")
+            .select("*")
+            .eq(
+                "estado",
+                "Pendiente de asignación"
+            )
+            .eq(
+                "publicada_marketplace",
+                true
+            )
+            .eq(
+                "bloqueada",
+                false
+            )
+            .is(
+                "transportista_id",
+                null
+            )
+            .order(
+                "fecha",
+                {
+                    ascending: true
+                }
+            );
 
         if (error) {
 
-            throw error;
-
-        }
-
- 
-
-        return Array.isArray(data)
-
-            ? data.filter(esFinalizada)
-
-            : [];
-
-    }
-
- 
-
-    function obtenerTotalArticulos(mudanza) {
-
- 
-
-        let inventario =
-
-            mudanza?.inventario;
-
- 
-
-        if (!inventario) {
-
-            return 0;
-
-        }
-
- 
-
-        try {
-
- 
-
-            if (
-
-                typeof inventario === "string"
-
-            ) {
-
-                inventario =
-
-                    JSON.parse(
-
-                        inventario
-
-                    );
-
-            }
-
- 
-
-        } catch {
-
- 
-
-            return 0;
-
-        }
-
- 
-
-        if (!Array.isArray(inventario)) {
-
-            return 0;
-
-        }
-
- 
-
-        return inventario.reduce(
-
-            (total, item) => {
-
- 
-
-                return (
-
-                    total +
-
-                    (
-
-                        parseInt(
-
-                            item?.cantidad,
-
-                            10
-
-                        ) || 0
-
-                    )
-
-                );
-
- 
-
-            },
-
-            0
-
-        );
-
-    }
-
- 
-
-    function crearTarjetaHistorial(mudanza) {
-
- 
-
-        const id =
-
-            escaparHTML(mudanza?.id);
-
- 
-
-        const fecha =
-
-            obtenerFecha(mudanza);
-
- 
-
-        const franja =
-
-            obtenerFranja(mudanza);
-
- 
-
-        const tipo =
-
-            obtenerTipoServicio(mudanza);
-
- 
-
-        const accesoOrigen =
-
-            obtenerAccesoOrigen(mudanza);
-
- 
-
-        const accesoDestino =
-
-            obtenerAccesoDestino(mudanza);
-
- 
-
-        const precio =
-
-            mudanza?.preciototal ??
-
-            mudanza?.importe_total ??
-
-            "—";
-
- 
-
-        const kilometros =
-
-            mudanza?.km !== undefined &&
-
-            mudanza?.km !== null
-
-                ? `${mudanza.km} km`
-
-                : "—";
-
- 
-
-        const volumen =
-
-            mudanza?.volumen || "—";
-
- 
-
-        const articulos =
-
-            obtenerTotalArticulos(mudanza);
-
- 
-
-        const numeroReserva =
-
-            mudanza?.numero_reserva || "—";
-
- 
-
-        return `
-
-            <article
-
-                class="
-
-                    bg-white
-
-                    border border-slate-200
-
-                    rounded-2xl
-
-                    shadow-sm
-
-                    hover:shadow-md
-
-                    hover:border-blue-200
-
-                    transition-all duration-200
-
-                    overflow-hidden
-
-                "
-
-            >
-
- 
-
-                <div class="p-5">
-
- 
-
-                    <div
-
-                        class="
-
-                            flex flex-wrap
-
-                            items-center
-
-                            justify-between
-
-                            gap-3
-
-                            mb-5
-
-                        "
-
-                    >
-
- 
-
-                        <div class="flex items-center gap-3">
-
- 
-
-                            <div
-
-                                class="
-
-                                    w-12 h-12
-
-                                    rounded-xl
-
-                                    bg-blue-50
-
-                                    flex items-center justify-center
-
-                                    text-blue-700
-
-                                    font-black
-
-                                "
-
-                            >
-
-                                <span class="text-lg">
-
-                                    ${obtenerDia(fecha)}
-
-                                </span>
-
-                            </div>
-
- 
-
-                            <div>
-
- 
-
-                                <div
-
-                                    class="
-
-                                        text-xs
-
-                                        uppercase
-
-                                        tracking-wider
-
-                                        font-bold
-
-                                        text-slate-400
-
-                                    "
-
-                                >
-
-                                    ${obtenerMes(fecha)}
-
-                                </div>
-
- 
-
-                                <div
-
-                                    class="
-
-                                        text-sm
-
-                                        font-bold
-
-                                        text-slate-800
-
-                                    "
-
-                                >
-
-                                    ${formatearFecha(fecha)}
-
-                                </div>
-
- 
-
-                            </div>
-
- 
-
-                        </div>
-
- 
-
-                        <div
-
-                            class="
-
-                                flex flex-wrap
-
-                                items-center gap-2
-
-                            "
-
-                        >
-
- 
-
-                            <span
-
-                                class="
-
-                                    inline-flex items-center
-
-                                    px-3 py-1.5
-
-                                    rounded-full
-
-                                    text-[11px]
-
-                                    font-black
-
-                                    border
-
-                                    border-emerald-200
-
-                                    bg-emerald-50
-
-                                    text-emerald-700
-
-                                "
-
-                            >
-
-                                Completada
-
-                            </span>
-
- 
-
-                            <span
-
-                                class="
-
-                                    inline-flex items-center
-
-                                    px-3 py-1.5
-
-                                    rounded-full
-
-                                    text-[11px]
-
-                                    font-black
-
-                                    border
-
-                                    border-blue-200
-
-                                    bg-blue-50
-
-                                    text-blue-700
-
-                                "
-
-                            >
-
-                                ${escaparHTML(tipo)}
-
-                            </span>
-
- 
-
-                        </div>
-
- 
-
-                    </div>
-
- 
-
-                    <div
-
-                        class="
-
-                            mb-4
-
-                            rounded-xl
-
-                            border border-amber-200
-
-                            bg-amber-50
-
-                            px-4 py-3
-
-                            flex items-center gap-3
-
-                        "
-
-                    >
-
- 
-
-                        <div
-
-                            class="
-
-                                w-9 h-9
-
-                                rounded-lg
-
-                                bg-white
-
-                                flex items-center justify-center
-
-                                text-amber-600
-
-                                border border-amber-200
-
-                            "
-
-                        >
-
-                            <i
-
-                                data-lucide="clock-3"
-
-                                class="w-4 h-4"
-
-                            ></i>
-
-                        </div>
-
- 
-
-                        <div>
-
- 
-
-                            <div
-
-                                class="
-
-                                    text-[10px]
-
-                                    uppercase
-
-                                    tracking-wider
-
-                                    font-black
-
-                                    text-amber-700
-
-                                "
-
-                            >
-
-                                Horario de recogida
-
-                            </div>
-
- 
-
-                            <div
-
-                                class="
-
-                                    text-sm
-
-                                    font-black
-
-                                    text-slate-800
-
-                                "
-
-                            >
-
-                                ${escaparHTML(franja)}
-
-                            </div>
-
- 
-
-                        </div>
-
- 
-
-                    </div>
-
- 
-
-                    <div
-
-                        class="
-
-                            grid
-
-                            grid-cols-1
-
-                            lg:grid-cols-[1fr_auto_1fr]
-
-                            gap-4
-
-                            items-stretch
-
-                        "
-
-                    >
-
- 
-
-                        <div
-
-                            class="
-
-                                rounded-xl
-
-                                border border-blue-100
-
-                                bg-blue-50/50
-
-                                p-4
-
-                            "
-
-                        >
-
- 
-
-                            <div
-
-                                class="
-
-                                    text-[10px]
-
-                                    uppercase
-
-                                    tracking-wider
-
-                                    font-black
-
-                                    text-blue-500
-
-                                    mb-1.5
-
-                                "
-
-                            >
-
-                                Origen
-
-                            </div>
-
- 
-
-                            <div
-
-                                class="
-
-                                    text-sm
-
-                                    font-black
-
-                                    text-slate-800
-
-                                    leading-snug
-
-                                "
-
-                            >
-
-                                ${escaparHTML(
-    obtenerUbicacionHistorial(
-        mudanza,
-        "origen"
-    )
-)}
-
-                            </div>
-
- 
-
-                            <div
-
-                                class="
-
-                                    mt-2
-
-                                    text-xs
-
-                                    font-bold
-
-                                    text-slate-500
-
-                                "
-
-                            >
-
-                                ${escaparHTML(
-
-                                    accesoOrigen
-
-                                )}
-
-                            </div>
-
- 
-
-                        </div>
-
- 
-
-                        <div
-
-                            class="
-
-                                hidden lg:flex
-
-                                items-center justify-center
-
-                            "
-
-                        >
-
- 
-
-                            <div
-
-                                class="
-
-                                    w-10 h-10
-
-                                    rounded-full
-
-                                    bg-white
-
-                                    border border-slate-200
-
-                                    shadow-sm
-
-                                    flex items-center justify-center
-
-                                    text-blue-600
-
-                                "
-
-                            >
-
-                                <i
-
-                                    data-lucide="truck"
-
-                                    class="w-4 h-4"
-
-                                ></i>
-
-                            </div>
-
- 
-
-                        </div>
-
- 
-
-                        <div
-
-                            class="
-
-                                rounded-xl
-
-                                border border-orange-100
-
-                                bg-orange-50/50
-
-                                p-4
-
-                            "
-
-                        >
-
- 
-
-                            <div
-
-                                class="
-
-                                    text-[10px]
-
-                                    uppercase
-
-                                    tracking-wider
-
-                                    font-black
-
-                                    text-orange-500
-
-                                    mb-1.5
-
-                                "
-
-                            >
-
-                                Destino
-
-                            </div>
-
- 
-
-                            <div
-
-                                class="
-
-                                    text-sm
-
-                                    font-black
-
-                                    text-slate-800
-
-                                    leading-snug
-
-                                "
-
-                            >
-
-                                ${escaparHTML(
-    obtenerUbicacionHistorial(
-        mudanza,
-        "destino"
-    )
-)}
-
-                            </div>
-
- 
-
-                            <div
-
-                                class="
-
-                                    mt-2
-
-                                    text-xs
-
-                                    font-bold
-
-                                    text-slate-500
-
-                                "
-
-                            >
-
-                                ${escaparHTML(
-
-                                    accesoDestino
-
-                                )}
-
-                            </div>
-
- 
-
-                        </div>
-
- 
-
-                    </div>
-
- 
-
-                    <div
-
-                        class="
-
-                            mt-4 pt-4
-
-                            border-t border-slate-100
-
-                            flex flex-wrap
-
-                            gap-x-5 gap-y-2
-
-                            text-xs font-semibold
-
-                            text-slate-500
-
-                        "
-
-                    >
-
- 
-
-                        <span
-
-                            class="inline-flex items-center gap-1.5"
-
-                        >
-
-                            <i
-
-                                data-lucide="route"
-
-                                class="w-3.5 h-3.5 text-slate-400"
-
-                            ></i>
-
-                            ${escaparHTML(kilometros)}
-
-                        </span>
-
- 
-
-                        <span
-
-                            class="inline-flex items-center gap-1.5"
-
-                        >
-
-                            <i
-
-                                data-lucide="box"
-
-                                class="w-3.5 h-3.5 text-slate-400"
-
-                            ></i>
-
-                            ${escaparHTML(articulos)} art.
-
-                        </span>
-
- 
-
-                        <span
-
-                            class="inline-flex items-center gap-1.5"
-
-                        >
-
-                            <i
-
-                                data-lucide="ruler"
-
-                                class="w-3.5 h-3.5 text-slate-400"
-
-                            ></i>
-
-                            ${escaparHTML(volumen)}
-
-                        </span>
-
- 
-
-                        <span
-
-                            class="inline-flex items-center gap-1.5"
-
-                        >
-
-                            <i
-
-                                data-lucide="hash"
-
-                                class="w-3.5 h-3.5 text-slate-400"
-
-                            ></i>
-
-                            ${escaparHTML(numeroReserva)}
-
-                        </span>
-
- 
-
-                    </div>
-
- 
-
-                    <div
-
-                        class="
-
-                            mt-5
-
-                            flex flex-wrap
-
-                            items-center
-
-                            justify-between
-
-                            gap-3
-
-                        "
-
-                    >
-
- 
-
-                        <div>
-
- 
-
-                            <div
-
-                                class="
-
-                                    text-[10px]
-
-                                    uppercase
-
-                                    tracking-wider
-
-                                    font-bold
-
-                                    text-slate-400
-
-                                "
-
-                            >
-
-                                Cobro transportista
-
-                            </div>
-
- 
-
-                            <div
-
-                                class="
-
-                                    text-xl
-
-                                    font-black
-
-                                    text-blue-600
-
-                                "
-
-                            >
-
-                                ${escaparHTML(precio)}
-
-                            </div>
-
- 
-
-                        </div>
-
- 
-
-                        <button
-
-                            type="button"
-
-                            class="
-
-                                inline-flex
-
-                                items-center
-
-                                gap-2
-
-                                px-5 py-3
-
-                                rounded-xl
-
-                                bg-blue-600
-
-                                hover:bg-blue-700
-
-                                text-white
-
-                                text-sm
-
-                                font-black
-
-                                shadow-sm
-
-                                transition-colors
-
-                            "
-
-                            data-historial-ficha-id="${id}"
-
-                        >
-
-                            Ficha PDF
-
- 
-
-                            <i
-
-                                data-lucide="file-text"
-
-                                class="w-4 h-4"
-
-                            ></i>
-
-                        </button>
-
- 
-
-                    </div>
-
- 
-
-                </div>
-
- 
-
-            </article>
-
-        `;
-
-    }
-
- 
-
-    function obtenerContenedor() {
-
- 
-
-        return document.getElementById(
-
-            CONTENEDOR_ID
-
-        );
-
-    }
-
- 
-
-    function render(lista) {
-
- 
-
-        const contenedor =
-
-            obtenerContenedor();
-
- 
-
-        if (!contenedor) {
-
             console.error(
-
-                "[RODAX Historial] No existe #" +
-
-                CONTENEDOR_ID
-
+                "❌ ERROR CARGANDO MARKETPLACE:",
+                error.message,
+                error.details,
+                error.hint
             );
 
-            return;
+            obtenerStateMarketplace().disponibles = [];
 
+            renderizarDisponibles();
+
+            return;
         }
 
- 
-
-        const historial =
-
-            Array.isArray(lista)
-
-                ? [...lista].sort(
-
-                    (a, b) =>
-
-                        String(
-
-                            obtenerFecha(b) || ""
-
-                        ).localeCompare(
-
-                            String(
-
-                                obtenerFecha(a) || ""
-
-                            )
-
-                        )
-
-                )
-
+        obtenerStateMarketplace().disponibles =
+            Array.isArray(data)
+                ? data
                 : [];
 
- 
+        renderizarDisponibles();
 
-        window.historialServiciosCache =
+    } catch (error) {
 
-            historial;
+        console.error(
+            "❌ EXCEPCIÓN CARGANDO MARKETPLACE:",
+            error
+        );
 
- window.RODAX_HISTORIAL_SERVICIOS =
-    Array.isArray(historial)
-        ? historial.slice()
-        : [];
+        obtenerStateMarketplace().disponibles = [];
 
-        if (!historial.length) {
+        renderizarDisponibles();
 
- 
+    } finally {
 
-            contenedor.innerHTML = `
+        marketplaceCargando =
+            false;
+    }
+}
 
-                <div
 
-                    class="
+// FECHAS
+///////////////////////////////////////////////////////////
 
-                        rounded-2xl
+function crearEncabezadoFechaMarketplace(
+    fecha
+) {
 
-                        border border-dashed
-
-                        border-slate-300
-
-                        bg-slate-50
-
-                        p-10
-
-                        text-center
-
-                    "
-
-                >
-
- 
-
-                    <i
-
-                        data-lucide="archive"
-
-                        class="
-
-                            w-10 h-10
-
-                            mx-auto mb-3
-
-                            text-slate-400
-
-                        "
-
-                    ></i>
-
- 
-
-                    <div
-
-                        class="
-
-                            font-black
-
-                            text-slate-700
-
-                        "
-
-                    >
-
-                        Todavía no hay servicios en tu historial
-
-                    </div>
-
- 
-
-                    <div
-
-                        class="
-
-                            text-sm
-
-                            text-slate-500
-
-                            mt-1
-
-                        "
-
-                    >
-
-                        Las mudanzas finalizadas aparecerán aquí.
-
-                    </div>
-
- 
-
-                </div>
-
-            `;
-
- 
-
-        } else {
-
- 
-
-            contenedor.innerHTML = `
-    <div class="
-        grid
-        grid-cols-1
-        lg:grid-cols-2
-        gap-5
-        bg-[#eef4ff]
-        border border-blue-100
-        rounded-3xl
-        p-4
-    ">
-        ${historial
-            .map(crearTarjetaHistorial)
-            .join("")}
-    </div>
-`;
-
-        }
-
- 
-
-        contenedor
-
-            .querySelectorAll(
-
-                "[data-historial-ficha-id]"
-
-            )
-
-            .forEach(
-
-                boton => {
-
- 
-
-                    boton.addEventListener(
-
-                        "click",
-
-                        () => {
-
- 
-
-                            const id =
-
-                                boton.getAttribute(
-
-                                    "data-historial-ficha-id"
-
-                                );
-
- 
-
-                            if (
-
-                                typeof window.imprimirFicha ===
-
-                                "function"
-
-                            ) {
-
- 
-
-                                window.imprimirFicha(id, true);
-
- 
-
-                                return;
-
-                            }
-
- 
-
-                            console.error(
-
-                                "[RODAX Historial] " +
-
-                                "imprimirFicha() no está disponible."
-
-                            );
-
-                        }
-
-                    );
-
-                }
-
-            );
-
- 
-
-        if (
-
-            window.lucide &&
-
-            typeof window.lucide.createIcons ===
-
-            "function"
-
-        ) {
-
-            window.lucide.createIcons();
-
-        }
-
+    if (!fecha) {
+        return "Fecha no disponible";
     }
 
- 
+    const fechaT =
+        new Date(fecha);
 
-    async function cargar() {
+    if (
+        Number.isNaN(
+            fechaT.getTime()
+        )
+    ) {
 
- 
+        return String(fecha);
+    }
 
-        if (cargando) {
+    const hoy =
+        new Date();
 
-            return;
+    const manana =
+        new Date(hoy);
 
-        }
+    manana.setDate(
+        hoy.getDate() + 1
+    );
 
- 
+    const mismoDia =
+        (a, b) =>
+            a.getFullYear() ===
+                b.getFullYear() &&
+            a.getMonth() ===
+                b.getMonth() &&
+            a.getDate() ===
+                b.getDate();
 
-        const contenedor =
+    const fechaFormateada =
+        fechaT.toLocaleDateString(
+            "es-ES",
+            {
+                day: "numeric",
+                month: "long"
+            }
+        );
 
-            obtenerContenedor();
+    if (
+        mismoDia(
+            fechaT,
+            hoy
+        )
+    ) {
 
- 
+        return `Hoy • ${fechaFormateada}`;
+    }
 
-        if (!contenedor) {
+    if (
+        mismoDia(
+            fechaT,
+            manana
+        )
+    ) {
 
-            return;
+        return `Mañana • ${fechaFormateada}`;
+    }
 
-        }
+    const diasSemana = [
+        "Domingo",
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado"
+    ];
 
- 
+    return `
+        ${diasSemana[fechaT.getDay()]}
+        •
+        ${fechaFormateada}
+    `;
+}
 
-        cargando = true;
 
- 
+// RENDER MARKETPLACE
+///////////////////////////////////////////////////////////
+
+function renderizarDisponibles() {
+
+    const contenedor =
+        document.getElementById(
+            "contenedor-disponibles"
+        );
+
+    const badge =
+        document.getElementById(
+            "badge-disponibles"
+        );
+
+    const banner =
+        document.getElementById(
+            "banner-contador-trabajos"
+        );
+
+    const trabajos =
+        obtenerTrabajosFiltradosMarketplace();
+
+    if (badge) {
+
+        badge.textContent =
+            trabajos.length;
+    }
+
+    if (banner) {
+
+        banner.textContent =
+            trabajos.length;
+    }
+
+    if (!contenedor) {
+        return;
+    }
+
+    if (
+        trabajos.length === 0
+    ) {
 
         contenedor.innerHTML = `
 
             <div
-
-                class="
-
-                    py-12
-
-                    text-center
-
-                "
-
+                class="col-span-1 lg:col-span-2 text-center py-16 bg-white rounded-3xl border border-dashed border-gray-300"
             >
 
- 
-
                 <i
-
-                    data-lucide="loader-circle"
-
-                    class="
-
-                        w-8 h-8
-
-                        mx-auto mb-3
-
-                        text-blue-600
-
-                        animate-spin
-
-                    "
-
+                    data-lucide="satellite"
+                    class="w-14 h-14 text-gray-300 mx-auto mb-4"
                 ></i>
 
- 
-
-                <div
-
-                    class="
-
-                        text-sm
-
-                        font-bold
-
-                        text-slate-600
-
-                    "
-
+                <h4
+                    class="text-xl font-bold text-gray-700 mb-2"
                 >
+                    Buscando nuevas rutas
+                </h4>
 
-                    Cargando historial de servicios...
-
-                </div>
-
- 
+                <p
+                    class="text-gray-400 font-medium text-sm"
+                >
+                    En cuanto un cliente reserve aparecerá aquí automáticamente.
+                </p>
 
             </div>
 
         `;
 
- 
-
         if (window.lucide) {
-
-            window.lucide.createIcons();
-
+            lucide.createIcons();
         }
 
- 
-
-        try {
-
- 
-
-            const datos =
-
-                await obtenerMudanzasHistorial();
-
- 
-
-            console.log(
-
-                "[RODAX Historial] Servicios:",
-
-                datos.length
-
-            );
-
- 
-
-            render(datos);
-
- 
-
-        } catch (error) {
-
- 
-
-            console.error(
-
-                "[RODAX Historial] Error:",
-
-                error
-
-            );
-
- 
-
-            contenedor.innerHTML = `
-
-                <div
-
-                    class="
-
-                        rounded-2xl
-
-                        border border-red-200
-
-                        bg-red-50
-
-                        p-6
-
-                    "
-
-                >
-
- 
-
-                    <div
-
-                        class="
-
-                            flex
-
-                            items-start
-
-                            gap-3
-
-                        "
-
-                    >
-
- 
-
-                        <i
-
-                            data-lucide="triangle-alert"
-
-                            class="
-
-                                w-5 h-5
-
-                                text-red-600
-
-                                flex-shrink-0
-
-                            "
-
-                        ></i>
-
- 
-
-                        <div>
-
- 
-
-                            <div
-
-                                class="
-
-                                    font-black
-
-                                    text-red-800
-
-                                "
-
-                            >
-
-                                No se pudo cargar el historial de servicios
-
-                            </div>
-
- 
-
-                            <div
-
-                                class="
-
-                                    text-sm
-
-                                    text-red-700
-
-                                    mt-1
-
-                                "
-
-                            >
-
-                                ${escaparHTML(
-
-                                    error?.message ||
-
-                                    "Error desconocido."
-
-                                )}
-
-                            </div>
-
- 
-
-                        </div>
-
- 
-
-                    </div>
-
- 
-
-                </div>
-
-            `;
-
- 
-
-            if (window.lucide) {
-
-                window.lucide.createIcons();
-
-            }
-
- 
-
-        } finally {
-
- 
-
-            cargando = false;
-
-        }
-
+        return;
     }
 
- 
+    // GENERAR HTML USANDO EL RENDERIZADOR COMÚN DE TARJETAS
+    ///////////////////////////////////////////////////////
 
-    const API = {
+    const renderer =
+        window.Transportista?.Tarjetas?.renderizarTarjetasMarketplace;
 
- 
+    if (typeof renderer !== "function") {
 
-        cargar,
-
-        render
-
- 
-
-    };
-
- 
-
-    window.Transportista =
-
-        window.Transportista || {};
-
- 
-
-    window.Transportista
-
-        .HistorialServicios =
-
-        API;
-
- 
-
-    window.cargarHistorialServicios =
-
-        cargar;
-
- 
-
-    function iniciar() {
-
- 
-
-        const tab =
-
-            document.getElementById(
-
-                TAB_ID
-
-            );
-
- 
-
-        if (!tab) {
-
- 
-
-            setTimeout(
-
-                iniciar,
-
-                500
-
-            );
-
- 
-
-            return;
-
-        }
-
- 
-
-        if (
-
-            !tab.classList.contains(
-
-                "hidden"
-
-            )
-
-        ) {
-
-            cargar();
-
-        }
-
- 
-
-        const observer =
-
-            new MutationObserver(
-
-                () => {
-
- 
-
-                    if (
-
-                        !tab.classList.contains(
-
-                            "hidden"
-
-                        )
-
-                    ) {
-
-                        cargar();
-
-                    }
-
- 
-
-                }
-
-            );
-
- 
-
-        observer.observe(
-
-            tab,
-
-            {
-
-                attributes: true,
-
-                attributeFilter: ["class"]
-
-            }
-
+        console.error(
+            "❌ Marketplace: no está disponible Tarjetas.renderizarTarjetasMarketplace."
         );
 
+        contenedor.innerHTML = `
+            <div class="col-span-1 lg:col-span-2 text-center py-12 bg-white rounded-3xl border border-red-100">
+                <h4 class="text-lg font-bold text-red-600 mb-2">
+                    Error cargando los trabajos disponibles
+                </h4>
+                <p class="text-sm text-slate-500">
+                    No se ha cargado correctamente el módulo de tarjetas.
+                </p>
+            </div>
+        `;
+
+        return;
     }
 
- 
+    contenedor.innerHTML =
+        renderer(trabajos);
+
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+}
+
+
+// ACEPTAR MUDANZA
+///////////////////////////////////////////////////////////
+
+async function procesarAceptacion(
+    id
+) {
+
+    const modalContentMarketplace =
+        document.getElementById(
+            "modal-content"
+        );
+
+    const actionModalMarketplace =
+        document.getElementById(
+            "action-modal"
+        );
 
     if (
-
-        document.readyState === "loading"
-
+        !modalContentMarketplace
     ) {
 
- 
-
-        document.addEventListener(
-
-            "DOMContentLoaded",
-
-            iniciar,
-
-            { once: true }
-
+        console.error(
+            "❌ No existe #modal-content"
         );
 
- 
-
-    } else {
-
- 
-
-        iniciar();
-
+        return;
     }
 
- 
+    modalContentMarketplace.innerHTML = `
 
-    console.log(
+        <i
+            data-lucide="loader-2"
+            class="w-10 h-10 animate-spin mx-auto text-blue-600 mb-3"
+        ></i>
 
-        "✅ RODAX Historial de servicios cargado correctamente"
+        <p
+            class="text-gray-600 font-medium text-sm"
+        >
+            Asignando mudanza...
+        </p>
 
+    `;
+
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+
+    try {
+
+        const cliente =
+            obtenerDbClientMarketplace();
+
+        const transportistaId =
+            obtenerCurrentUserIdMarketplace();
+
+        if (!cliente) {
+
+            throw new Error(
+                "No hay un cliente Supabase disponible para aceptar la mudanza."
+            );
+        }
+
+        if (!transportistaId) {
+
+            throw new Error(
+                "No se ha podido identificar al transportista conectado."
+            );
+        }
+
+        const {
+    data,
+    error
+} = await cliente
+    .from("mudanzas")
+    .update({
+        estado: "Transportista asignado",
+        transportista_id: transportistaId,
+        bloqueada: true,
+        fecha_asignacion: new Date().toISOString()
+    })
+    .eq("id", id)
+    .eq("estado", "Pendiente de asignación")
+    .eq("publicada_marketplace", true)
+    .eq("bloqueada", false)
+    .is("transportista_id", null)
+    .select();
+
+        if (error) {
+
+    console.error(
+        "❌ Error al aceptar mudanza:",
+        error
     );
 
- 
+    alert(
+        "No se pudo asignar la mudanza.\n\n" +
+        "Puede que otro transportista la haya aceptado antes."
+    );
 
-})(window);
+    if (actionModalMarketplace) {
+        actionModalMarketplace.classList.add("hidden");
+    }
+
+    await cargarTrabajosDisponibles();
+
+    return;
+}
+
+if (
+    !data ||
+    data.length === 0
+) {
+
+            alert(
+                "Esta mudanza ya no está disponible.\n\n" +
+                "Es posible que otro transportista la haya aceptado."
+            );
+
+            if (
+                actionModalMarketplace
+            ) {
+
+                actionModalMarketplace.classList.add(
+                    "hidden"
+                );
+            }
+
+            await cargarTrabajosDisponibles();
+
+            return;
+        }
+
+        console.log(
+            "✅ Mudanza asignada correctamente:",
+            data[0]
+        );
+
+        if (
+            actionModalMarketplace
+        ) {
+
+            actionModalMarketplace.classList.add(
+                "hidden"
+            );
+        }
+
+        if (
+            typeof cerrarDrawer ===
+            "function"
+        ) {
+
+            cerrarDrawer();
+        }
+
+        if (
+            typeof cargarMisMudanzas ===
+            "function"
+        ) {
+
+            await cargarMisMudanzas();
+        }
+
+        await cargarTrabajosDisponibles();
+
+        if (
+            typeof cambiarTab ===
+            "function"
+        ) {
+
+            cambiarTab(
+                "mis-mudanzas"
+            );
+        }
+
+    } catch (error) {
+
+        console.error(
+            "❌ Excepción aceptando mudanza:",
+            error
+        );
+
+        alert(
+            "Se produjo un error al aceptar la mudanza.\n\n" +
+            (
+                error?.message ||
+                "Error desconocido"
+            )
+        );
+
+        if (
+            actionModalMarketplace
+        ) {
+
+            actionModalMarketplace.classList.add(
+                "hidden"
+            );
+        }
+    }
+}
+
+
+// EVENTO — FILTROS MARKETPLACE
+///////////////////////////////////////////////////////////
+
+document.addEventListener(
+    "DOMContentLoaded",
+    inicializarFiltrosMarketplace
+);
+
+
+// API GLOBAL
+///////////////////////////////////////////////////////////
+
+window.cargarTrabajosDisponibles =
+    cargarTrabajosDisponibles;
+
+window.renderizarDisponibles =
+    renderizarDisponibles;
+
+window.procesarAceptacion =
+    procesarAceptacion;
+
+console.log(
+    "✅ Marketplace cargado correctamente"
+);
