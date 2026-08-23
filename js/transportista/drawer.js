@@ -2,6 +2,31 @@
 
     "use strict";
 
+    function obtenerUbicacionCorta(direccionCompleta) {
+
+        if (!direccionCompleta || String(direccionCompleta).trim() === "") {
+            return "—";
+        }
+
+        const texto = String(direccionCompleta).trim();
+        const partes = texto.split(",").map(p => p.trim()).filter(Boolean);
+
+        if (partes.length >= 4) {
+            return `${partes[1]}, ${partes[2]}, ${partes[3]}`;
+        }
+
+        if (partes.length === 3) {
+            return partes.join(", ");
+        }
+
+        const cp = texto.match(/\b\d{5}\b/);
+        if (cp) return `${texto.replace(cp[0],"").trim()}, ${cp[0]}`;
+
+        return texto;
+    }
+
+
+
 
     ///////////////////////////////////////////////////////
     // UTILIDADES
@@ -316,14 +341,10 @@ if (elFranjaHorariaRecogida) {
             obtenerMostrarContactoCompleto(mudanza);
 
         const direccionOrigenFinal =
-            mostrarDireccionCompleta
-                ? (mudanza.origen || "—")
-                : extraerCiudadYCP(mudanza.origen);
+    obtenerUbicacionCorta(mudanza.origen);
 
-        const direccionDestinoFinal =
-            mostrarDireccionCompleta
-                ? (mudanza.destino || "—")
-                : extraerCiudadYCP(mudanza.destino);
+const direccionDestinoFinal =
+    obtenerUbicacionCorta(mudanza.destino);
 
 
         ///////////////////////////////////////////////////////
