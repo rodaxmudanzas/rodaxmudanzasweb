@@ -82,44 +82,36 @@ function obtenerUbicacionCorta(d) {
         .filter(Boolean);
 
     const comunidades = {
+        "MD":"Comunidad de Madrid",
+        "Madrid":"Comunidad de Madrid",
 
-    "MD":"Comunidad de Madrid",
-    "Madrid":"Comunidad de Madrid",
+        "CT":"Cataluña",
+        "Catalunya":"Cataluña",
+        "Cataluña":"Cataluña",
 
-    "CT":"Cataluña",
-    "Catalunya":"Cataluña",
-    "Cataluña":"Cataluña",
-
-    "AN":"Andalucía",
-
-    "VC":"Comunidad Valenciana",
-
-    "PV":"País Vasco",
-
-    "GA":"Galicia",
-
-    "CM":"Castilla-La Mancha",
-
-    "CL":"Castilla y León",
-
-    "AR":"Aragón",
-    "AS":"Asturias",
-    "CB":"Cantabria",
-    "CN":"Canarias",
-    "EX":"Extremadura",
-    "IB":"Illes Balears",
-    "RI":"La Rioja",
-    "MC":"Murcia",
-    "NC":"Navarra"
-
-};
+        "AN":"Andalucía",
+        "VC":"Comunidad Valenciana",
+        "PV":"País Vasco",
+        "GA":"Galicia",
+        "CM":"Castilla-La Mancha",
+        "CL":"Castilla y León",
+        "AR":"Aragón",
+        "AS":"Asturias",
+        "CB":"Cantabria",
+        "CN":"Canarias",
+        "EX":"Extremadura",
+        "IB":"Illes Balears",
+        "RI":"La Rioja",
+        "MC":"Murcia",
+        "NC":"Navarra"
+    };
 
     const comunidad =
-    partes.find(p =>
-        Object.entries(comunidades).some(([codigo, nombre]) =>
-            p === codigo || p.includes(nombre)
-        )
-    ) || "";
+        partes.find(p =>
+            Object.entries(comunidades).some(([codigo, nombre]) =>
+                p === codigo || p === nombre || p.includes(nombre)
+            )
+        ) || "";
 
     let ciudad = "";
 
@@ -144,17 +136,16 @@ function obtenerUbicacionCorta(d) {
     }
 
     if (ciudad && cp && comunidad)
-    return `${ciudad} - CP ${cp} - ${comunidad}`;
+        return `${ciudad} - CP ${cp} - ${comunidad}`;
 
-if (ciudad && cp)
-    return `${ciudad} - CP ${cp}`;
+    if (ciudad && cp)
+        return `${ciudad} - CP ${cp}`;
 
-if (ciudad)
-    return ciudad;
+    if (ciudad)
+        return ciudad;
 
-return "Ubicación no disponible";
+    return "Ubicación no disponible";
 }
-
     //////////////////////////////////////////////////////////////
     // OBTENER CONFIGURACIÓN
     //////////////////////////////////////////////////////////////
@@ -184,14 +175,15 @@ return "Ubicación no disponible";
 // UBICACIÓN PÚBLICA — CIUDAD + CP + COMUNIDAD AUTÓNOMA
 //////////////////////////////////////////////////////////////
 
-function obtenerUbicacionPublica(mudanza, tipo) {
+function obtenerUbicacionPublica(mudanza, tipo){
 
     const direccion =
-        tipo === "origen"
-            ? mudanza?.origen
-            : mudanza?.destino;
+        tipo==="origen"
+            ? mudanza.origen
+            : mudanza.destino;
 
-    return obtenerUbicacionCorta(direccion);
+    return window.Transportista.obtenerUbicacionCorta(direccion);
+
 }
 
     //////////////////////////////////////////////////////////////

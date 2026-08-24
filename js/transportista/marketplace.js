@@ -5145,18 +5145,38 @@ function obtenerUbicacionCorta(direccion){
         .map(p=>p.trim())
         .filter(Boolean);
 
-    const comunidades=[
-        "Andalucía","Aragón","Asturias","Illes Balears",
-        "Canarias","Cantabria","Castilla-La Mancha",
-        "Castilla y León","Cataluña","Catalunya",
-        "Comunidad Valenciana","Extremadura","Galicia",
-        "Comunidad de Madrid","Madrid","Murcia","Navarra",
-        "País Vasco","La Rioja","Ceuta","Melilla"
-    ];
+    const comunidades = {
+    MD: "Comunidad de Madrid",
+    Madrid: "Comunidad de Madrid",
 
-    const comunidad=partes.find(p=>
-        comunidades.some(c=>p.includes(c))
-    )||"";
+    CT: "Cataluña",
+    Catalunya: "Cataluña",
+    Cataluña: "Cataluña",
+
+    AN: "Andalucía",
+    VC: "Comunidad Valenciana",
+    PV: "País Vasco",
+    GA: "Galicia",
+    CM: "Castilla-La Mancha",
+    CL: "Castilla y León",
+    AR: "Aragón",
+    AS: "Asturias",
+    CB: "Cantabria",
+    CN: "Canarias",
+    EX: "Extremadura",
+    IB: "Illes Balears",
+    RI: "La Rioja",
+    MC: "Murcia",
+    NC: "Navarra"
+};
+
+    const comunidad = partes.find(p =>
+    Object.entries(comunidades).some(([codigo, nombre]) =>
+        p === codigo ||
+        p === nombre ||
+        p.includes(nombre)
+    )
+) || "";
 
     let ciudad="";
 
