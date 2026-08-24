@@ -5233,61 +5233,21 @@ async function cargarTrabajosDisponibles() {
 
 
 
-        const {
+        const { data, error } = await cliente
+    .from("mudanzas")
+    .select(`
+        id,
+        estado,
+        publicada_marketplace,
+        bloqueada,
+        transportista_id,
+        fecha,
+        origen,
+        destino
+    `)
+    .order("fecha",{ascending:true});
 
-            data,
-
-            error
-
-        } = await cliente
-
-            .from("mudanzas")
-
-            .select("*")
-
-            .eq(
-
-                "estado",
-
-                "Pendiente de asignación"
-
-            )
-
-            .eq(
-
-                "publicada_marketplace",
-
-                true
-
-            )
-
-            .eq(
-
-                "bloqueada",
-
-                false
-
-            )
-
-            .is(
-
-                "transportista_id",
-
-                null
-
-            )
-
-            .order(
-
-                "fecha",
-
-                {
-
-                    ascending: true
-
-                }
-
-            );
+console.table(data);
 
 
 
