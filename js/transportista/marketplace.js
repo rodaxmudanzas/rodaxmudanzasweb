@@ -5719,7 +5719,11 @@ function renderizarDisponibles() {
 
 
 
-    const trabajosRender=trabajos.map(t=>({...t,origen:obtenerUbicacionCorta(t.origen),destino:obtenerUbicacionCorta(t.destino)}));
+    const trabajosRender = trabajos.map(t => ({
+  ...t,
+  origen: window.Transportista.obtenerUbicacionCorta(t.origen),
+  destino: window.Transportista.obtenerUbicacionCorta(t.destino)
+}));
     contenedor.innerHTML=renderer(trabajosRender);
 
 
