@@ -5157,39 +5157,7 @@ function inicializarFiltrosMarketplace() {
 
 
 
-function obtenerUbicacionCorta(d){ return window.Transportista.obtenerUbicacionCorta(d); };
-
-    const comunidad = partes.find(p =>
-    Object.entries(comunidades).some(([codigo, nombre]) =>
-        p === codigo ||
-        p === nombre ||
-        p.includes(nombre)
-    )
-) || "";
-
-    let ciudad="";
-
-// La ciudad suele ser el elemento inmediatamente anterior al código postal
-const indiceCP = partes.findIndex(p => /\b\d{5}\b/.test(p));
-
-if (indiceCP > 1) {
-    ciudad = partes[indiceCP - 2];
-} else if (indiceCP > 0) {
-    ciudad = partes[indiceCP - 1];
-} else {
-    ciudad = partes[partes.length - 2] || partes[0];
-}
-
-    if(ciudad&&cp&&comunidad)
-        return `${ciudad} - CP ${cp} - ${comunidad}`;
-
-    if(ciudad&&cp)
-        return `${ciudad} - CP ${cp}`;
-
-    return texto;
-}
-
-
+function obtenerUbicacionCorta(d){ return window.Transportista.obtenerUbicacionCorta(d); }
 
 function escapeHtmlMarketplace(valor){
 

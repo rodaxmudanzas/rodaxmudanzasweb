@@ -27,39 +27,9 @@ window.Transportista.obtenerUbicacionPublica=function(m,t){return window.Transpo
 
     "use strict";
 
-    function obtenerUbicacionCorta(d){ return window.Transportista.obtenerUbicacionCorta(d); };
+    function obtenerUbicacionCorta(d){ return window.Transportista.obtenerUbicacionCorta(d); }
 
-    const comunidad = partes.find(p =>
-    Object.entries(comunidades).some(([codigo, nombre]) =>
-        p === codigo ||
-        p === nombre ||
-        p.includes(nombre)
-    )
-) || "";
-
-    let ciudad="";
-
-const indiceCP=partes.findIndex(p=>/\b\d{5}\b/.test(p));
-
-if (indiceCP > 0) {
-    ciudad = partes[indiceCP - 1];
-} else if (partes.length >= 2) {
-    ciudad = partes[1];
-}
-
-    if(ciudad&&cp&&comunidad)
-        return `${ciudad} - CP ${cp} - ${comunidad}`;
-
-    if(ciudad&&cp)
-        return `${ciudad} - CP ${cp}`;
-
-    return texto;
-}
-
-
-
-
-    ///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
     // UTILIDADES
     ///////////////////////////////////////////////////////
 
