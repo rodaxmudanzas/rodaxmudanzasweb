@@ -33,10 +33,10 @@
 
 const indiceCP=partes.findIndex(p=>/\b\d{5}\b/.test(p));
 
-if(indiceCP>0){
-    ciudad=partes[indiceCP-1];
-}else if(partes.length>=2){
-    ciudad=partes[1];
+if (indiceCP > 0) {
+    ciudad = partes[indiceCP - 1];
+} else if (partes.length >= 2) {
+    ciudad = partes[1];
 }
 
     if(ciudad&&cp&&comunidad)

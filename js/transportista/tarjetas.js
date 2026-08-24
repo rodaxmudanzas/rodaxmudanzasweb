@@ -115,9 +115,11 @@ function obtenerUbicacionCorta(d) {
 };
 
     const comunidad =
-        partes.find(p =>
-            comunidades.some(c => p.includes(c))
-        ) || "";
+    partes.find(p =>
+        Object.entries(comunidades).some(([codigo, nombre]) =>
+            p === codigo || p.includes(nombre)
+        )
+    ) || "";
 
     let ciudad = "";
 
