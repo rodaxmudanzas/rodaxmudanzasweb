@@ -17,7 +17,7 @@ window.Transportista.obtenerUbicacionCorta=function(d){
  const com=p.find(x=>Object.entries(map).some(([c,n])=>x===c||x===n||x.includes(n)))||"";
  let ciudad=""; const i=p.findIndex(x=>/\b\d{5}\b/.test(x));
  if(i>0) ciudad=p[i-1]; else ciudad=p.find(x=>x!==com&&!/España|Spain|Spanien/i.test(x)&&!/\d{5}/.test(x))||"";
- return ciudad&&cp&&com?`${ciudad} - CP ${cp} - ${com}`:ciudad&&cp?`${ciudad} - CP ${cp}`:ciudad||"Ubicación no disponible";
+ return ciudad&&cp&&com?`${ciudad} - ${cp} - ${com}`:ciudad&&cp?`${ciudad} - CP ${cp}`:ciudad||"Ubicación no disponible";
 };
 window.Transportista.obtenerUbicacionPublica=function(m,t){return window.Transportista.obtenerUbicacionCorta(t==="origen"?m?.origen:m?.destino);};
 }
