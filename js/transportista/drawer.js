@@ -365,13 +365,13 @@ if (elFranjaHorariaRecogida) {
             obtenerMostrarContactoCompleto(mudanza);
 
         const direccionOrigenFinal =
-    window.Transportista.obtenerUbicacionPublica(
+    (window.Transportista.obtenerUbicacionPublica || window.Transportista.obtenerUbicacionCorta)(
         mudanza,
         "origen"
     );
 
 const direccionDestinoFinal =
-    window.Transportista.obtenerUbicacionPublica(
+    (window.Transportista.obtenerUbicacionPublica || window.Transportista.obtenerUbicacionCorta)(
         mudanza,
         "destino"
     );

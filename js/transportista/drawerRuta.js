@@ -7,13 +7,13 @@
         if (!mudanza) return;
 
         const origen =
-    window.Transportista.obtenerUbicacionPublica(
+    (window.Transportista.obtenerUbicacionPublica || window.Transportista.obtenerUbicacionCorta)(
         mudanza,
         "origen"
     );
 
 const destino =
-    window.Transportista.obtenerUbicacionPublica(
+    (window.Transportista.obtenerUbicacionPublica || window.Transportista.obtenerUbicacionCorta)(
         mudanza,
         "destino"
     );
