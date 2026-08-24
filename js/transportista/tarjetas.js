@@ -5,11 +5,32 @@ window.Transportista.obtenerUbicacionCorta=function(d){
  if(!d) return "Ubicación no disponible";
  let o=d;
  if(typeof d==="object"){
-   if(d.direccion) o=d.direccion;
-   else if(d.calle||d.ciudad||d.cp||d.comunidad_autonoma){
-     o=[d.calle,d.ciudad,d.cp,d.comunidad_autonoma,"España"].filter(Boolean).join(", ");
-   } else return "Ubicación no disponible";
- }
+
+   const ciudad =
+      d.ciudad ||
+      d.localidad ||
+      d.municipio ||
+      "";
+
+   const cp =
+      d.codigo_postal ||
+      d.cp ||
+      "";
+
+   const comunidad =
+      d.comunidad_autonoma ||
+      d.comunidad ||
+      d.ccaa ||
+      "";
+
+   if(d.direccion){
+      o=d.direccion;
+   }else if(ciudad||cp||comunidad){
+      o=[ciudad,cp,comunidad].filter(Boolean).join(", ");
+   }else{
+      return "Ubicación no disponible";
+   }
+}
  const t=String(o).trim();
  const cp=(t.match(/\b\d{5}\b/)||[])[0]||"";
  const p=t.split(",").map(x=>x.trim()).filter(Boolean);
