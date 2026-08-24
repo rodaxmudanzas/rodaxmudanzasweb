@@ -1053,76 +1053,33 @@ function obtenerServiciosMarketplace(trabajo) {
 
 
 
-function obtenerZonaMarketplace(trabajo) {
-
-
+function obtenerZonaMarketplace(trabajo){
 
     const textos = [
-
-        trabajo?.origen,
-
-        trabajo?.destino
-
+        window.Transportista.obtenerUbicacionCorta(trabajo?.origen),
+        window.Transportista.obtenerUbicacionCorta(trabajo?.destino)
     ]
+    .filter(Boolean)
+    .map(valor => String(valor).trim());
 
-        .filter(Boolean)
+    const zonas = textos
+        .map(texto => {
 
-        .map(valor =>
+            const partes = texto
+                .split(",")
+                .map(parte => parte.trim())
+                .filter(Boolean);
 
-            String(valor).trim()
+            if (partes.length >= 2){
+                return partes[partes.length-2];
+            }
 
-        );
-
-
-
-    const zonas =
-
-        textos
-
-            .map(texto => {
-
-
-
-                const partes =
-
-                    texto
-
-                        .split(",")
-
-                        .map(parte =>
-
-                            parte.trim()
-
-                        )
-
-                        .filter(Boolean);
-
-
-
-                if (partes.length >= 2) {
-
-                    return partes[
-
-                        partes.length - 2
-
-                    ];
-
-                }
-
-
-
-                return partes[0] || texto;
-
-            })
-
-            .filter(Boolean);
-
-
+            return partes[0] || texto;
+        })
+        .filter(Boolean);
 
     return zonas;
-
 }
-
 
 
 function fechaLocalMarketplace(fecha) {
