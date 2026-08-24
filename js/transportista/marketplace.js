@@ -5157,7 +5157,26 @@ function inicializarFiltrosMarketplace() {
 
 
 
-function obtenerUbicacionCorta(d){ return window.Transportista.obtenerUbicacionCorta(d); }
+window.Transportista = window.Transportista || {};
+if (typeof window.Transportista.obtenerUbicacionCorta !== "function") {
+window.Transportista.obtenerUbicacionCorta = function(d){
+ if(!d) return "Ubicación no disponible";
+ if(typeof d==="object"){d=d.direccion||d.address||d.texto||d.formatted||Object.values(d).filter(v=>typeof v==="string").join(", ");}
+ const texto=String(d).trim();
+ const cp=(texto.match(/\b\d{5}\b/)||[])[0]||"";
+ const partes=texto.split(",").map(x=>x.trim()).filter(Boolean);
+ const comunidades=["Andalucía","Aragón","Asturias","Illes Balears","Canarias","Cantabria","Castilla-La Mancha","Castilla y León","Cataluña","Catalunya","Comunidad Valenciana","Extremadura","Galicia","Comunidad de Madrid","Madrid","Murcia","Navarra","País Vasco","La Rioja","Ceuta","Melilla"];
+ const comunidad=partes.find(p=>comunidades.some(c=>p===c||p.includes(c)))||"";
+ let ciudad="";
+ const idx=partes.findIndex(p=>/\b\d{5}\b/.test(p));
+ if(idx>1) ciudad=partes[idx-2];
+ else if(idx>0) ciudad=partes[idx-1];
+ else ciudad=partes.find(p=>!comunidades.includes(p)&&!/España|Spain|Spanien/i.test(p))||"";
+ if(ciudad&&cp&&comunidad) return `${ciudad} - CP ${cp} - ${comunidad}`;
+ if(ciudad&&cp) return `${ciudad} - CP ${cp}`;
+ return ciudad||"Ubicación no disponible";
+};
+}
 
 function escapeHtmlMarketplace(valor){
 
@@ -5181,7 +5200,7 @@ function escapeHtmlMarketplace(valor){
 
 
 
-window.Transportista.obtenerUbicacionCorta = obtenerUbicacionCorta;
+
 
 function apiTransportistaDisponible() {
 
