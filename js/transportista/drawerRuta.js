@@ -1,3 +1,28 @@
+// ===== RODAX ubicación unificada =====
+window.Transportista = window.Transportista || {};
+if (!window.Transportista.obtenerUbicacionCorta){
+window.Transportista.obtenerUbicacionCorta=function(d){
+ if(!d) return "Ubicación no disponible";
+ let o=d;
+ if(typeof d==="object"){
+   if(d.direccion) o=d.direccion;
+   else if(d.calle||d.ciudad||d.cp||d.comunidad_autonoma){
+     o=[d.calle,d.ciudad,d.cp,d.comunidad_autonoma,"España"].filter(Boolean).join(", ");
+   } else return "Ubicación no disponible";
+ }
+ const t=String(o).trim();
+ const cp=(t.match(/\b\d{5}\b/)||[])[0]||"";
+ const p=t.split(",").map(x=>x.trim()).filter(Boolean);
+ const map={MD:"Comunidad de Madrid",Madrid:"Comunidad de Madrid",CT:"Cataluña",Catalunya:"Cataluña",Cataluña:"Cataluña",AN:"Andalucía",VC:"Comunidad Valenciana",PV:"País Vasco",GA:"Galicia",CM:"Castilla-La Mancha",CL:"Castilla y León",AR:"Aragón",AS:"Asturias",CB:"Cantabria",CN:"Canarias",EX:"Extremadura",IB:"Illes Balears",RI:"La Rioja",MC:"Murcia",NC:"Navarra"};
+ const com=p.find(x=>Object.entries(map).some(([c,n])=>x===c||x===n||x.includes(n)))||"";
+ let ciudad=""; const i=p.findIndex(x=>/\b\d{5}\b/.test(x));
+ if(i>0) ciudad=p[i-1]; else ciudad=p.find(x=>x!==com&&!/España|Spain|Spanien/i.test(x)&&!/\d{5}/.test(x))||"";
+ return ciudad&&cp&&com?`${ciudad} - CP ${cp} - ${com}`:ciudad&&cp?`${ciudad} - CP ${cp}`:ciudad||"Ubicación no disponible";
+};
+window.Transportista.obtenerUbicacionPublica=function(m,t){return window.Transportista.obtenerUbicacionCorta(t==="origen"?m?.origen:m?.destino);};
+}
+// ===== fin ubicación unificada =====
+
 (function () {
 
     "use strict";

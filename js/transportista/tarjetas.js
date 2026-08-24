@@ -1,3 +1,28 @@
+// ===== RODAX ubicación unificada =====
+window.Transportista = window.Transportista || {};
+if (!window.Transportista.obtenerUbicacionCorta){
+window.Transportista.obtenerUbicacionCorta=function(d){
+ if(!d) return "Ubicación no disponible";
+ let o=d;
+ if(typeof d==="object"){
+   if(d.direccion) o=d.direccion;
+   else if(d.calle||d.ciudad||d.cp||d.comunidad_autonoma){
+     o=[d.calle,d.ciudad,d.cp,d.comunidad_autonoma,"España"].filter(Boolean).join(", ");
+   } else return "Ubicación no disponible";
+ }
+ const t=String(o).trim();
+ const cp=(t.match(/\b\d{5}\b/)||[])[0]||"";
+ const p=t.split(",").map(x=>x.trim()).filter(Boolean);
+ const map={MD:"Comunidad de Madrid",Madrid:"Comunidad de Madrid",CT:"Cataluña",Catalunya:"Cataluña",Cataluña:"Cataluña",AN:"Andalucía",VC:"Comunidad Valenciana",PV:"País Vasco",GA:"Galicia",CM:"Castilla-La Mancha",CL:"Castilla y León",AR:"Aragón",AS:"Asturias",CB:"Cantabria",CN:"Canarias",EX:"Extremadura",IB:"Illes Balears",RI:"La Rioja",MC:"Murcia",NC:"Navarra"};
+ const com=p.find(x=>Object.entries(map).some(([c,n])=>x===c||x===n||x.includes(n)))||"";
+ let ciudad=""; const i=p.findIndex(x=>/\b\d{5}\b/.test(x));
+ if(i>0) ciudad=p[i-1]; else ciudad=p.find(x=>x!==com&&!/España|Spain|Spanien/i.test(x)&&!/\d{5}/.test(x))||"";
+ return ciudad&&cp&&com?`${ciudad} - CP ${cp} - ${com}`:ciudad&&cp?`${ciudad} - CP ${cp}`:ciudad||"Ubicación no disponible";
+};
+window.Transportista.obtenerUbicacionPublica=function(m,t){return window.Transportista.obtenerUbicacionCorta(t==="origen"?m?.origen:m?.destino);};
+}
+// ===== fin ubicación unificada =====
+
 /* ============================================================
    RODAX TRANSPORTISTA
    tarjetas.js
@@ -68,84 +93,7 @@
             .replace(/'/g, "&#039;");
 
     }
-function obtenerUbicacionCorta(d) {
-
-    if (!d) return "Ubicación no disponible";
-
-    const texto = String(d).trim();
-
-    const cp = (texto.match(/\b\d{5}\b/) || [])[0] || "";
-
-    const partes = texto
-        .split(",")
-        .map(x => x.trim())
-        .filter(Boolean);
-
-    const comunidades = {
-        "MD":"Comunidad de Madrid",
-        "Madrid":"Comunidad de Madrid",
-
-        "CT":"Cataluña",
-        "Catalunya":"Cataluña",
-        "Cataluña":"Cataluña",
-
-        "AN":"Andalucía",
-        "VC":"Comunidad Valenciana",
-        "PV":"País Vasco",
-        "GA":"Galicia",
-        "CM":"Castilla-La Mancha",
-        "CL":"Castilla y León",
-        "AR":"Aragón",
-        "AS":"Asturias",
-        "CB":"Cantabria",
-        "CN":"Canarias",
-        "EX":"Extremadura",
-        "IB":"Illes Balears",
-        "RI":"La Rioja",
-        "MC":"Murcia",
-        "NC":"Navarra"
-    };
-
-    const comunidad =
-        partes.find(p =>
-            Object.entries(comunidades).some(([codigo, nombre]) =>
-                p === codigo || p === nombre || p.includes(nombre)
-            )
-        ) || "";
-
-    let ciudad = "";
-
-    const indiceCP =
-        partes.findIndex(p => /\b\d{5}\b/.test(p));
-
-    if (indiceCP > 0) {
-
-        ciudad = partes[indiceCP - 1];
-
-    } else {
-
-        for (const p of partes) {
-
-            if (p === comunidad) continue;
-            if (/España|Spain|Spania|Spanien/i.test(p)) continue;
-            if (/\d{5}/.test(p)) continue;
-
-            ciudad = p;
-            break;
-        }
-    }
-
-    if (ciudad && cp && comunidad)
-        return `${ciudad} - CP ${cp} - ${comunidad}`;
-
-    if (ciudad && cp)
-        return `${ciudad} - CP ${cp}`;
-
-    if (ciudad)
-        return ciudad;
-
-    return "Ubicación no disponible";
-}
+function obtenerUbicacionCorta(d){ return window.Transportista.obtenerUbicacionCorta(d); }
     //////////////////////////////////////////////////////////////
     // OBTENER CONFIGURACIÓN
     //////////////////////////////////////////////////////////////
@@ -175,16 +123,7 @@ function obtenerUbicacionCorta(d) {
 // UBICACIÓN PÚBLICA — CIUDAD + CP + COMUNIDAD AUTÓNOMA
 //////////////////////////////////////////////////////////////
 
-function obtenerUbicacionPublica(mudanza, tipo){
-
-    const direccion =
-        tipo==="origen"
-            ? mudanza.origen
-            : mudanza.destino;
-
-    return window.Transportista.obtenerUbicacionCorta(direccion);
-
-}
+function obtenerUbicacionPublica(m,t){ return window.Transportista.obtenerUbicacionPublica(m,t); }
 
     //////////////////////////////////////////////////////////////
     // DETECTAR MUDANZA TOTAL
