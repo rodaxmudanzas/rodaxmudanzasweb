@@ -26,7 +26,9 @@ window.Transportista.obtenerUbicacionCorta=function(d){
    if(d.direccion){
       o=d.direccion;
    }else if(ciudad||cp||comunidad){
-      o=[ciudad,cp,comunidad].filter(Boolean).join(", ");
+      return [ciudad, cp && `CP ${cp}`, comunidad]
+             .filter(Boolean)
+             .join(" · ");
    }else{
       return "Ubicación no disponible";
    }
@@ -38,7 +40,9 @@ window.Transportista.obtenerUbicacionCorta=function(d){
  const com=p.find(x=>Object.entries(map).some(([c,n])=>x===c||x===n||x.includes(n)))||"";
  let ciudad=""; const i=p.findIndex(x=>/\b\d{5}\b/.test(x));
  if(i>0) ciudad=p[i-1]; else ciudad=p.find(x=>x!==com&&!/España|Spain|Spanien/i.test(x)&&!/\d{5}/.test(x))||"";
- return ciudad&&cp&&com?`${ciudad} - CP ${cp} - ${com}`:ciudad&&cp?`${ciudad} - CP ${cp}`:ciudad||"Ubicación no disponible";
+return [ciudad, cp && `CP ${cp}`, com]
+       .filter(Boolean)
+       .join(" · ") || "Ubicación no disponible";
 };
 window.Transportista.obtenerUbicacionPublica=function(m,t){return window.Transportista.obtenerUbicacionCorta(t==="origen"?m?.origen:m?.destino);};
 }
@@ -5255,18 +5259,50 @@ async function cargarTrabajosDisponibles() {
 
 
         const { data, error } = await cliente
+    const { data, error } = await cliente
     .from("mudanzas")
     .select(`
         id,
+        numero_reserva,
         estado,
         publicada_marketplace,
         bloqueada,
         transportista_id,
+
         fecha,
+        hora_recogida,
+        franja_horaria,
+
         origen,
-        destino
+        destino,
+
+        km,
+        distancia,
+
+        preciototal,
+        precio_total,
+
+        inventario,
+        fotos,
+        urls_fotos,
+
+        tipo_servicio,
+        servicios,
+
+        observaciones,
+        acceso_origen,
+        acceso_destino,
+
+        ascensor_origen,
+        ascensor_destino,
+
+        extras
     `)
-    .order("fecha",{ascending:true});
+    .eq("publicada_marketplace", true)
+    .is("transportista_id", null)
+    .eq("bloqueada", false)
+    .eq("estado", "Pendiente de asignación")
+    .order("fecha", { ascending: true });
 
 console.table(data);
 
@@ -5305,12 +5341,14 @@ console.table(data);
 
 
         obtenerStateMarketplace().disponibles =
-
-            Array.isArray(data)
-
-                ? data
-
-                : [];
+    Array.isArray(data)
+        ? data.filter(t =>
+            t.estado === "Pendiente de asignación" &&
+            t.publicada_marketplace === true &&
+            !t.transportista_id &&
+            !t.bloqueada
+          )
+        : [];
 
 
 
