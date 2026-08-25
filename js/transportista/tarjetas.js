@@ -1377,11 +1377,11 @@ tituloDestino: escapeHtml(
 
 
             horario:
-                escapeHtml(
-                    obtenerHorario(
-                        t
-                    )
-                ),
+    escapeHtml(
+        t.franja_horaria ||
+        obtenerHorario(t) ||
+        "Horario pendiente"
+    ),
 
 
             km:

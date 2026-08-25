@@ -5336,19 +5336,18 @@ console.table(data);
 
 
 
-        obtenerStateMarketplace().disponibles =
-    Array.isArray(data)
-        ? data.filter(t =>
-            t.estado === "Pendiente de asignación" &&
-            t.publicada_marketplace === true &&
-            !t.transportista_id &&
-            !t.bloqueada
-          )
-        : [];
+        const trabajosDisponibles = Array.isArray(data) ? data : [];
 
+console.log(
+    "MARKETPLACE RECIBIDOS:",
+    trabajosDisponibles.length,
+    trabajosDisponibles
+);
 
+obtenerStateMarketplace().disponibles =
+    trabajosDisponibles;
 
-        renderizarDisponibles();
+renderizarDisponibles();
 
 
 
