@@ -1666,22 +1666,41 @@ tituloDestino: escapeHtml(
 
 
         const t =
-            mudanza || {};
+    mudanza || {};
 
-            //////////////////////////////////////////////////////////
+// Normalizar datos para el renderizador
+t.preciototal =
+    t.preciototal ??
+    t.precio_total ??
+    0;
+
+t.km =
+    t.km ??
+    t.distancia ??
+    0;
+
+t.horario =
+    t.hora_recogida ??
+    t.franja_horaria ??
+    "";
+
+t.fotos =
+    t.fotos ??
+    t.urls_fotos ??
+    [];
+
+//////////////////////////////////////////////////////////
 // UBICACIÓN PÚBLICA
 //////////////////////////////////////////////////////////
 
 const ubicacionOrigenPublica =
-    obtenerUbicacionPublica(
-        t,
-        "origen"
+    window.Transportista.obtenerUbicacionCorta(
+        t.origen
     );
 
 const ubicacionDestinoPublica =
-    obtenerUbicacionPublica(
-        t,
-        "destino"
+    window.Transportista.obtenerUbicacionCorta(
+        t.destino
     );
 
 

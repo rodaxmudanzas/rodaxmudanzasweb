@@ -5256,11 +5256,8 @@ async function cargarTrabajosDisponibles() {
 
     try {
 
-
-
-        const { data, error } = await cliente
     const { data, error } = await cliente
-    .from("mudanzas")
+        .from("mudanzas")
     .select(`
         id,
         numero_reserva,
