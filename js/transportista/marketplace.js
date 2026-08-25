@@ -5267,7 +5267,6 @@ async function cargarTrabajosDisponibles() {
         transportista_id,
 
         fecha,
-        hora_recogida,
         franja_horaria,
 
         origen,
