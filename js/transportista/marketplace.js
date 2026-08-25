@@ -6091,39 +6091,22 @@ if (
 
 
 
-        if (
+        // Eliminar inmediatamente la tarjeta aceptada del Marketplace
+const state = obtenerStateMarketplace();
 
-            typeof cerrarDrawer ===
+state.disponibles = state.disponibles.filter(
+    t => Number(t.id) !== Number(id)
+);
 
-            "function"
+renderizarDisponibles();
 
-        ) {
+// Actualizar Mis Trabajos Activos
+if (typeof cargarMisMudanzas === "function") {
+    await cargarMisMudanzas();
+}
 
-
-
-            cerrarDrawer();
-
-        }
-
-
-
-        if (
-
-            typeof cargarMisMudanzas ===
-
-            "function"
-
-        ) {
-
-
-
-            await cargarMisMudanzas();
-
-        }
-
-
-
-        await cargarTrabajosDisponibles();
+// Sincronizar con Supabase
+await cargarTrabajosDisponibles();
 
 
 
