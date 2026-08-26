@@ -3,48 +3,46 @@ window.Transportista = window.Transportista || {};
 if (!window.Transportista.obtenerUbicacionCorta){
 window.Transportista.obtenerUbicacionCorta=function(d){
  if(!d) return "Ubicación no disponible";
- let o=d;
+
  if(typeof d==="object"){
+   const ciudad = d.ciudad || d.localidad || d.municipio || "";
+   const cp = d.codigo_postal || d.cp || "";
+   const comunidad = d.comunidad_autonoma || d.comunidad || d.ccaa || "";
 
-   const ciudad =
-      d.ciudad ||
-      d.localidad ||
-      d.municipio ||
-      "";
-
-   const cp =
-      d.codigo_postal ||
-      d.cp ||
-      "";
-
-   const comunidad =
-      d.comunidad_autonoma ||
-      d.comunidad ||
-      d.ccaa ||
-      "";
+   if(ciudad || cp || comunidad){
+      return [ciudad, cp, comunidad]
+        .filter(Boolean)
+        .join(" - ");
+   }
 
    if(d.direccion){
-      o=d.direccion;
-   }else if(ciudad||cp||comunidad){
-      return [ciudad, cp && `CP ${cp}`, comunidad]
-             .filter(Boolean)
-             .join(" · ");
+      d=d.direccion;
    }else{
       return "Ubicación no disponible";
    }
-}
- const t=String(o).trim();
+ }
+
+ const t=String(d).trim();
  const cp=(t.match(/\b\d{5}\b/)||[])[0]||"";
  const p=t.split(",").map(x=>x.trim()).filter(Boolean);
  const map={MD:"Comunidad de Madrid",Madrid:"Comunidad de Madrid",CT:"Cataluña",Catalunya:"Cataluña",Cataluña:"Cataluña",AN:"Andalucía",VC:"Comunidad Valenciana",PV:"País Vasco",GA:"Galicia",CM:"Castilla-La Mancha",CL:"Castilla y León",AR:"Aragón",AS:"Asturias",CB:"Cantabria",CN:"Canarias",EX:"Extremadura",IB:"Illes Balears",RI:"La Rioja",MC:"Murcia",NC:"Navarra"};
  const com=p.find(x=>Object.entries(map).some(([c,n])=>x===c||x===n||x.includes(n)))||"";
- let ciudad=""; const i=p.findIndex(x=>/\b\d{5}\b/.test(x));
- if(i>0) ciudad=p[i-1]; else ciudad=p.find(x=>x!==com&&!/España|Spain|Spanien/i.test(x)&&!/\d{5}/.test(x))||"";
-return [ciudad, cp && `CP ${cp}`, com]
-       .filter(Boolean)
-       .join(" · ") || "Ubicación no disponible";
+ let ciudad="";
+ const i=p.findIndex(x=>/\b\d{5}\b/.test(x));
+ if(i>0) ciudad=p[i-1];
+ else ciudad=p.find(x=>x!==com&&!/España|Spain|Spanien/i.test(x)&&!/\d{5}/.test(x))||"";
+ return [ciudad, cp, com].filter(Boolean).join(" - ") || "Ubicación no disponible";
 };
-window.Transportista.obtenerUbicacionPublica=function(m,t){return window.Transportista.obtenerUbicacionCorta(t==="origen"?m?.origen:m?.destino);};
+window.Transportista.obtenerUbicacionPublica=function(m,t){
+ const prefijo=t==="origen"?"origen":"destino";
+ const ciudad=m?.[`${prefijo}_ciudad`] || "";
+ const cp=m?.[`${prefijo}_cp`] || "";
+ const comunidad=m?.[`${prefijo}_comunidad_autonoma`] || "";
+ if(ciudad || cp || comunidad){
+   return [ciudad, cp, comunidad].filter(Boolean).join(" - ");
+ }
+ return window.Transportista.obtenerUbicacionCorta(m?.[prefijo]);
+};
 }
 // ===== fin ubicación unificada =====
 
@@ -5261,36 +5259,44 @@ async function cargarTrabajosDisponibles() {
     .select(`
         id,
         numero_reserva,
+        nombre,
+        telefono,
+        email,
         estado,
         publicada_marketplace,
         bloqueada,
         transportista_id,
 
         fecha,
-        franja_horaria,
+        franja_horaria_recogida,
 
         origen,
         destino,
+        origen_cp,
+        origen_ciudad,
+        origen_provincia,
+        origen_comunidad_autonoma,
+        destino_cp,
+        destino_ciudad,
+        destino_provincia,
+        destino_comunidad_autonoma,
 
         km,
-        distancia,
-
+        volumen,
         preciototal,
-        precio_total,
+        importe_total,
 
         inventario,
-        fotos,
         urls_fotos,
 
         tipo_servicio,
-        servicios,
 
         observaciones,
-        acceso_origen,
-        acceso_destino,
-
+        ascensor,
         ascensor_origen,
+        piso_origen,
         ascensor_destino,
+        piso_destino,
 
         extras
     `)
