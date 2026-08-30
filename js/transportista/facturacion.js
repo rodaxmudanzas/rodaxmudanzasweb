@@ -409,6 +409,8 @@
         </tbody>
     </table>
 
+    ${crearExtrasFacturacion(mudanza)}
+
     <div class="totales">
         <div class="fila"><span>Base imponible</span><strong>${formatearEuros(base)}</strong></div>
         <div class="fila"><span>IVA (${ivaPorcentaje.toLocaleString("es-ES")}%)</span><strong>${formatearEuros(iva)}</strong></div>
