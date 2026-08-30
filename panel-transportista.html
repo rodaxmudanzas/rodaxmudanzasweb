@@ -2285,12 +2285,11 @@ class="relative h-[48px] w-full flex items-center bg-white/10 hover:bg-white/15 
 
 
                 <span
+    class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
 
-                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+    COBRO DEL TRANSPORTISTA
 
-                    PRECIO TOTAL A PAGAR
-
-                </span>
+</span>
 
 
 
@@ -4261,10 +4260,9 @@ const fechaFicha =
  
 
         const precio =
-
-            mudanza.preciototal ||
-
-            "";
+    window.Transportista.getPrecioTransportista(
+        mudanza
+    ) || "";
 
  
 
@@ -7696,71 +7694,27 @@ async function marcarCompletada(id) {
 
         console.log("MUDANZA ENCONTRADA:", mudanza);
 
-        // =====================================================
-// 2. OBTENER EL IMPORTE REAL DE "TU COBRO"
-// =====================================================
 
-function convertirImporte(valor) {
+const importeTransportista =
+    window.Transportista.getPrecioTransportista(
+        mudanza
+    );
 
-    if (valor === null || valor === undefined) {
-        return NaN;
-    }
+console.log(
+    "PRECIO CLIENTE:",
+    mudanza.preciototal
+);
 
-    if (typeof valor === "number") {
-        return valor;
-    }
+console.log(
+    "COBRO DEL TRANSPORTISTA (60%):",
+    importeTransportista
+);
 
-    let texto = String(valor).trim();
+if (!Number.isFinite(importeTransportista)) {
 
-    if (!texto) {
-        return NaN;
-    }
-
-    // Quitar símbolos habituales
-    texto = texto
-        .replace(/€/g, "")
-        .replace(/\s/g, "");
-
-    // Formato español: 3.250,88
-    if (
-        texto.includes(".") &&
-        texto.includes(",")
-    ) {
-        texto = texto
-            .replace(/\./g, "")
-            .replace(",", ".");
-    }
-
-    // Formato español sin punto de miles: 3250,88
-    else if (texto.includes(",")) {
-        texto = texto.replace(",", ".");
-    }
-
-    return Number(texto);
-}
-
-const candidatosImporte = [
-    mudanza.preciototal,
-    mudanza.importe_transportista,
-    mudanza.cobro_transportista,
-    mudanza.precio_transportista,
-    mudanza.importe,
-    mudanza.importe_total
-];
-
-let importeTransportista = NaN;
-
-for (const candidato of candidatosImporte) {
-
-    const numero = convertirImporte(candidato);
-
-    if (
-        Number.isFinite(numero) &&
-        numero >= 0
-    ) {
-        importeTransportista = numero;
-        break;
-    }
+    throw new Error(
+        "No se pudo calcular el COBRO DEL TRANSPORTISTA."
+    );
 }
 
 console.log(
@@ -8312,6 +8266,8 @@ console.log(
 <script src="js/transportista/drawerFotos.js"></script>
 
 <script src="js/transportista/drawerIndicaciones.js"></script>
+
+<script src="js/transportista/utils.js"></script>
 
 <script src="js/transportista/tarjetas.js"></script>
 

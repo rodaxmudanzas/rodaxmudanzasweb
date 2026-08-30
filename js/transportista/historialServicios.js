@@ -974,12 +974,9 @@ console.log(mudanza);
  
 
         const precio =
-
-            mudanza?.preciototal ??
-
-            mudanza?.importe_total ??
-
-            "—";
+    window.Transportista.getPrecioTransportista(
+        mudanza
+    ) || "—";
 
  
 
@@ -1777,7 +1774,7 @@ console.log(mudanza);
 
                             >
 
-                                Cobro transportista
+                                COBRO DEL TRANSPORTISTA
 
                             </div>
 

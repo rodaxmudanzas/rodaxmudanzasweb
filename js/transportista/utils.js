@@ -768,6 +768,70 @@ function formatM3(valor) {
     window.Transportista.getTotalM3 =
         getTotalM3;
 
+        //////////////////////////////////////////////////////
+// COBRO DEL TRANSPORTISTA — 60% DEL PRECIO CLIENTE
+//////////////////////////////////////////////////////
+
+function getPrecioTransportista(mudanza) {
+
+    const candidatos = [
+        mudanza?.preciototal,
+        mudanza?.precio_total,
+        mudanza?.precioTotal
+    ];
+
+    let precioCliente = NaN;
+
+    for (const candidato of candidatos) {
+
+        if (
+            candidato === null ||
+            candidato === undefined ||
+            candidato === ""
+        ) {
+            continue;
+        }
+
+        let texto = String(candidato)
+            .trim()
+            .replace(/€/g, "")
+            .replace(/\s/g, "");
+
+        if (
+            texto.includes(".") &&
+            texto.includes(",")
+        ) {
+            texto = texto
+                .replace(/\./g, "")
+                .replace(",", ".");
+        }
+        else if (texto.includes(",")) {
+            texto = texto.replace(",", ".");
+        }
+
+        const numero = Number(texto);
+
+        if (Number.isFinite(numero)) {
+            precioCliente = numero;
+            break;
+        }
+    }
+
+    if (!Number.isFinite(precioCliente)) {
+        return 0;
+    }
+
+    const precioTransportista =
+        Math.round(
+            precioCliente * 0.60 * 100
+        ) / 100;
+
+    return precioTransportista;
+}
+
+window.Transportista.getPrecioTransportista =
+    getPrecioTransportista;
+
     window.Transportista.formatM3 =
         formatM3;
 

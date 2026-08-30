@@ -624,9 +624,9 @@
             obtenerAccesoDestino(mudanza);
  
         const precio =
-            mudanza?.preciototal ??
-            mudanza?.importe_total ??
-            "—";
+    window.Transportista.getPrecioTransportista(
+        mudanza
+    ) || "—";
  
         const volumen =
             mudanza?.volumen || "—";
@@ -1063,7 +1063,7 @@
                                     text-slate-400
                                 "
                             >
-                                Cobro transportista
+                                COBRO DEL TRANSPORTISTA
                             </div>
  
                             <div

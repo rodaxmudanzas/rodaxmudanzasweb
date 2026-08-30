@@ -1394,10 +1394,9 @@ tituloDestino: escapeHtml(
 
 
             precio:
-                escapeHtml(
-                    t.preciototal ??
-                    "—"
-                ),
+    escapeHtml(
+        window.Transportista.getPrecioTransportista(t) || "—"
+    ),
 
 
             numArticulos:
@@ -1561,8 +1560,8 @@ tituloDestino: escapeHtml(
 
                     <div class="hidden text-right sm:block">
                         <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400">
-                            ID
-                        </div>
+    COBRO DEL TRANSPORTISTA
+</div>
                         <div class="mt-0.5 text-[11px] font-bold text-slate-700">
                             ${d.numeroReserva}
                         </div>
@@ -2289,7 +2288,9 @@ const mostrarTelefonoRodax =
                     </div>
 
                     <div class="text-right">
-                        <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Tu cobro</div>
+                        <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+    COBRO DEL TRANSPORTISTA
+</div>
                         <div class="mt-0.5 flex items-baseline gap-1 justify-end">
                             <span class="text-2xl font-black tracking-tight text-green-600">${d.precio}</span>
                             <span class="text-[9px] font-bold text-slate-400">IVA incl.</span>
@@ -2300,7 +2301,7 @@ const mostrarTelefonoRodax =
                 <!-- ESTADO -->
                 <div class="mt-3">
                     ${tiempoRestanteHTML}
-                </div>
+                </div>f
 
                 <!-- RUTA -->
                 <div class="mt-3 grid grid-cols-1 items-center gap-3 border-t border-slate-100 pt-3 md:grid-cols-[1fr_auto_1fr]">

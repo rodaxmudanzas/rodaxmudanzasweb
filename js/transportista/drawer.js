@@ -336,12 +336,14 @@ if (elFranjaHorariaRecogida) {
 }
 
         const elPrecio =
-            document.getElementById("drawerPrecio");
+    document.getElementById("drawerPrecio");
 
-        if (elPrecio) {
-            elPrecio.textContent =
-                mudanza.preciototal || "—";
-        }
+if (elPrecio) {
+    elPrecio.textContent =
+        window.Transportista.getPrecioTransportista(
+            mudanza
+        ) || "—";
+}
 
         const elObservaciones =
             document.getElementById("drawerObservaciones");
