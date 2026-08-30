@@ -1156,6 +1156,44 @@ function obtenerUbicacionPublica(m,t){ return window.Transportista.obtenerUbicac
     }
 
 
+
+    //////////////////////////////////////////////////////////////
+    // EXTRAS VISIBLES — MUDANZA TOTAL
+    //////////////////////////////////////////////////////////////
+
+    function crearHTMLExtrasTarjeta(extras, esTotal) {
+
+        if (!esTotal || !Array.isArray(extras)) {
+            return "";
+        }
+
+        const visibles = extras.filter(
+            item => Number(item?.cantidad) > 0
+        );
+
+        if (!visibles.length) {
+            return "";
+        }
+
+        return `
+            <div class="mt-3 bg-emerald-50/70 border border-emerald-200 rounded-xl p-3">
+                <div class="text-[10px] font-black uppercase tracking-wider text-emerald-700 mb-1">
+                    EXTRAS — PROVEER ESTAS CAJAS
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    ${visibles.map(item => `
+                        <div class="flex items-center justify-between gap-2 bg-white border border-emerald-100 rounded-lg px-3 py-2">
+                            <span class="text-xs font-semibold text-slate-700">${escapeHtml(item.nombre)}</span>
+                            <span class="shrink-0 bg-emerald-600 text-white px-2 py-0.5 rounded-md text-[10px] font-black">
+                                x${Number(item.cantidad)}
+                            </span>
+                        </div>
+                    `).join("")}
+                </div>
+            </div>
+        `;
+    }
+
     //////////////////////////////////////////////////////////////
     // DATOS COMUNES DE UNA MUDANZA
     //////////////////////////////////////////////////////////////
@@ -1622,6 +1660,8 @@ tituloDestino: escapeHtml(
                         <strong class="text-slate-700">${d.numFotos}</strong> fotos
                     </span>
                 </div>
+
+                ${crearHTMLExtrasTarjeta(d.extras, d.esMudanzaTotal)}
 
                 <!-- PRECIO + ACCIÓN -->
                 <div class="mt-3 flex flex-col gap-3 border-t border-slate-100 pt-3 sm:flex-row sm:items-end sm:justify-between">
@@ -2416,6 +2456,8 @@ ${mostrarTelefonoCliente && d.telefono ? `
                         <strong class="text-slate-700">${d.numFotos}</strong> fotos
                     </span>
                 </div>
+
+                ${crearHTMLExtrasTarjeta(d.extras, d.esMudanzaTotal)}
 
                 <!-- ACCIONES: centradas al final de la tarjeta -->
                 <div class="mt-3 flex flex-col items-center gap-2 border-t border-slate-100 pt-3">
