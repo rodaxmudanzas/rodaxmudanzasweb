@@ -1077,6 +1077,60 @@ function obtenerInventario() {
 
 }
 
+
+//////////////////////////////////////////////////////
+// CAJAS DE BENEFICIO — MUDANZA TOTAL
+//
+// Estas cantidades:
+// - se guardan dentro de inventario para que viajen con la reserva;
+// - NO entran en precio.js;
+// - se identifican con un marcador propio para que ningún panel
+//   las confunda con cajas normales del inventario.
+//////////////////////////////////////////////////////
+
+function agregarCajasBeneficioMudanzaTotal(inventario) {
+
+    if (!mudanzaTotal || !Array.isArray(inventario)) {
+        return inventario;
+    }
+
+    const configuracion = [
+        {
+            id: "cajas_pequenas",
+            nombre: "Caja Pequeña"
+        },
+        {
+            id: "cajas_medianas",
+            nombre: "Caja Mediana"
+        },
+        {
+            id: "cajas_grandes",
+            nombre: "Caja Grande"
+        }
+    ];
+
+    configuracion.forEach(({ id, nombre }) => {
+
+        const input = document.getElementById(id);
+        const cantidad = parseInt(input?.value, 10) || 0;
+
+        if (cantidad <= 0) {
+            return;
+        }
+
+        inventario.push({
+            nombre,
+            cantidad,
+            precio: 0,
+            metrosCubicos: 0,
+            fragil: false,
+            es_extra_mudanza_total: true
+        });
+    });
+
+    return inventario;
+}
+
 //////////////////////////////////////////////////////
 // TEXTO DE ACCESO PARA RESERVA
 //////////////////////////////////////////////////////
@@ -1288,7 +1342,9 @@ document.getElementById("cant_empaquetar")?.value);
                 //////////////////////////////////////////////////////
 // GUARDAR RESERVA EN SUPABASE
 //////////////////////////////////////////////////////
-const inventario = obtenerInventario();
+const inventario = agregarCajasBeneficioMudanzaTotal(
+    obtenerInventario()
+);
 
 console.log("INVENTARIO COMPLETO");
 console.log(inventario);
