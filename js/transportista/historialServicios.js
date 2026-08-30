@@ -999,6 +999,8 @@ console.log(mudanza);
 
  
 
+        const extrasHTML = crearExtrasHistorial(mudanza);
+
         return `
 
             <article
