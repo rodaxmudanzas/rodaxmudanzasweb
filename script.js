@@ -1122,7 +1122,12 @@ function agregarCajasBeneficioMudanzaTotal(inventario) {
             nombre,
             cantidad,
             precio: 0,
-            metrosCubicos: 0,
+            // M³ del mismo tipo de caja que el inventario normal.
+            // Este campo SOLO afecta al volumen del inventario.
+            metrosCubicos:
+                nombre === "Caja Pequeña" ? 0.1 :
+                nombre === "Caja Mediana" ? 0.18 :
+                0.35,
             fragil: false,
             es_extra_mudanza_total: true
         });
