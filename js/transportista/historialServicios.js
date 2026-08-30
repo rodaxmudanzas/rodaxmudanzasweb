@@ -839,97 +839,86 @@ function obtenerAccesoDestino(mudanza) {
 
     function obtenerTotalArticulos(mudanza) {
 
- 
+        let inventario = mudanza?.inventario;
 
-        let inventario =
-
-            mudanza?.inventario;
-
- 
-
-        if (!inventario) {
-
-            return 0;
-
-        }
-
- 
+        if (!inventario) return 0;
 
         try {
-
- 
-
-            if (
-
-                typeof inventario === "string"
-
-            ) {
-
-                inventario =
-
-                    JSON.parse(
-
-                        inventario
-
-                    );
-
+            if (typeof inventario === "string") {
+                inventario = JSON.parse(inventario);
             }
-
- 
-
         } catch {
-
- 
-
             return 0;
-
         }
 
- 
+        if (!Array.isArray(inventario)) return 0;
 
-        if (!Array.isArray(inventario)) {
-
-            return 0;
-
-        }
-
- 
-
-        return inventario.reduce(
-
-            (total, item) => {
-
- 
-
-                return (
-
-                    total +
-
-                    (
-
-                        parseInt(
-
-                            item?.cantidad,
-
-                            10
-
-                        ) || 0
-
-                    )
-
+        if (
+            window.Transportista &&
+            typeof window.Transportista.separarInventarioMudanza === "function"
+        ) {
+            const separado =
+                window.Transportista.separarInventarioMudanza(
+                    inventario,
+                    mudanza?.tipo_servicio
                 );
 
- 
+            return separado.visible.reduce(
+                (total, item) =>
+                    total + (parseInt(item?.cantidad, 10) || 0),
+                0
+            );
+        }
 
-            },
-
+        return inventario.reduce(
+            (total, item) =>
+                total + (parseInt(item?.cantidad, 10) || 0),
             0
-
         );
-
     }
 
- 
+    function crearExtrasHistorial(mudanza) {
+
+        const esTotal =
+            String(mudanza?.tipo_servicio || "")
+                .toLowerCase()
+                .includes("total");
+
+        if (
+            !esTotal ||
+            !window.Transportista ||
+            typeof window.Transportista.obtenerExtrasMudanzaTotal !== "function"
+        ) {
+            return "";
+        }
+
+        const datos =
+            window.Transportista.obtenerExtrasMudanzaTotal(mudanza);
+
+        const filas = [
+            ["Cajas pequeñas", datos?.["Cajas pequeñas"]],
+            ["Cajas medianas", datos?.["Cajas medianas"]],
+            ["Cajas grandes", datos?.["Cajas grandes"]]
+        ].filter(item => Number(item[1]) > 0);
+
+        if (!filas.length) return "";
+
+        return `
+            <div class="mt-4 bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+                <div class="text-[10px] font-black uppercase tracking-wider text-emerald-700 mb-2">
+                    EXTRAS — PROVEER ESTAS CAJAS
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    ${filas.map(([nombre,cantidad]) => `
+                        <div class="flex items-center justify-between gap-2 bg-white border border-emerald-100 rounded-lg px-3 py-2">
+                            <span class="text-xs font-semibold text-slate-700">${escaparHTML(nombre)}</span>
+                            <strong class="bg-emerald-600 text-white px-2 py-0.5 rounded-md text-[10px]">x${Number(cantidad)}</strong>
+                        </div>
+                    `).join("")}
+                </div>
+            </div>
+        `;
+    }
 
     function crearTarjetaHistorial(mudanza) {
 
