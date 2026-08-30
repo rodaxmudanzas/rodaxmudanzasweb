@@ -257,6 +257,19 @@
         return "Otros";
     }
 
+    function esMarcadorCajaBeneficio(item) {
+        const valores = [
+            item?.es_extra_mudanza_total,
+            item?.extra_mudanza_total,
+            item?.tipo_item === "extra_mudanza_total"
+        ];
+
+        return valores.some(valor =>
+            valor === true ||
+            String(valor ?? "").trim().toLowerCase() === "true"
+        );
+    }
+
     function separarInventarioMudanza(inventario, tipoServicio) {
         const items = parseInventario(inventario);
         const total = esMudanzaTotalInventario(tipoServicio);
@@ -267,6 +280,11 @@
             "Cajas grandes": 0
         };
 
+        // En los registros nuevos las cajas de beneficio llevan
+        // un marcador explícito. Esto permite que una Caja Pequeña
+        // normal del inventario NO sea confundida con una caja extra.
+        const hayMarcadoresExtras = items.some(esMarcadorCajaBeneficio);
+
         items.forEach(item => {
             const cantidad = obtenerCantidadItemInventario(item);
             if (cantidad <= 0) return;
@@ -274,7 +292,17 @@
             const nombre = obtenerNombreItemInventario(item);
             const clave = normalizarNombreInventario(nombre);
 
-            if (total && RODAX_EXTRAS_NOMBRES[clave]) {
+            const esCajaExtra =
+                total &&
+                (
+                    esMarcadorCajaBeneficio(item) ||
+                    (
+                        !hayMarcadoresExtras &&
+                        Boolean(RODAX_EXTRAS_NOMBRES[clave])
+                    )
+                );
+
+            if (esCajaExtra) {
                 extras[RODAX_EXTRAS_NOMBRES[clave]] += cantidad;
                 return;
             }
@@ -300,7 +328,31 @@
 
         if (!esMudanzaTotalInventario(t.tipo_servicio)) return resultado;
 
-        // 1) Primero respetamos campos estructurados/directos si existen.
+        const items = parseInventario(t.inventario);
+        const hayMarcadoresExtras = items.some(esMarcadorCajaBeneficio);
+
+        // FUENTE PRINCIPAL — registros nuevos:
+        // las cantidades reales guardadas por el formulario.
+        if (hayMarcadoresExtras) {
+            items.forEach(item => {
+                if (!esMarcadorCajaBeneficio(item)) return;
+
+                const clave = RODAX_EXTRAS_NOMBRES[
+                    normalizarNombreInventario(
+                        obtenerNombreItemInventario(item)
+                    )
+                ];
+
+                if (!clave) return;
+
+                resultado[clave] += obtenerCantidadItemInventario(item);
+            });
+
+            return resultado;
+        }
+
+        // COMPATIBILIDAD — registros antiguos:
+        // solo se utiliza si no existe ningún marcador nuevo.
         const fuentes = [
             t.extras_mudanza_total,
             t.extrasMudanzaTotal,
@@ -319,22 +371,31 @@
         for (const [etiqueta, nombres] of Object.entries(aliases)) {
             for (const fuente of [t, ...fuentes]) {
                 if (!fuente || typeof fuente !== "object" || Array.isArray(fuente)) continue;
+
                 for (const nombre of nombres) {
-                    if (fuente[nombre] !== undefined && fuente[nombre] !== null && fuente[nombre] !== "") {
-                        const n = Number(fuente[nombre]);
-                        if (Number.isFinite(n) && n > 0) {
-                            resultado[etiqueta] = n;
-                            break;
-                        }
+                    if (fuente[nombre] === undefined || fuente[nombre] === null || fuente[nombre] === "") {
+                        continue;
+                    }
+
+                    const n = Number(fuente[nombre]);
+
+                    if (Number.isFinite(n) && n > 0) {
+                        resultado[etiqueta] = n;
+                        break;
                     }
                 }
+
                 if (resultado[etiqueta] > 0) break;
             }
         }
 
-        // 2) Si no llegaron como campos, las cantidades de las tres
-        // cajas de beneficios se recuperan del inventario por nombre EXACTO.
-        const desdeInventario = separarInventarioMudanza(t.inventario, t.tipo_servicio).extras;
+        // Último respaldo para registros antiguos que solo guardaron
+        // las cajas dentro de inventario con su nombre.
+        const desdeInventario = separarInventarioMudanza(
+            t.inventario,
+            t.tipo_servicio
+        ).extras;
+
         for (const etiqueta of Object.keys(resultado)) {
             if (resultado[etiqueta] <= 0 && desdeInventario[etiqueta] > 0) {
                 resultado[etiqueta] = desdeInventario[etiqueta];
