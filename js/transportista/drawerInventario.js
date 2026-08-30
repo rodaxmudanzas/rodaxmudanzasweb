@@ -873,39 +873,37 @@
                     )
                 );
 
-            if (esCajaBeneficio) {
-                return;
-            }
-
-
-            //////////////////////////////////////////////////////
-            // ARTÍCULOS
-            //////////////////////////////////////////////////////
-
-            totalArticulosCount += cantidad;
-
-
             //////////////////////////////////////////////////////
             // M3
+            // Las cajas EXTRAS sí forman parte del volumen total.
+            // Este es el ÚNICO efecto de los EXTRAS sobre el inventario.
             //////////////////////////////////////////////////////
 
             const m3Unitario =
                 Number(
                     item.metrosCubicos ??
                     item.m3 ??
-                    item.metros_cubicos ??
-                    0.5
+                    item.metros_cubicos
                 );
-
 
             if (
                 Number.isFinite(m3Unitario) &&
                 m3Unitario > 0
             ) {
-
-                totalM3 +=
-                    cantidad * m3Unitario;
+                totalM3 += cantidad * m3Unitario;
             }
+
+            // Las cajas EXTRAS no se cuentan como ARTÍCULOS
+            // y no entran en la clasificación visual del inventario.
+            if (esCajaBeneficio) {
+                return;
+            }
+
+            //////////////////////////////////////////////////////
+            // ARTÍCULOS
+            //////////////////////////////////////////////////////
+
+            totalArticulosCount += cantidad;
 
 
             //////////////////////////////////////////////////////
