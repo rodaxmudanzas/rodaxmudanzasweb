@@ -4430,6 +4430,14 @@ const nombresExtrasFicha = new Set([
 
 ]);
 
+const hayMarcadoresExtrasFicha =
+    inventarioOriginal.some(
+        item =>
+            item?.es_extra_mudanza_total === true ||
+            item?.extra_mudanza_total === true ||
+            String(item?.tipo_item || "").trim() === "extra_mudanza_total"
+    );
+
  
 
 const categoriasFicha =
@@ -4507,19 +4515,18 @@ inventarioOriginal.forEach(item => {
      */
 
     if (
-
         esMudanzaTotalFicha &&
-
         nombresExtrasFicha.has(
-
             normalizarNombreFicha(nombre)
-
+        ) &&
+        (
+            !hayMarcadoresExtrasFicha ||
+            item?.es_extra_mudanza_total === true ||
+            item?.extra_mudanza_total === true ||
+            String(item?.tipo_item || "").trim() === "extra_mudanza_total"
         )
-
     ) {
-
         return;
-
     }
 
  
