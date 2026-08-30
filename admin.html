@@ -283,36 +283,109 @@
 //////////////////////////////////////////////////////
 
 let inventarioHTML = "";
+let extrasCajasHTML = "";
 
 if (Array.isArray(m.inventario) && m.inventario.length > 0) {
 
-    inventarioHTML = `
+    const esTotal =
+        String(m.tipo_servicio || "")
+            .toLowerCase()
+            .includes("total");
 
-        <div class="mt-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
+    const hayMarcadoresExtras =
+        m.inventario.some(item =>
+            item?.es_extra_mudanza_total === true ||
+            item?.extra_mudanza_total === true ||
+            String(item?.tipo_item || "").trim() === "extra_mudanza_total"
+        );
 
-            <p class="text-xs font-bold text-slate-600 uppercase mb-2">
-                📦 Inventario
-            </p>
+    const normalizarCaja = valor =>
+        String(valor ?? "")
+            .trim()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
 
-            <ul class="space-y-1">
+    const extras = {
+        "Cajas pequeñas": 0,
+        "Cajas medianas": 0,
+        "Cajas grandes": 0
+    };
 
-                ${m.inventario.map(item => `
+    const visibles = [];
 
-                    <li class="text-xs text-slate-700">
+    m.inventario.forEach(item => {
 
-                        <strong>${item.cantidad} ×</strong>
-                        ${item.nombre}
+        const cantidad = Number(item?.cantidad) || 0;
+        if (cantidad <= 0) return;
 
-                    </li>
+        const nombre = String(item?.nombre || "").trim();
+        const clave = normalizarCaja(nombre);
 
-                `).join("")}
+        const esExtra =
+            esTotal &&
+            (
+                item?.es_extra_mudanza_total === true ||
+                item?.extra_mudanza_total === true ||
+                String(item?.tipo_item || "").trim() === "extra_mudanza_total" ||
+                (!hayMarcadoresExtras && (
+                    clave === "caja pequena" ||
+                    clave === "caja mediana" ||
+                    clave === "caja grande"
+                ))
+            );
 
-            </ul>
+        if (esExtra) {
+            if (clave === "caja pequena") extras["Cajas pequeñas"] += cantidad;
+            if (clave === "caja mediana") extras["Cajas medianas"] += cantidad;
+            if (clave === "caja grande") extras["Cajas grandes"] += cantidad;
+            return;
+        }
 
-        </div>
+        visibles.push(item);
+    });
 
-    `;
+    if (visibles.length > 0) {
+        inventarioHTML = `
 
+            <div class="mt-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
+
+                <p class="text-xs font-bold text-slate-600 uppercase mb-2">
+                    📦 Inventario
+                </p>
+
+                <ul class="space-y-1">
+
+                    ${visibles.map(item => `
+
+                        <li class="text-xs text-slate-700">
+                            <strong>${item.cantidad} ×</strong>
+                            ${item.nombre}
+                        </li>
+
+                    `).join("")}
+
+                </ul>
+
+            </div>
+
+        `;
+    }
+
+    if (esTotal && Object.values(extras).some(v => v > 0)) {
+        extrasCajasHTML = `
+            <div class="mt-3 p-3 bg-emerald-50 rounded-xl border border-emerald-200">
+                <p class="text-[10px] font-black text-emerald-700 uppercase tracking-wider mb-2">
+                    EXTRAS — PROVEER ESTAS CAJAS
+                </p>
+                <div class="grid grid-cols-3 gap-2">
+                    <div class="text-xs text-slate-700"><strong>Cajas pequeñas:</strong> x${extras["Cajas pequeñas"]}</div>
+                    <div class="text-xs text-slate-700"><strong>Cajas medianas:</strong> x${extras["Cajas medianas"]}</div>
+                    <div class="text-xs text-slate-700"><strong>Cajas grandes:</strong> x${extras["Cajas grandes"]}</div>
+                </div>
+            </div>
+        `;
+    }
 }
 
                 return `
