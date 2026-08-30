@@ -416,9 +416,11 @@
         }
 
         const totalArticulos = separado.visible.reduce((s, item) => s + obtenerCantidadItemInventario(item), 0);
-        const totalM3 = separado.visible.reduce((s, item) => {
+        // M³: incluye INVENTARIO + cajas EXTRAS de Mudanza Total.
+        // Las cajas Extras NO se convierten en artículos visibles ni afectan precios.
+        const totalM3 = parseInventario(t.inventario).reduce((s, item) => {
             let m3 = Number(item?.metrosCubicos ?? item?.m3);
-            if (!Number.isFinite(m3) || m3 <= 0) m3 = 0.5;
+            if (!Number.isFinite(m3) || m3 <= 0) return s;
             return s + obtenerCantidadItemInventario(item) * m3;
         }, 0);
 
@@ -495,14 +497,14 @@ function getTotalArticulos(inventario, tipoServicio) {
 //////////////////////////////////////////////////////
 
 function getTotalM3(inventario, tipoServicio) {
-        const items = esMudanzaTotalInventario(tipoServicio)
-            ? separarInventarioMudanza(inventario, tipoServicio).visible
-            : parseInventario(inventario);
+        // El volumen sí incluye las cajas EXTRAS de Mudanza Total.
+        // A diferencia de getTotalArticulos(), aquí NO filtramos los extras.
+        const items = parseInventario(inventario);
 
         return items.reduce((total, item) => {
             const cantidad = obtenerCantidadItemInventario(item);
-            let m3Unitario = Number(item?.metrosCubicos ?? item?.m3);
-            if (!Number.isFinite(m3Unitario) || m3Unitario <= 0) m3Unitario = 0.5;
+            const m3Unitario = Number(item?.metrosCubicos ?? item?.m3);
+            if (!Number.isFinite(m3Unitario) || m3Unitario <= 0) return total;
             return total + cantidad * m3Unitario;
         }, 0);
     }
