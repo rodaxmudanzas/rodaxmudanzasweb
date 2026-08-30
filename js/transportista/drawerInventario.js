@@ -848,11 +848,30 @@
                     .normalize("NFD")
                     .replace(/[\u0300-\u036f]/g, "");
 
+            const hayMarcadoresExtras =
+                Array.isArray(arr) &&
+                arr.some(
+                    otro =>
+                        otro?.es_extra_mudanza_total === true ||
+                        otro?.extra_mudanza_total === true ||
+                        String(otro?.tipo_item || "").trim() === "extra_mudanza_total"
+                );
+
             const esCajaBeneficio =
                 esMudanzaTotal &&
-                (nombreNormalizado === "caja pequena" ||
-                 nombreNormalizado === "caja mediana" ||
-                 nombreNormalizado === "caja grande");
+                (
+                    item?.es_extra_mudanza_total === true ||
+                    item?.extra_mudanza_total === true ||
+                    String(item?.tipo_item || "").trim() === "extra_mudanza_total" ||
+                    (
+                        !hayMarcadoresExtras &&
+                        (
+                            nombreNormalizado === "caja pequena" ||
+                            nombreNormalizado === "caja mediana" ||
+                            nombreNormalizado === "caja grande"
+                        )
+                    )
+                );
 
             if (esCajaBeneficio) {
                 return;
