@@ -849,13 +849,12 @@
                     .replace(/[\u0300-\u036f]/g, "");
 
             const hayMarcadoresExtras =
-                Array.isArray(arr) &&
-                arr.some(
-                    otro =>
-                        otro?.es_extra_mudanza_total === true ||
-                        otro?.extra_mudanza_total === true ||
-                        String(otro?.tipo_item || "").trim() === "extra_mudanza_total"
-                );
+    inventarioArray.some(
+        otro =>
+            otro?.es_extra_mudanza_total === true ||
+            otro?.extra_mudanza_total === true ||
+            String(otro?.tipo_item || "").trim() === "extra_mudanza_total"
+    );
 
             const esCajaBeneficio =
                 esMudanzaTotal &&
