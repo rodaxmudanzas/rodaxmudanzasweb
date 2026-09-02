@@ -1661,8 +1661,6 @@ tituloDestino: escapeHtml(
                     </span>
                 </div>
 
-                ${crearHTMLExtrasTarjeta(d.extras, d.esMudanzaTotal)}
-
                 <!-- PRECIO + ACCIÓN -->
                 <div class="mt-3 flex flex-col gap-3 border-t border-slate-100 pt-3 sm:flex-row sm:items-end sm:justify-between">
                     <div>
@@ -2455,9 +2453,7 @@ ${mostrarTelefonoCliente && d.telefono ? `
                         <i data-lucide="camera" class="h-3.5 w-3.5 text-slate-400"></i>
                         <strong class="text-slate-700">${d.numFotos}</strong> fotos
                     </span>
-                </div>
-
-                ${crearHTMLExtrasTarjeta(d.extras, d.esMudanzaTotal)}
+                </div>             
 
                 <!-- ACCIONES: centradas al final de la tarjeta -->
                 <div class="mt-3 flex flex-col items-center gap-2 border-t border-slate-100 pt-3">
