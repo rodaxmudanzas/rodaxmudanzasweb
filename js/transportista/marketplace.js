@@ -6092,7 +6092,12 @@ if (
 
 
 
-        // Eliminar inmediatamente la tarjeta aceptada del Marketplace
+        // Cerrar inmediatamente el drawer de detalles
+if (typeof cerrarDrawer === "function") {
+    cerrarDrawer();
+}
+
+// Eliminar inmediatamente la tarjeta aceptada del Marketplace
 const state = obtenerStateMarketplace();
 
 state.disponibles = state.disponibles.filter(
@@ -6101,7 +6106,7 @@ state.disponibles = state.disponibles.filter(
 
 renderizarDisponibles();
 
-// Actualizar Mis Trabajos Activos
+// Actualizar Mis Mudanzas Activas
 if (typeof cargarMisMudanzas === "function") {
     await cargarMisMudanzas();
 }
@@ -6109,25 +6114,10 @@ if (typeof cargarMisMudanzas === "function") {
 // Sincronizar con Supabase
 await cargarTrabajosDisponibles();
 
-
-
-        if (
-
-            typeof cambiarTab ===
-
-            "function"
-
-        ) {
-
-
-
-            cambiarTab(
-
-                "mis-mudanzas"
-
-            );
-
-        }
+// Ir automáticamente a Mis Mudanzas Activas
+if (typeof cambiarTab === "function") {
+    cambiarTab("mis-mudanzas");
+}
 
 
 
