@@ -33,16 +33,7 @@ window.Transportista.obtenerUbicacionCorta=function(d){
  else ciudad=p.find(x=>x!==com&&!/España|Spain|Spanien/i.test(x)&&!/\d{5}/.test(x))||"";
  return [ciudad, cp, com].filter(Boolean).join(" - ") || "Ubicación no disponible";
 };
-window.Transportista.obtenerUbicacionPublica=function(m,t){
- const prefijo=t==="origen"?"origen":"destino";
- const ciudad=m?.[`${prefijo}_ciudad`] || "";
- const cp=m?.[`${prefijo}_cp`] || "";
- const comunidad=m?.[`${prefijo}_comunidad_autonoma`] || "";
- if(ciudad || cp || comunidad){
-   return [ciudad, cp, comunidad].filter(Boolean).join(" - ");
- }
- return window.Transportista.obtenerUbicacionCorta(m?.[prefijo]);
-};
+
 }
 // ===== fin ubicación unificada =====
 
