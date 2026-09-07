@@ -155,7 +155,7 @@ const destino =
                     <p class="text-xs text-slate-400 mt-1">
                         ${mostrarDireccionCompleta
                             ? "📍 Dirección exacta liberada"
-                            : "🔒 Calle oculta (Disponible 24h antes)"}
+                            : "🔒 Calle oculta hasta las 00:00 del Día servicio"}
                     </p>
                 </div>
 
@@ -184,7 +184,7 @@ const destino =
                     <p class="text-xs text-slate-400 mt-1">
                         ${mostrarDireccionCompleta
                             ? "📍 Dirección exacta liberada"
-                            : "🔒 Calle oculta (Disponible 24h antes)"}
+                            : "🔒 Calle oculta hasta las 00:00 del Día servicio"}
                     </p>
                 </div>
 
