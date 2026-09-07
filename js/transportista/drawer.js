@@ -38,22 +38,23 @@
 
 
     function obtenerMostrarDireccionCompleta(mudanza) {
+    if (!mudanza?.fecha) return false;
 
-        if (!mudanza?.fecha) return false;
+    const ahora = new Date();
+    const fechaServicio = new Date(mudanza.fecha);
 
-        const ahora = new Date();
-        const fechaServicio = new Date(mudanza.fecha);
-
-        if (Number.isNaN(fechaServicio.getTime())) {
-            return false;
-        }
-
-        const diferenciaHoras =
-            (fechaServicio.getTime() - ahora.getTime()) /
-            (1000 * 60 * 60);
-
-        return diferenciaHoras <= 24 && diferenciaHoras >= -48;
+    if (Number.isNaN(fechaServicio.getTime())) {
+        return false;
     }
+
+    // La dirección exacta solo se permite desde las 00:00
+    // del mismo Día servicio.
+    return (
+        ahora.getFullYear() === fechaServicio.getFullYear() &&
+        ahora.getMonth() === fechaServicio.getMonth() &&
+        ahora.getDate() === fechaServicio.getDate()
+    );
+}
 
 
     function obtenerMostrarContactoCompleto(mudanza) {
