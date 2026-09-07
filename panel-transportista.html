@@ -4079,12 +4079,14 @@ if (
 
  
 
-   let mudanza =
-    state.activas.find(
-        m =>
-            Number(m.id) ===
-            Number(id)
-    );
+   function imprimirFicha(id, desdeHistorial = false) {
+
+    let mudanza =
+        state.activas.find(
+            m =>
+                Number(m.id) ===
+                Number(id)
+        );
 
 const esMudanzaActiva =
     Boolean(mudanza);
