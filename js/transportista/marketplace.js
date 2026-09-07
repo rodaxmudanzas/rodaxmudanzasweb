@@ -1,4 +1,4 @@
-﻿// ===== RODAX ubicación unificada =====
+// ===== RODAX ubicación unificada =====
 window.Transportista = window.Transportista || {};
 if (!window.Transportista.obtenerUbicacionCorta){
 window.Transportista.obtenerUbicacionCorta=function(d){
@@ -1070,8 +1070,8 @@ function obtenerServiciosMarketplace(trabajo) {
 function obtenerZonaMarketplace(trabajo){
 
     const textos = [
-        window.Transportista.obtenerUbicacionCorta(trabajo?.origen),
-        window.Transportista.obtenerUbicacionCorta(trabajo?.destino)
+        window.Transportista.obtenerUbicacionPublica(trabajo, "origen"),
+        window.Transportista.obtenerUbicacionPublica(trabajo, "destino")
     ]
     .filter(Boolean)
     .map(valor => String(valor).trim());
@@ -5772,8 +5772,8 @@ function renderizarDisponibles() {
 
     const trabajosRender = trabajos.map(t => ({
   ...t,
-  origen: window.Transportista.obtenerUbicacionCorta(t.origen),
-  destino: window.Transportista.obtenerUbicacionCorta(t.destino)
+  origen: window.Transportista.obtenerUbicacionPublica(t, "origen"),
+  destino: window.Transportista.obtenerUbicacionPublica(t, "destino")
 }));
     contenedor.innerHTML=renderer(trabajosRender);
 

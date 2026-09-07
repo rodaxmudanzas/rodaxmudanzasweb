@@ -916,6 +916,10 @@ window.Transportista.getPrecioTransportista =
     // NUNCA usar origen/destino como fallback
     //////////////////////////////////////////////////////
 
+    function obtenerUbicacionCorta(mudanza, tipo) {
+        return obtenerUbicacionPublica(mudanza, tipo);
+    }
+
     function obtenerCampoUbicacion(mudanza, prefijo, sufijos) {
         const m = mudanza || {};
 
@@ -990,6 +994,9 @@ window.Transportista.getPrecioTransportista =
 
     window.Transportista.obtenerUbicacionPublica =
         obtenerUbicacionPublica;
+
+    window.Transportista.obtenerUbicacionCorta =
+        obtenerUbicacionCorta;
 
 
 })();

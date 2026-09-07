@@ -70,6 +70,18 @@ if(
 
     !datos.destino ||
 
+    !datos.origen_ciudad ||
+
+    !datos.origen_cp ||
+
+    !datos.origen_comunidad_autonoma ||
+
+    !datos.destino_ciudad ||
+
+    !datos.destino_cp ||
+
+    !datos.destino_comunidad_autonoma ||
+
     !datos.fecha ||
 
     !datos.franja_horaria_recogida ||
@@ -164,6 +176,22 @@ const { data, error } = await supabase
     origen: datos.origen,
 
     destino: datos.destino,
+
+    origen_ciudad: String(datos.origen_ciudad).trim(),
+
+    origen_cp: String(datos.origen_cp).trim(),
+
+    origen_provincia: String(datos.origen_provincia || "").trim(),
+
+    origen_comunidad_autonoma: String(datos.origen_comunidad_autonoma).trim(),
+
+    destino_ciudad: String(datos.destino_ciudad).trim(),
+
+    destino_cp: String(datos.destino_cp).trim(),
+
+    destino_provincia: String(datos.destino_provincia || "").trim(),
+
+    destino_comunidad_autonoma: String(datos.destino_comunidad_autonoma).trim(),
 
     km: Number(datos.km) || 0,
 

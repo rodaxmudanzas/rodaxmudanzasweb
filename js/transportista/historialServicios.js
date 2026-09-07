@@ -75,65 +75,17 @@
     tipo
 ) {
 
-    const prefijo =
-        tipo === "destino"
-            ? "destino"
-            : "origen";
-
-    const ciudad =
-        mudanza?.[`${prefijo}_ciudad`] ||
-        "";
-
-    const cp =
-        mudanza?.[`${prefijo}_cp`] ||
-        "";
-
-    const comunidad =
-        mudanza?.[`${prefijo}_comunidad`] ||
-        "";
-
-    const provincia =
-        mudanza?.[`${prefijo}_provincia`] ||
-        "";
-
-    /*
-     * IMPORTANTE:
-     * Nunca usamos mudanza.origen ni mudanza.destino
-     * como respaldo aquí, porque podrían contener
-     * la dirección exacta del cliente.
-     */
-
-    const partes = [];
-
-    if (ciudad) {
-        partes.push(
-            String(ciudad).trim()
+    if (
+        typeof window.Transportista?.obtenerUbicacionPublica ===
+        "function"
+    ) {
+        return window.Transportista.obtenerUbicacionPublica(
+            mudanza,
+            tipo
         );
     }
 
-    if (cp) {
-        partes.push(
-            String(cp).trim()
-        );
-    }
-
-    if (comunidad) {
-        partes.push(
-            String(comunidad).trim()
-        );
-    } else if (provincia) {
-        /*
-         * Respaldo temporal si todavía no existe
-         * el campo de Comunidad Autónoma.
-         */
-        partes.push(
-            String(provincia).trim()
-        );
-    }
-
-    return partes.length
-        ? partes.join(", ")
-        : "Ubicación no disponible";
+    return "Ubicación no disponible";
 }
 
     function obtenerFecha(mudanza) {
@@ -467,42 +419,6 @@
         return "Acceso por confirmar";
 
     }
-
-function obtenerUbicacionHistorial(mudanza, tipo){
-
-    const m = mudanza || {};
-    const origen = tipo === "origen";
-
-    let ciudad = origen
-        ? (m.origen_ciudad ?? m.ciudad_origen ?? m.ciudadOrigen ?? "")
-        : (m.destino_ciudad ?? m.ciudad_destino ?? m.ciudadDestino ?? "");
-
-    let cp = origen
-        ? (m.origen_cp ?? m.cp_origen ?? m.codigo_postal_origen ?? "")
-        : (m.destino_cp ?? m.cp_destino ?? m.codigo_postal_destino ?? "");
-
-    let comunidad = origen
-        ? (m.origen_comunidad ?? m.comunidad_origen ?? m.ccaa_origen ?? "")
-        : (m.destino_comunidad ?? m.comunidad_destino ?? m.ccaa_destino ?? "");
-
-    // Respaldo usando el texto que ya existe en origen/destino
-    if(!ciudad && (origen ? m.origen : m.destino)){
-
-        const texto = String(origen ? m.origen : m.destino);
-
-        const partes = texto.split(",");
-
-        ciudad = ciudad || partes[0]?.trim() || "";
-        cp = cp || partes.find(p => /\b\d{5}\b/.test(p))?.match(/\d{5}/)?.[0] || "";
-        comunidad = comunidad || partes[partes.length-1]?.trim() || "";
-    }
-
-    const resultado = [ciudad, cp, comunidad].filter(Boolean);
-
-    return resultado.length
-        ? resultado.join(", ")
-        : "Ubicación no disponible";
-}
 
     function obtenerAccesoOrigen(mudanza) {
 

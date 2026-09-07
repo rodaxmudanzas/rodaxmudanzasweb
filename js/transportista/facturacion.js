@@ -183,8 +183,16 @@
                 : "Servicio de mudanza";
         }
 
-        const origen = mudanza.origen || "Origen no disponible";
-        const destino = mudanza.destino || "Destino no disponible";
+        const origen =
+            window.Transportista.obtenerUbicacionPublica(
+                mudanza,
+                "origen"
+            );
+        const destino =
+            window.Transportista.obtenerUbicacionPublica(
+                mudanza,
+                "destino"
+            );
         const tipo = String(mudanza.tipo_servicio || "").toLowerCase().includes("total")
             ? "Mudanza Total"
             : "Mudanza Estándar";
@@ -310,8 +318,16 @@
                 ? factura.fecha_factura
                 : new Date().toISOString();
 
-        const origen = servicioDatos.origen || mudanza.origen || "—";
-        const destino = servicioDatos.destino || mudanza.destino || "—";
+        const origen =
+            window.Transportista.obtenerUbicacionPublica(
+                mudanza,
+                "origen"
+            );
+        const destino =
+            window.Transportista.obtenerUbicacionPublica(
+                mudanza,
+                "destino"
+            );
         const fechaServicio =
             servicioDatos.fecha || mudanza.fecha || pago.fecha_programada || "—";
         const km = servicioDatos.km ?? mudanza.km ?? "—";
@@ -621,7 +637,7 @@ const factura = procesado
                             ${factura ? '<span class="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-[11px] font-bold text-violet-700">Autofactura disponible</span>' : ''}
                         </div>
                         <h3 class="mt-3 text-base font-black text-slate-800">${descripcion}</h3>
-                        <p class="mt-1 text-sm text-slate-500">${escaparHTML(mudanza.origen || "Origen no disponible")} → ${escaparHTML(mudanza.destino || "Destino no disponible")}</p>
+                        <p class="mt-1 text-sm text-slate-500">${escaparHTML(window.Transportista.obtenerUbicacionPublica(mudanza, "origen"))} → ${escaparHTML(window.Transportista.obtenerUbicacionPublica(mudanza, "destino"))}</p>
                     </div>
                     <div class="lg:text-right">
                         <div class="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Importe transportista</div>

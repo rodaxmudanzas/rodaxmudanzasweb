@@ -1165,6 +1165,36 @@ function textoAccesoReserva(ascensor, piso) {
 
 
 //////////////////////////////////////////////////////
+// UBICACIÓN PÚBLICA SELECCIONADA EN EL AUTOCOMPLETE
+//////////////////////////////////////////////////////
+
+function obtenerUbicacionPublicaFormulario(tipo) {
+
+    const seleccion =
+        typeof coords !== "undefined"
+            ? coords?.[tipo]
+            : null;
+
+    if (!seleccion) {
+        return {
+            ciudad: "",
+            cp: "",
+            provincia: "",
+            comunidad_autonoma: ""
+        };
+    }
+
+    return {
+        ciudad: String(seleccion.municipio || "").trim(),
+        cp: String(seleccion.codigoPostal || "").trim(),
+        provincia: String(seleccion.provincia || "").trim(),
+        comunidad_autonoma: String(
+            seleccion.comunidadAutonoma || ""
+        ).trim()
+    };
+}
+
+//////////////////////////////////////////////////////
 // OBTENER DATOS DEL FORMULARIO
 //////////////////////////////////////////////////////
 
@@ -1206,6 +1236,30 @@ function obtenerDatosFormulario({
 
         destino:
             document.getElementById("destino").value.trim(),
+
+        origen_ciudad:
+            obtenerUbicacionPublicaFormulario("origen").ciudad,
+
+        origen_cp:
+            obtenerUbicacionPublicaFormulario("origen").cp,
+
+        origen_provincia:
+            obtenerUbicacionPublicaFormulario("origen").provincia,
+
+        origen_comunidad_autonoma:
+            obtenerUbicacionPublicaFormulario("origen").comunidad_autonoma,
+
+        destino_ciudad:
+            obtenerUbicacionPublicaFormulario("destino").ciudad,
+
+        destino_cp:
+            obtenerUbicacionPublicaFormulario("destino").cp,
+
+        destino_provincia:
+            obtenerUbicacionPublicaFormulario("destino").provincia,
+
+        destino_comunidad_autonoma:
+            obtenerUbicacionPublicaFormulario("destino").comunidad_autonoma,
 
         km:
             parseFloat(
@@ -1354,6 +1408,25 @@ const inventario = agregarCajasBeneficioMudanzaTotal(
 console.log("INVENTARIO COMPLETO");
 console.log(inventario);
 console.log("Cantidad de objetos:", inventario.length);
+
+const ubicacionOrigen =
+    obtenerUbicacionPublicaFormulario("origen");
+
+const ubicacionDestino =
+    obtenerUbicacionPublicaFormulario("destino");
+
+if (
+    !ubicacionOrigen.ciudad ||
+    !ubicacionOrigen.cp ||
+    !ubicacionOrigen.comunidad_autonoma ||
+    !ubicacionDestino.ciudad ||
+    !ubicacionDestino.cp ||
+    !ubicacionDestino.comunidad_autonoma
+) {
+    throw new Error(
+        "Selecciona una dirección válida de las sugerencias de Origen y Destino antes de continuar."
+    );
+}
 
 const datosFormulario = obtenerDatosFormulario({
 

@@ -54,17 +54,28 @@ window.Transportista.obtenerUbicacionPublica=function(m,t){
 
         if (!mudanza) return;
 
-        const origen =
-    (window.Transportista.obtenerUbicacionPublica || window.Transportista.obtenerUbicacionCorta)(
-        mudanza,
-        "origen"
-    );
+        const mostrarDireccionCompleta =
+            Boolean(mudanza.__mostrarDireccionCompleta);
 
-const destino =
-    (window.Transportista.obtenerUbicacionPublica || window.Transportista.obtenerUbicacionCorta)(
-        mudanza,
-        "destino"
-    );
+        const origenPublico =
+            window.Transportista.obtenerUbicacionPublica(
+                mudanza,
+                "origen"
+            );
+
+        const destinoPublico =
+            window.Transportista.obtenerUbicacionPublica(
+                mudanza,
+                "destino"
+            );
+
+        const origen = mostrarDireccionCompleta
+            ? (mudanza.__direccionExactaOrigen || mudanza.origen || origenPublico)
+            : origenPublico;
+
+        const destino = mostrarDireccionCompleta
+            ? (mudanza.__direccionExactaDestino || mudanza.destino || destinoPublico)
+            : destinoPublico;
 
         const km =
             mudanza.km !== undefined &&
@@ -75,9 +86,6 @@ const destino =
 
         const fecha =
             mudanza.fecha || "—";
-
-        const mostrarDireccionCompleta =
-            Boolean(mudanza.__mostrarDireccionCompleta);
 
         const mostrarContactoCompleto =
             Boolean(mudanza.__mostrarContactoCompleto);

@@ -61,6 +61,91 @@ function normalizarBusqueda(texto) {
     return q;
 }
 
+
+
+//////////////////////////////////////////////////////
+// PROVINCIAS ESPAÑA -> COMUNIDAD AUTÓNOMA
+//////////////////////////////////////////////////////
+
+const PROVINCIA_A_CCAA = {
+    "alava": "País Vasco",
+    "araba": "País Vasco",
+    "albacete": "Castilla-La Mancha",
+    "alicante": "Comunidad Valenciana",
+    "alacant": "Comunidad Valenciana",
+    "almeria": "Andalucía",
+    "asturias": "Principado de Asturias",
+    "avila": "Castilla y León",
+    "avila": "Castilla y León",
+    "badajoz": "Extremadura",
+    "barcelona": "Cataluña",
+    "burgos": "Castilla y León",
+    "caceres": "Extremadura",
+    "cadiz": "Andalucía",
+    "cantabria": "Cantabria",
+    "castellon": "Comunidad Valenciana",
+    "castello": "Comunidad Valenciana",
+    "ciudad real": "Castilla-La Mancha",
+    "cordoba": "Andalucía",
+    "cuenca": "Castilla-La Mancha",
+    "girona": "Cataluña",
+    "gerona": "Cataluña",
+    "granada": "Andalucía",
+    "guadalajara": "Castilla-La Mancha",
+    "guipuzcoa": "País Vasco",
+    "gipuzkoa": "País Vasco",
+    "huelva": "Andalucía",
+    "huesca": "Aragón",
+    "illes balears": "Illes Balears",
+    "islas baleares": "Illes Balears",
+    "jaen": "Andalucía",
+    "la coruna": "Galicia",
+    "a coruna": "Galicia",
+    "lleida": "Cataluña",
+    "lerida": "Cataluña",
+    "leon": "Castilla y León",
+    "lugo": "Galicia",
+    "madrid": "Comunidad de Madrid",
+    "malaga": "Andalucía",
+    "murcia": "Región de Murcia",
+    "navarra": "Comunidad Foral de Navarra",
+    "ourense": "Galicia",
+    "orense": "Galicia",
+    "palencia": "Castilla y León",
+    "pontevedra": "Galicia",
+    "la rioja": "La Rioja",
+    "salamanca": "Castilla y León",
+    "segovia": "Castilla y León",
+    "sevilla": "Andalucía",
+    "soria": "Castilla y León",
+    "tarragona": "Cataluña",
+    "teruel": "Aragón",
+    "toledo": "Castilla-La Mancha",
+    "valencia": "Comunidad Valenciana",
+    "valencia/valencia": "Comunidad Valenciana",
+    "valladolid": "Castilla y León",
+    "vizcaya": "País Vasco",
+    "bizkaia": "País Vasco",
+    "zamora": "Castilla y León",
+    "zaragoza": "Aragón",
+    "ceuta": "Ceuta",
+    "melilla": "Melilla"
+};
+
+function normalizarClaveUbicacion(valor) {
+    return String(valor || "")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, " ");
+}
+
+function obtenerComunidadAutonoma(provincia) {
+    const clave = normalizarClaveUbicacion(provincia);
+    return PROVINCIA_A_CCAA[clave] || "";
+}
+
 function construirDireccion(item) {
 
     const p = item.properties || {};
@@ -80,14 +165,25 @@ function construirDireccion(item) {
 
         municipio:
             p.locality ||
+            p.localadmin ||
             p.city ||
+            p.municipality ||
             p.county ||
             '',
 
         provincia:
             p.region ||
             p.county ||
+            p.localadmin ||
             '',
+
+        comunidadAutonoma:
+            obtenerComunidadAutonoma(
+                p.region ||
+                p.county ||
+                p.localadmin ||
+                ''
+            ),
 
         codigoPostal:
             p.postalcode ||
