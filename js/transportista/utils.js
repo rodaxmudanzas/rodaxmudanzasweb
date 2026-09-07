@@ -907,8 +907,89 @@ window.Transportista.getPrecioTransportista =
     window.Transportista.formatAcceso =
         formatAcceso;
 
-    window.Transportista.getAccesos =
+        window.Transportista.getAccesos =
         getAccesos;
+
+
+    //////////////////////////////////////////////////////
+    // UBICACIÓN PÚBLICA — CIUDAD + CP + CCAA
+    // NUNCA usar origen/destino como fallback
+    //////////////////////////////////////////////////////
+
+    function obtenerCampoUbicacion(mudanza, prefijo, sufijos) {
+        const m = mudanza || {};
+
+        for (const sufijo of sufijos) {
+            const valor = m[`${prefijo}${sufijo}`];
+
+            if (
+                valor !== null &&
+                valor !== undefined &&
+                String(valor).trim() !== ""
+            ) {
+                return String(valor).trim();
+            }
+        }
+
+        return "";
+    }
+
+    function obtenerUbicacionPublica(mudanza, tipo) {
+        const prefijo =
+            tipo === "origen"
+                ? "origen"
+                : "destino";
+
+        const ciudad = obtenerCampoUbicacion(
+            mudanza,
+            prefijo,
+            [
+                "_ciudad",
+                "_localidad",
+                "_municipio",
+                "Ciudad"
+            ]
+        );
+
+        const cp = obtenerCampoUbicacion(
+            mudanza,
+            prefijo,
+            [
+                "_cp",
+                "_codigo_postal",
+                "_codigoPostal",
+                "Cp",
+                "CP"
+            ]
+        );
+
+        const comunidad = obtenerCampoUbicacion(
+            mudanza,
+            prefijo,
+            [
+                "_comunidad_autonoma",
+                "_comunidad",
+                "_ccaa",
+                "_comunidadAutonoma"
+            ]
+        );
+
+        // REGLA DE SEGURIDAD:
+        // si falta cualquiera de los tres datos,
+        // NO se utiliza la dirección exacta como sustituto.
+        if (!ciudad || !cp || !comunidad) {
+            return "Ubicación no disponible";
+        }
+
+        return [
+            ciudad,
+            cp,
+            comunidad
+        ].join(" - ");
+    }
+
+    window.Transportista.obtenerUbicacionPublica =
+        obtenerUbicacionPublica;
 
 
 })();
