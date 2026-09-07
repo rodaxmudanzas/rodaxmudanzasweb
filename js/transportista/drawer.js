@@ -37,8 +37,8 @@
     }
 
 
-    function obtenerMostrarDireccionCompleta(mudanza) {
-    if (!mudanza?.fecha) return false;
+    function obtenerMostrarDireccionCompleta(mudanza, esMudanzaActiva = false) {
+    if (!esMudanzaActiva || !mudanza?.fecha) return false;
 
     const ahora = new Date();
     const fechaServicio = new Date(mudanza.fecha);
@@ -47,51 +47,66 @@
         return false;
     }
 
-    // La dirección exacta solo se permite desde las 00:00
-    // del mismo Día servicio.
-    return (
-        ahora.getFullYear() === fechaServicio.getFullYear() &&
-        ahora.getMonth() === fechaServicio.getMonth() &&
-        ahora.getDate() === fechaServicio.getDate()
+    // La dirección exacta se libera a las 00:00
+    // del Día servicio y permanece visible mientras
+    // la mudanza siga activa.
+    const inicioDiaServicio = new Date(
+        fechaServicio.getFullYear(),
+        fechaServicio.getMonth(),
+        fechaServicio.getDate(),
+        0,
+        0,
+        0,
+        0
     );
+
+    return ahora >= inicioDiaServicio;
 }
 
 
-    function obtenerMostrarContactoCompleto(mudanza) {
+function obtenerMostrarContactoCompleto(mudanza, esMudanzaActiva = false) {
+    if (!esMudanzaActiva || !mudanza?.fecha) return false;
 
-        if (!mudanza?.fecha) return false;
+    const ahora = new Date();
+    const fechaServicio = new Date(mudanza.fecha);
 
-        const ahora = new Date();
-        const fechaServicio = new Date(mudanza.fecha);
-
-        if (Number.isNaN(fechaServicio.getTime())) {
-            return false;
-        }
-
-        const mismoDia =
-            ahora.getFullYear() === fechaServicio.getFullYear() &&
-            ahora.getMonth() === fechaServicio.getMonth() &&
-            ahora.getDate() === fechaServicio.getDate();
-
-        return mismoDia && ahora.getHours() >= 6;
+    if (Number.isNaN(fechaServicio.getTime())) {
+        return false;
     }
 
+    const mismoDia =
+        ahora.getFullYear() === fechaServicio.getFullYear() &&
+        ahora.getMonth() === fechaServicio.getMonth() &&
+        ahora.getDate() === fechaServicio.getDate();
 
-    ///////////////////////////////////////////////////////
-    // VER DETALLE
-    ///////////////////////////////////////////////////////
+    // El contacto se libera a partir de las 06:00
+    // del Día servicio y solamente mientras la mudanza
+    // siga activa.
+    return mismoDia && ahora.getHours() >= 6;
+}
+
+
+///////////////////////////////////////////////////////
+// VER DETALLE
+///////////////////////////////////////////////////////
 
     function verDetalleMudanza(id) {
 
-        const mudanza =
-            (Array.isArray(state.disponibles)
-                ? state.disponibles
-                : []
-            ).find(m => Number(m.id) === Number(id)) ||
-            (Array.isArray(state.activas)
-                ? state.activas
-                : []
-            ).find(m => Number(m.id) === Number(id));
+        const mudanzaDisponible =
+    (Array.isArray(state.disponibles)
+        ? state.disponibles
+        : []
+    ).find(m => Number(m.id) === Number(id));
+
+const mudanzaActiva =
+    (Array.isArray(state.activas)
+        ? state.activas
+        : []
+    ).find(m => Number(m.id) === Number(id));
+
+const mudanza = mudanzaDisponible || mudanzaActiva;
+
+const esMudanzaActiva = Boolean(mudanzaActiva);
 
         if (!mudanza) {
             alert("No se ha encontrado la mudanza.");
@@ -314,10 +329,16 @@ if (elPrecio) {
 
         const obtenerUbicacionCorta=window.Transportista?.obtenerUbicacionCorta||((d)=>d);
     const mostrarDireccionCompleta =
-            obtenerMostrarDireccionCompleta(mudanza);
+    obtenerMostrarDireccionCompleta(
+        mudanza,
+        esMudanzaActiva
+    );
 
-        const mostrarContactoCompleto =
-            obtenerMostrarContactoCompleto(mudanza);
+const mostrarContactoCompleto =
+    obtenerMostrarContactoCompleto(
+        mudanza,
+        esMudanzaActiva
+    );
 
         const direccionOrigenFinal =
     (window.Transportista.obtenerUbicacionPublica || window.Transportista.obtenerUbicacionCorta)(
