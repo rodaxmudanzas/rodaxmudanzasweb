@@ -4079,33 +4079,31 @@ if (
 
  
 
-    function imprimirFicha(id, desdeHistorial = false) {
+   let mudanza =
+    state.activas.find(
+        m =>
+            Number(m.id) ===
+            Number(id)
+    );
 
- 
+const esMudanzaActiva =
+    Boolean(mudanza);
 
-        let mudanza =
+if (
+    !mudanza &&
+    Array.isArray(
+        window.RODAX_HISTORIAL_SERVICIOS
+    )
+) {
 
-            state.activas.find(
+    mudanza =
+        window.RODAX_HISTORIAL_SERVICIOS.find(
+            m =>
+                Number(m.id) ===
+                Number(id)
+        );
 
-                m =>
-
-                    Number(m.id) ===
-
-                    Number(id)
-
-            );
-
- 
-
-        if (!mudanza && Array.isArray(window.RODAX_HISTORIAL_SERVICIOS)) {
-
-            mudanza = window.RODAX_HISTORIAL_SERVICIOS.find(
-
-                m => Number(m.id) === Number(id)
-
-            );
-
-        }
+}
 
  
 
@@ -4125,11 +4123,61 @@ if (
 
         }
 
- 
+ const ahoraFicha =
+    new Date();
 
-        function obtenerUbicacionFicha(mudanza, tipo, desdeHistorial) {
+const fechaTextoFicha =
+    String(
+        mudanza.fecha || ""
+    ).slice(
+        0,
+        10
+    );
 
-    if (!desdeHistorial) {
+const partesFechaFicha =
+    fechaTextoFicha.split("-");
+
+const fechaMudanzaFicha =
+    partesFechaFicha.length === 3
+        ? new Date(
+            Number(partesFechaFicha[0]),
+            Number(partesFechaFicha[1]) - 1,
+            Number(partesFechaFicha[2]),
+            0,
+            0,
+            0,
+            0
+        )
+        : new Date(NaN);
+
+const esMismoDiaFicha =
+    !Number.isNaN(
+        fechaMudanzaFicha.getTime()
+    ) &&
+    fechaMudanzaFicha.getFullYear() ===
+        ahoraFicha.getFullYear() &&
+    fechaMudanzaFicha.getMonth() ===
+        ahoraFicha.getMonth() &&
+    fechaMudanzaFicha.getDate() ===
+        ahoraFicha.getDate();
+
+const puedeMostrarDireccionExactaFicha =
+    esMudanzaActiva &&
+    esMismoDiaFicha;
+
+const puedeMostrarContactoFicha =
+    esMudanzaActiva &&
+    esMismoDiaFicha &&
+    ahoraFicha.getHours() >= 6;
+
+        function obtenerUbicacionFicha(
+    mudanza,
+    tipo
+) {
+
+    if (
+        puedeMostrarDireccionExactaFicha
+    ) {
 
         return tipo === "origen"
             ? (mudanza.origen || "")
@@ -4137,8 +4185,28 @@ if (
 
     }
 
+    if (
+        typeof window.Transportista
+            ?.obtenerUbicacionPublica ===
+        "function"
+    ) {
+
+        return (
+            window.Transportista
+                .obtenerUbicacionPublica(
+                    mudanza,
+                    tipo
+                ) ||
+            "Ubicación no disponible"
+        );
+
+    }
+
+    const esOrigen =
+        tipo === "origen";
+
     const ciudad =
-        tipo === "origen"
+        esOrigen
             ? (
                 mudanza.origen_ciudad ||
                 mudanza.ciudad_origen ||
@@ -4153,7 +4221,7 @@ if (
             );
 
     const cp =
-        tipo === "origen"
+        esOrigen
             ? (
                 mudanza.origen_cp ||
                 mudanza.cp_origen ||
@@ -4168,7 +4236,7 @@ if (
             );
 
     const comunidad =
-        tipo === "origen"
+        esOrigen
             ? (
                 mudanza.origen_comunidad_autonoma ||
                 mudanza.comunidad_autonoma_origen ||
@@ -4187,23 +4255,26 @@ if (
         cp,
         comunidad
     ]
-        .map(valor => String(valor || "").trim())
+        .map(
+            valor =>
+                String(
+                    valor || ""
+                ).trim()
+        )
         .filter(Boolean)
-        .join(", ");
+        .join(" - ") ||
+        "Ubicación no disponible";
 }
-
 const origen =
     obtenerUbicacionFicha(
         mudanza,
-        "origen",
-        desdeHistorial
+        "origen"
     );
 
 const destino =
     obtenerUbicacionFicha(
         mudanza,
-        "destino",
-        desdeHistorial
+        "destino"
     );
 
 const fecha =
@@ -5271,7 +5342,80 @@ const accesoEntregaFicha =
 
                 );
 
- 
+ const datosClienteFichaHTML =
+    puedeMostrarContactoFicha
+        ? `
+            <div
+                class="seccion"
+                style="margin-bottom:20px;"
+            >
+
+                <div class="seccion-titulo">
+                    👤 Datos del Cliente
+                </div>
+
+                <div
+                    style="
+                        border:1px solid #bfdbfe;
+                        background:#eff6ff;
+                        border-radius:10px;
+                        padding:14px;
+                    "
+                >
+
+                    <div
+                        style="
+                            margin-bottom:6px;
+                            font-size:13px;
+                            font-weight:700;
+                        "
+                    >
+                        Cliente:
+                        <span style="font-weight:900;">
+                            ${mudanza.nombre || "—"}
+                        </span>
+                    </div>
+
+                    ${
+                        mudanza.telefono
+                            ? `
+                                <div
+                                    style="
+                                        margin-bottom:6px;
+                                        font-size:13px;
+                                    "
+                                >
+                                    Teléfono:
+                                    <strong>
+                                        ${mudanza.telefono}
+                                    </strong>
+                                </div>
+                            `
+                            : ""
+                    }
+
+                    ${
+                        mudanza.email
+                            ? `
+                                <div
+                                    style="
+                                        font-size:13px;
+                                    "
+                                >
+                                    Email:
+                                    <strong>
+                                        ${mudanza.email}
+                                    </strong>
+                                </div>
+                            `
+                            : ""
+                    }
+
+                </div>
+
+            </div>
+        `
+        : "";
 
         /*
 
@@ -6445,15 +6589,18 @@ style="
 
 
 
-    No compartir los datos del cliente con terceros.
+   No compartir los datos del cliente con terceros.
 
-    Los datos de contacto solo son accesibles
+Las direcciones exactas solo son accesibles
+en Mis Mudanzas Activas el mismo día del servicio.
 
-    24h antes del servicio.
+Los datos de contacto del cliente solo son accesibles
+el mismo día del servicio a partir de las 06:00
+y mientras el servicio permanezca activo.
 
 </div>
 
-
+${datosClienteFichaHTML}
 
 <div
 

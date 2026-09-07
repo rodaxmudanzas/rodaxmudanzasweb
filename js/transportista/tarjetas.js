@@ -92,12 +92,7 @@ window.Transportista.obtenerUbicacionPublica=function(m,t){
 
         },
 
-        activas: {
-
-            horasDesbloqueo:
-                24
-
-        }
+        activas: {}
 
     };
 
@@ -1398,6 +1393,16 @@ tituloDestino: escapeHtml(
     obtenerUbicacionPublica(t, "destino")
 ),
 
+direccionExactaOrigen:
+    escapeHtml(
+        t.origen || ""
+    ),
+
+direccionExactaDestino:
+    escapeHtml(
+        t.destino || ""
+    ),
+
 
             fecha:
                 t.fecha ||
@@ -1733,13 +1738,15 @@ t.fotos =
 //////////////////////////////////////////////////////////
 
 const ubicacionOrigenPublica =
-    window.Transportista.obtenerUbicacionCorta(
-        t.origen
+    window.Transportista.obtenerUbicacionPublica(
+        t,
+        "origen"
     );
 
 const ubicacionDestinoPublica =
-    window.Transportista.obtenerUbicacionCorta(
-        t.destino
+    window.Transportista.obtenerUbicacionPublica(
+        t,
+        "destino"
     );
 
 
@@ -1815,22 +1822,37 @@ const fechaValida =
         moveDate.getTime()
     );
 
-const mostrarDireccionExacta =
-    fechaValida &&
-    diffHoras <= 24;
-
 const esMismoDia =
     fechaValida &&
     moveDate.getFullYear() === now.getFullYear() &&
     moveDate.getMonth() === now.getMonth() &&
     moveDate.getDate() === now.getDate();
 
+/*
+ * PRIVACIDAD RODAX — MIS MUDANZAS ACTIVAS
+ *
+ * Dirección exacta:
+ * disponible desde las 00:00 del mismo día.
+ *
+ * Datos de contacto:
+ * disponibles desde las 06:00 del mismo día.
+ *
+ * Esta tarjeta pertenece a state.activas porque
+ * crearTarjetaActiva() solo se utiliza para
+ * Mis Mudanzas Activas.
+ */
+
+const mostrarDireccionExacta =
+    fechaValida &&
+    esMismoDia;
+
 const mostrarTelefonoCliente =
+    fechaValida &&
     esMismoDia &&
     now.getHours() >= 6;
 
 const mostrarTelefonoRodax =
-    mostrarDireccionExacta &&
+    esMismoDia &&
     !mostrarTelefonoCliente;
 
 
@@ -1838,137 +1860,172 @@ const mostrarTelefonoRodax =
         // MENSAJE DE TIEMPO
         //////////////////////////////////////////////////////////
 
-        let tiempoRestanteHTML =
-            "";
+       let tiempoRestanteHTML = "";
 
+if (!fechaValida) {
 
-        if (
-            !Number.isNaN(
-                diffHoras
+    tiempoRestanteHTML = "";
+
+} else if (esMismoDia && now.getHours() >= 6) {
+
+    tiempoRestanteHTML = `
+
+        <div class="
+            flex
+            items-center
+            gap-1.5
+            text-xs
+            text-green-700
+            font-bold
+            bg-green-50
+            border
+            border-green-200
+            px-3
+            py-1.5
+            rounded-lg
+        ">
+
+            <i
+                data-lucide="check-circle"
+                class="w-3.5 h-3.5"
+            ></i>
+
+            Datos de contacto disponibles
+
+        </div>
+
+    `;
+
+} else if (esMismoDia) {
+
+    tiempoRestanteHTML = `
+
+        <div class="
+            flex
+            items-center
+            gap-1.5
+            text-xs
+            text-blue-700
+            font-bold
+            bg-blue-50
+            border
+            border-blue-200
+            px-3
+            py-1.5
+            rounded-lg
+        ">
+
+            <i
+                data-lucide="calendar-check"
+                class="w-3.5 h-3.5"
+            ></i>
+
+            Dirección exacta disponible.
+            Datos de contacto desde las 06:00.
+
+        </div>
+
+    `;
+
+} else if (moveDate > now) {
+
+    const inicioContacto =
+        new Date(moveDate);
+
+    inicioContacto.setHours(
+        6,
+        0,
+        0,
+        0
+    );
+
+    const horasHastaContacto =
+        Math.max(
+            0,
+            Math.floor(
+                (
+                    inicioContacto.getTime() -
+                    now.getTime()
+                ) /
+                (1000 * 60 * 60)
             )
-        ) {
+        );
 
-            if (
-                diffHoras >
-                TARJETAS_CONFIG
-                    .activas
-                    .horasDesbloqueo
-            ) {
+    const dias =
+        Math.floor(
+            horasHastaContacto / 24
+        );
 
-                const horas =
-                    Math.floor(
-                        diffHoras
-                    );
+    const horas =
+        horasHastaContacto % 24;
 
+    tiempoRestanteHTML = `
 
-                const dias =
-                    Math.floor(
-                        horas / 24
-                    );
+        <div class="
+            flex
+            items-center
+            gap-1.5
+            text-xs
+            text-amber-600
+            font-bold
+            bg-amber-50
+            border
+            border-amber-200
+            px-3
+            py-1.5
+            rounded-lg
+        ">
 
+            <i
+                data-lucide="clock"
+                class="w-3.5 h-3.5"
+            ></i>
 
-                tiempoRestanteHTML = `
+            Datos de contacto disponibles en
 
-                    <div class="
-                        flex
-                        items-center
-                        gap-1.5
-                        text-xs
-                        text-amber-600
-                        font-bold
-                        bg-amber-50
-                        border
-                        border-amber-200
-                        px-3
-                        py-1.5
-                        rounded-lg
-                    ">
-
-                        <i
-                            data-lucide="clock"
-                            class="w-3.5 h-3.5"
-                        ></i>
-
-                        Datos del cliente visibles en
-
-                        ${
-                            dias > 0
-                                ? dias + "d "
-                                : ""
-                        }
-
-                        ${horas % 24}h
-
-                    </div>
-
-                `;
-
-            } else if (
-                diffHoras > 0
-            ) {
-
-                tiempoRestanteHTML = `
-
-                    <div class="
-                        flex
-                        items-center
-                        gap-1.5
-                        text-xs
-                        text-green-700
-                        font-bold
-                        bg-green-50
-                        border
-                        border-green-200
-                        px-3
-                        py-1.5
-                        rounded-lg
-                    ">
-
-                        <i
-                            data-lucide="check-circle"
-                            class="w-3.5 h-3.5"
-                        ></i>
-
-                        Datos completos del cliente disponibles
-
-                    </div>
-
-                `;
-
-            } else {
-
-                tiempoRestanteHTML = `
-
-                    <div class="
-                        flex
-                        items-center
-                        gap-1.5
-                        text-xs
-                        text-purple-700
-                        font-bold
-                        bg-purple-50
-                        border
-                        border-purple-200
-                        px-3
-                        py-1.5
-                        rounded-lg
-                    ">
-
-                        <i
-                            data-lucide="calendar-check"
-                            class="w-3.5 h-3.5"
-                        ></i>
-
-                        Servicio ya pasado — marcar como finalizado
-
-                    </div>
-
-                `;
-
+            ${
+                dias > 0
+                    ? dias + "d "
+                    : ""
             }
 
-        }
+            ${horas}h
 
+        </div>
+
+    `;
+
+} else {
+
+    tiempoRestanteHTML = `
+
+        <div class="
+            flex
+            items-center
+            gap-1.5
+            text-xs
+            text-purple-700
+            font-bold
+            bg-purple-50
+            border
+            border-purple-200
+            px-3
+            py-1.5
+            rounded-lg
+        ">
+
+            <i
+                data-lucide="calendar-check"
+                class="w-3.5 h-3.5"
+            ></i>
+
+            Servicio ya pasado — marcar como finalizado
+
+        </div>
+
+    `;
+
+}
 
         //////////////////////////////////////////////////////////
         // DATOS DEL CLIENTE
@@ -2339,7 +2396,7 @@ const mostrarTelefonoRodax =
                 <!-- ESTADO -->
                 <div class="mt-3">
                     ${tiempoRestanteHTML}
-                </div>f
+                </div>
 
                 <!-- RUTA -->
                 <div class="mt-3 grid grid-cols-1 items-center gap-3 border-t border-slate-100 pt-3 md:grid-cols-[1fr_auto_1fr]">
@@ -2347,17 +2404,18 @@ const mostrarTelefonoRodax =
                         <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Origen</div>
                         <div
     class="mt-1 truncate text-sm font-bold leading-tight text-slate-800"
+
     title="${
-        mostrarDireccionExacta
-            ? d.tituloOrigen
-            : ubicacionOrigenPublica
-    }"
+    mostrarDireccionExacta
+        ? d.direccionExactaOrigen
+        : ubicacionOrigenPublica
+}"
 >
     ${
-        mostrarDireccionExacta
-            ? d.origen
-            : ubicacionOrigenPublica
-    }
+    mostrarDireccionExacta
+        ? d.direccionExactaOrigen
+        : ubicacionOrigenPublica
+}
 </div>
                         <div class="mt-1 text-[10px] font-semibold text-slate-500">
                             ${d.accesos.recogida}
@@ -2380,17 +2438,18 @@ const mostrarTelefonoRodax =
                         <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Destino</div>
                         <div
     class="mt-1 truncate text-sm font-bold leading-tight text-slate-800"
+
     title="${
-        mostrarDireccionExacta
-            ? d.tituloDestino
-            : ubicacionDestinoPublica
-    }"
+    mostrarDireccionExacta
+        ? d.direccionExactaDestino
+        : ubicacionDestinoPublica
+}"
 >
     ${
-        mostrarDireccionExacta
-            ? d.destino
-            : ubicacionDestinoPublica
-    }
+    mostrarDireccionExacta
+        ? d.direccionExactaDestino
+        : ubicacionDestinoPublica
+}
 </div>
                         <div class="mt-1 text-[10px] font-bold text-red-500">
                             ${d.accesos.entrega}
@@ -2399,41 +2458,79 @@ const mostrarTelefonoRodax =
                 </div>
 
                 <!-- CONTACTO — CONTROLADO POR HORARIO -->
-${mostrarTelefonoCliente && d.telefono ? `
-    <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-slate-50 pt-3 text-[10px] font-semibold text-slate-500">
 
-        <a
-            href="tel:${d.telefono}"
-            onclick="event.stopPropagation()"
-            class="inline-flex items-center gap-1.5 text-blue-600 hover:underline"
-        >
-            <i data-lucide="phone" class="h-3.5 w-3.5"></i>
-            ${d.telefono}
-        </a>
+${
+    mostrarTelefonoCliente
+        ? `
+            <div class="mt-3 rounded-xl border border-blue-100 bg-blue-50 p-3">
 
-    </div>
-` : mostrarTelefonoRodax ? `
-    <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-slate-50 pt-3 text-[10px] font-semibold text-slate-500">
+                <div class="mb-2 text-[9px] font-black uppercase tracking-wider text-blue-500">
+                    Datos del cliente
+                </div>
 
-        <a
-            href="tel:NUMERO_EMPRESA_RODAX"
-            onclick="event.stopPropagation()"
-            class="inline-flex items-center gap-1.5 text-blue-600 hover:underline"
-        >
-            <i data-lucide="phone-call" class="h-3.5 w-3.5"></i>
-            NUMERO_EMPRESA_RODAX
-        </a>
+                ${
+                    d.nombre && d.nombre !== "—"
+                        ? `
+                            <div class="text-sm font-bold text-slate-800">
+                                Cliente:
+                                <span class="font-black">
+                                    ${d.nombre}
+                                </span>
+                            </div>
+                        `
+                        : ""
+                }
 
-    </div>
-` : `
-    <div class="mt-3 inline-flex items-center gap-1.5 border-t border-slate-50 pt-3 text-[10px] font-semibold text-slate-400">
+                ${
+                    d.telefono && d.telefono !== "—"
+                        ? `
+                            <div class="mt-1 text-sm font-semibold text-slate-700">
+                                Teléfono:
+                                <a
+                                    href="tel:${d.telefono}"
+                                    onclick="event.stopPropagation()"
+                                    class="font-black text-blue-600 hover:underline"
+                                >
+                                    ${d.telefono}
+                                </a>
+                            </div>
+                        `
+                        : ""
+                }
 
-        <i data-lucide="lock" class="h-3.5 w-3.5"></i>
+                ${
+                    d.email
+                        ? `
+                            <div class="mt-1 text-xs font-semibold text-slate-600">
+                                Email:
+                                <a
+                                    href="mailto:${d.email}"
+                                    onclick="event.stopPropagation()"
+                                    class="text-blue-600 hover:underline"
+                                >
+                                    ${d.email}
+                                </a>
+                            </div>
+                        `
+                        : ""
+                }
 
-        Teléfono de contacto disponible 24 h antes del servicio
+            </div>
+        `
+        : `
+            <div class="mt-3 inline-flex items-center gap-1.5 border-t border-slate-50 pt-3 text-[10px] font-semibold text-slate-400">
 
-    </div>
-`}
+                <i
+                    data-lucide="lock"
+                    class="h-3.5 w-3.5"
+                ></i>
+
+                Los datos de contacto del cliente estarán disponibles
+                el mismo día del servicio a partir de las 06:00.
+
+            </div>
+        `
+}
 
                 <!-- RESUMEN -->
                 <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-50 pt-3 text-[10px] font-semibold text-slate-500">
