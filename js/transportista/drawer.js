@@ -404,13 +404,22 @@ const direccionDestinoFinal =
         // OBJETO SEGURO PARA LOS RENDERIZADORES
         ///////////////////////////////////////////////////////
 
-        let mudanzaDrawer={
-            ...mudanza,
-            origen: direccionOrigenFinal,
-            destino: direccionDestinoFinal,
-            __mostrarDireccionCompleta: mostrarDireccionCompleta,
-            __mostrarContactoCompleto: mostrarContactoCompleto
-        };
+       let mudanzaDrawer = {
+    ...mudanza,
+
+    // Guardamos siempre las direcciones exactas
+    // para que el renderizador pueda decidir si mostrarlas.
+    __direccionExactaOrigen: mudanza.origen || "",
+    __direccionExactaDestino: mudanza.destino || "",
+
+    // Ubicación pública obligatoria para trabajos
+    // disponibles y para cualquier caso sin permiso.
+    origen: direccionOrigenFinal,
+    destino: direccionDestinoFinal,
+
+    __mostrarDireccionCompleta: mostrarDireccionCompleta,
+    __mostrarContactoCompleto: mostrarContactoCompleto
+};
 
 
         ///////////////////////////////////////////////////////
