@@ -1,4 +1,4 @@
-// ===== RODAX ubicación unificada =====
+﻿// ===== RODAX ubicación unificada =====
 window.Transportista = window.Transportista || {};
 if (!window.Transportista.obtenerUbicacionCorta){
 window.Transportista.obtenerUbicacionCorta=function(d){
