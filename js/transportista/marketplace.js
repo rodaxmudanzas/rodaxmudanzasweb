@@ -1565,23 +1565,27 @@ function obtenerTrabajosFiltradosMarketplace() {
 
 
 
-                const origen =
+                const origen = normalizarTextoMarketplace(
+    [
+        trabajo?.origen_ciudad,
+        trabajo?.origen_cp,
+        trabajo?.origen_provincia,
+        trabajo?.origen_comunidad_autonoma
+    ]
+        .filter(Boolean)
+        .join(" - ")
+);
 
-                    normalizarTextoMarketplace(
-
-                        trabajo?.origen
-
-                    );
-
-
-
-                const destino =
-
-                    normalizarTextoMarketplace(
-
-                        trabajo?.destino
-
-                    );
+const destino = normalizarTextoMarketplace(
+    [
+        trabajo?.destino_ciudad,
+        trabajo?.destino_cp,
+        trabajo?.destino_provincia,
+        trabajo?.destino_comunidad_autonoma
+    ]
+        .filter(Boolean)
+        .join(" - ")
+);
 
 
 
