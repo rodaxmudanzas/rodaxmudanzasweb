@@ -1207,6 +1207,62 @@ function obtenerDatosFormulario({
         destino:
             document.getElementById("destino").value.trim(),
 
+            origen_ciudad:
+    window.RodaxDireccion
+        ?.obtenerUbicacionPublicaFormulario(
+            "origen"
+        )
+        ?.ciudad || "",
+
+origen_cp:
+    window.RodaxDireccion
+        ?.obtenerUbicacionPublicaFormulario(
+            "origen"
+        )
+        ?.cp || "",
+
+origen_provincia:
+    window.RodaxDireccion
+        ?.obtenerUbicacionPublicaFormulario(
+            "origen"
+        )
+        ?.provincia || "",
+
+origen_comunidad_autonoma:
+    window.RodaxDireccion
+        ?.obtenerUbicacionPublicaFormulario(
+            "origen"
+        )
+        ?.comunidad_autonoma || "",
+
+destino_ciudad:
+    window.RodaxDireccion
+        ?.obtenerUbicacionPublicaFormulario(
+            "destino"
+        )
+        ?.ciudad || "",
+
+destino_cp:
+    window.RodaxDireccion
+        ?.obtenerUbicacionPublicaFormulario(
+            "destino"
+        )
+        ?.cp || "",
+
+destino_provincia:
+    window.RodaxDireccion
+        ?.obtenerUbicacionPublicaFormulario(
+            "destino"
+        )
+        ?.provincia || "",
+
+destino_comunidad_autonoma:
+    window.RodaxDireccion
+        ?.obtenerUbicacionPublicaFormulario(
+            "destino"
+        )
+        ?.comunidad_autonoma || "",
+
         km:
             parseFloat(
                 document.getElementById("km")?.value

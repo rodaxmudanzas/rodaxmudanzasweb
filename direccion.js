@@ -61,46 +61,383 @@ function normalizarBusqueda(texto) {
     return q;
 }
 
+function normalizarTextoUbicacion(valor) {
+    return String(valor || "")
+        .trim()
+        .replace(/\s+/g, " ");
+}
+
+function normalizarComunidadAutonoma(valor) {
+
+    const texto = normalizarTextoUbicacion(valor)
+        .toLowerCase();
+
+    const mapa = {
+        "madrid": "Comunidad de Madrid",
+        "comunidad de madrid": "Comunidad de Madrid",
+
+        "cataluña": "Cataluña",
+        "catalunya": "Cataluña",
+        "catalonia": "Cataluña",
+
+        "andalucía": "Andalucía",
+        "andalucia": "Andalucía",
+
+        "castilla y león": "Castilla y León",
+        "castilla-leon": "Castilla y León",
+
+        "castilla-la mancha": "Castilla-La Mancha",
+        "castilla la mancha": "Castilla-La Mancha",
+
+        "comunidad valenciana": "Comunidad Valenciana",
+        "comunitat valenciana": "Comunidad Valenciana",
+        "valencia": "Comunidad Valenciana",
+
+        "galicia": "Galicia",
+
+        "asturias": "Principado de Asturias",
+        "principado de asturias": "Principado de Asturias",
+
+        "cantabria": "Cantabria",
+
+        "país vasco": "País Vasco",
+        "pais vasco": "País Vasco",
+        "euskadi": "País Vasco",
+
+        "navarra": "Navarra",
+        "comunidad foral de navarra": "Navarra",
+
+        "aragón": "Aragón",
+        "aragon": "Aragón",
+
+        "extremadura": "Extremadura",
+
+        "murcia": "Región de Murcia",
+        "región de murcia": "Región de Murcia",
+
+        "islas baleares": "Islas Baleares",
+        "illes balears": "Islas Baleares",
+
+        "canarias": "Canarias",
+        "islas canarias": "Canarias",
+
+        "la rioja": "La Rioja",
+
+        "ceuta": "Ceuta",
+
+        "melilla": "Melilla"
+    };
+
+    return mapa[texto] || normalizarTextoUbicacion(valor);
+}
+
+
+function obtenerComunidadDesdeProvincia(provincia) {
+
+    const texto =
+        normalizarTextoUbicacion(provincia)
+            .toLowerCase();
+
+    const mapa = {
+
+        "madrid":
+            "Comunidad de Madrid",
+
+        "barcelona":
+            "Cataluña",
+
+        "girona":
+            "Cataluña",
+
+        "gerona":
+            "Cataluña",
+
+        "lleida":
+            "Cataluña",
+
+        "lérida":
+            "Cataluña",
+
+        "tarragona":
+            "Cataluña",
+
+        "valencia":
+            "Comunidad Valenciana",
+
+        "castellón":
+            "Comunidad Valenciana",
+
+        "castellon":
+            "Comunidad Valenciana",
+
+        "alicante":
+            "Comunidad Valenciana",
+
+        "sevilla":
+            "Andalucía",
+
+        "málaga":
+            "Andalucía",
+
+        "malaga":
+            "Andalucía",
+
+        "granada":
+            "Andalucía",
+
+        "córdoba":
+            "Andalucía",
+
+        "cordoba":
+            "Andalucía",
+
+        "cádiz":
+            "Andalucía",
+
+        "cadiz":
+            "Andalucía",
+
+        "huelva":
+            "Andalucía",
+
+        "jaén":
+            "Andalucía",
+
+        "jaen":
+            "Andalucía",
+
+        "almería":
+            "Andalucía",
+
+        "almeria":
+            "Andalucía",
+
+        "asturias":
+            "Principado de Asturias",
+
+        "oviedo":
+            "Principado de Asturias",
+
+        "cantabria":
+            "Cantabria",
+
+        "santander":
+            "Cantabria",
+
+        "vizcaya":
+            "País Vasco",
+
+        "bizkaia":
+            "País Vasco",
+
+        "guipúzcoa":
+            "País Vasco",
+
+        "gipuzkoa":
+            "País Vasco",
+
+        "álava":
+            "País Vasco",
+
+        "alava":
+            "País Vasco",
+
+        "zaragoza":
+            "Aragón",
+
+        "huesca":
+            "Aragón",
+
+        "teruel":
+            "Aragón",
+
+        "navarra":
+            "Navarra",
+
+        "pamplona":
+            "Navarra",
+
+        "la rioja":
+            "La Rioja",
+
+        "logroño":
+            "La Rioja",
+
+        "logrono":
+            "La Rioja",
+
+        "valladolid":
+            "Castilla y León",
+
+        "león":
+            "Castilla y León",
+
+        "leon":
+            "Castilla y León",
+
+        "burgos":
+            "Castilla y León",
+
+        "salamanca":
+            "Castilla y León",
+
+        "toledo":
+            "Castilla-La Mancha",
+
+        "cuenca":
+            "Castilla-La Mancha",
+
+        "albacete":
+            "Castilla-La Mancha",
+
+        "ciudad real":
+            "Castilla-La Mancha",
+
+        "guadalajara":
+            "Castilla-La Mancha",
+
+        "cáceres":
+            "Extremadura",
+
+        "caceres":
+            "Extremadura",
+
+        "badajoz":
+            "Extremadura",
+
+        "murcia":
+            "Región de Murcia",
+
+        "palma":
+            "Islas Baleares",
+
+        "las palmas":
+            "Canarias",
+
+        "santa cruz de tenerife":
+            "Canarias"
+    };
+
+    return mapa[texto] || "";
+}
+
+
 function construirDireccion(item) {
 
-    const p = item.properties || {};
+    const p =
+        item?.properties ||
+        {};
+
+    const geometry =
+        item?.geometry?.coordinates ||
+        [];
+
+    const municipio =
+        normalizarTextoUbicacion(
+            p.locality ||
+            p.municipality ||
+            p.city ||
+            p.county ||
+            p.localadmin ||
+            ""
+        );
+
+    const provincia =
+        normalizarTextoUbicacion(
+            p.region ||
+            p.province ||
+            p.county ||
+            ""
+        );
+
+    const comunidad =
+        normalizarComunidadAutonoma(
+            p.region ||
+            p.state ||
+            ""
+        ) ||
+        obtenerComunidadDesdeProvincia(
+            provincia
+        );
+
+    const codigoPostal =
+        normalizarTextoUbicacion(
+            p.postalcode ||
+            ""
+        );
 
     return {
 
-        texto: p.label || '',
+        texto:
+            p.label ||
+            "",
 
         calle:
-            p.street ||
-            p.name ||
-            '',
+            normalizarTextoUbicacion(
+                p.street ||
+                p.name ||
+                ""
+            ),
 
         numero:
-            p.housenumber ||
-            '',
+            normalizarTextoUbicacion(
+                p.housenumber ||
+                ""
+            ),
 
-        municipio:
-            p.locality ||
-            p.city ||
-            p.county ||
-            '',
+        municipio,
 
-        provincia:
-            p.region ||
-            p.county ||
-            '',
+        provincia,
 
-        codigoPostal:
-            p.postalcode ||
-            '',
+        comunidadAutonoma:
+            comunidad,
+
+        codigoPostal,
 
         lat:
-            item.geometry.coordinates[1],
+            Number(geometry[1]),
 
         lon:
-            item.geometry.coordinates[0]
-
+            Number(geometry[0])
     };
+}
 
+function obtenerUbicacionPublicaFormulario(tipo) {
+
+    const direccion =
+        coords[tipo];
+
+    if (!direccion) {
+        return {
+            ciudad: "",
+            cp: "",
+            provincia: "",
+            comunidad_autonoma: ""
+        };
+    }
+
+    return {
+
+        ciudad:
+            String(
+                direccion.municipio || ""
+            ).trim(),
+
+        cp:
+            String(
+                direccion.codigoPostal || ""
+            ).trim(),
+
+        provincia:
+            String(
+                direccion.provincia || ""
+            ).trim(),
+
+        comunidad_autonoma:
+            String(
+                direccion.comunidadAutonoma || ""
+            ).trim()
+    };
 }
 
 async function buscarDireccion(query, dropdown, tipo) {
@@ -388,3 +725,12 @@ async function calcularRutaORS() {
     }
 
 }
+
+window.RodaxDireccion =
+    window.RodaxDireccion || {};
+
+window.RodaxDireccion.obtenerUbicacionPublicaFormulario =
+    obtenerUbicacionPublicaFormulario;
+
+window.RodaxDireccion.coords =
+    coords;
