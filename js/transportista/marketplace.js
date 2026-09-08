@@ -1,43 +1,4 @@
-﻿// ===== RODAX ubicación unificada =====
-window.Transportista = window.Transportista || {};
-if (!window.Transportista.obtenerUbicacionCorta){
-window.Transportista.obtenerUbicacionCorta=function(d){
- if(!d) return "Ubicación no disponible";
-
- if(typeof d==="object"){
-   const ciudad = d.ciudad || d.localidad || d.municipio || "";
-   const cp = d.codigo_postal || d.cp || "";
-   const comunidad = d.comunidad_autonoma || d.comunidad || d.ccaa || "";
-
-   if(ciudad || cp || comunidad){
-      return [ciudad, cp, comunidad]
-        .filter(Boolean)
-        .join(" - ");
-   }
-
-   if(d.direccion){
-      d=d.direccion;
-   }else{
-      return "Ubicación no disponible";
-   }
- }
-
- const t=String(d).trim();
- const cp=(t.match(/\b\d{5}\b/)||[])[0]||"";
- const p=t.split(",").map(x=>x.trim()).filter(Boolean);
- const map={MD:"Comunidad de Madrid",Madrid:"Comunidad de Madrid",CT:"Cataluña",Catalunya:"Cataluña",Cataluña:"Cataluña",AN:"Andalucía",VC:"Comunidad Valenciana",PV:"País Vasco",GA:"Galicia",CM:"Castilla-La Mancha",CL:"Castilla y León",AR:"Aragón",AS:"Asturias",CB:"Cantabria",CN:"Canarias",EX:"Extremadura",IB:"Illes Balears",RI:"La Rioja",MC:"Murcia",NC:"Navarra"};
- const com=p.find(x=>Object.entries(map).some(([c,n])=>x===c||x===n||x.includes(n)))||"";
- let ciudad="";
- const i=p.findIndex(x=>/\b\d{5}\b/.test(x));
- if(i>0) ciudad=p[i-1];
- else ciudad=p.find(x=>x!==com&&!/España|Spain|Spanien/i.test(x)&&!/\d{5}/.test(x))||"";
- return [ciudad, cp, com].filter(Boolean).join(" - ") || "Ubicación no disponible";
-};
-
-}
-// ===== fin ubicación unificada =====
-
-window.Transportista = window.Transportista || {};
+﻿window.Transportista = window.Transportista || {};
 
 
 
@@ -1070,8 +1031,8 @@ function obtenerServiciosMarketplace(trabajo) {
 function obtenerZonaMarketplace(trabajo){
 
     const textos = [
-        window.Transportista.obtenerUbicacionCorta(trabajo?.origen),
-        window.Transportista.obtenerUbicacionCorta(trabajo?.destino)
+        window.Transportista.obtenerUbicacionPublica(trabajo, "origen"),
+        window.Transportista.obtenerUbicacionPublica(trabajo, "destino")
     ]
     .filter(Boolean)
     .map(valor => String(valor).trim());
@@ -5250,9 +5211,6 @@ async function cargarTrabajosDisponibles() {
     .select(`
         id,
         numero_reserva,
-        nombre,
-        telefono,
-        email,
         estado,
         publicada_marketplace,
         bloqueada,
@@ -5260,9 +5218,6 @@ async function cargarTrabajosDisponibles() {
 
         fecha,
         franja_horaria_recogida,
-
-        origen,
-        destino,
         origen_cp,
         origen_ciudad,
         origen_provincia,
@@ -5772,8 +5727,8 @@ function renderizarDisponibles() {
 
     const trabajosRender = trabajos.map(t => ({
   ...t,
-  origen: window.Transportista.obtenerUbicacionCorta(t.origen),
-  destino: window.Transportista.obtenerUbicacionCorta(t.destino)
+  origen: window.Transportista.obtenerUbicacionPublica(t, "origen"),
+  destino: window.Transportista.obtenerUbicacionPublica(t, "destino")
 }));
     contenedor.innerHTML=renderer(trabajosRender);
 
@@ -6213,3 +6168,7 @@ console.log(
     "✅ Marketplace cargado correctamente"
 
 );
+
+
+
+
