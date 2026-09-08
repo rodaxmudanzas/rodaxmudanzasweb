@@ -485,17 +485,6 @@ function obtenerUbicacionHistorial(mudanza, tipo){
         ? (m.origen_comunidad ?? m.comunidad_origen ?? m.ccaa_origen ?? "")
         : (m.destino_comunidad ?? m.comunidad_destino ?? m.ccaa_destino ?? "");
 
-    // Respaldo usando el texto que ya existe en origen/destino
-    if(!ciudad && (origen ? m.origen : m.destino)){
-
-        const texto = String(origen ? m.origen : m.destino);
-
-        const partes = texto.split(",");
-
-        ciudad = ciudad || partes[0]?.trim() || "";
-        cp = cp || partes.find(p => /\b\d{5}\b/.test(p))?.match(/\d{5}/)?.[0] || "";
-        comunidad = comunidad || partes[partes.length-1]?.trim() || "";
-    }
 
     const resultado = [ciudad, cp, comunidad].filter(Boolean);
 
