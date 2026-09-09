@@ -128,7 +128,7 @@ function normalizarComunidadAutonoma(valor) {
         "melilla": "Melilla"
     };
 
-    return mapa[texto] || normalizarTextoUbicacion(valor);
+    return mapa[texto] || "";
 }
 
 
