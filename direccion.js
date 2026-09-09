@@ -135,8 +135,10 @@ function normalizarComunidadAutonoma(valor) {
 function obtenerComunidadDesdeProvincia(provincia) {
 
     const texto =
-        normalizarTextoUbicacion(provincia)
-            .toLowerCase();
+    normalizarTextoUbicacion(provincia)
+        .replace(/^provinz\s+/i, "")
+        .replace(/^province\s+of\s+/i, "")
+        .toLowerCase();
 
    const mapa = {
 
