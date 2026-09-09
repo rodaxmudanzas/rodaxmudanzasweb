@@ -372,12 +372,15 @@ function construirDireccion(item) {
         );
 
     const provincia =
-        normalizarTextoUbicacion(
-            p.region ||
-            p.province ||
-            p.county ||
-            ""
-        );
+    normalizarTextoUbicacion(
+        p.region ||
+        p.province ||
+        p.county ||
+        ""
+    )
+    .replace(/^provinz\s+/i, "")
+    .replace(/^province\s+of\s+/i, "")
+    .trim();
 
     const comunidad =
         normalizarComunidadAutonoma(
