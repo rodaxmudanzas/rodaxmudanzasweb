@@ -433,8 +433,7 @@ function construirDireccion(item) {
 
 function obtenerUbicacionPublicaFormulario(tipo) {
 
-    const direccion =
-        coords[tipo];
+    const direccion = coords[tipo];
 
     if (!direccion) {
         return {
@@ -446,26 +445,15 @@ function obtenerUbicacionPublicaFormulario(tipo) {
     }
 
     return {
+        ciudad: String(direccion.municipio || "").trim(),
 
-        ciudad:
-            String(
-                direccion.municipio || ""
-            ).trim(),
+        cp: String(direccion.codigoPostal || "").trim(),
 
-        cp:
-            String(
-                direccion.codigoPostal || ""
-            ).trim(),
+        provincia: String(direccion.provincia || "").trim(),
 
-        provincia:
-            String(
-                direccion.provincia || ""
-            ).trim(),
-
-        comunidad_autonoma:
-            String(
-                direccion.comunidadAutonoma || ""
-            ).trim()
+        comunidad_autonoma: String(
+            direccion.comunidadAutonoma || ""
+        ).trim()
     };
 }
 
