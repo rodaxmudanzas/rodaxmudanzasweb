@@ -161,9 +161,19 @@ const { data, error } = await supabase
 
     email: datos.email,
 
-    origen: datos.origen,
+        origen: datos.origen,
 
     destino: datos.destino,
+
+    origen_ciudad: datos.origen_ciudad || null,
+    origen_cp: datos.origen_cp || null,
+    origen_provincia: datos.origen_provincia || null,
+    origen_comunidad_autonoma: datos.origen_comunidad_autonoma || null,
+
+    destino_ciudad: datos.destino_ciudad || null,
+    destino_cp: datos.destino_cp || null,
+    destino_provincia: datos.destino_provincia || null,
+    destino_comunidad_autonoma: datos.destino_comunidad_autonoma || null,
 
     km: Number(datos.km) || 0,
 
