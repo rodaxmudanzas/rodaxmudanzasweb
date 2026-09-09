@@ -138,185 +138,214 @@ function obtenerComunidadDesdeProvincia(provincia) {
         normalizarTextoUbicacion(provincia)
             .toLowerCase();
 
-    const mapa = {
+   const mapa = {
 
-        "madrid":
-            "Comunidad de Madrid",
+    // COMUNIDAD DE MADRID
+    "madrid":
+        "Comunidad de Madrid",
 
-        "barcelona":
-            "Cataluña",
+    // CATALUÑA
+    "barcelona":
+        "Cataluña",
+    "girona":
+        "Cataluña",
+    "gerona":
+        "Cataluña",
+    "lleida":
+        "Cataluña",
+    "lerida":
+        "Cataluña",
+    "tarragona":
+        "Cataluña",
 
-        "girona":
-            "Cataluña",
+    // COMUNIDAD VALENCIANA
+    "valencia":
+        "Comunidad Valenciana",
+    "castellon":
+        "Comunidad Valenciana",
+    "castellón":
+        "Comunidad Valenciana",
+    "alicante":
+        "Comunidad Valenciana",
 
-        "gerona":
-            "Cataluña",
+    // ANDALUCÍA
+    "almeria":
+        "Andalucía",
+    "almería":
+        "Andalucía",
+    "cadiz":
+        "Andalucía",
+    "cádiz":
+        "Andalucía",
+    "cordoba":
+        "Andalucía",
+    "córdoba":
+        "Andalucía",
+    "granada":
+        "Andalucía",
+    "huelva":
+        "Andalucía",
+    "jaen":
+        "Andalucía",
+    "jaén":
+        "Andalucía",
+    "malaga":
+        "Andalucía",
+    "málaga":
+        "Andalucía",
+    "sevilla":
+        "Andalucía",
 
-        "lleida":
-            "Cataluña",
+    // PRINCIPADO DE ASTURIAS
+    "asturias":
+        "Principado de Asturias",
+    "oviedo":
+        "Principado de Asturias",
 
-        "lérida":
-            "Cataluña",
+    // CANTABRIA
+    "cantabria":
+        "Cantabria",
+    "santander":
+        "Cantabria",
 
-        "tarragona":
-            "Cataluña",
+    // PAÍS VASCO
+    "alava":
+        "País Vasco",
+    "álava":
+        "País Vasco",
+    "araba":
+        "País Vasco",
+    "vizcaya":
+        "País Vasco",
+    "bizkaia":
+        "País Vasco",
+    "guipuzcoa":
+        "País Vasco",
+    "guipúzcoa":
+        "País Vasco",
+    "gipuzkoa":
+        "País Vasco",
 
-        "valencia":
-            "Comunidad Valenciana",
+    // ARAGÓN
+    "huesca":
+        "Aragón",
+    "teruel":
+        "Aragón",
+    "zaragoza":
+        "Aragón",
 
-        "castellón":
-            "Comunidad Valenciana",
+    // NAVARRA
+    "navarra":
+        "Navarra",
+    "pamplona":
+        "Navarra",
 
-        "castellon":
-            "Comunidad Valenciana",
+    // LA RIOJA
+    "la rioja":
+        "La Rioja",
+    "rioja":
+        "La Rioja",
+    "logroño":
+        "La Rioja",
+    "logrono":
+        "La Rioja",
 
-        "alicante":
-            "Comunidad Valenciana",
+    // CASTILLA Y LEÓN
+    "avila":
+        "Castilla y León",
+    "ávila":
+        "Castilla y León",
+    "burgos":
+        "Castilla y León",
+    "leon":
+        "Castilla y León",
+    "león":
+        "Castilla y León",
+    "palencia":
+        "Castilla y León",
+    "salamanca":
+        "Castilla y León",
+    "segovia":
+        "Castilla y León",
+    "soria":
+        "Castilla y León",
+    "valladolid":
+        "Castilla y León",
+    "zamora":
+        "Castilla y León",
 
-        "sevilla":
-            "Andalucía",
+    // CASTILLA-LA MANCHA
+    "albacete":
+        "Castilla-La Mancha",
+    "ciudad real":
+        "Castilla-La Mancha",
+    "cuenca":
+        "Castilla-La Mancha",
+    "guadalajara":
+        "Castilla-La Mancha",
+    "toledo":
+        "Castilla-La Mancha",
 
-        "málaga":
-            "Andalucía",
+    // EXTREMADURA
+    "badajoz":
+        "Extremadura",
+    "caceres":
+        "Extremadura",
+    "cáceres":
+        "Extremadura",
 
-        "malaga":
-            "Andalucía",
+    // GALICIA
+    "a coruña":
+        "Galicia",
+    "a coruna":
+        "Galicia",
+    "la coruña":
+        "Galicia",
+    "la coruna":
+        "Galicia",
+    "coruña":
+        "Galicia",
+    "coruna":
+        "Galicia",
+    "lugo":
+        "Galicia",
+    "ourense":
+        "Galicia",
+    "orense":
+        "Galicia",
+    "pontevedra":
+        "Galicia",
 
-        "granada":
-            "Andalucía",
+    // REGIÓN DE MURCIA
+    "murcia":
+        "Región de Murcia",
 
-        "córdoba":
-            "Andalucía",
+    // ISLAS BALEARES
+    "baleares":
+        "Islas Baleares",
+    "illes balears":
+        "Islas Baleares",
+    "islas baleares":
+        "Islas Baleares",
+    "palma":
+        "Islas Baleares",
 
-        "cordoba":
-            "Andalucía",
+    // CANARIAS
+    "las palmas":
+        "Canarias",
+    "las palmas de gran canaria":
+        "Canarias",
+    "santa cruz de tenerife":
+        "Canarias",
+    "tenerife":
+        "Canarias",
 
-        "cádiz":
-            "Andalucía",
-
-        "cadiz":
-            "Andalucía",
-
-        "huelva":
-            "Andalucía",
-
-        "jaén":
-            "Andalucía",
-
-        "jaen":
-            "Andalucía",
-
-        "almería":
-            "Andalucía",
-
-        "almeria":
-            "Andalucía",
-
-        "asturias":
-            "Principado de Asturias",
-
-        "oviedo":
-            "Principado de Asturias",
-
-        "cantabria":
-            "Cantabria",
-
-        "santander":
-            "Cantabria",
-
-        "vizcaya":
-            "País Vasco",
-
-        "bizkaia":
-            "País Vasco",
-
-        "guipúzcoa":
-            "País Vasco",
-
-        "gipuzkoa":
-            "País Vasco",
-
-        "álava":
-            "País Vasco",
-
-        "alava":
-            "País Vasco",
-
-        "zaragoza":
-            "Aragón",
-
-        "huesca":
-            "Aragón",
-
-        "teruel":
-            "Aragón",
-
-        "navarra":
-            "Navarra",
-
-        "pamplona":
-            "Navarra",
-
-        "la rioja":
-            "La Rioja",
-
-        "logroño":
-            "La Rioja",
-
-        "logrono":
-            "La Rioja",
-
-        "valladolid":
-            "Castilla y León",
-
-        "león":
-            "Castilla y León",
-
-        "leon":
-            "Castilla y León",
-
-        "burgos":
-            "Castilla y León",
-
-        "salamanca":
-            "Castilla y León",
-
-        "toledo":
-            "Castilla-La Mancha",
-
-        "cuenca":
-            "Castilla-La Mancha",
-
-        "albacete":
-            "Castilla-La Mancha",
-
-        "ciudad real":
-            "Castilla-La Mancha",
-
-        "guadalajara":
-            "Castilla-La Mancha",
-
-        "cáceres":
-            "Extremadura",
-
-        "caceres":
-            "Extremadura",
-
-        "badajoz":
-            "Extremadura",
-
-        "murcia":
-            "Región de Murcia",
-
-        "palma":
-            "Islas Baleares",
-
-        "las palmas":
-            "Canarias",
-
-        "santa cruz de tenerife":
-            "Canarias"
-    };
+    // CEUTA Y MELILLA
+    "ceuta":
+        "Ceuta",
+    "melilla":
+        "Melilla"
+};
 
     return mapa[texto] || "";
 }
