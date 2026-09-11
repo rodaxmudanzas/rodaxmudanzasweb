@@ -3770,6 +3770,13 @@ if (
     window.cargarPerfil();
 }
 
+if (
+    tabId === "mis-vehiculos" &&
+    typeof window.cargarMisVehiculos === "function"
+) {
+    window.cargarMisVehiculos();
+}
+
         cerrarMenuMovil();
 
     }
