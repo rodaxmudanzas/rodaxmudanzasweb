@@ -10,6 +10,50 @@
             return;
         }
 
+                const transportistaId =
+            window.Transportista?.currentUserId ||
+            window.currentUserId ||
+            null;
+
+        if (!transportistaId) {
+            console.error(
+                "RODAX Vehículos: no se ha podido obtener el transportista_id"
+            );
+            return;
+        }
+
+        const cliente =
+            window.dbClient;
+
+        if (!cliente) {
+            console.error(
+                "RODAX Vehículos: no se encontró dbClient"
+            );
+            return;
+        }
+
+        const { data: vehiculos, error } =
+            await cliente
+                .from("vehiculos")
+                .select("*")
+                .eq("transportista_id", transportistaId)
+                .order("creado_en", {
+                    ascending: false
+                });
+
+        if (error) {
+            console.error(
+                "RODAX Vehículos: error cargando vehículos:",
+                error
+            );
+            return;
+        }
+
+        console.log(
+            "RODAX Vehículos — vehículos cargados:",
+            vehiculos
+        );
+
         contenedor.innerHTML = `
             <div class="space-y-6">
 
