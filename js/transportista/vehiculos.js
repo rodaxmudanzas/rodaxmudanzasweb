@@ -113,13 +113,17 @@
                                     Vehículos registrados
                                 </div>
 
-                                <div class="text-2xl font-bold text-slate-900">
-                                    0
-                                </div>
+                               <div class="text-2xl font-bold text-slate-900">
+    ${vehiculos.length}
+</div>
 
-                                <div class="text-xs text-slate-500">
-                                    Sin vehículos cargados
-                                </div>
+<div class="text-xs text-slate-500">
+    ${vehiculos.length === 0
+        ? "Sin vehículos cargados"
+        : vehiculos.length === 1
+            ? "Vehículo registrado"
+            : "Vehículos registrados"}
+</div>
                             </div>
 
                         </div>
