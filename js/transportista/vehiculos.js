@@ -228,14 +228,15 @@
                     </button>
 
                     <button
-                        type="button"
-                        class="flex-1 flex items-center justify-center gap-2
-                               px-5 py-4 text-slate-600 hover:bg-slate-50 transition">
+    type="button"
+    onclick="abrirPestanaDocumentacionVehiculos()"
+    class="flex-1 flex items-center justify-center gap-2
+           px-5 py-4 text-slate-600 hover:bg-slate-50 transition">
 
-                        <i data-lucide="file-text" class="w-5 h-5"></i>
-                        Documentación
+    <i data-lucide="file-text" class="w-5 h-5"></i>
+    Documentación
 
-                    </button>
+</button>
 
                     <button
                         type="button"
