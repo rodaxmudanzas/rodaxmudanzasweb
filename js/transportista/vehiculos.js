@@ -402,13 +402,14 @@
                                             <div class="mt-4 flex gap-3">
 
                                                 <button
-                                                    type="button"
-                                                    class="flex-1 px-4 py-2.5 rounded-xl
-                                                           border border-slate-200
-                                                           text-slate-700 font-medium
-                                                           hover:bg-slate-50 transition">
-                                                    Gestionar
-                                                </button>
+    type="button"
+    onclick="abrirGestionVehiculo('${vehiculo.id}')"
+    class="flex-1 px-4 py-2.5 rounded-xl
+           border border-slate-200
+           text-slate-700 font-medium
+           hover:bg-slate-50 transition">
+    Gestionar
+</button>
 
                                             </div>
 
@@ -690,6 +691,228 @@ async function guardarVehiculo() {
     await cargarMisVehiculos();
 
 }
+
+async function abrirGestionVehiculo(vehiculoId) {
+
+    if (!vehiculoId) {
+        console.error("RODAX Vehículos: no se recibió el id del vehículo.");
+        return;
+    }
+
+    const cliente = window.dbClient;
+
+    if (!cliente) {
+        console.error("RODAX Vehículos: no se encontró dbClient.");
+        return;
+    }
+
+    const { data: vehiculo, error } = await cliente
+        .from("vehiculos")
+        .select("*")
+        .eq("id", vehiculoId)
+        .single();
+
+    if (error) {
+        console.error(
+            "RODAX Vehículos: error cargando vehículo:",
+            error
+        );
+
+        alert("No se ha podido cargar la información del vehículo.");
+        return;
+    }
+
+    console.log(
+        "RODAX Vehículos: vehículo seleccionado para gestionar:",
+        vehiculo
+    );
+
+    const modalExistente =
+        document.getElementById("modal-gestionar-vehiculo");
+
+    if (modalExistente) {
+        modalExistente.remove();
+    }
+
+    const modal = document.createElement("div");
+
+    modal.id = "modal-gestionar-vehiculo";
+
+    modal.className =
+        "fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4";
+
+    modal.innerHTML = `
+        <div class="w-full max-w-3xl max-h-[90vh] overflow-y-auto
+                    bg-white rounded-2xl shadow-2xl">
+
+            <div class="flex items-center justify-between
+                        px-6 py-5 border-b border-slate-200">
+
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">
+                        ${vehiculo.marca || "Vehículo"}
+                        ${vehiculo.modelo || ""}
+                    </h2>
+
+                    <p class="text-sm text-slate-500 mt-1">
+                        Gestiona la información de este vehículo.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    onclick="cerrarGestionVehiculo()"
+                    class="p-2 rounded-lg hover:bg-slate-100 text-slate-500"
+                    aria-label="Cerrar">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+
+            </div>
+
+            <div class="p-6">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                    <div>
+                        <label class="block text-sm font-medium
+                                      text-slate-700 mb-2">
+                            Matrícula
+                        </label>
+
+                        <input
+                            type="text"
+                            value="${vehiculo.matricula || ""}"
+                            disabled
+                            class="w-full rounded-xl border border-slate-300
+                                   bg-slate-50 px-4 py-3 text-slate-700">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium
+                                      text-slate-700 mb-2">
+                            Estado
+                        </label>
+
+                        <input
+                            type="text"
+                            value="${vehiculo.estado || "Activo"}"
+                            disabled
+                            class="w-full rounded-xl border border-slate-300
+                                   bg-slate-50 px-4 py-3 text-slate-700">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium
+                                      text-slate-700 mb-2">
+                            Marca
+                        </label>
+
+                        <input
+                            type="text"
+                            value="${vehiculo.marca || ""}"
+                            disabled
+                            class="w-full rounded-xl border border-slate-300
+                                   bg-slate-50 px-4 py-3 text-slate-700">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium
+                                      text-slate-700 mb-2">
+                            Modelo
+                        </label>
+
+                        <input
+                            type="text"
+                            value="${vehiculo.modelo || ""}"
+                            disabled
+                            class="w-full rounded-xl border border-slate-300
+                                   bg-slate-50 px-4 py-3 text-slate-700">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium
+                                      text-slate-700 mb-2">
+                            Tipo de vehículo
+                        </label>
+
+                        <input
+                            type="text"
+                            value="${vehiculo.tipo_vehiculo || ""}"
+                            disabled
+                            class="w-full rounded-xl border border-slate-300
+                                   bg-slate-50 px-4 py-3 text-slate-700">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium
+                                      text-slate-700 mb-2">
+                            Año
+                        </label>
+
+                        <input
+                            type="text"
+                            value="${vehiculo.anio || "No indicado"}"
+                            disabled
+                            class="w-full rounded-xl border border-slate-300
+                                   bg-slate-50 px-4 py-3 text-slate-700">
+                    </div>
+
+                </div>
+
+                <div class="mt-6 rounded-xl border border-blue-100
+                            bg-blue-50 p-4">
+
+                    <p class="text-sm text-blue-800">
+                        Desde esta ficha podremos incorporar posteriormente
+                        la documentación, fotografías, seguros y revisiones
+                        de este vehículo.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="flex justify-end
+                        px-6 py-5 border-t border-slate-200">
+
+                <button
+                    type="button"
+                    onclick="cerrarGestionVehiculo()"
+                    class="px-5 py-3 rounded-xl border
+                           border-slate-300 text-slate-700
+                           font-medium hover:bg-slate-50">
+                    Cerrar
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
+}
+
+
+function cerrarGestionVehiculo() {
+
+    const modal =
+        document.getElementById("modal-gestionar-vehiculo");
+
+    if (modal) {
+        modal.remove();
+    }
+}
+
+
+window.abrirGestionVehiculo =
+    abrirGestionVehiculo;
+
+window.cerrarGestionVehiculo =
+    cerrarGestionVehiculo;
 
 function cerrarFormularioVehiculo() {
 
