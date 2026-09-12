@@ -36,10 +36,12 @@
                     </div>
 
                     <button
-                        type="button"
-                        class="flex items-center gap-2 px-6 py-3 rounded-xl
-                               bg-blue-600 hover:bg-blue-700 text-white
-                               font-semibold shadow-sm transition">
+    type="button"
+    onclick="abrirFormularioVehiculo()"
+    class="flex items-center gap-2 px-6 py-3 rounded-xl
+           bg-blue-600 hover:bg-blue-700 text-white
+           font-semibold shadow-sm transition"
+>
 
                         <i data-lucide="plus" class="w-5 h-5"></i>
 
@@ -310,5 +312,195 @@
     }
 
     window.cargarMisVehiculos = cargarMisVehiculos;
+
+    function abrirFormularioVehiculo() {
+
+    const modal = document.createElement("div");
+
+    modal.id = "modal-vehiculo";
+
+    modal.className =
+        "fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4";
+
+    modal.innerHTML = `
+        <div class="w-full max-w-3xl max-h-[90vh] overflow-y-auto
+                    bg-white rounded-2xl shadow-2xl">
+
+            <div class="flex items-center justify-between
+                        px-6 py-5 border-b border-slate-200">
+
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">
+                        Añadir vehículo
+                    </h2>
+
+                    <p class="text-sm text-slate-500 mt-1">
+                        Registra un nuevo vehículo de tu flota.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    onclick="cerrarFormularioVehiculo()"
+                    class="p-2 rounded-lg hover:bg-slate-100 text-slate-500"
+                    aria-label="Cerrar"
+                >
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+
+            </div>
+
+            <div class="p-6">
+
+                <div class="rounded-xl border border-blue-100
+                            bg-blue-50 p-4 mb-6">
+
+                    <p class="text-sm text-blue-800">
+                        En este formulario registraremos los datos del
+                        vehículo. La documentación, fotografías, seguros
+                        y revisiones se incorporarán posteriormente.
+                    </p>
+
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                    <div>
+                        <label class="block text-sm font-medium
+                                      text-slate-700 mb-2">
+                            Matrícula
+                        </label>
+
+                        <input
+                            type="text"
+                            id="vehiculo-matricula"
+                            class="w-full rounded-xl border border-slate-300
+                                   px-4 py-3 outline-none
+                                   focus:ring-2 focus:ring-blue-500"
+                            placeholder="1234 ABC"
+                        >
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium
+                                      text-slate-700 mb-2">
+                            Marca
+                        </label>
+
+                        <input
+                            type="text"
+                            id="vehiculo-marca"
+                            class="w-full rounded-xl border border-slate-300
+                                   px-4 py-3 outline-none
+                                   focus:ring-2 focus:ring-blue-500"
+                            placeholder="Marca del vehículo"
+                        >
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium
+                                      text-slate-700 mb-2">
+                            Modelo
+                        </label>
+
+                        <input
+                            type="text"
+                            id="vehiculo-modelo"
+                            class="w-full rounded-xl border border-slate-300
+                                   px-4 py-3 outline-none
+                                   focus:ring-2 focus:ring-blue-500"
+                            placeholder="Modelo"
+                        >
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium
+                                      text-slate-700 mb-2">
+                            Tipo de vehículo
+                        </label>
+
+                        <select
+                            id="vehiculo-tipo"
+                            class="w-full rounded-xl border border-slate-300
+                                   px-4 py-3 outline-none
+                                   focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="">
+                                Seleccionar tipo
+                            </option>
+
+                            <option value="Furgoneta">
+                                Furgoneta
+                            </option>
+
+                            <option value="Camión">
+                                Camión
+                            </option>
+
+                            <option value="Camión con plataforma">
+                                Camión con plataforma
+                            </option>
+
+                            <option value="Otro">
+                                Otro
+                            </option>
+                        </select>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="flex justify-end gap-3
+                        px-6 py-5 border-t border-slate-200">
+
+                <button
+                    type="button"
+                    onclick="cerrarFormularioVehiculo()"
+                    class="px-5 py-3 rounded-xl border
+                           border-slate-300 text-slate-700
+                           font-medium hover:bg-slate-50"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    class="px-5 py-3 rounded-xl bg-blue-600
+                           hover:bg-blue-700 text-white
+                           font-semibold"
+                >
+                    Guardar vehículo
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
+}
+
+
+function cerrarFormularioVehiculo() {
+
+    const modal =
+        document.getElementById("modal-vehiculo");
+
+    if (modal) {
+        modal.remove();
+    }
+}
+
+
+window.abrirFormularioVehiculo =
+    abrirFormularioVehiculo;
+
+window.cerrarFormularioVehiculo =
+    cerrarFormularioVehiculo;
 
 })();
