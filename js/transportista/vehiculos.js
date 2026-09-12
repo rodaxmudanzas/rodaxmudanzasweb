@@ -610,12 +610,14 @@ async function guardarVehiculo() {
         return;
     }
 
-    console.log(
+        console.log(
         "RODAX Vehículos: vehículo guardado correctamente:",
         data
     );
 
     cerrarFormularioVehiculo();
+
+    await cargarMisVehiculos();
 
 }
 
