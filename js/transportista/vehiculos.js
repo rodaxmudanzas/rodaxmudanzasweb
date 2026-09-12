@@ -486,7 +486,7 @@
     }
 }
 
-function guardarVehiculo() {
+async function guardarVehiculo() {
 
     const transportistaId =
     window.Transportista?.currentUserId ||
@@ -534,6 +534,41 @@ function guardarVehiculo() {
         "RODAX Vehículos — datos preparados:",
         datosVehiculo
     );
+
+    const cliente = window.dbClient;
+
+    if (!cliente) {
+        console.error(
+            "RODAX Vehículos: no se encontró dbClient."
+        );
+        return;
+    }
+
+    const { data, error } = await cliente
+        .from("vehiculos")
+        .insert([datosVehiculo])
+        .select()
+        .single();
+
+    if (error) {
+        console.error(
+            "RODAX Vehículos: error guardando vehículo:",
+            error
+        );
+        alert(
+            "No se ha podido guardar el vehículo: " +
+            error.message
+        );
+        return;
+    }
+
+    console.log(
+        "RODAX Vehículos: vehículo guardado correctamente:",
+        data
+    );
+
+    cerrarFormularioVehiculo();
+
 }
 
 function cerrarFormularioVehiculo() {
