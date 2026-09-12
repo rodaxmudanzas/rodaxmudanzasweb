@@ -465,13 +465,14 @@
                 </button>
 
                 <button
-                    type="button"
-                    class="px-5 py-3 rounded-xl bg-blue-600
-                           hover:bg-blue-700 text-white
-                           font-semibold"
-                >
-                    Guardar vehículo
-                </button>
+    type="button"
+    onclick="guardarVehiculo()"
+    class="px-5 py-3 rounded-xl bg-blue-600
+           hover:bg-blue-700 text-white
+           font-semibold"
+>
+    Guardar vehículo
+</button>
 
             </div>
 
@@ -485,6 +486,55 @@
     }
 }
 
+function guardarVehiculo() {
+
+    const transportistaId =
+        typeof obtenerTransportistaId === "function"
+            ? obtenerTransportistaId()
+            : null;
+
+    const matricula =
+        document.getElementById("vehiculo-matricula")?.value.trim();
+
+    const marca =
+        document.getElementById("vehiculo-marca")?.value.trim();
+
+    const modelo =
+        document.getElementById("vehiculo-modelo")?.value.trim();
+
+    const tipoVehiculo =
+        document.getElementById("vehiculo-tipo")?.value;
+
+    if (!transportistaId) {
+        console.error(
+            "RODAX Vehículos: no se ha podido obtener el transportista_id"
+        );
+        return;
+    }
+
+    if (!matricula) {
+        alert("Introduce la matrícula del vehículo.");
+        return;
+    }
+
+    if (!tipoVehiculo) {
+        alert("Selecciona el tipo de vehículo.");
+        return;
+    }
+
+    const datosVehiculo = {
+        transportista_id: transportistaId,
+        matricula: matricula,
+        marca: marca || null,
+        modelo: modelo || null,
+        tipo_vehiculo: tipoVehiculo
+    };
+
+    console.log(
+        "RODAX Vehículos — datos preparados:",
+        datosVehiculo
+    );
+}
 
 function cerrarFormularioVehiculo() {
 
@@ -502,5 +552,8 @@ window.abrirFormularioVehiculo =
 
 window.cerrarFormularioVehiculo =
     cerrarFormularioVehiculo;
+
+    window.guardarVehiculo =
+    guardarVehiculo;
 
 })();
