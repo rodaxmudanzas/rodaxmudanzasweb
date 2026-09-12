@@ -314,40 +314,110 @@
                     </div>
 
 
-                    <!-- ESTADO INICIAL -->
-                    <div class="bg-white border border-slate-200 rounded-2xl
-                                p-12 text-center">
+                                        <!-- VEHÍCULOS -->
+                    ${
+                        vehiculos.length === 0
+                            ? `
+                                <div class="bg-white border border-slate-200 rounded-2xl
+                                            p-12 text-center">
 
-                        <div class="w-20 h-20 mx-auto mb-5 rounded-full
-                                    bg-blue-50 flex items-center justify-center">
+                                    <div class="w-20 h-20 mx-auto mb-5 rounded-full
+                                                bg-blue-50 flex items-center justify-center">
 
-                            <i data-lucide="truck"
-                               class="w-10 h-10 text-blue-600"></i>
+                                        <i data-lucide="truck"
+                                           class="w-10 h-10 text-blue-600"></i>
 
-                        </div>
+                                    </div>
 
-                        <h3 class="text-xl font-bold text-slate-900 mb-2">
-                            Todavía no tienes vehículos registrados
-                        </h3>
+                                    <h3 class="text-xl font-bold text-slate-900 mb-2">
+                                        Todavía no tienes vehículos registrados
+                                    </h3>
 
-                        <p class="text-slate-500 max-w-md mx-auto mb-6">
-                            Registra tu primer vehículo para gestionar su
-                            documentación, seguros y revisiones desde aquí.
-                        </p>
+                                    <p class="text-slate-500 max-w-md mx-auto mb-6">
+                                        Añade tu primer vehículo para gestionar su
+                                        documentación, seguros y revisiones desde aquí.
+                                    </p>
 
-                        <button
-                            type="button"
-                            class="inline-flex items-center gap-2 px-6 py-3
-                                   rounded-xl bg-blue-600 hover:bg-blue-700
-                                   text-white font-semibold transition">
+                                    <button
+                                        type="button"
+                                        onclick="abrirFormularioVehiculo()"
+                                        class="inline-flex items-center gap-2 px-6 py-3
+                                               rounded-xl bg-blue-600 hover:bg-blue-700
+                                               text-white font-semibold transition">
 
-                            <i data-lucide="plus" class="w-5 h-5"></i>
+                                        <i data-lucide="plus" class="w-5 h-5"></i>
 
-                            Registrar vehículo
+                                        Añadir vehículo
 
-                        </button>
+                                    </button>
 
-                    </div>
+                                </div>
+                            `
+                            : `
+                                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+
+                                    ${vehiculos.map(vehiculo => `
+                                        <div class="bg-white border border-slate-200
+                                                    rounded-2xl p-6 shadow-sm">
+
+                                            <div class="flex items-start justify-between mb-5">
+
+                                                <div class="w-12 h-12 rounded-xl bg-blue-50
+                                                            flex items-center justify-center">
+
+                                                    <i data-lucide="truck"
+                                                       class="w-6 h-6 text-blue-600"></i>
+
+                                                </div>
+
+                                                <span class="px-3 py-1 rounded-full
+                                                             text-xs font-semibold
+                                                             bg-emerald-50 text-emerald-700">
+                                                    ${vehiculo.estado || "Activo"}
+                                                </span>
+
+                                            </div>
+
+                                            <h3 class="text-lg font-bold text-slate-900">
+                                                ${vehiculo.marca || "Sin marca"}
+                                                ${vehiculo.modelo || ""}
+                                            </h3>
+
+                                            <p class="text-sm text-slate-500 mt-1">
+                                                ${vehiculo.tipo_vehiculo || "Tipo no especificado"}
+                                            </p>
+
+                                            <div class="mt-5 pt-5 border-t border-slate-100">
+
+                                                <div class="text-xs text-slate-500 mb-1">
+                                                    Matrícula
+                                                </div>
+
+                                                <div class="font-bold text-slate-900">
+                                                    ${vehiculo.matricula}
+                                                </div>
+
+                                            </div>
+
+                                            <div class="mt-4 flex gap-3">
+
+                                                <button
+                                                    type="button"
+                                                    class="flex-1 px-4 py-2.5 rounded-xl
+                                                           border border-slate-200
+                                                           text-slate-700 font-medium
+                                                           hover:bg-slate-50 transition">
+                                                    Gestionar
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+                                    `).join("")}
+
+                                </div>
+                            `
+                    }
 
                 </div>
 
