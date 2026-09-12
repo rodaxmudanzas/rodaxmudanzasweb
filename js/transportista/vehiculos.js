@@ -437,6 +437,150 @@
 
     window.cargarMisVehiculos = cargarMisVehiculos;
 
+    function abrirPestanaDocumentacionVehiculos() {
+
+    const contenedor =
+        document.getElementById("mis-vehiculos-contenido");
+
+    if (!contenedor) {
+        console.error(
+            "RODAX Vehículos: no se encontró el contenedor principal."
+        );
+        return;
+    }
+
+    contenedor.innerHTML = `
+        <div class="space-y-6">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">
+                        Documentación
+                    </h2>
+
+                    <p class="text-slate-500 mt-1">
+                        Gestiona la documentación de todos tus vehículos.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    onclick="cargarMisVehiculos()"
+                    class="px-5 py-3 rounded-xl border
+                           border-slate-200 text-slate-700
+                           font-semibold hover:bg-slate-50 transition">
+                    Volver a mis vehículos
+                </button>
+
+            </div>
+
+            <div class="bg-white border border-slate-200
+                        rounded-2xl p-8">
+
+                <div class="flex items-center gap-4 mb-6">
+
+                    <div class="w-12 h-12 rounded-xl bg-blue-50
+                                flex items-center justify-center">
+
+                        <i data-lucide="file-text"
+                           class="w-6 h-6 text-blue-600"></i>
+
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900">
+                            Documentación de vehículos
+                        </h3>
+
+                        <p class="text-sm text-slate-500">
+                            Próximamente podrás gestionar aquí
+                            la documentación de cada vehículo.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+
+                    <div class="border border-slate-200
+                                rounded-xl p-5">
+
+                        <div class="flex items-center gap-3 mb-3">
+
+                            <i data-lucide="file-check"
+                               class="w-5 h-5 text-blue-600"></i>
+
+                            <span class="font-semibold text-slate-900">
+                                Documentación del vehículo
+                            </span>
+
+                        </div>
+
+                        <p class="text-sm text-slate-500">
+                            Ficha técnica, permiso de circulación
+                            y demás documentación obligatoria.
+                        </p>
+
+                    </div>
+
+                    <div class="border border-slate-200
+                                rounded-xl p-5">
+
+                        <div class="flex items-center gap-3 mb-3">
+
+                            <i data-lucide="file-up"
+                               class="w-5 h-5 text-blue-600"></i>
+
+                            <span class="font-semibold text-slate-900">
+                                Subida de documentos
+                            </span>
+
+                        </div>
+
+                        <p class="text-sm text-slate-500">
+                            Los documentos podrán incorporarse
+                            directamente desde el panel.
+                        </p>
+
+                    </div>
+
+                    <div class="border border-slate-200
+                                rounded-xl p-5">
+
+                        <div class="flex items-center gap-3 mb-3">
+
+                            <i data-lucide="calendar-check"
+                               class="w-5 h-5 text-blue-600"></i>
+
+                            <span class="font-semibold text-slate-900">
+                                Vigencias
+                            </span>
+
+                        </div>
+
+                        <p class="text-sm text-slate-500">
+                            Controlaremos las fechas de caducidad
+                            y próximas renovaciones.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
+}
+
+window.abrirPestanaDocumentacionVehiculos =
+    abrirPestanaDocumentacionVehiculos;
+
     function abrirFormularioVehiculo() {
 
     const modal = document.createElement("div");
