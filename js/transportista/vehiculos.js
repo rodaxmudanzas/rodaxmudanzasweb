@@ -872,19 +872,28 @@ async function abrirGestionVehiculo(vehiculoId) {
 
             </div>
 
-            <div class="flex justify-end
-                        px-6 py-5 border-t border-slate-200">
+            <div class="flex justify-between
+            px-6 py-5 border-t border-slate-200">
 
-                <button
-                    type="button"
-                    onclick="cerrarGestionVehiculo()"
-                    class="px-5 py-3 rounded-xl border
-                           border-slate-300 text-slate-700
-                           font-medium hover:bg-slate-50">
-                    Cerrar
-                </button>
+    <button
+        type="button"
+        onclick="editarVehiculo('${vehiculo.id}')"
+        class="px-5 py-3 rounded-xl bg-blue-600
+               hover:bg-blue-700 text-white
+               font-semibold">
+        Editar vehículo
+    </button>
 
-            </div>
+    <button
+        type="button"
+        onclick="cerrarGestionVehiculo()"
+        class="px-5 py-3 rounded-xl border
+               border-slate-300 text-slate-700
+               font-medium hover:bg-slate-50">
+        Cerrar
+    </button>
+
+</div>
 
         </div>
     `;
