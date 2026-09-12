@@ -1113,6 +1113,131 @@ async function editarVehiculo(vehiculoId) {
     }
 }
 
+async function guardarEdicionVehiculo(vehiculoId) {
+
+    if (!vehiculoId) {
+        console.error(
+            "RODAX Vehículos: no se recibió el id del vehículo."
+        );
+        return;
+    }
+
+    const transportistaId =
+        window.Transportista?.currentUserId ||
+        window.currentUserId ||
+        null;
+
+    if (!transportistaId) {
+        console.error(
+            "RODAX Vehículos: no se ha podido obtener el transportista_id."
+        );
+        return;
+    }
+
+    const matricula =
+        document
+            .getElementById("editar-vehiculo-matricula")
+            ?.value
+            .trim();
+
+    const marca =
+        document
+            .getElementById("editar-vehiculo-marca")
+            ?.value
+            .trim();
+
+    const modelo =
+        document
+            .getElementById("editar-vehiculo-modelo")
+            ?.value
+            .trim();
+
+    const tipoVehiculo =
+        document.getElementById("editar-vehiculo-tipo")?.value;
+
+    const anioValor =
+        document
+            .getElementById("editar-vehiculo-anio")
+            ?.value
+            .trim();
+
+    if (!matricula) {
+        alert("Introduce la matrícula del vehículo.");
+        return;
+    }
+
+    if (!tipoVehiculo) {
+        alert("Selecciona el tipo de vehículo.");
+        return;
+    }
+
+    const anio =
+        anioValor ? parseInt(anioValor, 10) : null;
+
+    if (anioValor && Number.isNaN(anio)) {
+        alert("El año introducido no es válido.");
+        return;
+    }
+
+    const datosActualizados = {
+        matricula: matricula,
+        marca: marca || null,
+        modelo: modelo || null,
+        tipo_vehiculo: tipoVehiculo,
+        anio: anio,
+        actualizado_en: new Date().toISOString()
+    };
+
+    console.log(
+        "RODAX Vehículos — datos para actualizar:",
+        datosActualizados
+    );
+
+    const cliente = window.dbClient;
+
+    if (!cliente) {
+        console.error(
+            "RODAX Vehículos: no se encontró dbClient."
+        );
+        return;
+    }
+
+    const { data, error } = await cliente
+        .from("vehiculos")
+        .update(datosActualizados)
+        .eq("id", vehiculoId)
+        .eq("transportista_id", transportistaId)
+        .select()
+        .single();
+
+    if (error) {
+        console.error(
+            "RODAX Vehículos: error actualizando vehículo:",
+            error
+        );
+
+        alert(
+            "No se han podido guardar los cambios: " +
+            error.message
+        );
+
+        return;
+    }
+
+    console.log(
+        "RODAX Vehículos: vehículo actualizado correctamente:",
+        data
+    );
+
+    cerrarEditarVehiculo();
+    cerrarGestionVehiculo();
+
+    await cargarMisVehiculos();
+}
+
+
+window.guardarEdicionVehiculo =
+    guardarEdicionVehiculo;
 
 function cerrarEditarVehiculo() {
 
