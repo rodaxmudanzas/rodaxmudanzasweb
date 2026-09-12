@@ -905,6 +905,231 @@ async function abrirGestionVehiculo(vehiculoId) {
     }
 }
 
+async function editarVehiculo(vehiculoId) {
+
+    if (!vehiculoId) {
+        console.error("RODAX Vehículos: no se recibió el id del vehículo.");
+        return;
+    }
+
+    const cliente = window.dbClient;
+
+    if (!cliente) {
+        console.error("RODAX Vehículos: no se encontró dbClient.");
+        return;
+    }
+
+    const { data: vehiculo, error } = await cliente
+        .from("vehiculos")
+        .select("*")
+        .eq("id", vehiculoId)
+        .single();
+
+    if (error) {
+        console.error(
+            "RODAX Vehículos: error cargando vehículo para editar:",
+            error
+        );
+
+        alert("No se ha podido cargar el vehículo.");
+        return;
+    }
+
+    const modalExistente =
+        document.getElementById("modal-editar-vehiculo");
+
+    if (modalExistente) {
+        modalExistente.remove();
+    }
+
+    const modal = document.createElement("div");
+
+    modal.id = "modal-editar-vehiculo";
+
+    modal.className =
+        "fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4";
+
+    modal.innerHTML = `
+        <div class="w-full max-w-3xl max-h-[90vh] overflow-y-auto
+                    bg-white rounded-2xl shadow-2xl">
+
+            <div class="flex items-center justify-between
+                        px-6 py-5 border-b border-slate-200">
+
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">
+                        Editar vehículo
+                    </h2>
+
+                    <p class="text-sm text-slate-500 mt-1">
+                        Modifica los datos básicos de tu vehículo.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    onclick="cerrarEditarVehiculo()"
+                    class="p-2 rounded-lg hover:bg-slate-100 text-slate-500"
+                    aria-label="Cerrar">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+
+            </div>
+
+            <div class="p-6">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                    <div>
+                        <label class="block text-sm font-medium
+                                      text-slate-700 mb-2">
+                            Matrícula
+                        </label>
+
+                        <input
+                            type="text"
+                            id="editar-vehiculo-matricula"
+                            value="${vehiculo.matricula || ""}"
+                            class="w-full rounded-xl border border-slate-300
+                                   px-4 py-3 outline-none
+                                   focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium
+                                      text-slate-700 mb-2">
+                            Marca
+                        </label>
+
+                        <input
+                            type="text"
+                            id="editar-vehiculo-marca"
+                            value="${vehiculo.marca || ""}"
+                            class="w-full rounded-xl border border-slate-300
+                                   px-4 py-3 outline-none
+                                   focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium
+                                      text-slate-700 mb-2">
+                            Modelo
+                        </label>
+
+                        <input
+                            type="text"
+                            id="editar-vehiculo-modelo"
+                            value="${vehiculo.modelo || ""}"
+                            class="w-full rounded-xl border border-slate-300
+                                   px-4 py-3 outline-none
+                                   focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium
+                                      text-slate-700 mb-2">
+                            Tipo de vehículo
+                        </label>
+
+                        <select
+                            id="editar-vehiculo-tipo"
+                            class="w-full rounded-xl border border-slate-300
+                                   px-4 py-3 outline-none
+                                   focus:ring-2 focus:ring-blue-500">
+
+                            <option value="Furgoneta"
+                                ${vehiculo.tipo_vehiculo === "Furgoneta" ? "selected" : ""}>
+                                Furgoneta
+                            </option>
+
+                            <option value="Camión"
+                                ${vehiculo.tipo_vehiculo === "Camión" ? "selected" : ""}>
+                                Camión
+                            </option>
+
+                            <option value="Camión con plataforma"
+                                ${vehiculo.tipo_vehiculo === "Camión con plataforma" ? "selected" : ""}>
+                                Camión con plataforma
+                            </option>
+
+                            <option value="Otro"
+                                ${vehiculo.tipo_vehiculo === "Otro" ? "selected" : ""}>
+                                Otro
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium
+                                      text-slate-700 mb-2">
+                            Año
+                        </label>
+
+                        <input
+                            type="number"
+                            id="editar-vehiculo-anio"
+                            value="${vehiculo.anio || ""}"
+                            placeholder="Ej. 2021"
+                            class="w-full rounded-xl border border-slate-300
+                                   px-4 py-3 outline-none
+                                   focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="flex justify-between
+                        px-6 py-5 border-t border-slate-200">
+
+                <button
+                    type="button"
+                    onclick="cerrarEditarVehiculo()"
+                    class="px-5 py-3 rounded-xl border
+                           border-slate-300 text-slate-700
+                           font-medium hover:bg-slate-50">
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    onclick="guardarEdicionVehiculo('${vehiculo.id}')"
+                    class="px-5 py-3 rounded-xl bg-blue-600
+                           hover:bg-blue-700 text-white
+                           font-semibold">
+                    Guardar cambios
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
+}
+
+
+function cerrarEditarVehiculo() {
+
+    const modal =
+        document.getElementById("modal-editar-vehiculo");
+
+    if (modal) {
+        modal.remove();
+    }
+}
+
+
+window.editarVehiculo =
+    editarVehiculo;
+
+window.cerrarEditarVehiculo =
+    cerrarEditarVehiculo;
 
 function cerrarGestionVehiculo() {
 
