@@ -384,8 +384,12 @@
                                             </h3>
 
                                             <p class="text-sm text-slate-500 mt-1">
-                                                ${vehiculo.tipo_vehiculo || "Tipo no especificado"}
-                                            </p>
+    ${vehiculo.tipo_vehiculo || "Tipo no especificado"}
+</p>
+
+<p class="text-sm text-slate-500 mt-1">
+    Año: ${vehiculo.anio || "No indicado"}
+</p>
 
                                             <div class="mt-5 pt-5 border-t border-slate-100">
 
