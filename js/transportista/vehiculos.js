@@ -489,9 +489,9 @@
 function guardarVehiculo() {
 
     const transportistaId =
-        typeof obtenerTransportistaId === "function"
-            ? obtenerTransportistaId()
-            : null;
+    window.Transportista?.currentUserId ||
+    window.currentUserId ||
+    null;
 
     const matricula =
         document.getElementById("vehiculo-matricula")?.value.trim();
