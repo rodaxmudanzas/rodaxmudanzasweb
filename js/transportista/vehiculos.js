@@ -1247,7 +1247,7 @@ const nombreDocumento =
 
                 <div>
 
-                    <!-- NOMBRE -->
+                   <!-- NOMBRE -->
 
 <div>
 
@@ -1280,15 +1280,6 @@ const nombreDocumento =
                    : "bg-slate-50 text-slate-700"}">
 
 </div>
-                        class="w-full px-4 py-3 rounded-xl
-                               border border-slate-200
-                               focus:outline-none
-                               focus:ring-2
-                               focus:ring-blue-500
-                               focus:border-blue-500">
-
-                </div>
-
 
                 <!-- REFERENCIA -->
 
