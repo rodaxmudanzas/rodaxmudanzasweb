@@ -1118,9 +1118,11 @@ function abrirFormularioDocumentacionVehiculo(
         seguro_mercancias: "Seguro de mercancías / transporte"
     };
 
-    const nombreDocumento =
-        nombresDocumentos[tipoDocumento] ||
-        "Documento";
+    const esOtroDocumento = tipoDocumento === "otros";
+
+const nombreDocumento =
+    nombresDocumentos[tipoDocumento] ||
+    "Otros documentos";
 
     const modal = document.createElement("div");
 
@@ -1245,18 +1247,39 @@ function abrirFormularioDocumentacionVehiculo(
 
                 <div>
 
-                    <label
-                        class="block text-sm font-semibold
-                               text-slate-700 mb-2">
+                    <!-- NOMBRE -->
 
-                        Nombre del documento
+<div>
 
-                    </label>
+    <label
+        class="block text-sm font-semibold
+               text-slate-700 mb-2">
 
-                    <input
-                        id="documentacion-nombre"
-                        type="text"
-                        value="${nombreDocumento}"
+        ${esOtroDocumento
+            ? "Nombre del documento"
+            : "Tipo de documento"}
+
+    </label>
+
+    <input
+        id="documentacion-nombre"
+        type="text"
+        value="${esOtroDocumento ? "" : nombreDocumento}"
+        placeholder="${esOtroDocumento
+            ? "Ej. Autorización especial, tarjeta de transporte..."
+            : ""}"
+        ${esOtroDocumento ? "" : "readonly"}
+        class="w-full px-4 py-3 rounded-xl
+               border border-slate-200
+               focus:outline-none
+               focus:ring-2
+               focus:ring-blue-500
+               focus:border-blue-500
+               ${esOtroDocumento
+                   ? ""
+                   : "bg-slate-50 text-slate-700"}">
+
+</div>
                         class="w-full px-4 py-3 rounded-xl
                                border border-slate-200
                                focus:outline-none
