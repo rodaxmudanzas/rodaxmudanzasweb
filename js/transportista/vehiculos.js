@@ -1048,7 +1048,7 @@ if (!vehiculos || vehiculos.length === 0) {
 
                         <!-- OTROS DOCUMENTOS -->
 
-                        <div
+<div
     onclick="abrirFormularioDocumentacionVehiculo('${vehiculo.id}', 'otros')"
     class="border border-dashed
            border-slate-300 rounded-xl p-4
@@ -1057,33 +1057,104 @@ if (!vehiculos || vehiculos.length === 0) {
            cursor-pointer
            transition">
 
-                            <div class="flex items-center gap-3">
+    <div class="flex items-center gap-3">
 
-                                <div
-                                    class="w-10 h-10 rounded-lg
-                                           bg-slate-50
-                                           flex items-center justify-center">
+        <div
+            class="w-10 h-10 rounded-lg
+                   bg-slate-50
+                   flex items-center justify-center">
 
-                                    <i data-lucide="plus"
-                                       class="w-5 h-5 text-slate-500"></i>
+            <i data-lucide="plus"
+               class="w-5 h-5 text-slate-500"></i>
 
-                                </div>
+        </div>
 
-                                <div>
+        <div>
 
-                                    <div class="font-medium text-slate-700">
-                                        Otros documentos
-                                    </div>
+            <div class="font-medium text-slate-700">
+                Añadir otro documento
+            </div>
 
-                                    <div class="text-xs text-slate-500 mt-1">
-                                        Podremos añadir documentos adicionales
-                                    </div>
+            <div class="text-xs text-slate-500 mt-1">
+                Añade autorizaciones, licencias u otros documentos
+            </div>
 
-                                </div>
+        </div>
 
+    </div>
+
+</div>
+
+${
+    documentosVehiculo
+        .filter(doc => doc.tipo_documento === "otros")
+        .map(documento => {
+
+            const estado =
+                obtenerEstadoDocumento(documento);
+
+            return `
+                <div
+                    onclick="abrirFormularioDocumentacionVehiculo('${vehiculo.id}', 'otros')"
+                    class="border border-slate-200
+                           rounded-xl p-4
+                           bg-white shadow-sm
+                           hover:shadow-md
+                           hover:border-blue-300
+                           cursor-pointer
+                           transition-all duration-200">
+
+                    <div class="flex items-center gap-3">
+
+                        <div
+                            class="w-10 h-10 rounded-lg
+                                   bg-slate-50
+                                   flex items-center justify-center">
+
+                            <i data-lucide="file-plus"
+                               class="w-5 h-5 text-slate-600">
+                            </i>
+
+                        </div>
+
+                        <div class="min-w-0">
+
+                            <div class="font-medium text-slate-900">
+                                ${documento.nombre_documento || "Otros documentos"}
+                            </div>
+
+                            <div class="text-xs mt-1 ${estado.clase}">
+                                ${estado.texto}
                             </div>
 
                         </div>
+
+                    </div>
+
+                    <div
+                        class="mt-3 pt-3
+                               border-t border-slate-100
+                               text-xs text-slate-500">
+
+                        ${
+                            documento.numero_referencia
+                                ? `Referencia: ${documento.numero_referencia}`
+                                : ""
+                        }
+
+                        ${
+                            documento.fecha_caducidad
+                                ? ` · Caducidad: ${documento.fecha_caducidad}`
+                                : ""
+                        }
+
+                    </div>
+
+                </div>
+            `;
+
+        }).join("")
+}
 
                     </div>
 
