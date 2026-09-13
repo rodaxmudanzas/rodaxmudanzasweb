@@ -648,9 +648,10 @@ async function cargarDocumentacionVehiculos(transportistaId) {
 
 window._rodaxVehiculosDocumentacion = vehiculos || [];
 
-if (!vehiculos || vehiculos.length === 0)
+if (!vehiculos || vehiculos.length === 0) {
 
         contenedor.innerHTML = `
+        
             <div class="bg-white border border-slate-200
                         rounded-2xl p-10 text-center">
 
