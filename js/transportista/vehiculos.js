@@ -651,7 +651,7 @@ window._rodaxVehiculosDocumentacion = vehiculos || [];
 if (!vehiculos || vehiculos.length === 0) {
 
         contenedor.innerHTML = `
-        
+
             <div class="bg-white border border-slate-200
                         rounded-2xl p-10 text-center">
 
@@ -1049,10 +1049,13 @@ if (!vehiculos || vehiculos.length === 0) {
                         <!-- OTROS DOCUMENTOS -->
 
                         <div
-                            class="border border-dashed
-                                   border-slate-300 rounded-xl p-4
-                                   bg-white hover:bg-slate-50
-                                   transition">
+    onclick="abrirFormularioDocumentacionVehiculo('${vehiculo.id}', 'otros')"
+    class="border border-dashed
+           border-slate-300 rounded-xl p-4
+           bg-white hover:bg-slate-50
+           hover:border-blue-300
+           cursor-pointer
+           transition">
 
                             <div class="flex items-center gap-3">
 
