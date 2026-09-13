@@ -565,7 +565,6 @@
     cargarDocumentacionVehiculos(transportistaId);
 }
 
-
 async function cargarDocumentacionVehiculos(transportistaId) {
 
     const contenedor =
@@ -587,7 +586,13 @@ async function cargarDocumentacionVehiculos(transportistaId) {
         return;
     }
 
-    const { data: vehiculos, error } =
+    /*
+     * ============================================================
+     * 1. CARGAR VEHÍCULOS DEL TRANSPORTISTA
+     * ============================================================
+     */
+
+    const { data: vehiculos, error: errorVehiculos } =
         await cliente
             .from("vehiculos")
             .select("*")
@@ -596,11 +601,11 @@ async function cargarDocumentacionVehiculos(transportistaId) {
                 ascending: false
             });
 
-    if (error) {
+    if (errorVehiculos) {
 
         console.error(
-            "RODAX Vehículos: error cargando vehículos para documentación:",
-            error
+            "RODAX Vehículos: error cargando vehículos:",
+            errorVehiculos
         );
 
         contenedor.innerHTML = `
@@ -624,7 +629,7 @@ async function cargarDocumentacionVehiculos(transportistaId) {
                         </h3>
 
                         <p class="text-sm text-red-700 mt-1">
-                            ${error.message || "Error desconocido"}
+                            ${errorVehiculos.message || "Error desconocido"}
                         </p>
 
                     </div>
@@ -640,6 +645,13 @@ async function cargarDocumentacionVehiculos(transportistaId) {
 
         return;
     }
+
+
+    /*
+     * ============================================================
+     * 2. SIN VEHÍCULOS
+     * ============================================================
+     */
 
     if (!vehiculos || vehiculos.length === 0) {
 
@@ -687,231 +699,405 @@ async function cargarDocumentacionVehiculos(transportistaId) {
         return;
     }
 
-    contenedor.innerHTML = vehiculos.map(vehiculo => `
 
-        <div class="bg-white border border-slate-200
-            rounded-2xl overflow-hidden shadow-sm
-            hover:shadow-md transition-shadow duration-200">
+    /*
+     * ============================================================
+     * 3. CARGAR DOCUMENTACIÓN REAL
+     * ============================================================
+     */
 
-            <!-- VEHÍCULO -->
-            <div class="p-6 border-b border-slate-100">
+    const idsVehiculos =
+        vehiculos.map(vehiculo => vehiculo.id);
 
-                <div class="flex items-start justify-between">
+    const { data: documentos, error: errorDocumentos } =
+        await cliente
+            .from("vehiculos_documentacion")
+            .select("*")
+            .in("vehiculo_id", idsVehiculos)
+            .order("creado_en", {
+                ascending: false
+            });
 
-                    <div class="flex items-center gap-4">
 
-                        <div class="w-12 h-12 rounded-xl bg-blue-50
-                                    flex items-center justify-center">
+    if (errorDocumentos) {
 
-                            <i data-lucide="truck"
-                               class="w-6 h-6 text-blue-600"></i>
+        console.error(
+            "RODAX Vehículos: error cargando documentación:",
+            errorDocumentos
+        );
 
-                        </div>
+        contenedor.innerHTML = `
+            <div class="bg-white border border-red-200
+                        rounded-2xl p-8">
 
-                        <div>
+                <div class="flex items-start gap-4">
 
-                            <h3 class="text-lg font-bold text-slate-900">
-                                ${vehiculo.marca || "Sin marca"}
-                                ${vehiculo.modelo || ""}
-                            </h3>
+                    <div class="w-11 h-11 rounded-xl bg-red-50
+                                flex items-center justify-center">
 
-                            <p class="text-sm text-slate-500 mt-1">
-                                ${vehiculo.matricula || "Sin matrícula"}
-                                ·
-                                ${vehiculo.tipo_vehiculo || "Tipo no especificado"}
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <span
-                        class="px-3 py-1 rounded-full text-xs
-                               font-semibold bg-emerald-50
-                               text-emerald-700">
-
-                        ${vehiculo.estado || "Activo"}
-
-                    </span>
-
-                </div>
-
-            </div>
-
-            <!-- DOCUMENTOS -->
-            <div class="p-6">
-
-                <h4 class="font-semibold text-slate-900 mb-4">
-                    Documentación
-                </h4>
-
-                <div class="grid grid-cols-1 md:grid-cols-2
-                            xl:grid-cols-3 gap-4">
-
-                    <div class="border border-slate-200
-                                rounded-xl p-4">
-
-                        <div class="flex items-center gap-3">
-
-                            <i data-lucide="file-text"
-                               class="w-5 h-5 text-blue-600"></i>
-
-                            <div>
-
-                                <div class="font-medium text-slate-900">
-                                    Permiso de circulación
-                                </div>
-
-                                <div class="text-xs text-slate-500 mt-1">
-                                    Pendiente de registrar
-                                </div>
-
-                            </div>
-
-                        </div>
+                        <i data-lucide="alert-circle"
+                           class="w-6 h-6 text-red-600"></i>
 
                     </div>
 
+                    <div>
 
-                    <div class="border border-slate-200
-                                rounded-xl p-4">
+                        <h3 class="font-semibold text-red-800">
+                            No se ha podido cargar la documentación
+                        </h3>
 
-                        <div class="flex items-center gap-3">
-
-                            <i data-lucide="file-check"
-                               class="w-5 h-5 text-blue-600"></i>
-
-                            <div>
-
-                                <div class="font-medium text-slate-900">
-                                    Ficha técnica
-                                </div>
-
-                                <div class="text-xs text-slate-500 mt-1">
-                                    Pendiente de registrar
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="border border-slate-200
-                                rounded-xl p-4">
-
-                        <div class="flex items-center gap-3">
-
-                            <i data-lucide="clipboard-check"
-                               class="w-5 h-5 text-blue-600"></i>
-
-                            <div>
-
-                                <div class="font-medium text-slate-900">
-                                    ITV
-                                </div>
-
-                                <div class="text-xs text-slate-500 mt-1">
-                                    Pendiente de registrar
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="border border-slate-200
-                                rounded-xl p-4">
-
-                        <div class="flex items-center gap-3">
-
-                            <i data-lucide="shield-check"
-                               class="w-5 h-5 text-emerald-600"></i>
-
-                            <div>
-
-                                <div class="font-medium text-slate-900">
-                                    Seguro del vehículo
-                                </div>
-
-                                <div class="text-xs text-slate-500 mt-1">
-                                    Pendiente de registrar
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="border border-slate-200
-                                rounded-xl p-4">
-
-                        <div class="flex items-center gap-3">
-
-                            <i data-lucide="shield"
-                               class="w-5 h-5 text-emerald-600"></i>
-
-                            <div>
-
-                                <div class="font-medium text-slate-900">
-                                    Seguro de mercancías / transporte
-                                </div>
-
-                                <div class="text-xs text-slate-500 mt-1">
-                                    Pendiente de registrar
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="border border-dashed
-                                border-slate-300 rounded-xl p-4">
-
-                        <div class="flex items-center gap-3">
-
-                            <i data-lucide="plus"
-                               class="w-5 h-5 text-slate-500"></i>
-
-                            <div>
-
-                                <div class="font-medium text-slate-700">
-                                    Otros documentos
-                                </div>
-
-                                <div class="text-xs text-slate-500 mt-1">
-                                    Podremos añadir documentos adicionales
-                                </div>
-
-                            </div>
-
-                        </div>
+                        <p class="text-sm text-red-700 mt-1">
+                            ${errorDocumentos.message || "Error desconocido"}
+                        </p>
 
                     </div>
 
                 </div>
 
             </div>
+        `;
 
-        </div>
+        if (typeof lucide !== "undefined") {
+            lucide.createIcons();
+        }
 
-    `).join("");
+        return;
+    }
+
+
+    console.log(
+        "RODAX Vehículos — documentación cargada:",
+        documentos
+    );
+
+
+    /*
+     * ============================================================
+     * 4. TIPOS DE DOCUMENTACIÓN
+     * ============================================================
+     */
+
+    const tiposDocumentacion = [
+
+        {
+            tipo: "permiso_circulacion",
+            nombre: "Permiso de circulación",
+            icono: "file-text",
+            color: "blue"
+        },
+
+        {
+            tipo: "ficha_tecnica",
+            nombre: "Ficha técnica",
+            icono: "file-check",
+            color: "blue"
+        },
+
+        {
+            tipo: "itv",
+            nombre: "ITV",
+            icono: "clipboard-check",
+            color: "blue"
+        },
+
+        {
+            tipo: "seguro_vehiculo",
+            nombre: "Seguro del vehículo",
+            icono: "shield-check",
+            color: "green"
+        },
+
+        {
+            tipo: "seguro_mercancias",
+            nombre: "Seguro de mercancías / transporte",
+            icono: "shield",
+            color: "green"
+        }
+
+    ];
+
+
+    /*
+     * ============================================================
+     * 5. CALCULAR ESTADO SEGÚN FECHA DE CADUCIDAD
+     * ============================================================
+     */
+
+    function obtenerEstadoDocumento(documento) {
+
+        if (!documento) {
+            return {
+                texto: "Pendiente de registrar",
+                clase: "text-slate-500",
+                fondo: "bg-slate-100"
+            };
+        }
+
+        if (!documento.fecha_caducidad) {
+            return {
+                texto: "Registrado",
+                clase: "text-blue-700",
+                fondo: "bg-blue-50"
+            };
+        }
+
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+
+        const caducidad =
+            new Date(documento.fecha_caducidad + "T00:00:00");
+
+        const diferencia =
+            Math.ceil(
+                (caducidad - hoy) /
+                (1000 * 60 * 60 * 24)
+            );
+
+        if (diferencia < 0) {
+
+            return {
+                texto: "Caducado",
+                clase: "text-red-700",
+                fondo: "bg-red-50"
+            };
+        }
+
+        if (diferencia <= 30) {
+
+            return {
+                texto: `Caduca en ${diferencia} días`,
+                clase: "text-amber-700",
+                fondo: "bg-amber-50"
+            };
+        }
+
+        return {
+            texto: "Vigente",
+            clase: "text-emerald-700",
+            fondo: "bg-emerald-50"
+        };
+    }
+
+
+    /*
+     * ============================================================
+     * 6. CREAR TARJETAS
+     * ============================================================
+     */
+
+    contenedor.innerHTML = vehiculos.map(vehiculo => {
+
+        const documentosVehiculo =
+            (documentos || []).filter(
+                documento =>
+                    documento.vehiculo_id === vehiculo.id
+            );
+
+
+        return `
+            <div class="bg-white border border-slate-200
+                        rounded-2xl overflow-hidden shadow-sm
+                        hover:shadow-md transition-shadow duration-200">
+
+                <!-- CABECERA VEHÍCULO -->
+                <div class="p-6 border-b border-slate-100">
+
+                    <div class="flex items-start justify-between">
+
+                        <div class="flex items-center gap-4">
+
+                            <div class="w-12 h-12 rounded-xl bg-blue-50
+                                        flex items-center justify-center">
+
+                                <i data-lucide="truck"
+                                   class="w-6 h-6 text-blue-600"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3 class="text-lg font-bold text-slate-900">
+                                    ${vehiculo.marca || "Sin marca"}
+                                    ${vehiculo.modelo || ""}
+                                </h3>
+
+                                <p class="text-sm text-slate-500 mt-1">
+                                    ${vehiculo.matricula || "Sin matrícula"}
+                                    ·
+                                    ${vehiculo.tipo_vehiculo || "Tipo no especificado"}
+                                    ${vehiculo.anio
+                                        ? ` · Año ${vehiculo.anio}`
+                                        : ""}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <span
+                            class="px-3 py-1 rounded-full text-xs
+                                   font-semibold bg-emerald-50
+                                   text-emerald-700">
+
+                            ${vehiculo.estado || "Activo"}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DOCUMENTACIÓN -->
+                <div class="p-6">
+
+                    <h4 class="font-semibold text-slate-900 mb-4">
+                        Documentación
+                    </h4>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2
+                                xl:grid-cols-3 gap-4">
+
+                        ${tiposDocumentacion.map(tipoDocumento => {
+
+                            const documento =
+                                documentosVehiculo.find(
+                                    doc =>
+                                        doc.tipo_documento ===
+                                        tipoDocumento.tipo
+                                );
+
+                            const estado =
+                                obtenerEstadoDocumento(documento);
+
+                            return `
+                                <div
+                                    class="border border-slate-200
+                                           rounded-xl p-4
+                                           bg-white shadow-sm
+                                           hover:shadow-md
+                                           transition-shadow">
+
+                                    <div class="flex items-center gap-3">
+
+                                        <div
+                                            class="w-10 h-10 rounded-lg
+                                                   ${
+                                                       tipoDocumento.color === "green"
+                                                           ? "bg-emerald-50"
+                                                           : "bg-blue-50"
+                                                   }
+                                                   flex items-center justify-center">
+
+                                            <i
+                                                data-lucide="${tipoDocumento.icono}"
+                                                class="w-5 h-5
+                                                       ${
+                                                           tipoDocumento.color === "green"
+                                                               ? "text-emerald-600"
+                                                               : "text-blue-600"
+                                                       }">
+                                            </i>
+
+                                        </div>
+
+                                        <div class="min-w-0">
+
+                                            <div class="font-medium
+                                                        text-slate-900">
+                                                ${tipoDocumento.nombre}
+                                            </div>
+
+                                            <div class="text-xs mt-1
+                                                        ${estado.clase}">
+
+                                                ${estado.texto}
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    ${
+                                        documento
+                                            ? `
+                                                <div
+                                                    class="mt-3 pt-3
+                                                           border-t
+                                                           border-slate-100
+                                                           text-xs
+                                                           text-slate-500">
+
+                                                    ${
+                                                        documento.fecha_caducidad
+                                                            ? `Caducidad:
+                                                               ${documento.fecha_caducidad}`
+                                                            : "Sin fecha de caducidad"
+                                                    }
+
+                                                </div>
+                                            `
+                                            : ""
+                                    }
+
+                                </div>
+                            `;
+
+                        }).join("")}
+
+
+                        <!-- OTROS DOCUMENTOS -->
+
+                        <div
+                            class="border border-dashed
+                                   border-slate-300 rounded-xl p-4
+                                   bg-white hover:bg-slate-50
+                                   transition">
+
+                            <div class="flex items-center gap-3">
+
+                                <div
+                                    class="w-10 h-10 rounded-lg
+                                           bg-slate-50
+                                           flex items-center justify-center">
+
+                                    <i data-lucide="plus"
+                                       class="w-5 h-5 text-slate-500"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <div class="font-medium text-slate-700">
+                                        Otros documentos
+                                    </div>
+
+                                    <div class="text-xs text-slate-500 mt-1">
+                                        Podremos añadir documentos adicionales
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+    }).join("");
+
 
     if (typeof lucide !== "undefined") {
         lucide.createIcons();
     }
 }
 
-
-window.abrirPestanaDocumentacionVehiculos =
     abrirPestanaDocumentacionVehiculos;
 
 window.cargarDocumentacionVehiculos =
