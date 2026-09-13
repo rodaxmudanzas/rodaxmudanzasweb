@@ -437,6 +437,22 @@
 
     window.cargarMisVehiculos = cargarMisVehiculos;
 
+    function formatearFecha(fecha) {
+    if (!fecha) {
+        return "";
+    }
+
+    const partes = String(fecha).split("-");
+
+    if (partes.length !== 3) {
+        return fecha;
+    }
+
+    const [anio, mes, dia] = partes;
+
+    return `${dia}-${mes}-${anio}`;
+}
+
     function abrirPestanaDocumentacionVehiculos() {
 
     const contenedor =
@@ -1019,26 +1035,62 @@ if (!vehiculos || vehiculos.length === 0) {
                                     </div>
 
                                     ${
-                                        documento
-                                            ? `
-                                                <div
-                                                    class="mt-3 pt-3
-                                                           border-t
-                                                           border-slate-100
-                                                           text-xs
-                                                           text-slate-500">
+    documento
+        ? `
+            <div
+                class="mt-3 pt-3
+                       border-t
+                       border-slate-100">
 
-                                                    ${
-                                                        documento.fecha_caducidad
-                                                            ? `Caducidad:
-                                                               ${documento.fecha_caducidad}`
-                                                            : "Sin fecha de caducidad"
-                                                    }
+                <div class="text-xs text-slate-500">
+                    ${
+                        documento.fecha_caducidad
+                            ? `Caducidad:
+                               ${formatearFecha(documento.fecha_caducidad)}`
+                            : "Sin fecha de caducidad"
+                    }
+                </div>
 
-                                                </div>
-                                            `
-                                            : ""
-                                    }
+                <button
+                    type="button"
+                    onclick="event.stopPropagation(); subirDocumentoVehiculo('${documento.id}', '${vehiculo.id}', '${tipoDocumento.tipo}')"
+                    class="mt-3 inline-flex items-center gap-2
+                           px-3 py-2 rounded-lg
+                           bg-blue-50 text-blue-700
+                           hover:bg-blue-100
+                           text-xs font-semibold
+                           transition">
+
+                    <i data-lucide="upload" class="w-4 h-4"></i>
+
+                    Subir documento
+
+                </button>
+
+            </div>
+        `
+        : `
+            <div class="mt-3 pt-3 border-t border-slate-100">
+
+                <button
+                    type="button"
+                    onclick="event.stopPropagation(); subirDocumentoVehiculo(null, '${vehiculo.id}', '${tipoDocumento.tipo}')"
+                    class="inline-flex items-center gap-2
+                           px-3 py-2 rounded-lg
+                           bg-blue-50 text-blue-700
+                           hover:bg-blue-100
+                           text-xs font-semibold
+                           transition">
+
+                    <i data-lucide="upload" class="w-4 h-4"></i>
+
+                    Subir documento
+
+                </button>
+
+            </div>
+        `
+}
 
                                 </div>
                             `;
