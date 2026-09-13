@@ -804,7 +804,7 @@ if (!vehiculos || vehiculos.length === 0) {
         },
 
         {
-            tipo: "seguro_mercancias",
+            tipo: "seguro_transporte",
             nombre: "Seguro de mercancías / transporte",
             icono: "shield",
             color: "green"
