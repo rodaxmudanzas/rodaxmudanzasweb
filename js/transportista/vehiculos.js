@@ -449,9 +449,31 @@
         return;
     }
 
+    const cliente = window.dbClient;
+
+    if (!cliente) {
+        console.error(
+            "RODAX Vehículos: no se encontró dbClient."
+        );
+        return;
+    }
+
+    const transportistaId =
+        window.Transportista?.currentUserId ||
+        window.currentUserId ||
+        null;
+
+    if (!transportistaId) {
+        console.error(
+            "RODAX Vehículos: no se ha podido obtener el transportista_id."
+        );
+        return;
+    }
+
     contenedor.innerHTML = `
         <div class="space-y-6">
 
+            <!-- CABECERA -->
             <div class="flex items-center justify-between">
 
                 <div>
@@ -470,101 +492,64 @@
                     class="px-5 py-3 rounded-xl border
                            border-slate-200 text-slate-700
                            font-semibold hover:bg-slate-50 transition">
+
                     Volver a mis vehículos
+
                 </button>
 
             </div>
 
-            <div class="bg-white border border-slate-200
-                        rounded-2xl p-8">
+            <!-- INFORMACIÓN -->
+            <div class="bg-blue-50 border border-blue-100
+                        rounded-2xl p-5">
 
-                <div class="flex items-center gap-4 mb-6">
+                <div class="flex items-start gap-4">
 
-                    <div class="w-12 h-12 rounded-xl bg-blue-50
-                                flex items-center justify-center">
+                    <div class="w-11 h-11 rounded-xl bg-white
+                                flex items-center justify-center
+                                shrink-0">
 
-                        <i data-lucide="file-text"
-                           class="w-6 h-6 text-blue-600"></i>
+                        <i data-lucide="info"
+                           class="w-5 h-5 text-blue-600"></i>
 
                     </div>
 
                     <div>
-                        <h3 class="text-xl font-bold text-slate-900">
-                            Documentación de vehículos
+
+                        <h3 class="font-semibold text-blue-900">
+                            Documentación de tu flota
                         </h3>
 
-                        <p class="text-sm text-slate-500">
-                            Próximamente podrás gestionar aquí
-                            la documentación de cada vehículo.
+                        <p class="text-sm text-blue-800 mt-1">
+                            Aquí podrás consultar y gestionar la documentación
+                            asociada a cada uno de tus vehículos.
                         </p>
+
                     </div>
 
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            </div>
 
-                    <div class="border border-slate-200
-                                rounded-xl p-5">
+            <!-- DOCUMENTACIÓN -->
+            <div
+                id="vehiculos-documentacion-lista"
+                class="space-y-5">
 
-                        <div class="flex items-center gap-3 mb-3">
+                <div class="bg-white border border-slate-200
+                            rounded-2xl p-8 text-center">
 
-                            <i data-lucide="file-check"
-                               class="w-5 h-5 text-blue-600"></i>
+                    <div class="w-12 h-12 mx-auto mb-4 rounded-xl
+                                bg-slate-100 flex items-center justify-center">
 
-                            <span class="font-semibold text-slate-900">
-                                Documentación del vehículo
-                            </span>
-
-                        </div>
-
-                        <p class="text-sm text-slate-500">
-                            Ficha técnica, permiso de circulación
-                            y demás documentación obligatoria.
-                        </p>
+                        <i data-lucide="loader-circle"
+                           class="w-6 h-6 text-slate-500 animate-spin"></i>
 
                     </div>
 
-                    <div class="border border-slate-200
-                                rounded-xl p-5">
-
-                        <div class="flex items-center gap-3 mb-3">
-
-                            <i data-lucide="file-up"
-                               class="w-5 h-5 text-blue-600"></i>
-
-                            <span class="font-semibold text-slate-900">
-                                Subida de documentos
-                            </span>
-
-                        </div>
-
-                        <p class="text-sm text-slate-500">
-                            Los documentos podrán incorporarse
-                            directamente desde el panel.
-                        </p>
-
-                    </div>
-
-                    <div class="border border-slate-200
-                                rounded-xl p-5">
-
-                        <div class="flex items-center gap-3 mb-3">
-
-                            <i data-lucide="calendar-check"
-                               class="w-5 h-5 text-blue-600"></i>
-
-                            <span class="font-semibold text-slate-900">
-                                Vigencias
-                            </span>
-
-                        </div>
-
-                        <p class="text-sm text-slate-500">
-                            Controlaremos las fechas de caducidad
-                            y próximas renovaciones.
-                        </p>
-
-                    </div>
+                    <p class="text-slate-500">
+                        Cargando vehículos...
+                    </p>
 
                 </div>
 
@@ -576,12 +561,362 @@
     if (typeof lucide !== "undefined") {
         lucide.createIcons();
     }
+
+    cargarDocumentacionVehiculos(transportistaId);
 }
+
+
+async function cargarDocumentacionVehiculos(transportistaId) {
+
+    const contenedor =
+        document.getElementById("vehiculos-documentacion-lista");
+
+    if (!contenedor) {
+        console.error(
+            "RODAX Vehículos: no se encontró el contenedor de documentación."
+        );
+        return;
+    }
+
+    const cliente = window.dbClient;
+
+    if (!cliente) {
+        console.error(
+            "RODAX Vehículos: no se encontró dbClient."
+        );
+        return;
+    }
+
+    const { data: vehiculos, error } =
+        await cliente
+            .from("vehiculos")
+            .select("*")
+            .eq("transportista_id", transportistaId)
+            .order("creado_en", {
+                ascending: false
+            });
+
+    if (error) {
+
+        console.error(
+            "RODAX Vehículos: error cargando vehículos para documentación:",
+            error
+        );
+
+        contenedor.innerHTML = `
+            <div class="bg-white border border-red-200
+                        rounded-2xl p-8">
+
+                <div class="flex items-start gap-4">
+
+                    <div class="w-11 h-11 rounded-xl bg-red-50
+                                flex items-center justify-center">
+
+                        <i data-lucide="alert-circle"
+                           class="w-6 h-6 text-red-600"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3 class="font-semibold text-red-800">
+                            No se han podido cargar los vehículos
+                        </h3>
+
+                        <p class="text-sm text-red-700 mt-1">
+                            ${error.message || "Error desconocido"}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+        if (typeof lucide !== "undefined") {
+            lucide.createIcons();
+        }
+
+        return;
+    }
+
+    if (!vehiculos || vehiculos.length === 0) {
+
+        contenedor.innerHTML = `
+            <div class="bg-white border border-slate-200
+                        rounded-2xl p-10 text-center">
+
+                <div class="w-16 h-16 mx-auto mb-5 rounded-full
+                            bg-blue-50 flex items-center justify-center">
+
+                    <i data-lucide="file-text"
+                       class="w-8 h-8 text-blue-600"></i>
+
+                </div>
+
+                <h3 class="text-xl font-bold text-slate-900 mb-2">
+                    No tienes vehículos registrados
+                </h3>
+
+                <p class="text-slate-500 max-w-md mx-auto mb-6">
+                    Añade primero un vehículo para poder gestionar
+                    posteriormente su documentación.
+                </p>
+
+                <button
+                    type="button"
+                    onclick="abrirFormularioVehiculo()"
+                    class="inline-flex items-center gap-2 px-6 py-3
+                           rounded-xl bg-blue-600 hover:bg-blue-700
+                           text-white font-semibold transition">
+
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+
+                    Añadir vehículo
+
+                </button>
+
+            </div>
+        `;
+
+        if (typeof lucide !== "undefined") {
+            lucide.createIcons();
+        }
+
+        return;
+    }
+
+    contenedor.innerHTML = vehiculos.map(vehiculo => `
+
+        <div class="bg-white border border-slate-200
+                    rounded-2xl overflow-hidden">
+
+            <!-- VEHÍCULO -->
+            <div class="p-6 border-b border-slate-100">
+
+                <div class="flex items-start justify-between">
+
+                    <div class="flex items-center gap-4">
+
+                        <div class="w-12 h-12 rounded-xl bg-blue-50
+                                    flex items-center justify-center">
+
+                            <i data-lucide="truck"
+                               class="w-6 h-6 text-blue-600"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3 class="text-lg font-bold text-slate-900">
+                                ${vehiculo.marca || "Sin marca"}
+                                ${vehiculo.modelo || ""}
+                            </h3>
+
+                            <p class="text-sm text-slate-500 mt-1">
+                                ${vehiculo.matricula || "Sin matrícula"}
+                                ·
+                                ${vehiculo.tipo_vehiculo || "Tipo no especificado"}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <span
+                        class="px-3 py-1 rounded-full text-xs
+                               font-semibold bg-emerald-50
+                               text-emerald-700">
+
+                        ${vehiculo.estado || "Activo"}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- DOCUMENTOS -->
+            <div class="p-6">
+
+                <h4 class="font-semibold text-slate-900 mb-4">
+                    Documentación
+                </h4>
+
+                <div class="grid grid-cols-1 md:grid-cols-2
+                            xl:grid-cols-3 gap-4">
+
+                    <div class="border border-slate-200
+                                rounded-xl p-4">
+
+                        <div class="flex items-center gap-3">
+
+                            <i data-lucide="file-text"
+                               class="w-5 h-5 text-blue-600"></i>
+
+                            <div>
+
+                                <div class="font-medium text-slate-900">
+                                    Permiso de circulación
+                                </div>
+
+                                <div class="text-xs text-slate-500 mt-1">
+                                    Pendiente de registrar
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="border border-slate-200
+                                rounded-xl p-4">
+
+                        <div class="flex items-center gap-3">
+
+                            <i data-lucide="file-check"
+                               class="w-5 h-5 text-blue-600"></i>
+
+                            <div>
+
+                                <div class="font-medium text-slate-900">
+                                    Ficha técnica
+                                </div>
+
+                                <div class="text-xs text-slate-500 mt-1">
+                                    Pendiente de registrar
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="border border-slate-200
+                                rounded-xl p-4">
+
+                        <div class="flex items-center gap-3">
+
+                            <i data-lucide="clipboard-check"
+                               class="w-5 h-5 text-blue-600"></i>
+
+                            <div>
+
+                                <div class="font-medium text-slate-900">
+                                    ITV
+                                </div>
+
+                                <div class="text-xs text-slate-500 mt-1">
+                                    Pendiente de registrar
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="border border-slate-200
+                                rounded-xl p-4">
+
+                        <div class="flex items-center gap-3">
+
+                            <i data-lucide="shield-check"
+                               class="w-5 h-5 text-emerald-600"></i>
+
+                            <div>
+
+                                <div class="font-medium text-slate-900">
+                                    Seguro del vehículo
+                                </div>
+
+                                <div class="text-xs text-slate-500 mt-1">
+                                    Pendiente de registrar
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="border border-slate-200
+                                rounded-xl p-4">
+
+                        <div class="flex items-center gap-3">
+
+                            <i data-lucide="shield"
+                               class="w-5 h-5 text-emerald-600"></i>
+
+                            <div>
+
+                                <div class="font-medium text-slate-900">
+                                    Seguro de mercancías / transporte
+                                </div>
+
+                                <div class="text-xs text-slate-500 mt-1">
+                                    Pendiente de registrar
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="border border-dashed
+                                border-slate-300 rounded-xl p-4">
+
+                        <div class="flex items-center gap-3">
+
+                            <i data-lucide="plus"
+                               class="w-5 h-5 text-slate-500"></i>
+
+                            <div>
+
+                                <div class="font-medium text-slate-700">
+                                    Otros documentos
+                                </div>
+
+                                <div class="text-xs text-slate-500 mt-1">
+                                    Podremos añadir documentos adicionales
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `).join("");
+
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
+}
+
 
 window.abrirPestanaDocumentacionVehiculos =
     abrirPestanaDocumentacionVehiculos;
 
-    function abrirFormularioVehiculo() {
+window.cargarDocumentacionVehiculos =
+    cargarDocumentacionVehiculos;
+
+function abrirFormularioVehiculo() {
 
     const modal = document.createElement("div");
 
