@@ -1098,6 +1098,7 @@ async function cargarDocumentacionVehiculos(transportistaId) {
     }
 }
 
+    window.abrirPestanaDocumentacionVehiculos =
     abrirPestanaDocumentacionVehiculos;
 
 window.cargarDocumentacionVehiculos =
