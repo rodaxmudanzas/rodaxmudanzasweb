@@ -1575,11 +1575,14 @@ window.abrirFormularioDocumentacionVehiculo =
 window.cerrarFormularioDocumentacionVehiculo =
     cerrarFormularioDocumentacionVehiculo;
 
-    window.abrirPestanaDocumentacionVehiculos =
+window.abrirPestanaDocumentacionVehiculos =
     abrirPestanaDocumentacionVehiculos;
 
 window.cargarDocumentacionVehiculos =
     cargarDocumentacionVehiculos;
+
+window.guardarDocumentoVehiculo =
+    guardarDocumentoVehiculo;
 
 function abrirFormularioVehiculo() {
 
