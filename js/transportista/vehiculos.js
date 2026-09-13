@@ -690,7 +690,8 @@ async function cargarDocumentacionVehiculos(transportistaId) {
     contenedor.innerHTML = vehiculos.map(vehiculo => `
 
         <div class="bg-white border border-slate-200
-                    rounded-2xl overflow-hidden">
+            rounded-2xl overflow-hidden shadow-sm
+            hover:shadow-md transition-shadow duration-200">
 
             <!-- VEHÍCULO -->
             <div class="p-6 border-b border-slate-100">
