@@ -1128,7 +1128,10 @@ const nombreDocumento =
 
     modal.id = "modal-documentacion-vehiculo";
 
-    modal.className =
+modal.dataset.vehiculoId = vehiculoId;
+modal.dataset.tipoDocumento = tipoDocumento;
+
+modal.className =
         "fixed inset-0 z-[9999] flex items-center justify-center " +
         "bg-slate-900/50 backdrop-blur-sm p-4";
 
@@ -1410,16 +1413,16 @@ const nombreDocumento =
                 </button>
 
                 <button
-                    type="button"
-                    disabled
-                    title="Se activará en el siguiente paso"
-                    class="px-5 py-2.5 rounded-xl
-                           bg-slate-300 text-white
-                           font-semibold cursor-not-allowed">
+    type="button"
+    onclick="guardarDocumentoVehiculo()"
+    class="px-5 py-2.5 rounded-xl
+           bg-blue-600 hover:bg-blue-700
+           text-white font-semibold
+           transition">
 
-                    Guardar documento
+    Guardar documento
 
-                </button>
+</button>
 
             </div>
 
@@ -1446,6 +1449,125 @@ function cerrarFormularioDocumentacionVehiculo() {
     }
 }
 
+async function guardarDocumentoVehiculo() {
+
+    const modal =
+        document.getElementById("modal-documentacion-vehiculo");
+
+    if (!modal) {
+        console.error(
+            "RODAX Vehículos: no se encontró el modal de documentación."
+        );
+        return;
+    }
+
+    const vehiculoId =
+        modal.dataset.vehiculoId;
+
+    const tipoDocumento =
+        modal.dataset.tipoDocumento;
+
+    const nombre =
+        document.getElementById("documentacion-nombre")?.value.trim();
+
+    const referencia =
+        document.getElementById("documentacion-referencia")?.value.trim();
+
+    const fechaEmision =
+        document.getElementById("documentacion-fecha-emision")?.value || null;
+
+    const fechaCaducidad =
+        document.getElementById("documentacion-fecha-caducidad")?.value || null;
+
+    const observaciones =
+        document.getElementById("documentacion-observaciones")?.value.trim();
+
+    if (!vehiculoId) {
+        alert("No se ha podido identificar el vehículo.");
+        return;
+    }
+
+    if (!tipoDocumento) {
+        alert("No se ha podido identificar el tipo de documento.");
+        return;
+    }
+
+    if (!nombre) {
+        alert("Introduce el nombre del documento.");
+        return;
+    }
+
+    if (
+        fechaEmision &&
+        fechaCaducidad &&
+        fechaCaducidad < fechaEmision
+    ) {
+        alert(
+            "La fecha de caducidad no puede ser anterior a la fecha de emisión."
+        );
+        return;
+    }
+
+    const cliente = window.dbClient;
+
+    if (!cliente) {
+        console.error(
+            "RODAX Vehículos: no se encontró dbClient."
+        );
+        return;
+    }
+
+    const datosDocumento = {
+        vehiculo_id: vehiculoId,
+        tipo_documento: tipoDocumento,
+        nombre_documento: nombre,
+        archivo_path: null,
+        fecha_emision: fechaEmision,
+        fecha_caducidad: fechaCaducidad,
+        numero_referencia: referencia || null,
+        observaciones: observaciones || null
+    };
+
+    console.log(
+        "RODAX Vehículos — datos del documento preparados:",
+        datosDocumento
+    );
+
+    const { data, error } =
+        await cliente
+            .from("vehiculos_documentacion")
+            .insert([datosDocumento])
+            .select()
+            .single();
+
+    if (error) {
+
+        console.error(
+            "RODAX Vehículos: error guardando documentación:",
+            error
+        );
+
+        alert(
+            "No se ha podido guardar el documento: " +
+            error.message
+        );
+
+        return;
+    }
+
+    console.log(
+        "RODAX Vehículos: documento guardado correctamente:",
+        data
+    );
+
+    cerrarFormularioDocumentacionVehiculo();
+
+    await cargarDocumentacionVehiculos(
+        window.Transportista?.currentUserId ||
+        window.currentUserId ||
+        null
+    );
+}
 
 window.abrirFormularioDocumentacionVehiculo =
     abrirFormularioDocumentacionVehiculo;
