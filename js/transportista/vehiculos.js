@@ -1101,28 +1101,28 @@ if (!vehiculos || vehiculos.length === 0) {
                         <!-- OTROS DOCUMENTOS -->
 
 <div
-    onclick="abrirFormularioDocumentacionVehiculo('${vehiculo.id}', 'otros')"
     class="border border-dashed
            border-slate-300 rounded-xl p-4
            bg-white hover:bg-slate-50
-           hover:border-blue-300
-           cursor-pointer
            transition">
 
-    <div class="flex items-center gap-3">
+    <div
+        class="flex items-center gap-3 cursor-pointer"
+        onclick="abrirFormularioDocumentacionVehiculo('${vehiculo.id}', 'otros')">
 
         <div
             class="w-10 h-10 rounded-lg
                    bg-slate-50
                    flex items-center justify-center">
 
-            <i data-lucide="plus"
-               class="w-5 h-5 text-slate-500"></i>
+            <i
+                data-lucide="plus"
+                class="w-5 h-5 text-slate-500">
+            </i>
 
         </div>
 
         <div>
-
             <div class="font-medium text-slate-700">
                 Añadir otro documento
             </div>
@@ -1130,10 +1130,27 @@ if (!vehiculos || vehiculos.length === 0) {
             <div class="text-xs text-slate-500 mt-1">
                 Añade autorizaciones, licencias u otros documentos
             </div>
-
         </div>
 
     </div>
+
+    <button
+        type="button"
+        onclick="event.stopPropagation(); subirDocumentoVehiculo(null, '${vehiculo.id}', 'otros')"
+        class="mt-4 inline-flex items-center gap-2
+               px-3 py-2 rounded-lg
+               bg-blue-50 text-blue-600
+               text-xs font-semibold
+               hover:bg-blue-100 transition">
+
+        <i
+            data-lucide="upload"
+            class="w-4 h-4">
+        </i>
+
+        Subir documento
+
+    </button>
 
 </div>
 
