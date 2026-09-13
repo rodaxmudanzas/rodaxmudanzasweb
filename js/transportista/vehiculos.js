@@ -1115,7 +1115,7 @@ function abrirFormularioDocumentacionVehiculo(
         ficha_tecnica: "Ficha técnica",
         itv: "ITV",
         seguro_vehiculo: "Seguro del vehículo",
-        seguro_mercancias: "Seguro de mercancías / transporte"
+        seguro_transporte: "Seguro de mercancías / transporte"
     };
 
     const esOtroDocumento = tipoDocumento === "otros";
