@@ -2597,8 +2597,8 @@ function subirDocumentoVehiculo(documentoId, vehiculoId, tipoDocumento) {
     );
 
     /*
-     * Si todavía no existe el registro del documento,
-     * primero abrimos el formulario para registrar sus datos.
+     * Si todavía no existe el registro documental,
+     * primero registramos los datos del documento.
      */
     if (!documentoId) {
 
@@ -2610,10 +2610,26 @@ function subirDocumentoVehiculo(documentoId, vehiculoId, tipoDocumento) {
         return;
     }
 
+    const cliente = window.dbClient;
+
+    if (!cliente) {
+
+        console.error(
+            "RODAX Vehículos: no se encontró dbClient."
+        );
+
+        alert(
+            "No se ha podido conectar con el sistema."
+        );
+
+        return;
+    }
+
     /*
-     * Crear selector de archivo de forma dinámica.
+     * Selector de archivo
      */
-    const inputArchivo = document.createElement("input");
+    const inputArchivo =
+        document.createElement("input");
 
     inputArchivo.type = "file";
 
@@ -2622,38 +2638,177 @@ function subirDocumentoVehiculo(documentoId, vehiculoId, tipoDocumento) {
 
     inputArchivo.style.display = "none";
 
-    /*
-     * Cuando el usuario selecciona el archivo,
-     * por ahora mostramos que la selección funciona.
-     * La subida real a Supabase Storage será el siguiente paso.
-     */
-    inputArchivo.addEventListener("change", function () {
+    inputArchivo.addEventListener(
+        "change",
+        async function () {
 
-        const archivo = inputArchivo.files?.[0];
+            const archivo =
+                inputArchivo.files?.[0];
 
-        if (!archivo) {
-            return;
+            if (!archivo) {
+                return;
+            }
+
+            /*
+             * Límite inicial: 10 MB
+             */
+            const TAMANO_MAXIMO =
+                10 * 1024 * 1024;
+
+            if (archivo.size > TAMANO_MAXIMO) {
+
+                alert(
+                    "El archivo supera el límite de 10 MB."
+                );
+
+                return;
+            }
+
+            try {
+
+                /*
+                 * Obtener transportista
+                 */
+                const transportistaId =
+                    window.Transportista?.currentUserId ||
+                    window.currentUserId ||
+                    null;
+
+                if (!transportistaId) {
+
+                    console.error(
+                        "RODAX Vehículos: no se ha podido obtener el transportista_id."
+                    );
+
+                    alert(
+                        "No se ha podido identificar al transportista."
+                    );
+
+                    return;
+                }
+
+                /*
+                 * Obtener extensión
+                 */
+                const partesNombre =
+                    archivo.name.split(".");
+
+                const extension =
+                    partesNombre.length > 1
+                        ? partesNombre.pop().toLowerCase()
+                        : "archivo";
+
+                /*
+                 * Nombre único del archivo
+                 */
+                const nombreArchivo =
+                    `${Date.now()}-${Math.random()
+                        .toString(36)
+                        .substring(2, 10)}.${extension}`;
+
+                /*
+                 * Ruta organizada del documento
+                 */
+                const rutaArchivo =
+                    `documentos-vehiculos/${transportistaId}/${vehiculoId}/${tipoDocumento}/${nombreArchivo}`;
+
+                console.log(
+                    "RODAX Vehículos — subiendo archivo:",
+                    rutaArchivo
+                );
+
+                /*
+                 * Subir a Supabase Storage
+                 */
+                const {
+                    error: errorSubida
+                } = await cliente.storage
+                    .from("documentos")
+                    .upload(
+                        rutaArchivo,
+                        archivo,
+                        {
+                            cacheControl: "3600",
+                            upsert: false
+                        }
+                    );
+
+                if (errorSubida) {
+
+                    console.error(
+                        "RODAX Vehículos: error subiendo archivo:",
+                        errorSubida
+                    );
+
+                    alert(
+                        "No se ha podido subir el documento.\n\n" +
+                        errorSubida.message
+                    );
+
+                    return;
+                }
+
+                /*
+                 * Guardar la ruta en vehiculos_documentacion
+                 */
+                const {
+                    error: errorActualizacion
+                } = await cliente
+                    .from("vehiculos_documentacion")
+                    .update({
+                        archivo_path: rutaArchivo
+                    })
+                    .eq("id", documentoId);
+
+                if (errorActualizacion) {
+
+                    console.error(
+                        "RODAX Vehículos: error actualizando documento:",
+                        errorActualizacion
+                    );
+
+                    alert(
+                        "El archivo se ha subido, pero no se ha podido vincular al documento.\n\n" +
+                        errorActualizacion.message
+                    );
+
+                    return;
+                }
+
+                console.log(
+                    "RODAX Vehículos — documento subido correctamente:",
+                    rutaArchivo
+                );
+
+                alert(
+                    "Documento subido correctamente."
+                );
+
+                /*
+                 * Recargar documentación
+                 */
+                cargarDocumentacionVehiculos(
+                    transportistaId
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "RODAX Vehículos: error inesperado durante la subida:",
+                    error
+                );
+
+                alert(
+                    "Se ha producido un error al subir el documento."
+                );
+            }
         }
-
-        console.log(
-            "RODAX Vehículos — archivo seleccionado:",
-            archivo.name
-        );
-
-        alert(
-            "Archivo seleccionado correctamente:\n\n" +
-            archivo.name +
-            "\n\nLa subida al servidor la conectaremos en el siguiente paso."
-        );
-    });
+    );
 
     document.body.appendChild(inputArchivo);
 
     inputArchivo.click();
 
-    /*
-     * Limpiar el elemento temporal.
-     */
     setTimeout(() => {
         inputArchivo.remove();
     }, 1000);
