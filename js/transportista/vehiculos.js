@@ -2585,4 +2585,81 @@ window.cerrarFormularioVehiculo =
     window.guardarVehiculo =
     guardarVehiculo;
 
+function subirDocumentoVehiculo(documentoId, vehiculoId, tipoDocumento) {
+
+    console.log(
+        "RODAX Vehículos — iniciar subida:",
+        {
+            documentoId,
+            vehiculoId,
+            tipoDocumento
+        }
+    );
+
+    /*
+     * Si todavía no existe el registro del documento,
+     * primero abrimos el formulario para registrar sus datos.
+     */
+    if (!documentoId) {
+
+        abrirFormularioDocumentacionVehiculo(
+            vehiculoId,
+            tipoDocumento
+        );
+
+        return;
+    }
+
+    /*
+     * Crear selector de archivo de forma dinámica.
+     */
+    const inputArchivo = document.createElement("input");
+
+    inputArchivo.type = "file";
+
+    inputArchivo.accept =
+        ".pdf,.jpg,.jpeg,.png,.webp";
+
+    inputArchivo.style.display = "none";
+
+    /*
+     * Cuando el usuario selecciona el archivo,
+     * por ahora mostramos que la selección funciona.
+     * La subida real a Supabase Storage será el siguiente paso.
+     */
+    inputArchivo.addEventListener("change", function () {
+
+        const archivo = inputArchivo.files?.[0];
+
+        if (!archivo) {
+            return;
+        }
+
+        console.log(
+            "RODAX Vehículos — archivo seleccionado:",
+            archivo.name
+        );
+
+        alert(
+            "Archivo seleccionado correctamente:\n\n" +
+            archivo.name +
+            "\n\nLa subida al servidor la conectaremos en el siguiente paso."
+        );
+    });
+
+    document.body.appendChild(inputArchivo);
+
+    inputArchivo.click();
+
+    /*
+     * Limpiar el elemento temporal.
+     */
+    setTimeout(() => {
+        inputArchivo.remove();
+    }, 1000);
+}
+
+window.subirDocumentoVehiculo =
+    subirDocumentoVehiculo;
+
 })();
