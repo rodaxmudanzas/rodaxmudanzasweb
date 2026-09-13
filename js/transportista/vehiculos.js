@@ -644,16 +644,11 @@ async function cargarDocumentacionVehiculos(transportistaId) {
         }
 
         return;
-    }
+}
 
+window._rodaxVehiculosDocumentacion = vehiculos || [];
 
-    /*
-     * ============================================================
-     * 2. SIN VEHÍCULOS
-     * ============================================================
-     */
-
-    if (!vehiculos || vehiculos.length === 0) {
+if (!vehiculos || vehiculos.length === 0)
 
         contenedor.innerHTML = `
             <div class="bg-white border border-slate-200
@@ -1100,6 +1095,345 @@ async function cargarDocumentacionVehiculos(transportistaId) {
         lucide.createIcons();
     }
 }
+
+function abrirFormularioDocumentacionVehiculo(
+    vehiculoId,
+    tipoDocumento
+) {
+
+    const vehiculo =
+        window._rodaxVehiculosDocumentacion?.find(
+            v => v.id === vehiculoId
+        );
+
+    const nombresDocumentos = {
+        permiso_circulacion: "Permiso de circulación",
+        ficha_tecnica: "Ficha técnica",
+        itv: "ITV",
+        seguro_vehiculo: "Seguro del vehículo",
+        seguro_mercancias: "Seguro de mercancías / transporte"
+    };
+
+    const nombreDocumento =
+        nombresDocumentos[tipoDocumento] ||
+        "Documento";
+
+    const modal = document.createElement("div");
+
+    modal.id = "modal-documentacion-vehiculo";
+
+    modal.className =
+        "fixed inset-0 z-[9999] flex items-center justify-center " +
+        "bg-slate-900/50 backdrop-blur-sm p-4";
+
+    modal.innerHTML = `
+
+        <div
+            class="w-full max-w-2xl bg-white rounded-2xl
+                   shadow-2xl overflow-hidden">
+
+            <!-- CABECERA -->
+
+            <div
+                class="px-6 py-5 border-b border-slate-200
+                       flex items-center justify-between">
+
+                <div class="flex items-center gap-4">
+
+                    <div
+                        class="w-11 h-11 rounded-xl bg-blue-50
+                               flex items-center justify-center">
+
+                        <i
+                            data-lucide="file-text"
+                            class="w-5 h-5 text-blue-600">
+                        </i>
+
+                    </div>
+
+                    <div>
+
+                        <h2
+                            class="text-xl font-bold text-slate-900">
+
+                            ${nombreDocumento}
+
+                        </h2>
+
+                        <p
+                            class="text-sm text-slate-500 mt-1">
+
+                            ${vehiculo
+                                ? `${vehiculo.marca || "Sin marca"} ${vehiculo.modelo || ""} · ${vehiculo.matricula || "Sin matrícula"}`
+                                : "Vehículo seleccionado"
+                            }
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <button
+                    type="button"
+                    onclick="cerrarFormularioDocumentacionVehiculo()"
+                    class="w-9 h-9 rounded-lg
+                           flex items-center justify-center
+                           text-slate-400
+                           hover:bg-slate-100
+                           hover:text-slate-700
+                           transition">
+
+                    <i
+                        data-lucide="x"
+                        class="w-5 h-5">
+                    </i>
+
+                </button>
+
+            </div>
+
+
+            <!-- CONTENIDO -->
+
+            <div class="p-6 space-y-5">
+
+                <!-- INFORMACIÓN -->
+
+                <div
+                    class="bg-blue-50 border border-blue-100
+                           rounded-xl p-4">
+
+                    <div class="flex items-start gap-3">
+
+                        <i
+                            data-lucide="info"
+                            class="w-5 h-5 text-blue-600 mt-0.5">
+                        </i>
+
+                        <div>
+
+                            <p
+                                class="text-sm font-medium
+                                       text-blue-900">
+
+                                Información del documento
+
+                            </p>
+
+                            <p
+                                class="text-xs text-blue-800 mt-1">
+
+                                Registra los datos del documento.
+                                En el siguiente paso añadiremos
+                                la subida del archivo.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- NOMBRE -->
+
+                <div>
+
+                    <label
+                        class="block text-sm font-semibold
+                               text-slate-700 mb-2">
+
+                        Nombre del documento
+
+                    </label>
+
+                    <input
+                        id="documentacion-nombre"
+                        type="text"
+                        value="${nombreDocumento}"
+                        class="w-full px-4 py-3 rounded-xl
+                               border border-slate-200
+                               focus:outline-none
+                               focus:ring-2
+                               focus:ring-blue-500
+                               focus:border-blue-500">
+
+                </div>
+
+
+                <!-- REFERENCIA -->
+
+                <div>
+
+                    <label
+                        class="block text-sm font-semibold
+                               text-slate-700 mb-2">
+
+                        Número / referencia
+
+                    </label>
+
+                    <input
+                        id="documentacion-referencia"
+                        type="text"
+                        placeholder="Número de póliza, referencia, etc."
+                        class="w-full px-4 py-3 rounded-xl
+                               border border-slate-200
+                               focus:outline-none
+                               focus:ring-2
+                               focus:ring-blue-500
+                               focus:border-blue-500">
+
+                </div>
+
+
+                <!-- FECHAS -->
+
+                <div
+                    class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    <div>
+
+                        <label
+                            class="block text-sm font-semibold
+                                   text-slate-700 mb-2">
+
+                            Fecha de emisión
+
+                        </label>
+
+                        <input
+                            id="documentacion-fecha-emision"
+                            type="date"
+                            class="w-full px-4 py-3 rounded-xl
+                                   border border-slate-200
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-blue-500
+                                   focus:border-blue-500">
+
+                    </div>
+
+
+                    <div>
+
+                        <label
+                            class="block text-sm font-semibold
+                                   text-slate-700 mb-2">
+
+                            Fecha de caducidad
+
+                        </label>
+
+                        <input
+                            id="documentacion-fecha-caducidad"
+                            type="date"
+                            class="w-full px-4 py-3 rounded-xl
+                                   border border-slate-200
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-blue-500
+                                   focus:border-blue-500">
+
+                    </div>
+
+                </div>
+
+
+                <!-- OBSERVACIONES -->
+
+                <div>
+
+                    <label
+                        class="block text-sm font-semibold
+                               text-slate-700 mb-2">
+
+                        Observaciones
+
+                    </label>
+
+                    <textarea
+                        id="documentacion-observaciones"
+                        rows="3"
+                        placeholder="Información adicional..."
+                        class="w-full px-4 py-3 rounded-xl
+                               border border-slate-200
+                               resize-none
+                               focus:outline-none
+                               focus:ring-2
+                               focus:ring-blue-500
+                               focus:border-blue-500"></textarea>
+
+                </div>
+
+            </div>
+
+
+            <!-- PIE -->
+
+            <div
+                class="px-6 py-4 border-t border-slate-200
+                       bg-slate-50 flex justify-end gap-3">
+
+                <button
+                    type="button"
+                    onclick="cerrarFormularioDocumentacionVehiculo()"
+                    class="px-5 py-2.5 rounded-xl
+                           border border-slate-200
+                           bg-white text-slate-700
+                           font-semibold
+                           hover:bg-slate-50
+                           transition">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    type="button"
+                    disabled
+                    title="Se activará en el siguiente paso"
+                    class="px-5 py-2.5 rounded-xl
+                           bg-slate-300 text-white
+                           font-semibold cursor-not-allowed">
+
+                    Guardar documento
+
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
+}
+
+
+function cerrarFormularioDocumentacionVehiculo() {
+
+    const modal =
+        document.getElementById(
+            "modal-documentacion-vehiculo"
+        );
+
+    if (modal) {
+        modal.remove();
+    }
+}
+
+
+window.abrirFormularioDocumentacionVehiculo =
+    abrirFormularioDocumentacionVehiculo;
+
+window.cerrarFormularioDocumentacionVehiculo =
+    cerrarFormularioDocumentacionVehiculo;
 
     window.abrirPestanaDocumentacionVehiculos =
     abrirPestanaDocumentacionVehiculos;
