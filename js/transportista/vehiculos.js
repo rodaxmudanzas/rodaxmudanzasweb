@@ -971,12 +971,15 @@ async function cargarDocumentacionVehiculos(transportistaId) {
                                 obtenerEstadoDocumento(documento);
 
                             return `
-                                <div
-                                    class="border border-slate-200
-                                           rounded-xl p-4
-                                           bg-white shadow-sm
-                                           hover:shadow-md
-                                           transition-shadow">
+    <div
+        onclick="abrirFormularioDocumentacionVehiculo('${vehiculo.id}', '${tipoDocumento.tipo}')"
+        class="border border-slate-200
+               rounded-xl p-4
+               bg-white shadow-sm
+               hover:shadow-md
+               hover:border-blue-300
+               cursor-pointer
+               transition-all duration-200">
 
                                     <div class="flex items-center gap-3">
 
