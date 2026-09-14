@@ -2834,29 +2834,392 @@ async function abrirGestionVehiculo(vehiculoId) {
 
                 <!-- RESTO DE SECCIONES: RESERVADAS -->
                 <div
-                    data-gestion-contenido="fotografias"
-                    class="hidden">
+    data-gestion-contenido="documentacion"
+    class="hidden">
 
-                    <div class="text-center py-16">
+    <div class="mb-6">
 
-                        <i
-                            data-lucide="images"
-                            class="w-10 h-10 mx-auto
-                                   text-slate-300">
-                        </i>
+        <h3 class="text-lg font-bold text-slate-900">
+            Documentación del vehículo
+        </h3>
 
-                        <h3 class="mt-4 text-lg font-bold
-                                   text-slate-800">
-                            Fotografías
-                        </h3>
+        <p class="text-sm text-slate-500 mt-1">
+            Gestiona la documentación asociada a este vehículo.
+        </p>
 
-                        <p class="mt-2 text-sm text-slate-500">
-                            Esta sección se desarrollará en el siguiente paso.
-                        </p>
+    </div>
 
-                    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <!-- PERMISO DE CIRCULACIÓN -->
+        <div
+            class="rounded-xl border border-slate-200
+                   bg-white p-5">
+
+            <div class="flex items-start gap-3">
+
+                <div
+                    class="w-10 h-10 rounded-lg bg-blue-50
+                           flex items-center justify-center">
+
+                    <i
+                        data-lucide="file-text"
+                        class="w-5 h-5 text-blue-600">
+                    </i>
 
                 </div>
+
+                <div class="flex-1">
+
+                    <h4 class="font-semibold text-slate-900">
+                        Permiso de circulación
+                    </h4>
+
+                    <p class="text-sm text-slate-500 mt-1">
+                        Documento oficial del vehículo.
+                    </p>
+
+                    <button
+                        type="button"
+                        onclick="abrirFormularioDocumentacionVehiculo(
+                            '${vehiculo.id}',
+                            'permiso_circulacion'
+                        )"
+                        class="mt-4 inline-flex items-center gap-2
+                               px-4 py-2 rounded-lg
+                               bg-blue-50 text-blue-700
+                               hover:bg-blue-100
+                               text-sm font-semibold">
+
+                        <i
+                            data-lucide="file-plus"
+                            class="w-4 h-4">
+                        </i>
+
+                        Gestionar
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FICHA TÉCNICA -->
+        <div
+            class="rounded-xl border border-slate-200
+                   bg-white p-5">
+
+            <div class="flex items-start gap-3">
+
+                <div
+                    class="w-10 h-10 rounded-lg bg-blue-50
+                           flex items-center justify-center">
+
+                    <i
+                        data-lucide="file-check"
+                        class="w-5 h-5 text-blue-600">
+                    </i>
+
+                </div>
+
+                <div class="flex-1">
+
+                    <h4 class="font-semibold text-slate-900">
+                        Ficha técnica
+                    </h4>
+
+                    <p class="text-sm text-slate-500 mt-1">
+                        Características técnicas del vehículo.
+                    </p>
+
+                    <button
+                        type="button"
+                        onclick="abrirFormularioDocumentacionVehiculo(
+                            '${vehiculo.id}',
+                            'ficha_tecnica'
+                        )"
+                        class="mt-4 inline-flex items-center gap-2
+                               px-4 py-2 rounded-lg
+                               bg-blue-50 text-blue-700
+                               hover:bg-blue-100
+                               text-sm font-semibold">
+
+                        <i
+                            data-lucide="file-plus"
+                            class="w-4 h-4">
+                        </i>
+
+                        Gestionar
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ITV -->
+        <div
+            class="rounded-xl border border-slate-200
+                   bg-white p-5">
+
+            <div class="flex items-start gap-3">
+
+                <div
+                    class="w-10 h-10 rounded-lg bg-blue-50
+                           flex items-center justify-center">
+
+                    <i
+                        data-lucide="clipboard-check"
+                        class="w-5 h-5 text-blue-600">
+                    </i>
+
+                </div>
+
+                <div class="flex-1">
+
+                    <h4 class="font-semibold text-slate-900">
+                        ITV
+                    </h4>
+
+                    <p class="text-sm text-slate-500 mt-1">
+                        Inspección técnica del vehículo.
+                    </p>
+
+                    <button
+                        type="button"
+                        onclick="abrirFormularioDocumentacionVehiculo(
+                            '${vehiculo.id}',
+                            'itv'
+                        )"
+                        class="mt-4 inline-flex items-center gap-2
+                               px-4 py-2 rounded-lg
+                               bg-blue-50 text-blue-700
+                               hover:bg-blue-100
+                               text-sm font-semibold">
+
+                        <i
+                            data-lucide="file-plus"
+                            class="w-4 h-4">
+                        </i>
+
+                        Gestionar
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SEGURO DEL VEHÍCULO -->
+        <div
+            class="rounded-xl border border-slate-200
+                   bg-white p-5">
+
+            <div class="flex items-start gap-3">
+
+                <div
+                    class="w-10 h-10 rounded-lg bg-emerald-50
+                           flex items-center justify-center">
+
+                    <i
+                        data-lucide="shield-check"
+                        class="w-5 h-5 text-emerald-600">
+                    </i>
+
+                </div>
+
+                <div class="flex-1">
+
+                    <h4 class="font-semibold text-slate-900">
+                        Seguro del vehículo
+                    </h4>
+
+                    <p class="text-sm text-slate-500 mt-1">
+                        Póliza y documentación del seguro.
+                    </p>
+
+                    <button
+                        type="button"
+                        onclick="abrirFormularioDocumentacionVehiculo(
+                            '${vehiculo.id}',
+                            'seguro_vehiculo'
+                        )"
+                        class="mt-4 inline-flex items-center gap-2
+                               px-4 py-2 rounded-lg
+                               bg-emerald-50 text-emerald-700
+                               hover:bg-emerald-100
+                               text-sm font-semibold">
+
+                        <i
+                            data-lucide="shield-plus"
+                            class="w-4 h-4">
+                        </i>
+
+                        Gestionar
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SEGURO DE MERCANCÍAS / TRANSPORTE -->
+        <div
+            class="rounded-xl border border-slate-200
+                   bg-white p-5">
+
+            <div class="flex items-start gap-3">
+
+                <div
+                    class="w-10 h-10 rounded-lg bg-emerald-50
+                           flex items-center justify-center">
+
+                    <i
+                        data-lucide="shield"
+                        class="w-5 h-5 text-emerald-600">
+                    </i>
+
+                </div>
+
+                <div class="flex-1">
+
+                    <h4 class="font-semibold text-slate-900">
+                        Seguro de mercancías / transporte
+                    </h4>
+
+                    <p class="text-sm text-slate-500 mt-1">
+                        Cobertura de mercancías y transporte.
+                    </p>
+
+                    <button
+                        type="button"
+                        onclick="abrirFormularioDocumentacionVehiculo(
+                            '${vehiculo.id}',
+                            'seguro_transporte'
+                        )"
+                        class="mt-4 inline-flex items-center gap-2
+                               px-4 py-2 rounded-lg
+                               bg-emerald-50 text-emerald-700
+                               hover:bg-emerald-100
+                               text-sm font-semibold">
+
+                        <i
+                            data-lucide="shield-plus"
+                            class="w-4 h-4">
+                        </i>
+
+                        Gestionar
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- OTROS DOCUMENTOS -->
+        <div
+            class="rounded-xl border border-slate-200
+                   bg-white p-5">
+
+            <div class="flex items-start gap-3">
+
+                <div
+                    class="w-10 h-10 rounded-lg bg-slate-100
+                           flex items-center justify-center">
+
+                    <i
+                        data-lucide="files"
+                        class="w-5 h-5 text-slate-600">
+                    </i>
+
+                </div>
+
+                <div class="flex-1">
+
+                    <h4 class="font-semibold text-slate-900">
+                        Otros documentos
+                    </h4>
+
+                    <p class="text-sm text-slate-500 mt-1">
+                        Licencias, autorizaciones y otros documentos.
+                    </p>
+
+                    <button
+                        type="button"
+                        onclick="abrirFormularioDocumentacionVehiculo(
+                            '${vehiculo.id}',
+                            'otros'
+                        )"
+                        class="mt-4 inline-flex items-center gap-2
+                               px-4 py-2 rounded-lg
+                               bg-slate-100 text-slate-700
+                               hover:bg-slate-200
+                               text-sm font-semibold">
+
+                        <i
+                            data-lucide="plus"
+                            class="w-4 h-4">
+                        </i>
+
+                        Añadir documento
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="mt-6 rounded-xl border border-blue-100
+               bg-blue-50 p-4">
+
+        <div class="flex items-start gap-3">
+
+            <i
+                data-lucide="info"
+                class="w-5 h-5 text-blue-600 mt-0.5">
+            </i>
+
+            <div>
+
+                <p class="text-sm font-semibold text-blue-900">
+                    Documentación centralizada
+                </p>
+
+                <p class="text-sm text-blue-800 mt-1">
+                    Desde aquí podrás registrar la información,
+                    adjuntar archivos y actualizar los documentos
+                    asociados a este vehículo.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 
                 <div
