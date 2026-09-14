@@ -2539,9 +2539,10 @@ async function abrirGestionVehiculo(vehiculoId) {
         "fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4";
 
     modal.innerHTML = `
-        <div class="w-full max-w-3xl max-h-[90vh] overflow-y-auto
-                    bg-white rounded-2xl shadow-2xl">
+        <div class="w-full max-w-5xl max-h-[92vh] overflow-hidden
+                    bg-white rounded-2xl shadow-2xl flex flex-col">
 
+            <!-- CABECERA -->
             <div class="flex items-center justify-between
                         px-6 py-5 border-b border-slate-200">
 
@@ -2551,155 +2552,526 @@ async function abrirGestionVehiculo(vehiculoId) {
                         ${vehiculo.modelo || ""}
                     </h2>
 
-                    <p class="text-sm text-slate-500 mt-1">
-                        Gestiona la información de este vehículo.
-                    </p>
+                    <div class="flex items-center gap-3 mt-1">
+
+                        <span class="text-sm text-slate-500">
+                            Matrícula:
+                            <strong class="text-slate-700">
+                                ${vehiculo.matricula || "No indicada"}
+                            </strong>
+                        </span>
+
+                        <span class="inline-flex items-center
+                                     px-2.5 py-1 rounded-full
+                                     text-xs font-semibold
+                                     bg-emerald-100 text-emerald-700">
+                            ${vehiculo.estado || "Activo"}
+                        </span>
+
+                    </div>
                 </div>
 
                 <button
                     type="button"
                     onclick="cerrarGestionVehiculo()"
-                    class="p-2 rounded-lg hover:bg-slate-100 text-slate-500"
+                    class="p-2 rounded-lg hover:bg-slate-100
+                           text-slate-500"
                     aria-label="Cerrar">
+
                     <i data-lucide="x" class="w-5 h-5"></i>
+
                 </button>
 
             </div>
 
-            <div class="p-6">
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- NAVEGACIÓN DE LA FICHA -->
+            <div class="border-b border-slate-200 bg-slate-50">
 
-                    <div>
-                        <label class="block text-sm font-medium
-                                      text-slate-700 mb-2">
-                            Matrícula
-                        </label>
+                <div class="flex items-center gap-1 px-4 overflow-x-auto">
 
-                        <input
-                            type="text"
-                            value="${vehiculo.matricula || ""}"
-                            disabled
-                            class="w-full rounded-xl border border-slate-300
-                                   bg-slate-50 px-4 py-3 text-slate-700">
-                    </div>
+                    <button
+                        type="button"
+                        data-gestion-tab="informacion"
+                        class="gestion-vehiculo-tab px-4 py-3
+                               text-sm font-semibold
+                               text-blue-600
+                               border-b-2 border-blue-600
+                               whitespace-nowrap">
+                        Información
+                    </button>
 
-                    <div>
-                        <label class="block text-sm font-medium
-                                      text-slate-700 mb-2">
-                            Estado
-                        </label>
+                    <button
+                        type="button"
+                        data-gestion-tab="fotografias"
+                        class="gestion-vehiculo-tab px-4 py-3
+                               text-sm font-medium
+                               text-slate-500
+                               hover:text-slate-800
+                               border-b-2 border-transparent
+                               whitespace-nowrap">
+                        Fotografías
+                    </button>
 
-                        <input
-                            type="text"
-                            value="${vehiculo.estado || "Activo"}"
-                            disabled
-                            class="w-full rounded-xl border border-slate-300
-                                   bg-slate-50 px-4 py-3 text-slate-700">
-                    </div>
+                    <button
+                        type="button"
+                        data-gestion-tab="documentacion"
+                        class="gestion-vehiculo-tab px-4 py-3
+                               text-sm font-medium
+                               text-slate-500
+                               hover:text-slate-800
+                               border-b-2 border-transparent
+                               whitespace-nowrap">
+                        Documentación
+                    </button>
 
-                    <div>
-                        <label class="block text-sm font-medium
-                                      text-slate-700 mb-2">
-                            Marca
-                        </label>
+                    <button
+                        type="button"
+                        data-gestion-tab="seguros"
+                        class="gestion-vehiculo-tab px-4 py-3
+                               text-sm font-medium
+                               text-slate-500
+                               hover:text-slate-800
+                               border-b-2 border-transparent
+                               whitespace-nowrap">
+                        Seguros
+                    </button>
 
-                        <input
-                            type="text"
-                            value="${vehiculo.marca || ""}"
-                            disabled
-                            class="w-full rounded-xl border border-slate-300
-                                   bg-slate-50 px-4 py-3 text-slate-700">
-                    </div>
+                    <button
+                        type="button"
+                        data-gestion-tab="revisiones"
+                        class="gestion-vehiculo-tab px-4 py-3
+                               text-sm font-medium
+                               text-slate-500
+                               hover:text-slate-800
+                               border-b-2 border-transparent
+                               whitespace-nowrap">
+                        Revisiones
+                    </button>
 
-                    <div>
-                        <label class="block text-sm font-medium
-                                      text-slate-700 mb-2">
-                            Modelo
-                        </label>
-
-                        <input
-                            type="text"
-                            value="${vehiculo.modelo || ""}"
-                            disabled
-                            class="w-full rounded-xl border border-slate-300
-                                   bg-slate-50 px-4 py-3 text-slate-700">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium
-                                      text-slate-700 mb-2">
-                            Tipo de vehículo
-                        </label>
-
-                        <input
-                            type="text"
-                            value="${vehiculo.tipo_vehiculo || ""}"
-                            disabled
-                            class="w-full rounded-xl border border-slate-300
-                                   bg-slate-50 px-4 py-3 text-slate-700">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium
-                                      text-slate-700 mb-2">
-                            Año
-                        </label>
-
-                        <input
-                            type="text"
-                            value="${vehiculo.anio || "No indicado"}"
-                            disabled
-                            class="w-full rounded-xl border border-slate-300
-                                   bg-slate-50 px-4 py-3 text-slate-700">
-                    </div>
-
-                </div>
-
-                <div class="mt-6 rounded-xl border border-blue-100
-                            bg-blue-50 p-4">
-
-                    <p class="text-sm text-blue-800">
-                        Desde esta ficha podremos incorporar posteriormente
-                        la documentación, fotografías, seguros y revisiones
-                        de este vehículo.
-                    </p>
+                    <button
+                        type="button"
+                        data-gestion-tab="estadisticas"
+                        class="gestion-vehiculo-tab px-4 py-3
+                               text-sm font-medium
+                               text-slate-500
+                               hover:text-slate-800
+                               border-b-2 border-transparent
+                               whitespace-nowrap">
+                        Estadísticas
+                    </button>
 
                 </div>
 
             </div>
 
-            <div class="flex justify-between
-            px-6 py-5 border-t border-slate-200">
 
-    <button
-        type="button"
-        onclick="editarVehiculo('${vehiculo.id}')"
-        class="px-5 py-3 rounded-xl bg-blue-600
-               hover:bg-blue-700 text-white
-               font-semibold">
-        Editar vehículo
-    </button>
+            <!-- CONTENIDO -->
+            <div
+                id="gestion-vehiculo-contenido"
+                class="flex-1 overflow-y-auto p-6">
 
-    <button
-        type="button"
-        onclick="cerrarGestionVehiculo()"
-        class="px-5 py-3 rounded-xl border
-               border-slate-300 text-slate-700
-               font-medium hover:bg-slate-50">
-        Cerrar
-    </button>
+                <!-- INFORMACIÓN -->
+                <div data-gestion-contenido="informacion">
 
-</div>
+                    <div class="mb-6">
+
+                        <h3 class="text-lg font-bold text-slate-900">
+                            Información del vehículo
+                        </h3>
+
+                        <p class="text-sm text-slate-500 mt-1">
+                            Datos generales registrados del vehículo.
+                        </p>
+
+                    </div>
+
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                        <!-- MATRÍCULA -->
+                        <div class="rounded-xl border border-slate-200
+                                    bg-white p-5">
+
+                            <p class="text-xs font-semibold
+                                      uppercase tracking-wide
+                                      text-slate-400">
+                                Matrícula
+                            </p>
+
+                            <p class="mt-2 text-base font-semibold
+                                      text-slate-900">
+                                ${vehiculo.matricula || "No indicada"}
+                            </p>
+
+                        </div>
+
+
+                        <!-- ESTADO -->
+                        <div class="rounded-xl border border-slate-200
+                                    bg-white p-5">
+
+                            <p class="text-xs font-semibold
+                                      uppercase tracking-wide
+                                      text-slate-400">
+                                Estado
+                            </p>
+
+                            <p class="mt-2 text-base font-semibold
+                                      text-slate-900">
+                                ${vehiculo.estado || "Activo"}
+                            </p>
+
+                        </div>
+
+
+                        <!-- MARCA -->
+                        <div class="rounded-xl border border-slate-200
+                                    bg-white p-5">
+
+                            <p class="text-xs font-semibold
+                                      uppercase tracking-wide
+                                      text-slate-400">
+                                Marca
+                            </p>
+
+                            <p class="mt-2 text-base font-semibold
+                                      text-slate-900">
+                                ${vehiculo.marca || "No indicada"}
+                            </p>
+
+                        </div>
+
+
+                        <!-- MODELO -->
+                        <div class="rounded-xl border border-slate-200
+                                    bg-white p-5">
+
+                            <p class="text-xs font-semibold
+                                      uppercase tracking-wide
+                                      text-slate-400">
+                                Modelo
+                            </p>
+
+                            <p class="mt-2 text-base font-semibold
+                                      text-slate-900">
+                                ${vehiculo.modelo || "No indicado"}
+                            </p>
+
+                        </div>
+
+
+                        <!-- TIPO -->
+                        <div class="rounded-xl border border-slate-200
+                                    bg-white p-5">
+
+                            <p class="text-xs font-semibold
+                                      uppercase tracking-wide
+                                      text-slate-400">
+                                Tipo de vehículo
+                            </p>
+
+                            <p class="mt-2 text-base font-semibold
+                                      text-slate-900">
+                                ${vehiculo.tipo_vehiculo || "No indicado"}
+                            </p>
+
+                        </div>
+
+
+                        <!-- AÑO -->
+                        <div class="rounded-xl border border-slate-200
+                                    bg-white p-5">
+
+                            <p class="text-xs font-semibold
+                                      uppercase tracking-wide
+                                      text-slate-400">
+                                Año
+                            </p>
+
+                            <p class="mt-2 text-base font-semibold
+                                      text-slate-900">
+                                ${vehiculo.anio || "No indicado"}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- BLOQUE INFORMATIVO -->
+                    <div class="mt-6 rounded-xl border border-blue-100
+                                bg-blue-50 p-5">
+
+                        <div class="flex items-start gap-3">
+
+                            <i
+                                data-lucide="info"
+                                class="w-5 h-5 text-blue-600 mt-0.5">
+                            </i>
+
+                            <div>
+
+                                <p class="text-sm font-semibold
+                                          text-blue-900">
+                                    Ficha completa del vehículo
+                                </p>
+
+                                <p class="text-sm text-blue-800 mt-1">
+                                    Desde esta ficha gestionaremos
+                                    fotografías, documentación, seguros,
+                                    revisiones y estadísticas del vehículo.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RESTO DE SECCIONES: RESERVADAS -->
+                <div
+                    data-gestion-contenido="fotografias"
+                    class="hidden">
+
+                    <div class="text-center py-16">
+
+                        <i
+                            data-lucide="images"
+                            class="w-10 h-10 mx-auto
+                                   text-slate-300">
+                        </i>
+
+                        <h3 class="mt-4 text-lg font-bold
+                                   text-slate-800">
+                            Fotografías
+                        </h3>
+
+                        <p class="mt-2 text-sm text-slate-500">
+                            Esta sección se desarrollará en el siguiente paso.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    data-gestion-contenido="documentacion"
+                    class="hidden">
+
+                    <div class="text-center py-16">
+
+                        <i
+                            data-lucide="file-text"
+                            class="w-10 h-10 mx-auto
+                                   text-slate-300">
+                        </i>
+
+                        <h3 class="mt-4 text-lg font-bold
+                                   text-slate-800">
+                            Documentación
+                        </h3>
+
+                        <p class="mt-2 text-sm text-slate-500">
+                            Esta sección se desarrollará en el siguiente paso.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    data-gestion-contenido="seguros"
+                    class="hidden">
+
+                    <div class="text-center py-16">
+
+                        <i
+                            data-lucide="shield-check"
+                            class="w-10 h-10 mx-auto
+                                   text-slate-300">
+                        </i>
+
+                        <h3 class="mt-4 text-lg font-bold
+                                   text-slate-800">
+                            Seguros
+                        </h3>
+
+                        <p class="mt-2 text-sm text-slate-500">
+                            Esta sección se desarrollará en el siguiente paso.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    data-gestion-contenido="revisiones"
+                    class="hidden">
+
+                    <div class="text-center py-16">
+
+                        <i
+                            data-lucide="wrench"
+                            class="w-10 h-10 mx-auto
+                                   text-slate-300">
+                        </i>
+
+                        <h3 class="mt-4 text-lg font-bold
+                                   text-slate-800">
+                            Revisiones
+                        </h3>
+
+                        <p class="mt-2 text-sm text-slate-500">
+                            Esta sección se desarrollará en el siguiente paso.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    data-gestion-contenido="estadisticas"
+                    class="hidden">
+
+                    <div class="text-center py-16">
+
+                        <i
+                            data-lucide="bar-chart-3"
+                            class="w-10 h-10 mx-auto
+                                   text-slate-300">
+                        </i>
+
+                        <h3 class="mt-4 text-lg font-bold
+                                   text-slate-800">
+                            Estadísticas
+                        </h3>
+
+                        <p class="mt-2 text-sm text-slate-500">
+                            Esta sección se desarrollará en el siguiente paso.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PIE -->
+            <div class="flex items-center justify-between
+                        px-6 py-5 border-t border-slate-200
+                        bg-white">
+
+                <button
+                    type="button"
+                    onclick="editarVehiculo('${vehiculo.id}')"
+                    class="px-5 py-3 rounded-xl
+                           bg-blue-600 hover:bg-blue-700
+                           text-white font-semibold">
+
+                    Editar vehículo
+
+                </button>
+
+                <button
+                    type="button"
+                    onclick="cerrarGestionVehiculo()"
+                    class="px-5 py-3 rounded-xl
+                           border border-slate-300
+                           text-slate-700 font-medium
+                           hover:bg-slate-50">
+
+                    Cerrar
+
+                </button>
+
+            </div>
 
         </div>
     `;
 
     document.body.appendChild(modal);
 
+
+    /* NAVEGACIÓN ENTRE PESTAÑAS */
+
+    const botones =
+        modal.querySelectorAll(".gestion-vehiculo-tab");
+
+    const contenidos =
+        modal.querySelectorAll("[data-gestion-contenido]");
+
+
+    botones.forEach((boton) => {
+
+        boton.addEventListener("click", () => {
+
+            const seccion =
+                boton.getAttribute("data-gestion-tab");
+
+            botones.forEach((b) => {
+
+                b.classList.remove(
+                    "text-blue-600",
+                    "border-blue-600",
+                    "font-semibold"
+                );
+
+                b.classList.add(
+                    "text-slate-500",
+                    "border-transparent",
+                    "font-medium"
+                );
+
+            });
+
+
+            boton.classList.remove(
+                "text-slate-500",
+                "border-transparent",
+                "font-medium"
+            );
+
+            boton.classList.add(
+                "text-blue-600",
+                "border-blue-600",
+                "font-semibold"
+            );
+
+
+            contenidos.forEach((contenido) => {
+
+                contenido.classList.add("hidden");
+
+            });
+
+
+            const contenidoActivo =
+                modal.querySelector(
+                    `[data-gestion-contenido="${seccion}"]`
+                );
+
+            if (contenidoActivo) {
+                contenidoActivo.classList.remove("hidden");
+            }
+
+        });
+
+    });
+
+
     if (typeof lucide !== "undefined") {
         lucide.createIcons();
     }
+
 }
 
 async function editarVehiculo(vehiculoId) {
