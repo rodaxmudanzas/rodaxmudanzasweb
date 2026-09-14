@@ -3312,6 +3312,40 @@ async function subirDocumentoVehiculo(documentoId, vehiculoId, tipoDocumento) {
 
                     return;
                 }
+                
+/*
+ * Eliminar el archivo anterior de Storage
+ * solo después de haber vinculado correctamente
+ * el nuevo archivo.
+ */
+if (
+    archivoAnterior &&
+    archivoAnterior !== rutaArchivo
+) {
+
+    const {
+        error: errorEliminacion
+    } = await cliente.storage
+        .from("documentos")
+        .remove([
+            archivoAnterior
+        ]);
+
+    if (errorEliminacion) {
+
+        console.warn(
+            "RODAX Vehículos: el nuevo documento está correctamente vinculado, pero no se pudo eliminar el archivo anterior:",
+            errorEliminacion
+        );
+
+    } else {
+
+        console.log(
+            "RODAX Vehículos — archivo anterior eliminado:",
+            archivoAnterior
+        );
+    }
+}
 
                 console.log(
                     "RODAX Vehículos — documento subido correctamente:",
