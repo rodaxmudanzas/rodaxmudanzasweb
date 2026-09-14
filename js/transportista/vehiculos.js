@@ -1283,7 +1283,7 @@ ${
 
                         ${
                             documento.fecha_caducidad
-                                ? ` · Caducidad: ${documento.fecha_caducidad}`
+                                ? ` · Caducidad: ${formatearFecha(documento.fecha_caducidad)}`
                                 : ""
                         }
 
