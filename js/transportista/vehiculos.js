@@ -3275,7 +3275,10 @@ async function abrirGestionVehiculo(vehiculoId) {
                 </div>
 
 
-                <div>
+                <div
+    data-gestion-contenido="seguros"
+    class="hidden">
+
     <div class="mb-6">
         <h2 class="text-lg font-bold text-slate-800">
             Seguros del vehículo
