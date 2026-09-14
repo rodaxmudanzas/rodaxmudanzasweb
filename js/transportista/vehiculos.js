@@ -1601,6 +1601,36 @@ modal.className =
 
             </div>
 
+<!-- ARCHIVO -->
+
+<div>
+
+    <label
+        class="block text-sm font-semibold
+               text-slate-700 mb-2">
+
+        Documento
+
+    </label>
+
+    <input
+        id="documentacion-archivo"
+        type="file"
+        accept=".pdf,.jpg,.jpeg,.png,.webp"
+        class="w-full px-4 py-3 rounded-xl
+               border border-slate-200
+               bg-white
+               text-sm text-slate-700
+               focus:outline-none
+               focus:ring-2
+               focus:ring-blue-500
+               focus:border-blue-500">
+
+    <p class="text-xs text-slate-500 mt-2">
+        PDF o imagen. Tamaño máximo: 10 MB.
+    </p>
+
+</div>
 
             <!-- PIE -->
 
