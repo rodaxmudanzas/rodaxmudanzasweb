@@ -3275,28 +3275,135 @@ async function abrirGestionVehiculo(vehiculoId) {
                 </div>
 
 
-                <div
-                    data-gestion-contenido="seguros"
-                    class="hidden">
+                <div>
+    <div class="mb-6">
+        <h2 class="text-lg font-bold text-slate-800">
+            Seguros del vehículo
+        </h2>
 
-                    <div class="text-center py-16">
+        <p class="mt-1 text-sm text-slate-500">
+            Gestiona los seguros asociados a este vehículo.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <!-- SEGURO DEL VEHÍCULO -->
+        <div class="border border-slate-200 rounded-xl p-5 bg-white">
+
+            <div class="flex items-start gap-3">
+
+                <div class="w-10 h-10 rounded-xl bg-emerald-50
+                            flex items-center justify-center shrink-0">
+                    <i
+                        data-lucide="shield-check"
+                        class="w-5 h-5 text-emerald-600">
+                    </i>
+                </div>
+
+                <div class="flex-1">
+
+                    <h3 class="font-semibold text-slate-800">
+                        Seguro del vehículo
+                    </h3>
+
+                    <p class="mt-1 text-sm text-slate-500">
+                        Póliza y documentación del seguro obligatorio
+                        del vehículo.
+                    </p>
+
+                    <button
+                        type="button"
+                        onclick="abrirFormularioDocumentacionVehiculo('${vehiculo.id}', 'seguro_vehiculo')"
+                        class="mt-4 inline-flex items-center gap-2
+                               px-4 py-2 rounded-lg
+                               bg-emerald-50 text-emerald-700
+                               text-sm font-semibold
+                               hover:bg-emerald-100 transition">
 
                         <i
-                            data-lucide="shield-check"
-                            class="w-10 h-10 mx-auto
-                                   text-slate-300">
+                            data-lucide="file-text"
+                            class="w-4 h-4">
                         </i>
 
-                        <h3 class="mt-4 text-lg font-bold
-                                   text-slate-800">
-                            Seguros
-                        </h3>
+                        Gestionar seguro
+                    </button>
 
-                        <p class="mt-2 text-sm text-slate-500">
-                            Esta sección se desarrollará en el siguiente paso.
-                        </p>
+                </div>
+            </div>
+        </div>
 
-                    </div>
+
+        <!-- SEGURO DE MERCANCÍAS / TRANSPORTE -->
+        <div class="border border-slate-200 rounded-xl p-5 bg-white">
+
+            <div class="flex items-start gap-3">
+
+                <div class="w-10 h-10 rounded-xl bg-emerald-50
+                            flex items-center justify-center shrink-0">
+                    <i
+                        data-lucide="shield-check"
+                        class="w-5 h-5 text-emerald-600">
+                    </i>
+                </div>
+
+                <div class="flex-1">
+
+                    <h3 class="font-semibold text-slate-800">
+                        Seguro de mercancías / transporte
+                    </h3>
+
+                    <p class="mt-1 text-sm text-slate-500">
+                        Cobertura de mercancías y responsabilidad
+                        asociada al transporte.
+                    </p>
+
+                    <button
+                        type="button"
+                        onclick="abrirFormularioDocumentacionVehiculo('${vehiculo.id}', 'seguro_transporte')"
+                        class="mt-4 inline-flex items-center gap-2
+                               px-4 py-2 rounded-lg
+                               bg-emerald-50 text-emerald-700
+                               text-sm font-semibold
+                               hover:bg-emerald-100 transition">
+
+                        <i
+                            data-lucide="file-text"
+                            class="w-4 h-4">
+                        </i>
+
+                        Gestionar seguro
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="mt-6 p-4 rounded-xl bg-blue-50 border border-blue-100">
+
+        <div class="flex items-start gap-3">
+
+            <i
+                data-lucide="info"
+                class="w-5 h-5 text-blue-600 mt-0.5 shrink-0">
+            </i>
+
+            <div>
+                <p class="text-sm font-semibold text-blue-800">
+                    Seguros centralizados
+                </p>
+
+                <p class="mt-1 text-sm text-blue-700">
+                    Los seguros se gestionan desde esta ficha y utilizan
+                    la documentación ya asociada al vehículo.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
 
                 </div>
 
