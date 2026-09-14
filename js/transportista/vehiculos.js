@@ -1051,21 +1051,88 @@ if (!vehiculos || vehiculos.length === 0) {
                     }
                 </div>
 
-                <button
-                    type="button"
-                    onclick="event.stopPropagation(); subirDocumentoVehiculo('${documento.id}', '${vehiculo.id}', '${tipoDocumento.tipo}')"
-                    class="mt-3 inline-flex items-center gap-2
-                           px-3 py-2 rounded-lg
-                           bg-blue-50 text-blue-700
-                           hover:bg-blue-100
-                           text-xs font-semibold
-                           transition">
+                ${
+                    documento.archivo_path
+                        ? `
+                            <div class="mt-3">
 
-                    <i data-lucide="upload" class="w-4 h-4"></i>
+                                <div class="flex items-center gap-2
+                                            text-xs text-emerald-600 mb-2">
 
-                    Subir documento
+                                    <i
+                                        data-lucide="paperclip"
+                                        class="w-4 h-4">
+                                    </i>
 
-                </button>
+                                    Documento adjunto
+
+                                </div>
+
+                                <div class="flex gap-2">
+
+                                    <button
+                                        type="button"
+                                        onclick="event.stopPropagation(); verDocumentoVehiculo('${documento.archivo_path}')"
+                                        class="inline-flex items-center gap-2
+                                               px-3 py-2 rounded-lg
+                                               bg-blue-50 text-blue-600
+                                               text-xs font-semibold
+                                               hover:bg-blue-100
+                                               transition">
+
+                                        <i
+                                            data-lucide="external-link"
+                                            class="w-4 h-4">
+                                        </i>
+
+                                        Ver documento
+
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onclick="event.stopPropagation(); subirDocumentoVehiculo('${documento.id}', '${vehiculo.id}', '${tipoDocumento.tipo}')"
+                                        class="inline-flex items-center gap-2
+                                               px-3 py-2 rounded-lg
+                                               bg-slate-50 text-slate-600
+                                               text-xs font-semibold
+                                               hover:bg-slate-100
+                                               transition">
+
+                                        <i
+                                            data-lucide="refresh-cw"
+                                            class="w-4 h-4">
+                                        </i>
+
+                                        Cambiar
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+                        `
+                        : `
+                            <button
+                                type="button"
+                                onclick="event.stopPropagation(); subirDocumentoVehiculo('${documento.id}', '${vehiculo.id}', '${tipoDocumento.tipo}')"
+                                class="mt-3 inline-flex items-center gap-2
+                                       px-3 py-2 rounded-lg
+                                       bg-blue-50 text-blue-700
+                                       hover:bg-blue-100
+                                       text-xs font-semibold
+                                       transition">
+
+                                <i
+                                    data-lucide="upload"
+                                    class="w-4 h-4">
+                                </i>
+
+                                Subir documento
+
+                            </button>
+                        `
+                }
 
             </div>
         `
@@ -1082,7 +1149,10 @@ if (!vehiculos || vehiculos.length === 0) {
                            text-xs font-semibold
                            transition">
 
-                    <i data-lucide="upload" class="w-4 h-4"></i>
+                    <i
+                        data-lucide="upload"
+                        class="w-4 h-4">
+                    </i>
 
                     Subir documento
 
@@ -2814,7 +2884,57 @@ function subirDocumentoVehiculo(documentoId, vehiculoId, tipoDocumento) {
     }, 1000);
 }
 
+function verDocumentoVehiculo(archivoPath) {
+
+    if (!archivoPath) {
+
+        alert(
+            "Este documento no tiene ningún archivo asociado."
+        );
+
+        return;
+    }
+
+    const cliente = window.dbClient;
+
+    if (!cliente) {
+
+        console.error(
+            "RODAX Vehículos: no se encontró dbClient."
+        );
+
+        alert(
+            "No se ha podido conectar con el sistema."
+        );
+
+        return;
+    }
+
+    const { data } =
+        cliente.storage
+            .from("documentos")
+            .getPublicUrl(archivoPath);
+
+    if (!data?.publicUrl) {
+
+        alert(
+            "No se ha podido obtener el documento."
+        );
+
+        return;
+    }
+
+    window.open(
+        data.publicUrl,
+        "_blank",
+        "noopener,noreferrer"
+    );
+}
+
 window.subirDocumentoVehiculo =
     subirDocumentoVehiculo;
+
+window.verDocumentoVehiculo =
+    verDocumentoVehiculo;
 
 })();
