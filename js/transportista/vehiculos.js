@@ -2524,6 +2524,33 @@ async function abrirGestionVehiculo(vehiculoId) {
         vehiculo
     );
 
+        const { data: documentosVehiculo, error: errorDocumentosVehiculo } =
+        await cliente
+            .from("vehiculos_documentacion")
+            .select("*")
+            .eq("vehiculo_id", vehiculoId)
+            .order("creado_en", {
+                ascending: false
+            });
+
+    if (errorDocumentosVehiculo) {
+        console.error(
+            "RODAX Vehículos: error cargando documentación del vehículo:",
+            errorDocumentosVehiculo
+        );
+    }
+
+    console.log(
+        "RODAX Vehículos: documentación del vehículo:",
+        documentosVehiculo || []
+    );
+
+        const documentoITV =
+        (documentosVehiculo || []).find(
+            documento =>
+                documento.tipo_documento === "itv"
+        ) || null;
+
     const modalExistente =
         document.getElementById("modal-gestionar-vehiculo");
 
