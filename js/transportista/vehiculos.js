@@ -1532,9 +1532,8 @@ modal.className =
                             <p
                                 class="text-xs text-blue-800 mt-1">
 
-                                Registra los datos del documento.
-                                En el siguiente paso añadiremos
-                                la subida del archivo.
+                               Registra los datos del documento y adjunta
+el archivo correspondiente.
 
                             </p>
 
@@ -1797,32 +1796,67 @@ async function guardarDocumentoVehiculo() {
         modal.dataset.tipoDocumento;
 
     const nombre =
-        document.getElementById("documentacion-nombre")?.value.trim();
+        document
+            .getElementById("documentacion-nombre")
+            ?.value
+            .trim();
 
     const referencia =
-        document.getElementById("documentacion-referencia")?.value.trim();
+        document
+            .getElementById("documentacion-referencia")
+            ?.value
+            .trim();
 
     const fechaEmision =
-        document.getElementById("documentacion-fecha-emision")?.value || null;
+        document
+            .getElementById("documentacion-fecha-emision")
+            ?.value || null;
 
     const fechaCaducidad =
-        document.getElementById("documentacion-fecha-caducidad")?.value || null;
+        document
+            .getElementById("documentacion-fecha-caducidad")
+            ?.value || null;
 
     const observaciones =
-        document.getElementById("documentacion-observaciones")?.value.trim();
+        document
+            .getElementById("documentacion-observaciones")
+            ?.value
+            .trim();
+
+    const archivo =
+        document
+            .getElementById("documentacion-archivo")
+            ?.files?.[0] || null;
+
+
+    /*
+     * VALIDACIONES
+     */
 
     if (!vehiculoId) {
-        alert("No se ha podido identificar el vehículo.");
+
+        alert(
+            "No se ha podido identificar el vehículo."
+        );
+
         return;
     }
 
     if (!tipoDocumento) {
-        alert("No se ha podido identificar el tipo de documento.");
+
+        alert(
+            "No se ha podido identificar el tipo de documento."
+        );
+
         return;
     }
 
     if (!nombre) {
-        alert("Introduce el nombre del documento.");
+
+        alert(
+            "Introduce el nombre del documento."
+        );
+
         return;
     }
 
@@ -1831,65 +1865,348 @@ async function guardarDocumentoVehiculo() {
         fechaCaducidad &&
         fechaCaducidad < fechaEmision
     ) {
+
         alert(
             "La fecha de caducidad no puede ser anterior a la fecha de emisión."
         );
+
         return;
     }
 
-    const cliente = window.dbClient;
+
+    /*
+     * VALIDAR ARCHIVO
+     */
+
+    const TAMANO_MAXIMO =
+        10 * 1024 * 1024;
+
+    if (archivo && archivo.size > TAMANO_MAXIMO) {
+
+        alert(
+            "El archivo supera el límite de 10 MB."
+        );
+
+        return;
+    }
+
+
+    const cliente =
+        window.dbClient;
 
     if (!cliente) {
+
         console.error(
             "RODAX Vehículos: no se encontró dbClient."
         );
+
+        alert(
+            "No se ha podido conectar con el sistema."
+        );
+
         return;
     }
 
+
+    /*
+     * BUSCAR DOCUMENTO EXISTENTE
+     *
+     * Para los 5 tipos estándar:
+     * solo puede existir un documento de cada tipo
+     * por vehículo.
+     *
+     * Para "otros":
+     * pueden existir varios.
+     */
+
+    let documentoExistente = null;
+
+    if (tipoDocumento !== "otros") {
+
+        const {
+            data: documentoEncontrado,
+            error: errorBusqueda
+        } = await cliente
+            .from("vehiculos_documentacion")
+            .select("*")
+            .eq("vehiculo_id", vehiculoId)
+            .eq("tipo_documento", tipoDocumento)
+            .maybeSingle();
+
+        if (errorBusqueda) {
+
+            console.error(
+                "RODAX Vehículos: error buscando documentación existente:",
+                errorBusqueda
+            );
+
+            alert(
+                "No se ha podido comprobar el documento existente.\n\n" +
+                errorBusqueda.message
+            );
+
+            return;
+        }
+
+        documentoExistente =
+            documentoEncontrado || null;
+    }
+
+
+    /*
+     * DATOS DEL DOCUMENTO
+     */
+
     const datosDocumento = {
+
         vehiculo_id: vehiculoId,
+
         tipo_documento: tipoDocumento,
+
         nombre_documento: nombre,
-        archivo_path: null,
+
         fecha_emision: fechaEmision,
+
         fecha_caducidad: fechaCaducidad,
-        numero_referencia: referencia || null,
-        observaciones: observaciones || null
+
+        numero_referencia:
+            referencia || null,
+
+        observaciones:
+            observaciones || null
     };
 
-    console.log(
-        "RODAX Vehículos — datos del documento preparados:",
-        datosDocumento
-    );
 
-    const { data, error } =
-        await cliente
+    /*
+     * GUARDAR / ACTUALIZAR DATOS
+     */
+
+    let documentoGuardado = null;
+
+    if (documentoExistente) {
+
+        const {
+            data,
+            error
+        } = await cliente
             .from("vehiculos_documentacion")
-            .insert([datosDocumento])
+            .update(datosDocumento)
+            .eq("id", documentoExistente.id)
             .select()
             .single();
 
-    if (error) {
+        if (error) {
 
-        console.error(
-            "RODAX Vehículos: error guardando documentación:",
+            console.error(
+                "RODAX Vehículos: error actualizando documentación:",
+                error
+            );
+
+            alert(
+                "No se ha podido actualizar el documento.\n\n" +
+                error.message
+            );
+
+            return;
+        }
+
+        documentoGuardado = data;
+
+    } else {
+
+        const {
+            data,
             error
-        );
+        } = await cliente
+            .from("vehiculos_documentacion")
+            .insert([{
+                ...datosDocumento,
+                archivo_path: null
+            }])
+            .select()
+            .single();
 
-        alert(
-            "No se ha podido guardar el documento: " +
-            error.message
-        );
+        if (error) {
 
-        return;
+            console.error(
+                "RODAX Vehículos: error guardando documentación:",
+                error
+            );
+
+            alert(
+                "No se ha podido guardar el documento.\n\n" +
+                error.message
+            );
+
+            return;
+        }
+
+        documentoGuardado = data;
     }
+
+
+    /*
+     * SUBIR ARCHIVO SI SE HA SELECCIONADO
+     */
+
+    if (archivo) {
+
+        try {
+
+            const transportistaId =
+                window.Transportista?.currentUserId ||
+                window.currentUserId ||
+                null;
+
+            if (!transportistaId) {
+
+                alert(
+                    "No se ha podido identificar al transportista."
+                );
+
+                return;
+            }
+
+
+            /*
+             * Obtener extensión
+             */
+
+            const partesNombre =
+                archivo.name.split(".");
+
+            const extension =
+                partesNombre.length > 1
+                    ? partesNombre
+                        .pop()
+                        .toLowerCase()
+                    : "archivo";
+
+
+            /*
+             * Nombre único
+             */
+
+            const nombreArchivo =
+                `${Date.now()}-${Math.random()
+                    .toString(36)
+                    .substring(2, 10)}.${extension}`;
+
+
+            /*
+             * Tipo de carpeta seguro
+             */
+
+            const carpetaTipo =
+                tipoDocumento || "otros";
+
+
+            /*
+             * Ruta Storage
+             */
+
+            const rutaArchivo =
+                `documentos-vehiculos/${transportistaId}/${vehiculoId}/${carpetaTipo}/${nombreArchivo}`;
+
+
+            console.log(
+                "RODAX Vehículos — subiendo archivo desde formulario:",
+                rutaArchivo
+            );
+
+
+            /*
+             * SUBIR ARCHIVO
+             */
+
+            const {
+                error: errorSubida
+            } = await cliente.storage
+                .from("documentos")
+                .upload(
+                    rutaArchivo,
+                    archivo,
+                    {
+                        cacheControl: "3600",
+                        upsert: false
+                    }
+                );
+
+
+            if (errorSubida) {
+
+                console.error(
+                    "RODAX Vehículos: error subiendo archivo:",
+                    errorSubida
+                );
+
+                alert(
+                    "Los datos del documento se han guardado, pero el archivo no se ha podido subir.\n\n" +
+                    errorSubida.message
+                );
+
+                return;
+            }
+
+
+            /*
+             * VINCULAR ARCHIVO CON EL REGISTRO
+             */
+
+            const {
+                error: errorArchivoPath
+            } = await cliente
+                .from("vehiculos_documentacion")
+                .update({
+                    archivo_path: rutaArchivo
+                })
+                .eq("id", documentoGuardado.id);
+
+
+            if (errorArchivoPath) {
+
+                console.error(
+                    "RODAX Vehículos: error vinculando archivo:",
+                    errorArchivoPath
+                );
+
+                alert(
+                    "El archivo se ha subido, pero no se ha podido vincular al documento.\n\n" +
+                    errorArchivoPath.message
+                );
+
+                return;
+            }
+        }
+
+        catch (error) {
+
+            console.error(
+                "RODAX Vehículos: error inesperado subiendo archivo:",
+                error
+            );
+
+            alert(
+                "Se ha producido un error al subir el archivo."
+            );
+
+            return;
+        }
+    }
+
+
+    /*
+     * TODO CORRECTO
+     */
 
     console.log(
         "RODAX Vehículos: documento guardado correctamente:",
-        data
+        documentoGuardado
     );
 
+
     cerrarFormularioDocumentacionVehiculo();
+
 
     await cargarDocumentacionVehiculos(
         window.Transportista?.currentUserId ||
