@@ -1907,7 +1907,6 @@ async function guardarDocumentoVehiculo() {
         return;
     }
 
-
     /*
      * BUSCAR DOCUMENTO EXISTENTE
      *
@@ -3091,7 +3090,7 @@ window.cerrarFormularioVehiculo =
     window.guardarVehiculo =
     guardarVehiculo;
 
-function subirDocumentoVehiculo(documentoId, vehiculoId, tipoDocumento) {
+async function subirDocumentoVehiculo(documentoId, vehiculoId, tipoDocumento) {
 
     console.log(
         "RODAX Vehículos — iniciar subida:",
@@ -3130,6 +3129,39 @@ function subirDocumentoVehiculo(documentoId, vehiculoId, tipoDocumento) {
 
         return;
     }
+
+        /*
+     * Obtener la ruta del archivo actual
+     * para poder eliminarlo después de sustituirlo.
+     */
+    let archivoAnterior = null;
+
+    const {
+        data: documentoActual,
+        error: errorDocumentoActual
+    } = await cliente
+        .from("vehiculos_documentacion")
+        .select("archivo_path")
+        .eq("id", documentoId)
+        .single();
+
+    if (errorDocumentoActual) {
+
+        console.error(
+            "RODAX Vehículos: error obteniendo el archivo actual:",
+            errorDocumentoActual
+        );
+
+        alert(
+            "No se ha podido comprobar el documento actual.\n\n" +
+            errorDocumentoActual.message
+        );
+
+        return;
+    }
+
+    archivoAnterior =
+        documentoActual?.archivo_path || null;
 
     /*
      * Selector de archivo
