@@ -2858,6 +2858,401 @@ async function abrirGestionVehiculo(vehiculoId) {
 
                 </div>
 
+<!-- FOTOGRAFÍAS -->
+<div
+    data-gestion-contenido="fotografias"
+    class="hidden">
+
+    <div class="mb-6">
+        <h3 class="text-lg font-bold text-slate-900">
+            Fotografías del vehículo
+        </h3>
+
+        <p class="text-sm text-slate-500 mt-1">
+            Añade y gestiona las fotografías de tu vehículo.
+        </p>
+    </div>
+
+
+    <!-- INFORMACIÓN -->
+    <div class="mb-6 rounded-xl border border-blue-100
+                bg-blue-50 p-4">
+
+        <div class="flex items-start gap-3">
+
+            <i
+                data-lucide="info"
+                class="w-5 h-5 text-blue-600 mt-0.5">
+            </i>
+
+            <div>
+                <p class="text-sm font-semibold text-blue-900">
+                    Fotografías del vehículo
+                </p>
+
+                <p class="text-sm text-blue-800 mt-1">
+                    En esta sección podrás incorporar las imágenes
+                    necesarias para identificar y presentar correctamente
+                    tu vehículo.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- GALERÍA -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+
+
+        <!-- FOTO FRONTAL -->
+        <div class="rounded-xl border border-slate-200
+                    bg-white overflow-hidden">
+
+            <div class="aspect-video bg-slate-100
+                        flex items-center justify-center">
+
+                <i
+                    data-lucide="camera"
+                    class="w-10 h-10 text-slate-300">
+                </i>
+
+            </div>
+
+            <div class="p-4">
+
+                <h4 class="font-semibold text-slate-900">
+                    Foto frontal
+                </h4>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Vista frontal del vehículo.
+                </p>
+
+                <div class="mt-4">
+                    <span
+                        class="inline-flex items-center gap-2
+                               px-3 py-2 rounded-lg
+                               bg-slate-100 text-slate-500
+                               text-xs font-semibold">
+
+                        <i
+                            data-lucide="clock"
+                            class="w-4 h-4">
+                        </i>
+
+                        Próximamente
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FOTO TRASERA -->
+        <div class="rounded-xl border border-slate-200
+                    bg-white overflow-hidden">
+
+            <div class="aspect-video bg-slate-100
+                        flex items-center justify-center">
+
+                <i
+                    data-lucide="camera"
+                    class="w-10 h-10 text-slate-300">
+                </i>
+
+            </div>
+
+            <div class="p-4">
+
+                <h4 class="font-semibold text-slate-900">
+                    Foto trasera
+                </h4>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Vista trasera del vehículo.
+                </p>
+
+                <div class="mt-4">
+                    <span
+                        class="inline-flex items-center gap-2
+                               px-3 py-2 rounded-lg
+                               bg-slate-100 text-slate-500
+                               text-xs font-semibold">
+
+                        <i
+                            data-lucide="clock"
+                            class="w-4 h-4">
+                        </i>
+
+                        Próximamente
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- LATERAL DERECHO -->
+        <div class="rounded-xl border border-slate-200
+                    bg-white overflow-hidden">
+
+            <div class="aspect-video bg-slate-100
+                        flex items-center justify-center">
+
+                <i
+                    data-lucide="camera"
+                    class="w-10 h-10 text-slate-300">
+                </i>
+
+            </div>
+
+            <div class="p-4">
+
+                <h4 class="font-semibold text-slate-900">
+                    Lateral derecho
+                </h4>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Vista lateral derecha.
+                </p>
+
+                <div class="mt-4">
+                    <span
+                        class="inline-flex items-center gap-2
+                               px-3 py-2 rounded-lg
+                               bg-slate-100 text-slate-500
+                               text-xs font-semibold">
+
+                        <i
+                            data-lucide="clock"
+                            class="w-4 h-4">
+                        </i>
+
+                        Próximamente
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- LATERAL IZQUIERDO -->
+        <div class="rounded-xl border border-slate-200
+                    bg-white overflow-hidden">
+
+            <div class="aspect-video bg-slate-100
+                        flex items-center justify-center">
+
+                <i
+                    data-lucide="camera"
+                    class="w-10 h-10 text-slate-300">
+                </i>
+
+            </div>
+
+            <div class="p-4">
+
+                <h4 class="font-semibold text-slate-900">
+                    Lateral izquierdo
+                </h4>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Vista lateral izquierda.
+                </p>
+
+                <div class="mt-4">
+                    <span
+                        class="inline-flex items-center gap-2
+                               px-3 py-2 rounded-lg
+                               bg-slate-100 text-slate-500
+                               text-xs font-semibold">
+
+                        <i
+                            data-lucide="clock"
+                            class="w-4 h-4">
+                        </i>
+
+                        Próximamente
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- INTERIOR -->
+        <div class="rounded-xl border border-slate-200
+                    bg-white overflow-hidden">
+
+            <div class="aspect-video bg-slate-100
+                        flex items-center justify-center">
+
+                <i
+                    data-lucide="camera"
+                    class="w-10 h-10 text-slate-300">
+                </i>
+
+            </div>
+
+            <div class="p-4">
+
+                <h4 class="font-semibold text-slate-900">
+                    Interior
+                </h4>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Interior de la cabina del vehículo.
+                </p>
+
+                <div class="mt-4">
+                    <span
+                        class="inline-flex items-center gap-2
+                               px-3 py-2 rounded-lg
+                               bg-slate-100 text-slate-500
+                               text-xs font-semibold">
+
+                        <i
+                            data-lucide="clock"
+                            class="w-4 h-4">
+                        </i>
+
+                        Próximamente
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ZONA DE CARGA -->
+        <div class="rounded-xl border border-slate-200
+                    bg-white overflow-hidden">
+
+            <div class="aspect-video bg-slate-100
+                        flex items-center justify-center">
+
+                <i
+                    data-lucide="camera"
+                    class="w-10 h-10 text-slate-300">
+                </i>
+
+            </div>
+
+            <div class="p-4">
+
+                <h4 class="font-semibold text-slate-900">
+                    Zona de carga
+                </h4>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Espacio disponible para carga y mudanzas.
+                </p>
+
+                <div class="mt-4">
+                    <span
+                        class="inline-flex items-center gap-2
+                               px-3 py-2 rounded-lg
+                               bg-slate-100 text-slate-500
+                               text-xs font-semibold">
+
+                        <i
+                            data-lucide="clock"
+                            class="w-4 h-4">
+                        </i>
+
+                        Próximamente
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- OTRAS -->
+        <div class="rounded-xl border border-dashed
+                    border-slate-300 bg-white overflow-hidden">
+
+            <div class="aspect-video bg-slate-50
+                        flex items-center justify-center">
+
+                <i
+                    data-lucide="images"
+                    class="w-10 h-10 text-slate-300">
+                </i>
+
+            </div>
+
+            <div class="p-4">
+
+                <h4 class="font-semibold text-slate-900">
+                    Otras fotografías
+                </h4>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Fotografías adicionales del vehículo.
+                </p>
+
+                <div class="mt-4">
+                    <span
+                        class="inline-flex items-center gap-2
+                               px-3 py-2 rounded-lg
+                               bg-slate-100 text-slate-500
+                               text-xs font-semibold">
+
+                        <i
+                            data-lucide="clock"
+                            class="w-4 h-4">
+                        </i>
+
+                        Próximamente
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- INFORMACIÓN FINAL -->
+    <div class="mt-6 rounded-xl border border-blue-100
+                bg-blue-50 p-4">
+
+        <div class="flex items-start gap-3">
+
+            <i
+                data-lucide="image"
+                class="w-5 h-5 text-blue-600 mt-0.5">
+            </i>
+
+            <div>
+
+                <p class="text-sm font-semibold text-blue-900">
+                    Galería del vehículo
+                </p>
+
+                <p class="text-sm text-blue-800 mt-1">
+                    Las fotografías quedarán asociadas exclusivamente
+                    a este vehículo.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
                 <!-- RESTO DE SECCIONES: RESERVADAS -->
                 <div
