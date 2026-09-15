@@ -2858,21 +2858,25 @@ async function abrirGestionVehiculo(vehiculoId) {
 
                 </div>
 
-<!-- FOTOGRAFÍAS -->
+                <!-- FOTOGRAFÍAS -->
 <div
     data-gestion-contenido="fotografias"
     class="hidden">
 
-    <div class="mb-6">
-        <h3 class="text-lg font-bold text-slate-900">
-            Fotografías del vehículo
-        </h3>
+    <div class="flex items-start justify-between gap-4 mb-6">
 
-        <p class="text-sm text-slate-500 mt-1">
-            Añade y gestiona las fotografías de tu vehículo.
-        </p>
+        <div>
+            <h3 class="text-lg font-bold text-slate-900">
+                Fotografías del vehículo
+            </h3>
+
+            <p class="text-sm text-slate-500 mt-1">
+                Añade y gestiona las fotografías necesarias para identificar
+                correctamente tu vehículo.
+            </p>
+        </div>
+
     </div>
-
 
     <!-- INFORMACIÓN -->
     <div class="mb-6 rounded-xl border border-blue-100
@@ -2891,9 +2895,8 @@ async function abrirGestionVehiculo(vehiculoId) {
                 </p>
 
                 <p class="text-sm text-blue-800 mt-1">
-                    En esta sección podrás incorporar las imágenes
-                    necesarias para identificar y presentar correctamente
-                    tu vehículo.
+                    Completa las fotografías recomendadas para que tu vehículo
+                    pueda presentarse correctamente dentro de RODAX Mudanzas.
                 </p>
             </div>
 
@@ -2901,352 +2904,22 @@ async function abrirGestionVehiculo(vehiculoId) {
 
     </div>
 
-
-    <!-- GALERÍA -->
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-
-
-        <!-- FOTO FRONTAL -->
-        <div class="rounded-xl border border-slate-200
-                    bg-white overflow-hidden">
-
-            <div class="aspect-video bg-slate-100
-                        flex items-center justify-center">
-
-                <i
-                    data-lucide="camera"
-                    class="w-10 h-10 text-slate-300">
-                </i>
-
-            </div>
-
-            <div class="p-4">
-
-                <h4 class="font-semibold text-slate-900">
-                    Foto frontal
-                </h4>
-
-                <p class="text-sm text-slate-500 mt-1">
-                    Vista frontal del vehículo.
-                </p>
-
-                <div class="mt-4">
-                    <span
-                        class="inline-flex items-center gap-2
-                               px-3 py-2 rounded-lg
-                               bg-slate-100 text-slate-500
-                               text-xs font-semibold">
-
-                        <i
-                            data-lucide="clock"
-                            class="w-4 h-4">
-                        </i>
-
-                        Próximamente
-                    </span>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- FOTO TRASERA -->
-        <div class="rounded-xl border border-slate-200
-                    bg-white overflow-hidden">
-
-            <div class="aspect-video bg-slate-100
-                        flex items-center justify-center">
-
-                <i
-                    data-lucide="camera"
-                    class="w-10 h-10 text-slate-300">
-                </i>
-
-            </div>
-
-            <div class="p-4">
-
-                <h4 class="font-semibold text-slate-900">
-                    Foto trasera
-                </h4>
-
-                <p class="text-sm text-slate-500 mt-1">
-                    Vista trasera del vehículo.
-                </p>
-
-                <div class="mt-4">
-                    <span
-                        class="inline-flex items-center gap-2
-                               px-3 py-2 rounded-lg
-                               bg-slate-100 text-slate-500
-                               text-xs font-semibold">
-
-                        <i
-                            data-lucide="clock"
-                            class="w-4 h-4">
-                        </i>
-
-                        Próximamente
-                    </span>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- LATERAL DERECHO -->
-        <div class="rounded-xl border border-slate-200
-                    bg-white overflow-hidden">
-
-            <div class="aspect-video bg-slate-100
-                        flex items-center justify-center">
-
-                <i
-                    data-lucide="camera"
-                    class="w-10 h-10 text-slate-300">
-                </i>
-
-            </div>
-
-            <div class="p-4">
-
-                <h4 class="font-semibold text-slate-900">
-                    Lateral derecho
-                </h4>
-
-                <p class="text-sm text-slate-500 mt-1">
-                    Vista lateral derecha.
-                </p>
-
-                <div class="mt-4">
-                    <span
-                        class="inline-flex items-center gap-2
-                               px-3 py-2 rounded-lg
-                               bg-slate-100 text-slate-500
-                               text-xs font-semibold">
-
-                        <i
-                            data-lucide="clock"
-                            class="w-4 h-4">
-                        </i>
-
-                        Próximamente
-                    </span>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- LATERAL IZQUIERDO -->
-        <div class="rounded-xl border border-slate-200
-                    bg-white overflow-hidden">
-
-            <div class="aspect-video bg-slate-100
-                        flex items-center justify-center">
-
-                <i
-                    data-lucide="camera"
-                    class="w-10 h-10 text-slate-300">
-                </i>
-
-            </div>
-
-            <div class="p-4">
-
-                <h4 class="font-semibold text-slate-900">
-                    Lateral izquierdo
-                </h4>
-
-                <p class="text-sm text-slate-500 mt-1">
-                    Vista lateral izquierda.
-                </p>
-
-                <div class="mt-4">
-                    <span
-                        class="inline-flex items-center gap-2
-                               px-3 py-2 rounded-lg
-                               bg-slate-100 text-slate-500
-                               text-xs font-semibold">
-
-                        <i
-                            data-lucide="clock"
-                            class="w-4 h-4">
-                        </i>
-
-                        Próximamente
-                    </span>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- INTERIOR -->
-        <div class="rounded-xl border border-slate-200
-                    bg-white overflow-hidden">
-
-            <div class="aspect-video bg-slate-100
-                        flex items-center justify-center">
-
-                <i
-                    data-lucide="camera"
-                    class="w-10 h-10 text-slate-300">
-                </i>
-
-            </div>
-
-            <div class="p-4">
-
-                <h4 class="font-semibold text-slate-900">
-                    Interior
-                </h4>
-
-                <p class="text-sm text-slate-500 mt-1">
-                    Interior de la cabina del vehículo.
-                </p>
-
-                <div class="mt-4">
-                    <span
-                        class="inline-flex items-center gap-2
-                               px-3 py-2 rounded-lg
-                               bg-slate-100 text-slate-500
-                               text-xs font-semibold">
-
-                        <i
-                            data-lucide="clock"
-                            class="w-4 h-4">
-                        </i>
-
-                        Próximamente
-                    </span>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- ZONA DE CARGA -->
-        <div class="rounded-xl border border-slate-200
-                    bg-white overflow-hidden">
-
-            <div class="aspect-video bg-slate-100
-                        flex items-center justify-center">
-
-                <i
-                    data-lucide="camera"
-                    class="w-10 h-10 text-slate-300">
-                </i>
-
-            </div>
-
-            <div class="p-4">
-
-                <h4 class="font-semibold text-slate-900">
-                    Zona de carga
-                </h4>
-
-                <p class="text-sm text-slate-500 mt-1">
-                    Espacio disponible para carga y mudanzas.
-                </p>
-
-                <div class="mt-4">
-                    <span
-                        class="inline-flex items-center gap-2
-                               px-3 py-2 rounded-lg
-                               bg-slate-100 text-slate-500
-                               text-xs font-semibold">
-
-                        <i
-                            data-lucide="clock"
-                            class="w-4 h-4">
-                        </i>
-
-                        Próximamente
-                    </span>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- OTRAS -->
-        <div class="rounded-xl border border-dashed
-                    border-slate-300 bg-white overflow-hidden">
-
-            <div class="aspect-video bg-slate-50
-                        flex items-center justify-center">
-
-                <i
-                    data-lucide="images"
-                    class="w-10 h-10 text-slate-300">
-                </i>
-
-            </div>
-
-            <div class="p-4">
-
-                <h4 class="font-semibold text-slate-900">
-                    Otras fotografías
-                </h4>
-
-                <p class="text-sm text-slate-500 mt-1">
-                    Fotografías adicionales del vehículo.
-                </p>
-
-                <div class="mt-4">
-                    <span
-                        class="inline-flex items-center gap-2
-                               px-3 py-2 rounded-lg
-                               bg-slate-100 text-slate-500
-                               text-xs font-semibold">
-
-                        <i
-                            data-lucide="clock"
-                            class="w-4 h-4">
-                        </i>
-
-                        Próximamente
-                    </span>
-                </div>
-
-            </div>
-
-        </div>
-
-
-    </div>
-
-
-    <!-- INFORMACIÓN FINAL -->
-    <div class="mt-6 rounded-xl border border-blue-100
-                bg-blue-50 p-4">
-
-        <div class="flex items-start gap-3">
+    <!-- CONTENEDOR DINÁMICO -->
+    <div
+        id="vehiculo-fotografias-contenedor"
+        class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+
+        <div class="col-span-full bg-white border border-slate-200
+                    rounded-2xl p-10 text-center">
 
             <i
-                data-lucide="image"
-                class="w-5 h-5 text-blue-600 mt-0.5">
+                data-lucide="loader-circle"
+                class="w-8 h-8 mx-auto text-slate-400 animate-spin">
             </i>
 
-            <div>
-
-                <p class="text-sm font-semibold text-blue-900">
-                    Galería del vehículo
-                </p>
-
-                <p class="text-sm text-blue-800 mt-1">
-                    Las fotografías quedarán asociadas exclusivamente
-                    a este vehículo.
-                </p>
-
-            </div>
+            <p class="mt-3 text-sm text-slate-500">
+                Cargando fotografías...
+            </p>
 
         </div>
 
@@ -4112,8 +3785,7 @@ async function abrirGestionVehiculo(vehiculoId) {
 
 
     botones.forEach((boton) => {
-
-        boton.addEventListener("click", () => {
+    boton.addEventListener("click", async () => {
 
             const seccion =
                 boton.getAttribute("data-gestion-tab");
@@ -4164,6 +3836,10 @@ async function abrirGestionVehiculo(vehiculoId) {
                 contenidoActivo.classList.remove("hidden");
             }
 
+            if (seccion === "fotografias") {
+    await renderizarFotografiasVehiculo(modal, vehiculoId);
+}
+
         });
 
     });
@@ -4212,16 +3888,525 @@ async function cargarFotografiasVehiculo(vehiculoId) {
             "RODAX Vehículos: error cargando fotografías:",
             error
         );
+
         return [];
     }
 
     console.log(
-        "RODAX Vehículos — fotografías cargadas:",
+        "RODAX Vehículos - fotografías cargadas:",
         fotografias
     );
 
     return fotografias || [];
 }
+
+
+/* ============================================================
+   FOTOGRAFÍAS - CONFIGURACIÓN
+   ============================================================ */
+
+const TIPOS_FOTOGRAFIAS_VEHICULO = [
+    {
+        tipo: "frontal",
+        titulo: "Foto frontal",
+        descripcion: "Vista frontal completa del vehículo.",
+        icono: "car-front",
+        orden: 1
+    },
+    {
+        tipo: "trasera",
+        titulo: "Foto trasera",
+        descripcion: "Vista trasera completa del vehículo.",
+        icono: "car-front",
+        orden: 2
+    },
+    {
+        tipo: "lateral_derecho",
+        titulo: "Lateral derecho",
+        descripcion: "Vista completa del lateral derecho.",
+        icono: "move-horizontal",
+        orden: 3
+    },
+    {
+        tipo: "lateral_izquierdo",
+        titulo: "Lateral izquierdo",
+        descripcion: "Vista completa del lateral izquierdo.",
+        icono: "move-horizontal",
+        orden: 4
+    },
+    {
+        tipo: "interior",
+        titulo: "Interior",
+        descripcion: "Fotografía del interior de la cabina.",
+        icono: "armchair",
+        orden: 5
+    },
+    {
+        tipo: "zona_carga",
+        titulo: "Zona de carga",
+        descripcion: "Vista de la zona de carga del vehículo.",
+        icono: "package-open",
+        orden: 6
+    },
+    {
+        tipo: "otra",
+        titulo: "Otra fotografía",
+        descripcion: "Otra imagen relevante del vehículo.",
+        icono: "image",
+        orden: 7
+    }
+];
+
+
+/* ============================================================
+   RENDERIZAR FOTOGRAFÍAS
+   ============================================================ */
+
+async function renderizarFotografiasVehiculo(modal, vehiculoId) {
+
+    const contenedor =
+        modal.querySelector("#vehiculo-fotografias-contenedor");
+
+    if (!contenedor) {
+        console.error(
+            "RODAX Vehículos: no se encontró el contenedor de fotografías."
+        );
+        return;
+    }
+
+    contenedor.innerHTML = `
+        <div class="col-span-full bg-white border border-slate-200
+                    rounded-2xl p-10 text-center">
+
+            <i
+                data-lucide="loader-circle"
+                class="w-8 h-8 mx-auto text-slate-400 animate-spin">
+            </i>
+
+            <p class="mt-3 text-sm text-slate-500">
+                Cargando fotografías...
+            </p>
+
+        </div>
+    `;
+
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
+
+    const fotografias =
+        await cargarFotografiasVehiculo(vehiculoId);
+
+    const fotografiasPorTipo = {};
+
+    fotografias.forEach((foto) => {
+        fotografiasPorTipo[foto.tipo_fotografia] = foto;
+    });
+
+    contenedor.innerHTML = TIPOS_FOTOGRAFIAS_VEHICULO
+        .map((config) => {
+
+            const foto =
+                fotografiasPorTipo[config.tipo];
+
+            let imagenUrl = "";
+
+            if (foto?.archivo_path) {
+
+                const resultado =
+                    window.dbClient.storage
+                        .from("documentos")
+                        .getPublicUrl(foto.archivo_path);
+
+                imagenUrl =
+                    resultado?.data?.publicUrl || "";
+            }
+
+            return `
+                <div
+                    class="rounded-2xl border border-slate-200
+                           bg-white overflow-hidden shadow-sm">
+
+                    <!-- IMAGEN -->
+                    <div
+                        class="relative aspect-video bg-slate-100
+                               flex items-center justify-center">
+
+                        ${
+                            imagenUrl
+                                ? `
+                                    <img
+                                        src="${imagenUrl}"
+                                        alt="${config.titulo}"
+                                        class="w-full h-full object-cover">
+                                  `
+                                : `
+                                    <div class="text-center">
+
+                                        <i
+                                            data-lucide="${config.icono}"
+                                            class="w-10 h-10 mx-auto
+                                                   text-slate-300">
+                                        </i>
+
+                                        <p class="mt-2 text-xs
+                                                  text-slate-400">
+                                            Sin fotografía
+                                        </p>
+
+                                    </div>
+                                  `
+                        }
+
+                    </div>
+
+                    <!-- INFORMACIÓN -->
+                    <div class="p-4">
+
+                        <div class="flex items-start
+                                    justify-between gap-3">
+
+                            <div>
+
+                                <h4 class="font-semibold text-slate-900">
+                                    ${config.titulo}
+                                </h4>
+
+                                <p class="text-sm text-slate-500 mt-1">
+                                    ${config.descripcion}
+                                </p>
+
+                            </div>
+
+                            ${
+                                foto
+                                    ? `
+                                        <span
+                                            class="shrink-0 inline-flex
+                                                   items-center gap-1
+                                                   px-2 py-1 rounded-full
+                                                   bg-emerald-50
+                                                   text-emerald-700
+                                                   text-xs font-semibold">
+
+                                            <i
+                                                data-lucide="check"
+                                                class="w-3.5 h-3.5">
+                                            </i>
+
+                                            Añadida
+
+                                        </span>
+                                      `
+                                    : `
+                                        <span
+                                            class="shrink-0 inline-flex
+                                                   items-center gap-1
+                                                   px-2 py-1 rounded-full
+                                                   bg-slate-100
+                                                   text-slate-500
+                                                   text-xs font-semibold">
+
+                                            Pendiente
+
+                                        </span>
+                                      `
+                            }
+
+                        </div>
+
+                        <!-- ACCIONES -->
+                        <div class="mt-4">
+
+                            <label
+                                class="inline-flex items-center
+                                       justify-center gap-2
+                                       w-full px-4 py-2.5
+                                       rounded-xl
+                                       bg-blue-600
+                                       hover:bg-blue-700
+                                       text-white
+                                       font-semibold
+                                       text-sm
+                                       cursor-pointer
+                                       transition">
+
+                                <i
+                                    data-lucide="upload"
+                                    class="w-4 h-4">
+                                </i>
+
+                                ${
+                                    foto
+                                        ? "Cambiar fotografía"
+                                        : "Subir fotografía"
+                                }
+
+                                <input
+                                    type="file"
+                                    accept="image/jpeg,image/png,image/webp"
+                                    class="hidden"
+                                    onchange="subirFotografiaVehiculo(
+    '${vehiculoId}',
+    '${config.tipo}',
+    ${config.orden},
+    this
+)">
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+        })
+        .join("");
+
+    if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+    }
+}
+
+
+/* ============================================================
+   SUBIR FOTOGRAFÍA
+   ============================================================ */
+
+async function subirFotografiaVehiculo(
+    vehiculoId,
+    tipoFotografia,
+    orden,
+    input
+) {
+
+    const archivo =
+        input?.files?.[0];
+
+    if (!archivo) {
+        return;
+    }
+
+    if (!archivo.type.startsWith("image/")) {
+
+        alert(
+            "El archivo seleccionado no es una imagen válida."
+        );
+
+        input.value = "";
+        return;
+    }
+
+    const maximo =
+        10 * 1024 * 1024;
+
+    if (archivo.size > maximo) {
+
+        alert(
+            "La fotografía no puede superar los 10 MB."
+        );
+
+        input.value = "";
+        return;
+    }
+
+    const cliente =
+        window.dbClient;
+
+    if (!cliente) {
+
+        console.error(
+            "RODAX Vehículos: no se encontró dbClient."
+        );
+
+        return;
+    }
+
+    try {
+
+        const extension =
+            archivo.name
+                .split(".")
+                .pop()
+                .toLowerCase();
+
+        const nombreSeguro =
+            archivo.name
+                .replace(/\.[^/.]+$/, "")
+                .replace(/[^a-zA-Z0-9_-]/g, "_")
+                .substring(0, 60);
+
+        const nombreFinal =
+            `${tipoFotografia}-${Date.now()}-${nombreSeguro}.${extension}`;
+
+        const ruta =
+            `vehiculos/${vehiculoId}/fotografias/${nombreFinal}`;
+
+
+        /* --------------------------------------------------------
+           SUBIR AL STORAGE
+           -------------------------------------------------------- */
+
+        const {
+            error: errorStorage
+        } = await cliente.storage
+            .from("documentos")
+            .upload(
+                ruta,
+                archivo,
+                {
+                    cacheControl: "3600",
+                    upsert: false,
+                    contentType: archivo.type
+                }
+            );
+
+        if (errorStorage) {
+
+            console.error(
+                "RODAX Vehículos: error subiendo fotografía:",
+                errorStorage
+            );
+
+            alert(
+                "No se ha podido subir la fotografía."
+            );
+
+            return;
+        }
+
+
+        /* --------------------------------------------------------
+           COMPROBAR SI YA EXISTE UNA FOTO DE ESTE TIPO
+           -------------------------------------------------------- */
+
+        const {
+            data: fotografiaAnterior,
+            error: errorAnterior
+        } = await cliente
+            .from("vehiculos_fotografias")
+            .select("*")
+            .eq("vehiculo_id", vehiculoId)
+            .eq("tipo_fotografia", tipoFotografia)
+            .maybeSingle();
+
+        if (errorAnterior) {
+
+            console.error(
+                "RODAX Vehículos: error comprobando fotografía anterior:",
+                errorAnterior
+            );
+        }
+
+
+        /* --------------------------------------------------------
+           ACTUALIZAR O CREAR REGISTRO
+           -------------------------------------------------------- */
+
+        if (fotografiaAnterior) {
+
+            const {
+                error: errorUpdate
+            } = await cliente
+                .from("vehiculos_fotografias")
+                .update({
+                    archivo_path: ruta,
+                    nombre_archivo: archivo.name,
+                    orden: orden,
+                    actualizado_en: new Date().toISOString()
+                })
+                .eq("id", fotografiaAnterior.id);
+
+            if (errorUpdate) {
+
+                console.error(
+                    "RODAX Vehículos: error actualizando fotografía:",
+                    errorUpdate
+                );
+
+                alert(
+                    "La imagen se subió, pero no se pudo actualizar su registro."
+                );
+
+                return;
+            }
+
+        } else {
+
+            const {
+                error: errorInsert
+            } = await cliente
+                .from("vehiculos_fotografias")
+                .insert({
+                    vehiculo_id: vehiculoId,
+                    tipo_fotografia: tipoFotografia,
+                    archivo_path: ruta,
+                    nombre_archivo: archivo.name,
+                    orden: orden
+                });
+
+            if (errorInsert) {
+
+                console.error(
+                    "RODAX Vehículos: error guardando fotografía:",
+                    errorInsert
+                );
+
+                alert(
+                    "La imagen se subió, pero no se pudo guardar el registro."
+                );
+
+                return;
+            }
+        }
+
+
+        console.log(
+            "RODAX Vehículos: fotografía guardada correctamente."
+        );
+
+        const modal =
+    input.closest('[id^="gestion-vehiculo"]') ||
+    input.closest(".fixed");
+
+if (modal) {
+    await renderizarFotografiasVehiculo(
+        modal,
+        vehiculoId
+    );
+}
+
+    } catch (error) {
+
+        console.error(
+            "RODAX Vehículos: error inesperado subiendo fotografía:",
+            error
+        );
+
+        alert(
+            "Se ha producido un error al subir la fotografía."
+        );
+
+    } finally {
+
+        input.value = "";
+    }
+}
+
+
+/* ============================================================
+   EXPONER FUNCIONES
+   ============================================================ */
+
+window.cargarFotografiasVehiculo =
+    cargarFotografiasVehiculo;
+
+window.renderizarFotografiasVehiculo =
+    renderizarFotografiasVehiculo;
+
+window.subirFotografiaVehiculo =
+    subirFotografiaVehiculo;
 
 async function editarVehiculo(vehiculoId) {
 
