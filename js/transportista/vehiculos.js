@@ -3901,6 +3901,58 @@ const TIPOS_FOTOGRAFIAS_VEHICULO = [
     }
 ];
 
+/* ============================================================
+   CARGAR FOTOGRAFÍAS DEL VEHÍCULO
+   ============================================================ */
+
+async function cargarFotografiasVehiculo(vehiculoId) {
+
+    if (!vehiculoId) {
+        console.error(
+            "RODAX Vehículos: no se recibió el id del vehículo."
+        );
+        return [];
+    }
+
+    const cliente = window.dbClient;
+
+    if (!cliente) {
+        console.error(
+            "RODAX Vehículos: no se encontró dbClient."
+        );
+        return [];
+    }
+
+    const {
+        data: fotografias,
+        error
+    } = await cliente
+        .from("vehiculos_fotografias")
+        .select("*")
+        .eq("vehiculo_id", vehiculoId)
+        .order("orden", {
+            ascending: true
+        })
+        .order("creado_en", {
+            ascending: true
+        });
+
+    if (error) {
+        console.error(
+            "RODAX Vehículos: error cargando fotografías:",
+            error
+        );
+
+        return [];
+    }
+
+    console.log(
+        "RODAX Vehículos - fotografías cargadas:",
+        fotografias
+    );
+
+    return fotografias || [];
+}
 
 /* ============================================================
    RENDERIZAR FOTOGRAFÍAS
