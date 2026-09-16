@@ -155,7 +155,7 @@
         }
 
         contenido.innerHTML = `
-            <div class="space-y-6">
+            <div class="space-y-6 px-5 sm:px-6 pb-6">
                 <div>
                     <h3 class="text-lg font-bold text-slate-900">
                         Estadísticas del vehículo
@@ -239,7 +239,7 @@
         );
 
         contenido.innerHTML = `
-            <div class="space-y-6">
+            <div class="space-y-6 px-5 sm:px-6 pb-6">
 
                 <div>
                     <h3 class="text-lg font-bold text-slate-900">
