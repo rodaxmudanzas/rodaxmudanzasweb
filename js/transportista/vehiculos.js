@@ -4126,10 +4126,11 @@ async function renderizarFotografiasVehiculo(modal, vehiculoId) {
                                         <button
                                             type="button"
                                             onclick="eliminarFotografiaVehiculo(
-                                                '${vehiculoId}',
-                                                '${foto.id}',
-                                                '${foto.archivo_path}'
-                                            )"
+    '${vehiculoId}',
+    '${foto.id}',
+    '${foto.archivo_path}',
+    this
+)"
                                             class="inline-flex
                                                    items-center
                                                    justify-center
@@ -4375,7 +4376,8 @@ async function subirFotografiaVehiculo(
 async function eliminarFotografiaVehiculo(
     vehiculoId,
     fotografiaId,
-    archivoPath
+    archivoPath,
+    boton
 ) {
 
     if (!confirm(
@@ -4435,16 +4437,36 @@ async function eliminarFotografiaVehiculo(
             }
         }
 
-        const modal =
-            document.querySelector(".fixed");
+       /*
+ * Obtener directamente el modal de gestión del vehículo.
+ */
+const modal =
+    document.getElementById("modal-gestionar-vehiculo");
 
-        if (modal) {
+        if (!modal) {
 
-            await renderizarFotografiasVehiculo(
-                modal,
-                vehiculoId
+            console.error(
+                "RODAX Vehículos: no se encontró el modal " +
+                "de gestión del vehículo."
             );
+
+            return;
         }
+
+        /*
+         * Volver a cargar inmediatamente las fotografías.
+         * La fotografía eliminada ya no existe en Supabase,
+         * por lo que desaparecerá de la interfaz sin
+         * necesidad de actualizar la página.
+         */
+        await renderizarFotografiasVehiculo(
+            modal,
+            vehiculoId
+        );
+
+        console.log(
+            "RODAX Vehículos: fotografía eliminada correctamente."
+        );
 
     } catch (error) {
 
