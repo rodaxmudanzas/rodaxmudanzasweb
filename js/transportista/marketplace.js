@@ -5747,383 +5747,591 @@ function renderizarDisponibles() {
 }
 
 
-
-
-
-// ACEPTAR MUDANZA
-
+///////////////////////////////////////////////////////////
+// ACEPTAR MUDANZA — SELECCIÓN DE VEHÍCULO
 ///////////////////////////////////////////////////////////
 
-
-
-async function procesarAceptacion(
-
-    id
-
-) {
-
-
+async function procesarAceptacion(id) {
 
     const modalContentMarketplace =
-
-        document.getElementById(
-
-            "modal-content"
-
-        );
-
-
+        document.getElementById("modal-content");
 
     const actionModalMarketplace =
+        document.getElementById("action-modal");
 
-        document.getElementById(
-
-            "action-modal"
-
-        );
-
-
-
-    if (
-
-        !modalContentMarketplace
-
-    ) {
-
-
+    if (!modalContentMarketplace) {
 
         console.error(
-
             "❌ No existe #modal-content"
-
         );
 
-
-
         return;
-
     }
-
-
-
-    modalContentMarketplace.innerHTML = `
-
-
-
-        <i
-
-            data-lucide="loader-2"
-
-            class="w-10 h-10 animate-spin mx-auto text-blue-600 mb-3"
-
-        ></i>
-
-
-
-        <p
-
-            class="text-gray-600 font-medium text-sm"
-
-        >
-
-            Asignando mudanza...
-
-        </p>
-
-
-
-    `;
-
-
-
-    if (window.lucide) {
-
-        lucide.createIcons();
-
-    }
-
-
 
     try {
 
-
-
         const cliente =
-
             obtenerDbClientMarketplace();
 
-
-
         const transportistaId =
-
             obtenerCurrentUserIdMarketplace();
-
-
 
         if (!cliente) {
 
-
-
             throw new Error(
-
-                "No hay un cliente Supabase disponible para aceptar la mudanza."
-
+                "No hay un cliente Supabase disponible."
             );
-
         }
-
-
 
         if (!transportistaId) {
 
-
-
             throw new Error(
-
                 "No se ha podido identificar al transportista conectado."
-
             );
-
         }
 
-
+        /*
+         * =====================================================
+         * OBTENER VEHÍCULOS DEL TRANSPORTISTA
+         * =====================================================
+         */
 
         const {
-
-    data,
-
-    error
-
-} = await cliente
-
-    .from("mudanzas")
-
-    .update({
-
-        estado: "Transportista asignado",
-
-        transportista_id: transportistaId,
-
-        bloqueada: true,
-
-        fecha_asignacion: new Date().toISOString()
-
-    })
-
-    .eq("id", id)
-
-    .eq("estado", "Pendiente de asignación")
-
-    .eq("publicada_marketplace", true)
-
-    .eq("bloqueada", false)
-
-    .is("transportista_id", null)
-
-    .select();
-
-
-
-        if (error) {
-
-
-
-    console.error(
-
-        "❌ Error al aceptar mudanza:",
-
-        error
-
-    );
-
-
-
-    alert(
-
-        "No se pudo asignar la mudanza.\n\n" +
-
-        "Puede que otro transportista la haya aceptado antes."
-
-    );
-
-
-
-    if (actionModalMarketplace) {
-
-        actionModalMarketplace.classList.add("hidden");
-
-    }
-
-
-
-    await cargarTrabajosDisponibles();
-
-
-
-    return;
-
-}
-
-
-
-if (
-
-    !data ||
-
-    data.length === 0
-
-) {
-
-
-
-            alert(
-
-                "Esta mudanza ya no está disponible.\n\n" +
-
-                "Es posible que otro transportista la haya aceptado."
-
+            data: vehiculos,
+            error: errorVehiculos
+        } = await cliente
+            .from("vehiculos")
+            .select(`
+                id,
+                matricula,
+                marca,
+                modelo,
+                tipo_vehiculo,
+                estado
+            `)
+            .eq(
+                "transportista_id",
+                transportistaId
+            )
+            .order(
+                "marca",
+                { ascending: true }
             );
 
+        if (errorVehiculos) {
 
+            console.error(
+                "❌ Error cargando vehículos:",
+                errorVehiculos
+            );
 
-            if (
-
-                actionModalMarketplace
-
-            ) {
-
-
-
-                actionModalMarketplace.classList.add(
-
-                    "hidden"
-
-                );
-
-            }
-
-
-
-            await cargarTrabajosDisponibles();
-
-
-
-            return;
-
+            throw errorVehiculos;
         }
 
-
-
-        console.log(
-
-            "✅ Mudanza asignada correctamente:",
-
-            data[0]
-
-        );
-
-
+        /*
+         * =====================================================
+         * COMPROBAR QUE EXISTE AL MENOS UN VEHÍCULO
+         * =====================================================
+         */
 
         if (
-
-            actionModalMarketplace
-
+            !Array.isArray(vehiculos) ||
+            vehiculos.length === 0
         ) {
 
+            modalContentMarketplace.innerHTML = `
 
+                <div class="w-16 h-16 bg-amber-50
+                            rounded-full flex items-center
+                            justify-center mx-auto mb-4">
 
-            actionModalMarketplace.classList.add(
+                    <i
+                        data-lucide="truck"
+                        class="w-8 h-8 text-amber-600">
+                    </i>
 
-                "hidden"
+                </div>
 
-            );
+                <h3
+                    class="text-xl font-black text-gray-900 mb-2">
 
+                    No tienes vehículos registrados
+
+                </h3>
+
+                <p
+                    class="text-gray-500 text-sm mb-5 leading-relaxed">
+
+                    Para aceptar este trabajo necesitas
+                    tener al menos un vehículo registrado
+                    en <strong>Mis vehículos</strong>.
+
+                </p>
+
+                <button
+                    onclick="cerrarModal()"
+                    class="w-full bg-gray-100 text-gray-700
+                           font-bold py-3 rounded-xl
+                           hover:bg-gray-200 transition-colors">
+
+                    Cerrar
+
+                </button>
+
+            `;
+
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+
+            return;
         }
 
+        /*
+         * =====================================================
+         * MOSTRAR SELECCIÓN DE VEHÍCULO
+         * =====================================================
+         */
 
+        const opcionesVehiculos =
+            vehiculos
+                .map(vehiculo => {
 
-        // Cerrar inmediatamente el drawer de detalles
-if (typeof cerrarDrawer === "function") {
-    cerrarDrawer();
-}
+                    const nombre =
+                        [
+                            vehiculo.marca,
+                            vehiculo.modelo
+                        ]
+                            .filter(Boolean)
+                            .join(" ");
 
-// Eliminar inmediatamente la tarjeta aceptada del Marketplace
-const state = obtenerStateMarketplace();
+                    const matricula =
+                        vehiculo.matricula ||
+                        "Sin matrícula";
 
-state.disponibles = state.disponibles.filter(
-    t => Number(t.id) !== Number(id)
-);
+                    const tipo =
+                        vehiculo.tipo_vehiculo ||
+                        "";
 
-renderizarDisponibles();
+                    return `
+                        <label
+                            class="block cursor-pointer">
 
-// Actualizar Mis Mudanzas Activas
-if (typeof cargarMisMudanzas === "function") {
-    await cargarMisMudanzas();
-}
+                            <input
+                                type="radio"
+                                name="vehiculo-seleccionado"
+                                value="${vehiculo.id}"
+                                class="sr-only peer">
 
-// Sincronizar con Supabase
-await cargarTrabajosDisponibles();
+                            <div
+                                class="border border-slate-200
+                                       rounded-xl p-4
+                                       peer-checked:border-blue-600
+                                       peer-checked:bg-blue-50
+                                       transition-all">
 
-// Ir automáticamente a Mis Mudanzas Activas
-if (typeof cambiarTab === "function") {
-    cambiarTab("mis-mudanzas");
-}
+                                <div
+                                    class="flex items-center
+                                           justify-between gap-3">
 
+                                    <div>
 
+                                        <p
+                                            class="font-bold
+                                                   text-slate-900">
+
+                                            ${nombre || "Vehículo"}
+
+                                        </p>
+
+                                        <p
+                                            class="text-sm
+                                                   text-slate-500">
+
+                                            ${matricula}
+
+                                            ${tipo
+                                                ? " · " + tipo
+                                                : ""}
+
+                                        </p>
+
+                                    </div>
+
+                                    <div
+                                        class="w-5 h-5 rounded-full
+                                               border-2 border-slate-300
+                                               peer-checked:border-blue-600
+                                               flex-shrink-0">
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </label>
+                    `;
+                })
+                .join("");
+
+        modalContentMarketplace.innerHTML = `
+
+            <div
+                class="w-16 h-16 bg-blue-50
+                       rounded-full flex items-center
+                       justify-center mx-auto mb-4">
+
+                <i
+                    data-lucide="truck"
+                    class="w-8 h-8 text-blue-600">
+                </i>
+
+            </div>
+
+            <h3
+                class="text-xl font-black text-gray-900 mb-2">
+
+                Selecciona el vehículo
+
+            </h3>
+
+            <p
+                class="text-gray-500 text-sm mb-5
+                       leading-relaxed">
+
+                Selecciona el vehículo con el que
+                realizarás este servicio.
+
+            </p>
+
+            <div
+                class="space-y-3 text-left
+                       max-h-64 overflow-y-auto mb-5">
+
+                ${opcionesVehiculos}
+
+            </div>
+
+            <div class="flex gap-3">
+
+                <button
+                    onclick="cerrarModal()"
+                    class="flex-1 bg-gray-100
+                           text-gray-700 font-bold
+                           py-3 rounded-xl
+                           hover:bg-gray-200
+                           transition-colors">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    onclick="confirmarAceptacionConVehiculo(${id})"
+                    class="flex-1 bg-blue-600
+                           hover:bg-blue-700
+                           text-white font-bold
+                           py-3 rounded-xl
+                           shadow-md transition-colors">
+
+                    Aceptar trabajo
+
+                </button>
+
+            </div>
+
+        `;
+
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+
+        if (actionModalMarketplace) {
+
+            actionModalMarketplace.classList.remove(
+                "hidden"
+            );
+        }
 
     } catch (error) {
 
-
-
         console.error(
-
-            "❌ Excepción aceptando mudanza:",
-
+            "❌ Error preparando aceptación:",
             error
-
         );
-
-
 
         alert(
-
-            "Se produjo un error al aceptar la mudanza.\n\n" +
-
+            "No se han podido cargar tus vehículos.\n\n" +
             (
-
                 error?.message ||
-
                 "Error desconocido"
-
             )
-
         );
-
-
-
-        if (
-
-            actionModalMarketplace
-
-        ) {
-
-
-
-            actionModalMarketplace.classList.add(
-
-                "hidden"
-
-            );
-
-        }
-
     }
-
 }
 
+///////////////////////////////////////////////////////////
+// CONFIRMAR ACEPTACIÓN CON VEHÍCULO
+///////////////////////////////////////////////////////////
 
+async function confirmarAceptacionConVehiculo(id) {
 
+    const modalContentMarketplace =
+        document.getElementById("modal-content");
 
+    const actionModalMarketplace =
+        document.getElementById("action-modal");
+
+    const vehiculoSeleccionado =
+        document.querySelector(
+            'input[name="vehiculo-seleccionado"]:checked'
+        );
+
+    if (!vehiculoSeleccionado) {
+
+        alert(
+            "Selecciona un vehículo antes de aceptar el trabajo."
+        );
+
+        return;
+    }
+
+    const vehiculoId =
+        vehiculoSeleccionado.value;
+
+    try {
+
+        const cliente =
+            obtenerDbClientMarketplace();
+
+        const transportistaId =
+            obtenerCurrentUserIdMarketplace();
+
+        if (!cliente) {
+
+            throw new Error(
+                "No hay un cliente Supabase disponible."
+            );
+        }
+
+        if (!transportistaId) {
+
+            throw new Error(
+                "No se ha podido identificar al transportista conectado."
+            );
+        }
+
+        if (modalContentMarketplace) {
+
+            modalContentMarketplace.innerHTML = `
+
+                <i
+                    data-lucide="loader-2"
+                    class="w-10 h-10 animate-spin
+                           mx-auto text-blue-600 mb-3">
+                </i>
+
+                <p
+                    class="text-gray-600
+                           font-medium text-sm">
+
+                    Asignando mudanza...
+
+                </p>
+
+            `;
+
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+
+        /*
+         * =====================================================
+         * ASIGNAR MUDANZA + VEHÍCULO
+         * =====================================================
+         */
+
+        const {
+            data,
+            error
+        } = await cliente
+            .from("mudanzas")
+            .update({
+
+                estado:
+                    "Transportista asignado",
+
+                transportista_id:
+                    transportistaId,
+
+                vehiculo_id:
+                    vehiculoId,
+
+                bloqueada:
+                    true,
+
+                fecha_asignacion:
+                    new Date().toISOString()
+
+            })
+            .eq(
+                "id",
+                id
+            )
+            .eq(
+                "estado",
+                "Pendiente de asignación"
+            )
+            .eq(
+                "publicada_marketplace",
+                true
+            )
+            .eq(
+                "bloqueada",
+                false
+            )
+            .is(
+                "transportista_id",
+                null
+            )
+            .select();
+
+        if (error) {
+
+            console.error(
+                "❌ Error al aceptar mudanza:",
+                error
+            );
+
+            alert(
+                "No se pudo asignar la mudanza.\n\n" +
+                "Puede que otro transportista la haya " +
+                "aceptado antes."
+            );
+
+            if (actionModalMarketplace) {
+
+                actionModalMarketplace.classList.add(
+                    "hidden"
+                );
+            }
+
+            await cargarTrabajosDisponibles();
+
+            return;
+        }
+
+        if (
+            !data ||
+            data.length === 0
+        ) {
+
+            alert(
+                "Esta mudanza ya no está disponible.\n\n" +
+                "Es posible que otro transportista la " +
+                "haya aceptado."
+            );
+
+            if (actionModalMarketplace) {
+
+                actionModalMarketplace.classList.add(
+                    "hidden"
+                );
+            }
+
+            await cargarTrabajosDisponibles();
+
+            return;
+        }
+
+        console.log(
+            "✅ Mudanza asignada correctamente:",
+            data[0]
+        );
+
+        console.log(
+            "🚚 Vehículo asignado:",
+            vehiculoId
+        );
+
+        if (actionModalMarketplace) {
+
+            actionModalMarketplace.classList.add(
+                "hidden"
+            );
+        }
+
+        // Cerrar drawer
+        if (
+            typeof cerrarDrawer ===
+            "function"
+        ) {
+
+            cerrarDrawer();
+        }
+
+        // Eliminar tarjeta del Marketplace
+        const state =
+            obtenerStateMarketplace();
+
+        state.disponibles =
+            state.disponibles.filter(
+                t =>
+                    Number(t.id) !==
+                    Number(id)
+            );
+
+        renderizarDisponibles();
+
+        // Actualizar Mis Mudanzas Activas
+        if (
+            typeof cargarMisMudanzas ===
+            "function"
+        ) {
+
+            await cargarMisMudanzas();
+        }
+
+        // Sincronizar Marketplace
+        await cargarTrabajosDisponibles();
+
+        // Ir a Mis Mudanzas Activas
+        if (
+            typeof cambiarTab ===
+            "function"
+        ) {
+
+            cambiarTab(
+                "mis-mudanzas"
+            );
+        }
+
+    } catch (error) {
+
+        console.error(
+            "❌ Excepción aceptando mudanza:",
+            error
+        );
+
+        alert(
+            "Se produjo un error al aceptar " +
+            "la mudanza.\n\n" +
+            (
+                error?.message ||
+                "Error desconocido"
+            )
+        );
+
+        if (actionModalMarketplace) {
+
+            actionModalMarketplace.classList.add(
+                "hidden"
+            );
+        }
+    }
+}
 
 // EVENTO — FILTROS MARKETPLACE
 
@@ -6164,6 +6372,10 @@ window.renderizarDisponibles =
 window.procesarAceptacion =
 
     procesarAceptacion;
+
+
+    window.confirmarAceptacionConVehiculo =
+    confirmarAceptacionConVehiculo;
 
 
 
