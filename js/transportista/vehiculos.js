@@ -2693,10 +2693,10 @@ async function abrirGestionVehiculo(vehiculoId) {
             </div>
 
 
-            <!-- CONTENIDO -->
-            <div
-                id="gestion-vehiculo-contenido"
-                class="flex-1 overflow-y-auto p-6">
+           <!-- CONTENIDO -->
+<div
+    id="gestion-vehiculo-contenido"
+    class="flex-1 min-h-0 overflow-y-auto p-6">
 
                 <!-- INFORMACIÓN -->
                 <div data-gestion-contenido="informacion">
