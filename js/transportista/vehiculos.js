@@ -3845,58 +3845,8 @@ async function abrirGestionVehiculo(vehiculoId) {
 
 }
 
-async function cargarFotografiasVehiculo(vehiculoId) {
-
-    if (!vehiculoId) {
-        console.error(
-            "RODAX Vehículos: no se recibió el id del vehículo."
-        );
-        return [];
-    }
-
-    const cliente = window.dbClient;
-
-    if (!cliente) {
-        console.error(
-            "RODAX Vehículos: no se encontró dbClient."
-        );
-        return [];
-    }
-
-    const {
-        data: fotografias,
-        error
-    } = await cliente
-        .from("vehiculos_fotografias")
-        .select("*")
-        .eq("vehiculo_id", vehiculoId)
-        .order("orden", {
-            ascending: true
-        })
-        .order("creado_en", {
-            ascending: true
-        });
-
-    if (error) {
-        console.error(
-            "RODAX Vehículos: error cargando fotografías:",
-            error
-        );
-
-        return [];
-    }
-
-    console.log(
-        "RODAX Vehículos - fotografías cargadas:",
-        fotografias
-    );
-
-    return fotografias || [];
-}
-
-
 /* ============================================================
-   FOTOGRAFÍAS - CONFIGURACIÓN
+   CONFIGURACIÓN DE FOTOGRAFÍAS
    ============================================================ */
 
 const TIPOS_FOTOGRAFIAS_VEHICULO = [
@@ -3943,10 +3893,10 @@ const TIPOS_FOTOGRAFIAS_VEHICULO = [
         orden: 6
     },
     {
-        tipo: "otra",
-        titulo: "Otra fotografía",
+        tipo: "otras",
+        titulo: "Otras fotografías",
         descripcion: "Otra imagen relevante del vehículo.",
-        icono: "image",
+        icono: "images",
         orden: 7
     }
 ];
@@ -3959,33 +3909,13 @@ const TIPOS_FOTOGRAFIAS_VEHICULO = [
 async function renderizarFotografiasVehiculo(modal, vehiculoId) {
 
     const contenedor =
-        modal.querySelector("#vehiculo-fotografias-contenedor");
+        modal?.querySelector("#vehiculo-fotografias-contenedor");
 
     if (!contenedor) {
         console.error(
             "RODAX Vehículos: no se encontró el contenedor de fotografías."
         );
         return;
-    }
-
-    contenedor.innerHTML = `
-        <div class="col-span-full bg-white border border-slate-200
-                    rounded-2xl p-10 text-center">
-
-            <i
-                data-lucide="loader-circle"
-                class="w-8 h-8 mx-auto text-slate-400 animate-spin">
-            </i>
-
-            <p class="mt-3 text-sm text-slate-500">
-                Cargando fotografías...
-            </p>
-
-        </div>
-    `;
-
-    if (typeof lucide !== "undefined") {
-        lucide.createIcons();
     }
 
     const fotografias =
@@ -3997,15 +3927,15 @@ async function renderizarFotografiasVehiculo(modal, vehiculoId) {
         fotografiasPorTipo[foto.tipo_fotografia] = foto;
     });
 
-    contenedor.innerHTML = TIPOS_FOTOGRAFIAS_VEHICULO
-        .map((config) => {
+    contenedor.innerHTML =
+        TIPOS_FOTOGRAFIAS_VEHICULO.map((config) => {
 
             const foto =
                 fotografiasPorTipo[config.tipo];
 
             let imagenUrl = "";
 
-            if (foto?.archivo_path) {
+            if (foto?.archivo_path && window.dbClient) {
 
                 const resultado =
                     window.dbClient.storage
@@ -4017,14 +3947,12 @@ async function renderizarFotografiasVehiculo(modal, vehiculoId) {
             }
 
             return `
-                <div
-                    class="rounded-2xl border border-slate-200
-                           bg-white overflow-hidden shadow-sm">
+                <div class="rounded-2xl border border-slate-200
+                            bg-white overflow-hidden shadow-sm">
 
-                    <!-- IMAGEN -->
-                    <div
-                        class="relative aspect-video bg-slate-100
-                               flex items-center justify-center">
+                    <div class="relative aspect-video bg-slate-100
+                                flex items-center justify-center
+                                overflow-hidden">
 
                         ${
                             imagenUrl
@@ -4054,14 +3982,12 @@ async function renderizarFotografiasVehiculo(modal, vehiculoId) {
 
                     </div>
 
-                    <!-- INFORMACIÓN -->
                     <div class="p-4">
 
                         <div class="flex items-start
                                     justify-between gap-3">
 
                             <div>
-
                                 <h4 class="font-semibold text-slate-900">
                                     ${config.titulo}
                                 </h4>
@@ -4069,11 +3995,10 @@ async function renderizarFotografiasVehiculo(modal, vehiculoId) {
                                 <p class="text-sm text-slate-500 mt-1">
                                     ${config.descripcion}
                                 </p>
-
                             </div>
 
                             ${
-                                foto
+                                foto?.archivo_path
                                     ? `
                                         <span
                                             class="shrink-0 inline-flex
@@ -4095,7 +4020,6 @@ async function renderizarFotografiasVehiculo(modal, vehiculoId) {
                                     : `
                                         <span
                                             class="shrink-0 inline-flex
-                                                   items-center gap-1
                                                    px-2 py-1 rounded-full
                                                    bg-slate-100
                                                    text-slate-500
@@ -4109,21 +4033,16 @@ async function renderizarFotografiasVehiculo(modal, vehiculoId) {
 
                         </div>
 
-                        <!-- ACCIONES -->
-                        <div class="mt-4">
+                        <div class="mt-4 flex gap-2">
 
                             <label
-                                class="inline-flex items-center
-                                       justify-center gap-2
-                                       w-full px-4 py-2.5
-                                       rounded-xl
-                                       bg-blue-600
-                                       hover:bg-blue-700
-                                       text-white
-                                       font-semibold
-                                       text-sm
-                                       cursor-pointer
-                                       transition">
+                                class="flex-1 inline-flex
+                                       items-center justify-center
+                                       gap-2 px-4 py-2.5
+                                       rounded-xl bg-blue-600
+                                       hover:bg-blue-700 text-white
+                                       font-semibold text-sm
+                                       cursor-pointer transition">
 
                                 <i
                                     data-lucide="upload"
@@ -4131,7 +4050,7 @@ async function renderizarFotografiasVehiculo(modal, vehiculoId) {
                                 </i>
 
                                 ${
-                                    foto
+                                    foto?.archivo_path
                                         ? "Cambiar fotografía"
                                         : "Subir fotografía"
                                 }
@@ -4141,13 +4060,41 @@ async function renderizarFotografiasVehiculo(modal, vehiculoId) {
                                     accept="image/jpeg,image/png,image/webp"
                                     class="hidden"
                                     onchange="subirFotografiaVehiculo(
-    '${vehiculoId}',
-    '${config.tipo}',
-    ${config.orden},
-    this
-)">
+                                        '${vehiculoId}',
+                                        '${config.tipo}',
+                                        ${config.orden},
+                                        this
+                                    )">
 
                             </label>
+
+                            ${
+                                foto?.archivo_path
+                                    ? `
+                                        <button
+                                            type="button"
+                                            onclick="eliminarFotografiaVehiculo(
+                                                '${vehiculoId}',
+                                                '${foto.id}',
+                                                '${foto.archivo_path}'
+                                            )"
+                                            class="inline-flex
+                                                   items-center
+                                                   justify-center
+                                                   px-3 rounded-xl
+                                                   bg-red-50
+                                                   text-red-600
+                                                   hover:bg-red-100">
+
+                                            <i
+                                                data-lucide="trash-2"
+                                                class="w-4 h-4">
+                                            </i>
+
+                                        </button>
+                                      `
+                                    : ""
+                            }
 
                         </div>
 
@@ -4155,610 +4102,8 @@ async function renderizarFotografiasVehiculo(modal, vehiculoId) {
 
                 </div>
             `;
-        })
-        .join("");
 
-    if (typeof lucide !== "undefined") {
-        lucide.createIcons();
-    }
-}
-
-
-/* ============================================================
-   SUBIR FOTOGRAFÍA
-   ============================================================ */
-
-async function subirFotografiaVehiculo(
-    vehiculoId,
-    tipoFotografia,
-    orden,
-    input
-) {
-
-    const archivo =
-        input?.files?.[0];
-
-    if (!archivo) {
-        return;
-    }
-
-    if (!archivo.type.startsWith("image/")) {
-
-        alert(
-            "El archivo seleccionado no es una imagen válida."
-        );
-
-        input.value = "";
-        return;
-    }
-
-    const maximo =
-        10 * 1024 * 1024;
-
-    if (archivo.size > maximo) {
-
-        alert(
-            "La fotografía no puede superar los 10 MB."
-        );
-
-        input.value = "";
-        return;
-    }
-
-    const cliente =
-        window.dbClient;
-
-    if (!cliente) {
-
-        console.error(
-            "RODAX Vehículos: no se encontró dbClient."
-        );
-
-        return;
-    }
-
-    try {
-
-        const extension =
-            archivo.name
-                .split(".")
-                .pop()
-                .toLowerCase();
-
-        const nombreSeguro =
-            archivo.name
-                .replace(/\.[^/.]+$/, "")
-                .replace(/[^a-zA-Z0-9_-]/g, "_")
-                .substring(0, 60);
-
-        const nombreFinal =
-            `${tipoFotografia}-${Date.now()}-${nombreSeguro}.${extension}`;
-
-        const ruta =
-            `vehiculos/${vehiculoId}/fotografias/${nombreFinal}`;
-
-
-        /* --------------------------------------------------------
-           SUBIR AL STORAGE
-           -------------------------------------------------------- */
-
-        const {
-            error: errorStorage
-        } = await cliente.storage
-            .from("documentos")
-            .upload(
-                ruta,
-                archivo,
-                {
-                    cacheControl: "3600",
-                    upsert: false,
-                    contentType: archivo.type
-                }
-            );
-
-        if (errorStorage) {
-
-            console.error(
-                "RODAX Vehículos: error subiendo fotografía:",
-                errorStorage
-            );
-
-            alert(
-                "No se ha podido subir la fotografía."
-            );
-
-            return;
-        }
-
-
-        /* --------------------------------------------------------
-           COMPROBAR SI YA EXISTE UNA FOTO DE ESTE TIPO
-           -------------------------------------------------------- */
-
-        const {
-            data: fotografiaAnterior,
-            error: errorAnterior
-        } = await cliente
-            .from("vehiculos_fotografias")
-            .select("*")
-            .eq("vehiculo_id", vehiculoId)
-            .eq("tipo_fotografia", tipoFotografia)
-            .maybeSingle();
-
-        if (errorAnterior) {
-
-            console.error(
-                "RODAX Vehículos: error comprobando fotografía anterior:",
-                errorAnterior
-            );
-        }
-
-
-        /* --------------------------------------------------------
-           ACTUALIZAR O CREAR REGISTRO
-           -------------------------------------------------------- */
-
-        if (fotografiaAnterior) {
-
-            const {
-                error: errorUpdate
-            } = await cliente
-                .from("vehiculos_fotografias")
-                .update({
-                    archivo_path: ruta,
-                    nombre_archivo: archivo.name,
-                    orden: orden,
-                    actualizado_en: new Date().toISOString()
-                })
-                .eq("id", fotografiaAnterior.id);
-
-            if (errorUpdate) {
-
-                console.error(
-                    "RODAX Vehículos: error actualizando fotografía:",
-                    errorUpdate
-                );
-
-                alert(
-                    "La imagen se subió, pero no se pudo actualizar su registro."
-                );
-
-                return;
-            }
-
-        } else {
-
-            const {
-                error: errorInsert
-            } = await cliente
-                .from("vehiculos_fotografias")
-                .insert({
-                    vehiculo_id: vehiculoId,
-                    tipo_fotografia: tipoFotografia,
-                    archivo_path: ruta,
-                    nombre_archivo: archivo.name,
-                    orden: orden
-                });
-
-            if (errorInsert) {
-
-                console.error(
-                    "RODAX Vehículos: error guardando fotografía:",
-                    errorInsert
-                );
-
-                alert(
-                    "La imagen se subió, pero no se pudo guardar el registro."
-                );
-
-                return;
-            }
-        }
-
-
-        console.log(
-            "RODAX Vehículos: fotografía guardada correctamente."
-        );
-
-        const modal =
-    input.closest('[id^="gestion-vehiculo"]') ||
-    input.closest(".fixed");
-
-if (modal) {
-    await renderizarFotografiasVehiculo(
-        modal,
-        vehiculoId
-    );
-}
-
-    } catch (error) {
-
-        console.error(
-            "RODAX Vehículos: error inesperado subiendo fotografía:",
-            error
-        );
-
-        alert(
-            "Se ha producido un error al subir la fotografía."
-        );
-
-    } finally {
-
-        input.value = "";
-    }
-}
-
-
-/* ============================================================
-   EXPONER FUNCIONES
-   ============================================================ */
-
-window.cargarFotografiasVehiculo =
-    cargarFotografiasVehiculo;
-
-window.renderizarFotografiasVehiculo =
-    renderizarFotografiasVehiculo;
-
-window.subirFotografiaVehiculo =
-    subirFotografiaVehiculo;
-
-    /* ============================================================
-   CONFIGURACIÓN DE FOTOGRAFÍAS DEL VEHÍCULO
-   ============================================================ */
-
-const TIPOS_FOTOGRAFIAS_VEHICULO = [
-
-    {
-        tipo: "frontal",
-        titulo: "Foto frontal",
-        descripcion: "Vista frontal completa del vehículo.",
-        icono: "car-front",
-        orden: 1
-    },
-
-    {
-        tipo: "trasera",
-        titulo: "Foto trasera",
-        descripcion: "Vista trasera completa del vehículo.",
-        icono: "car-front",
-        orden: 2
-    },
-
-    {
-        tipo: "lateral_derecho",
-        titulo: "Lateral derecho",
-        descripcion: "Vista completa del lateral derecho.",
-        icono: "move-horizontal",
-        orden: 3
-    },
-
-    {
-        tipo: "lateral_izquierdo",
-        titulo: "Lateral izquierdo",
-        descripcion: "Vista completa del lateral izquierdo.",
-        icono: "move-horizontal",
-        orden: 4
-    },
-
-    {
-        tipo: "interior",
-        titulo: "Interior",
-        descripcion: "Fotografía del interior de la cabina.",
-        icono: "armchair",
-        orden: 5
-    },
-
-    {
-        tipo: "zona_carga",
-        titulo: "Zona de carga",
-        descripcion: "Vista de la zona de carga del vehículo.",
-        icono: "package-open",
-        orden: 6
-    },
-
-    {
-        tipo: "otras",
-        titulo: "Otras fotografías",
-        descripcion: "Otra imagen relevante del vehículo.",
-        icono: "images",
-        orden: 7
-    }
-
-];
-
-
-/* ============================================================
-   OBTENER URL PÚBLICA DE UNA FOTOGRAFÍA
-   ============================================================ */
-
-function obtenerUrlFotografiaVehiculo(archivoPath) {
-
-    if (!archivoPath || !window.dbClient) {
-        return "";
-    }
-
-    const resultado =
-        window.dbClient.storage
-            .from("documentos")
-            .getPublicUrl(archivoPath);
-
-    return resultado?.data?.publicUrl || "";
-}
-
-
-/* ============================================================
-   RENDERIZAR FOTOGRAFÍAS
-   ============================================================ */
-
-async function renderizarFotografiasVehiculo(
-    modal,
-    vehiculoId
-) {
-
-    const contenedor =
-        modal?.querySelector(
-            "#vehiculo-fotografias-contenedor"
-        );
-
-    if (!contenedor) {
-
-        console.error(
-            "RODAX Vehículos: no se encontró el contenedor de fotografías."
-        );
-
-        return;
-    }
-
-    contenedor.innerHTML = `
-        <div class="col-span-full bg-white border border-slate-200
-                    rounded-2xl p-10 text-center">
-
-            <i
-                data-lucide="loader-circle"
-                class="w-8 h-8 mx-auto text-slate-400 animate-spin">
-            </i>
-
-            <p class="mt-3 text-sm text-slate-500">
-                Cargando fotografías...
-            </p>
-
-        </div>
-    `;
-
-    if (typeof lucide !== "undefined") {
-        lucide.createIcons();
-    }
-
-    const fotografias =
-        await cargarFotografiasVehiculo(vehiculoId);
-
-    const fotografiasPorTipo = {};
-
-    fotografias.forEach((foto) => {
-
-        fotografiasPorTipo[
-            foto.tipo_fotografia
-        ] = foto;
-
-    });
-
-
-    contenedor.innerHTML =
-        TIPOS_FOTOGRAFIAS_VEHICULO
-            .map((config) => {
-
-                const foto =
-                    fotografiasPorTipo[config.tipo];
-
-                const imagenUrl =
-                    obtenerUrlFotografiaVehiculo(
-                        foto?.archivo_path
-                    );
-
-                return `
-
-                    <div
-                        class="rounded-2xl border border-slate-200
-                               bg-white overflow-hidden shadow-sm">
-
-                        <!-- PREVISUALIZACIÓN -->
-
-                        <div
-                            class="relative aspect-video
-                                   bg-slate-100
-                                   flex items-center justify-center
-                                   overflow-hidden">
-
-                            ${
-                                imagenUrl
-                                    ? `
-                                        <img
-                                            src="${imagenUrl}"
-                                            alt="${config.titulo}"
-                                            class="w-full h-full
-                                                   object-cover">
-                                      `
-                                    : `
-                                        <div class="text-center">
-
-                                            <i
-                                                data-lucide="${config.icono}"
-                                                class="w-10 h-10 mx-auto
-                                                       text-slate-300">
-                                            </i>
-
-                                            <p
-                                                class="mt-2 text-xs
-                                                       text-slate-400">
-
-                                                Sin fotografía
-
-                                            </p>
-
-                                        </div>
-                                      `
-                            }
-
-                        </div>
-
-
-                        <!-- INFORMACIÓN -->
-
-                        <div class="p-4">
-
-                            <div
-                                class="flex items-start
-                                       justify-between gap-3">
-
-                                <div>
-
-                                    <h4
-                                        class="font-semibold
-                                               text-slate-900">
-
-                                        ${config.titulo}
-
-                                    </h4>
-
-                                    <p
-                                        class="text-sm text-slate-500
-                                               mt-1">
-
-                                        ${config.descripcion}
-
-                                    </p>
-
-                                </div>
-
-
-                                ${
-                                    foto?.archivo_path
-                                        ? `
-                                            <span
-                                                class="shrink-0
-                                                       inline-flex
-                                                       items-center
-                                                       gap-1
-                                                       px-2 py-1
-                                                       rounded-full
-                                                       bg-emerald-50
-                                                       text-emerald-700
-                                                       text-xs
-                                                       font-semibold">
-
-                                                <i
-                                                    data-lucide="check"
-                                                    class="w-3.5 h-3.5">
-                                                </i>
-
-                                                Añadida
-
-                                            </span>
-                                          `
-                                        : `
-                                            <span
-                                                class="shrink-0
-                                                       inline-flex
-                                                       px-2 py-1
-                                                       rounded-full
-                                                       bg-slate-100
-                                                       text-slate-500
-                                                       text-xs
-                                                       font-semibold">
-
-                                                Pendiente
-
-                                            </span>
-                                          `
-                                }
-
-                            </div>
-
-
-                            <!-- ACCIONES -->
-
-                            <div class="mt-4 flex gap-2">
-
-                                <label
-                                    class="flex-1 inline-flex
-                                           items-center justify-center
-                                           gap-2 px-4 py-2.5
-                                           rounded-xl
-                                           bg-blue-600
-                                           hover:bg-blue-700
-                                           text-white
-                                           font-semibold
-                                           text-sm
-                                           cursor-pointer
-                                           transition">
-
-                                    <i
-                                        data-lucide="upload"
-                                        class="w-4 h-4">
-                                    </i>
-
-                                    ${
-                                        foto?.archivo_path
-                                            ? "Cambiar fotografía"
-                                            : "Subir fotografía"
-                                    }
-
-                                    <input
-                                        type="file"
-                                        accept="image/jpeg,image/png,image/webp"
-                                        class="hidden"
-                                        onchange="subirFotografiaVehiculo(
-                                            '${vehiculoId}',
-                                            '${config.tipo}',
-                                            ${config.orden},
-                                            this
-                                        )">
-
-                                </label>
-
-
-                                ${
-                                    foto?.archivo_path
-                                        ? `
-                                            <button
-                                                type="button"
-                                                onclick="eliminarFotografiaVehiculo(
-                                                    '${vehiculoId}',
-                                                    '${foto.id}',
-                                                    '${foto.archivo_path}'
-                                                )"
-                                                class="inline-flex
-                                                       items-center
-                                                       justify-center
-                                                       px-3
-                                                       rounded-xl
-                                                       bg-red-50
-                                                       text-red-600
-                                                       hover:bg-red-100
-                                                       transition"
-                                                title="Eliminar fotografía">
-
-                                                <i
-                                                    data-lucide="trash-2"
-                                                    class="w-4 h-4">
-                                                </i>
-
-                                            </button>
-                                          `
-                                        : ""
-                                }
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                `;
-
-            })
-            .join("");
-
+        }).join("");
 
     if (typeof lucide !== "undefined") {
         lucide.createIcons();
@@ -4777,60 +4122,34 @@ async function subirFotografiaVehiculo(
     input
 ) {
 
-    const archivo =
-        input?.files?.[0];
+    const archivo = input?.files?.[0];
 
     if (!archivo) {
         return;
     }
 
-
     if (!archivo.type.startsWith("image/")) {
-
-        alert(
-            "El archivo seleccionado no es una imagen válida."
-        );
-
+        alert("El archivo seleccionado no es una imagen válida.");
         input.value = "";
-
         return;
     }
 
-
-    const maximo =
-        10 * 1024 * 1024;
-
-    if (archivo.size > maximo) {
-
-        alert(
-            "La fotografía no puede superar los 10 MB."
-        );
-
+    if (archivo.size > 10 * 1024 * 1024) {
+        alert("La fotografía no puede superar los 10 MB.");
         input.value = "";
-
         return;
     }
 
-
-    const cliente =
-        window.dbClient;
+    const cliente = window.dbClient;
 
     if (!cliente) {
-
         console.error(
             "RODAX Vehículos: no se encontró dbClient."
         );
-
         return;
     }
 
-
     try {
-
-        /*
-         * Comprobar si ya existe una fotografía
-         * de este tipo.
-         */
 
         const {
             data: fotografiaAnterior,
@@ -4842,25 +4161,16 @@ async function subirFotografiaVehiculo(
             .eq("tipo_fotografia", tipoFotografia)
             .maybeSingle();
 
-
         if (errorAnterior) {
-
             console.error(
-                "RODAX Vehículos: error comprobando fotografía anterior:",
+                "RODAX Vehículos: error comprobando fotografía:",
                 errorAnterior
             );
-
             alert(
                 "No se ha podido comprobar la fotografía actual."
             );
-
             return;
         }
-
-
-        /*
-         * Crear nombre y ruta nueva.
-         */
 
         const extension =
             archivo.name
@@ -4868,25 +4178,17 @@ async function subirFotografiaVehiculo(
                 .pop()
                 .toLowerCase();
 
-
         const nombreSeguro =
             archivo.name
                 .replace(/\.[^/.]+$/, "")
                 .replace(/[^a-zA-Z0-9_-]/g, "_")
                 .substring(0, 60);
 
-
         const nombreFinal =
             `${tipoFotografia}-${Date.now()}-${nombreSeguro}.${extension}`;
 
-
         const ruta =
             `vehiculos/${vehiculoId}/fotografias/${nombreFinal}`;
-
-
-        /*
-         * Subir nueva fotografía.
-         */
 
         const {
             error: errorStorage
@@ -4902,26 +4204,14 @@ async function subirFotografiaVehiculo(
                 }
             );
 
-
         if (errorStorage) {
-
             console.error(
                 "RODAX Vehículos: error subiendo fotografía:",
                 errorStorage
             );
-
-            alert(
-                "No se ha podido subir la fotografía."
-            );
-
+            alert("No se ha podido subir la fotografía.");
             return;
         }
-
-
-        /*
-         * Si existía fotografía anterior,
-         * actualizar su registro.
-         */
 
         if (fotografiaAnterior) {
 
@@ -4936,71 +4226,36 @@ async function subirFotografiaVehiculo(
                     actualizado_en:
                         new Date().toISOString()
                 })
-                .eq(
-                    "id",
-                    fotografiaAnterior.id
-                );
-
+                .eq("id", fotografiaAnterior.id);
 
             if (errorUpdate) {
+
+                await cliente.storage
+                    .from("documentos")
+                    .remove([ruta]);
 
                 console.error(
                     "RODAX Vehículos: error actualizando fotografía:",
                     errorUpdate
                 );
 
-                /*
-                 * Si la actualización de BD falla,
-                 * intentamos eliminar el archivo nuevo
-                 * para no dejar basura en Storage.
-                 */
-
-                await cliente.storage
-                    .from("documentos")
-                    .remove([ruta]);
-
                 alert(
-                    "La fotografía se subió, pero no se pudo actualizar el registro."
+                    "No se pudo actualizar el registro de la fotografía."
                 );
 
                 return;
             }
 
-
-            /*
-             * Eliminar fotografía anterior
-             * DESPUÉS de actualizar correctamente
-             * el registro.
-             */
-
             if (fotografiaAnterior.archivo_path) {
 
-                const {
-                    error: errorEliminarAnterior
-                } = await cliente.storage
+                await cliente.storage
                     .from("documentos")
                     .remove([
                         fotografiaAnterior.archivo_path
                     ]);
-
-
-                if (errorEliminarAnterior) {
-
-                    console.warn(
-                        "RODAX Vehículos: no se pudo eliminar la fotografía anterior:",
-                        errorEliminarAnterior
-                    );
-
-                }
-
             }
 
         } else {
-
-            /*
-             * No existía fotografía:
-             * crear nuevo registro.
-             */
 
             const {
                 error: errorInsert
@@ -5014,61 +4269,39 @@ async function subirFotografiaVehiculo(
                     orden: orden
                 });
 
-
             if (errorInsert) {
+
+                await cliente.storage
+                    .from("documentos")
+                    .remove([ruta]);
 
                 console.error(
                     "RODAX Vehículos: error guardando fotografía:",
                     errorInsert
                 );
 
-
-                /*
-                 * Si falla BD, eliminar el archivo
-                 * que acabamos de subir.
-                 */
-
-                await cliente.storage
-                    .from("documentos")
-                    .remove([ruta]);
-
-
                 alert(
-                    "La fotografía se subió, pero no se pudo guardar el registro."
+                    "La fotografía se subió, pero no se pudo guardar."
                 );
 
                 return;
             }
-
         }
-
-
-        console.log(
-            "RODAX Vehículos: fotografía guardada correctamente."
-        );
-
-
-        /*
-         * Recargar visualmente la galería.
-         */
 
         const modal =
             input.closest(".fixed");
 
         if (modal) {
-
             await renderizarFotografiasVehiculo(
                 modal,
                 vehiculoId
             );
-
         }
-
 
     } catch (error) {
 
         console.error(
-            "RODAX Vehículos: error inesperado subiendo fotografía:",
+            "RODAX Vehículos: error inesperado:",
             error
         );
 
@@ -5079,7 +4312,6 @@ async function subirFotografiaVehiculo(
     } finally {
 
         input.value = "";
-
     }
 }
 
@@ -5094,34 +4326,22 @@ async function eliminarFotografiaVehiculo(
     archivoPath
 ) {
 
-    const confirmar =
-        confirm(
-            "¿Quieres eliminar esta fotografía del vehículo?"
-        );
-
-    if (!confirmar) {
+    if (!confirm(
+        "¿Quieres eliminar esta fotografía del vehículo?"
+    )) {
         return;
     }
 
-
-    const cliente =
-        window.dbClient;
+    const cliente = window.dbClient;
 
     if (!cliente) {
-
         console.error(
             "RODAX Vehículos: no se encontró dbClient."
         );
-
         return;
     }
 
-
     try {
-
-        /*
-         * Primero eliminar registro de Supabase.
-         */
 
         const {
             error: errorDelete
@@ -5131,11 +4351,10 @@ async function eliminarFotografiaVehiculo(
             .eq("id", fotografiaId)
             .eq("vehiculo_id", vehiculoId);
 
-
         if (errorDelete) {
 
             console.error(
-                "RODAX Vehículos: error eliminando registro:",
+                "RODAX Vehículos: error eliminando fotografía:",
                 errorDelete
             );
 
@@ -5146,38 +4365,23 @@ async function eliminarFotografiaVehiculo(
             return;
         }
 
-
-        /*
-         * Después eliminar archivo de Storage.
-         */
-
         if (archivoPath) {
 
             const {
                 error: errorStorage
             } = await cliente.storage
                 .from("documentos")
-                .remove([
-                    archivoPath
-                ]);
-
+                .remove([archivoPath]);
 
             if (errorStorage) {
 
                 console.warn(
-                    "RODAX Vehículos: registro eliminado,
-                    pero no se pudo eliminar el archivo de Storage:",
+                    "RODAX Vehículos: registro eliminado, " +
+                    "pero no se pudo eliminar el archivo de Storage:",
                     errorStorage
                 );
-
             }
-
         }
-
-
-        /*
-         * Buscar el modal abierto y refrescar.
-         */
 
         const modal =
             document.querySelector(".fixed");
@@ -5188,31 +4392,25 @@ async function eliminarFotografiaVehiculo(
                 modal,
                 vehiculoId
             );
-
         }
-
 
     } catch (error) {
 
         console.error(
-            "RODAX Vehículos: error inesperado eliminando fotografía:",
+            "RODAX Vehículos: error eliminando fotografía:",
             error
         );
 
         alert(
             "Se ha producido un error al eliminar la fotografía."
         );
-
     }
 }
 
 
 /* ============================================================
-   FUNCIONES DISPONIBLES GLOBALMENTE
+   EXPONER FUNCIONES
    ============================================================ */
-
-window.cargarFotografiasVehiculo =
-    cargarFotografiasVehiculo;
 
 window.renderizarFotografiasVehiculo =
     renderizarFotografiasVehiculo;
