@@ -3474,10 +3474,10 @@ async function abrirGestionVehiculo(vehiculoId) {
 
 
                 <div
-                    data-gestion-contenido="revisiones"
-                    class="hidden">
+    data-gestion-contenido="revisiones"
+    class="hidden">
 
-                    <div class="space-y-5">
+    <div class="space-y-5 px-5 sm:px-6 pb-6">
 
     <div>
         <h3 class="text-lg font-bold text-slate-900">
