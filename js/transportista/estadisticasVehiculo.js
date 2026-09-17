@@ -239,7 +239,7 @@
         );
 
         contenido.innerHTML = `
-            <div class="space-y-6 px-5 sm:px-6 pb-6">
+            <div class="space-y-4 px-5 sm:px-6 pb-6">
 
                 <div>
                     <h3 class="text-lg font-bold text-slate-900">
@@ -251,7 +251,7 @@
                 </div>
 
                 <!-- SERVICIOS REALIZADOS POR MES -->
-                <div class="rounded-xl border border-slate-200 bg-white p-5">
+                <div class="rounded-xl border border-slate-200 bg-white p-4">
                     <div class="flex items-center gap-3 mb-5">
                         <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
                             <i data-lucide="calendar-days" class="w-5 h-5 text-blue-600"></i>
@@ -284,7 +284,7 @@
                 <!-- CANCELADOS + INGRESOS -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-                    <div class="rounded-xl border border-slate-200 bg-white p-5">
+                    <div class="rounded-xl border border-slate-200 bg-white p-4">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
                                 <i data-lucide="circle-x" class="w-5 h-5 text-red-600"></i>
@@ -300,7 +300,7 @@
                         </div>
                     </div>
 
-                    <div class="rounded-xl border border-slate-200 bg-white p-5">
+                    <div class="rounded-xl border border-slate-200 bg-white p-4">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
                                 <i data-lucide="wallet" class="w-5 h-5 text-emerald-600"></i>
