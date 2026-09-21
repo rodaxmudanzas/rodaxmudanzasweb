@@ -48,7 +48,10 @@ Deno.serve(async (req) => {
   const userId = userData.user.id;
 
   const body = await req.json().catch(() => ({}));
-  const confirm = body?.confirm === true;
+  const mode = body?.mode ?? "preview";
+  if (!["preview", "copy", "finalize"].includes(mode)) {
+    return json({ error: "mode debe ser preview, copy o finalize" }, 400);
+  }
 
   const { data: sourceObjects, error: sourceError } = await admin
     .from("storage.objects")
@@ -75,6 +78,24 @@ Deno.serve(async (req) => {
     }, 409);
   }
 
+  const candidates = (sourceObjects ?? [])
+    .map((object: any) => ({
+      from: object.name as string,
+      to: targetPath(object.name, userId),
+      metadata: object.metadata as Record<string, unknown> | null,
+    }))
+    .filter((item): item is { from: string; to: string; metadata: Record<string, unknown> | null } => Boolean(item.to));
+
+  const summary = {
+    mode,
+    userId,
+    sourceCount: candidates.length,
+    sourcePaths: candidates.map((x) => x.from),
+    targetPaths: candidates.map((x) => x.to),
+  };
+
+  if (mode === "preview") return json({ ok: true, ...summary });
+
   const { data: targetObjects, error: targetError } = await admin
     .from("storage.objects")
     .select("name")
@@ -82,42 +103,58 @@ Deno.serve(async (req) => {
   if (targetError) return json({ error: `No se pudo inspeccionar el destino: ${targetError.message}` }, 500);
   const targetSet = new Set((targetObjects ?? []).map((o: any) => o.name));
 
+  if (mode === "finalize") {
+    const missingTargets = candidates.filter((item) => !targetSet.has(item.to));
+    if (missingTargets.length) {
+      return json({
+        error: "No se puede finalizar: faltan archivos en el bucket privado.",
+        missingTargets,
+      }, 409);
+    }
+
+    const pathsToDelete = candidates.map((item) => item.from);
+    const { error: deleteError } = await admin.storage.from(SOURCE_BUCKET).remove(pathsToDelete);
+    if (deleteError) {
+      return json({
+        ok: false,
+        error: `No se pudieron eliminar todos los archivos antiguos: ${deleteError.message}`,
+      }, 500);
+    }
+
+    return json({ ok: true, ...summary, deleted: pathsToDelete.length });
+  }
+
   const migrated: { from: string; to: string }[] = [];
   const failures: { path: string; error: string }[] = [];
 
-  for (const object of sourceObjects ?? []) {
-    const destination = targetPath(object.name, userId);
-    if (!destination) continue;
+  for (const object of candidates) {
+    if (!targetSet.has(object.to)) {
+      const { data: file, error: downloadError } = await admin.storage
+        .from(SOURCE_BUCKET)
+        .download(object.from);
 
-    if (targetSet.has(destination)) {
-      migrated.push({ from: object.name, to: destination });
-      continue;
+      if (downloadError || !file) {
+        failures.push({ path: object.from, error: downloadError?.message ?? "No se pudo descargar" });
+        continue;
+      }
+
+      const contentType = typeof object.metadata?.mimetype === "string"
+        ? object.metadata.mimetype
+        : "application/octet-stream";
+
+      const { error: uploadError } = await admin.storage
+        .from(TARGET_BUCKET)
+        .upload(object.to, file, { contentType, upsert: false });
+
+      if (uploadError) {
+        failures.push({ path: object.from, error: uploadError.message });
+        continue;
+      }
+
+      targetSet.add(object.to);
     }
 
-    const { data: file, error: downloadError } = await admin.storage
-      .from(SOURCE_BUCKET)
-      .download(object.name);
-
-    if (downloadError || !file) {
-      failures.push({ path: object.name, error: downloadError?.message ?? "No se pudo descargar" });
-      continue;
-    }
-
-    const contentType = typeof object.metadata?.mimetype === "string"
-      ? object.metadata.mimetype
-      : "application/octet-stream";
-
-    const { error: uploadError } = await admin.storage
-      .from(TARGET_BUCKET)
-      .upload(destination, file, { contentType, upsert: false });
-
-    if (uploadError) {
-      failures.push({ path: object.name, error: uploadError.message });
-      continue;
-    }
-
-    migrated.push({ from: object.name, to: destination });
-    targetSet.add(destination);
+    migrated.push({ from: object.from, to: object.to });
   }
 
   if (failures.length) {
@@ -142,27 +179,11 @@ Deno.serve(async (req) => {
     }
   }
 
-  let deleted = 0;
-  if (confirm && migrated.length) {
-    const paths = migrated.map((x) => x.from);
-    const { error: deleteError } = await admin.storage.from(SOURCE_BUCKET).remove(paths);
-    if (deleteError) {
-      return json({
-        ok: false,
-        migrated,
-        deleted,
-        error: `Archivos copiados y referencias actualizadas, pero no se pudieron eliminar del origen: ${deleteError.message}`,
-      }, 500);
-    }
-    deleted = paths.length;
-  }
-
   return json({
     ok: true,
-    userId,
-    totalSourceObjects: (sourceObjects ?? []).length,
+    ...summary,
     migrated: migrated.length,
-    deleted,
-    confirm,
+    deleted: 0,
+    next: "Tras desplegar el código cliente que usa el bucket privado, ejecutar mode=finalize para eliminar los originales públicos.",
   });
 });
