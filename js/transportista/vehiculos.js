@@ -459,20 +459,22 @@
     contenedor.innerHTML = `
         <div class="space-y-6">
 
-            <!-- CABECERA -->
-            <div class="flex items-center justify-between">
+           <!-- CABECERA -->
+<div class="flex items-center justify-between">
 
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-900">
-                        Documentación
-                    </h2>
+    <div>
+        <h2 class="text-2xl font-bold text-slate-900">
+            Documentación
+        </h2>
 
-                    <p class="text-slate-500 mt-1">
-                        Gestiona la documentación de todos tus vehículos.
-                    </p>
-                </div>
+        <p class="text-slate-500 mt-1">
+            Gestiona la documentación de todos tus vehículos.
+        </p>
+    </div>
 
-              <!-- PESTAÑAS -->
+</div>
+
+<!-- PESTAÑAS -->
 <div class="bg-white rounded-2xl border border-slate-200
             flex items-center overflow-hidden">
 
@@ -485,6 +487,7 @@
                hover:bg-slate-50 transition">
 
         <i data-lucide="truck" class="w-5 h-5"></i>
+
         Mis vehículos
 
     </button>
@@ -496,13 +499,12 @@
                px-5 py-4 bg-blue-600 text-white font-semibold">
 
         <i data-lucide="file-text" class="w-5 h-5"></i>
+
         Documentación
 
     </button>
 
-</div>  
-
-            </div>
+</div>
 
             <!-- INFORMACIÓN -->
             <div class="bg-blue-50 border border-blue-100
