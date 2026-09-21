@@ -238,36 +238,6 @@
 
 </button>
 
-                    <button
-                        type="button"
-                        class="flex-1 flex items-center justify-center gap-2
-                               px-5 py-4 text-slate-600 hover:bg-slate-50 transition">
-
-                        <i data-lucide="shield-check" class="w-5 h-5"></i>
-                        Seguros
-
-                    </button>
-
-                    <button
-                        type="button"
-                        class="flex-1 flex items-center justify-center gap-2
-                               px-5 py-4 text-slate-600 hover:bg-slate-50 transition">
-
-                        <i data-lucide="wrench" class="w-5 h-5"></i>
-                        Revisiones
-
-                    </button>
-
-                    <button
-                        type="button"
-                        class="flex-1 flex items-center justify-center gap-2
-                               px-5 py-4 text-slate-600 hover:bg-slate-50 transition">
-
-                        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
-                        Estadísticas
-
-                    </button>
-
                 </div>
 
 
