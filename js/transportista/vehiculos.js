@@ -4104,16 +4104,31 @@ async function renderizarFotografiasVehiculo(modal, vehiculoId) {
 
             let imagenUrl = "";
 
-            if (foto?.archivo_path && window.dbClient) {
+if (foto?.archivo_path && window.dbClient) {
 
-                const resultado =
-                    window.dbClient.storage
-                        .from("documentos")
-                        .getPublicUrl(foto.archivo_path);
+    const {
+        data: signedUrlData,
+        error: signedUrlError
+    } = await window.dbClient.storage
+        .from("documentos-vehiculos")
+        .createSignedUrl(
+            foto.archivo_path,
+            3600
+        );
 
-                imagenUrl =
-                    resultado?.data?.publicUrl || "";
-            }
+    if (signedUrlError) {
+
+        console.error(
+            "RODAX Vehículos: error generando URL de fotografía:",
+            signedUrlError
+        );
+
+    } else {
+
+        imagenUrl =
+            signedUrlData?.signedUrl || "";
+    }
+}
 
             return `
                 <div class="rounded-2xl border border-slate-200
@@ -4363,7 +4378,7 @@ async function subirFotografiaVehiculo(
         const {
             error: errorStorage
         } = await cliente.storage
-            .from("documentos")
+            .from("documentos-vehiculos")
             .upload(
                 ruta,
                 archivo,
@@ -4541,7 +4556,7 @@ async function eliminarFotografiaVehiculo(
             const {
                 error: errorStorage
             } = await cliente.storage
-                .from("documentos")
+                .from("documentos-vehiculos")
                 .remove([archivoPath]);
 
             if (errorStorage) {
@@ -5171,7 +5186,7 @@ async function subirDocumentoVehiculo(documentoId, vehiculoId, tipoDocumento) {
                 const {
                     error: errorSubida
                 } = await cliente.storage
-                    .from("documentos")
+                    .from("documentos-vehiculos")
                     .upload(
                         rutaArchivo,
                         archivo,
@@ -5236,7 +5251,7 @@ if (
     const {
         error: errorEliminacion
     } = await cliente.storage
-        .from("documentos")
+        .from("documentos-vehiculos")
         .remove([
             archivoAnterior
         ]);
@@ -5296,7 +5311,7 @@ if (
     }, 1000);
 }
 
-function verDocumentoVehiculo(archivoPath) {
+async function verDocumentoVehiculo(archivoPath) {
 
     if (!archivoPath) {
 
@@ -5322,25 +5337,44 @@ function verDocumentoVehiculo(archivoPath) {
         return;
     }
 
-    const { data } =
-        cliente.storage
-            .from("documentos")
-            .getPublicUrl(archivoPath);
-
-    if (!data?.publicUrl) {
-
-        alert(
-            "No se ha podido obtener el documento."
-        );
-
-        return;
-    }
-
-    window.open(
-        data.publicUrl,
-        "_blank",
-        "noopener,noreferrer"
+    const {
+    data: signedUrlData,
+    error: signedUrlError
+} = await cliente.storage
+    .from("documentos-vehiculos")
+    .createSignedUrl(
+        archivoPath,
+        3600
     );
+
+if (signedUrlError) {
+
+    console.error(
+        "RODAX Vehículos: error generando URL firmada:",
+        signedUrlError
+    );
+
+    alert(
+        "No se ha podido abrir el documento."
+    );
+
+    return;
+}
+
+if (!signedUrlData?.signedUrl) {
+
+    alert(
+        "No se ha podido obtener el documento."
+    );
+
+    return;
+}
+
+window.open(
+    signedUrlData.signedUrl,
+    "_blank",
+    "noopener,noreferrer"
+);
 }
 
 window.subirDocumentoVehiculo =
