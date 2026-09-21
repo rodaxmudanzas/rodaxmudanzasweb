@@ -2354,6 +2354,25 @@ function abrirFormularioVehiculo() {
                         </select>
                     </div>
 
+                    <div>
+    <label class="block text-sm font-medium
+                  text-slate-700 mb-2">
+        Año
+    </label>
+
+    <input
+        type="number"
+        id="vehiculo-anio"
+        min="1900"
+        max="${new Date().getFullYear()}"
+        step="1"
+        class="w-full rounded-xl border border-slate-300
+               px-4 py-3 outline-none
+               focus:ring-2 focus:ring-blue-500"
+        placeholder="Ej. 2021"
+    >
+</div>
+
                 </div>
 
             </div>
@@ -2396,88 +2415,195 @@ function abrirFormularioVehiculo() {
 async function guardarVehiculo() {
 
     const transportistaId =
-    window.Transportista?.currentUserId ||
-    window.currentUserId ||
-    null;
+        window.Transportista?.currentUserId ||
+        window.currentUserId ||
+        null;
 
     const matricula =
-        document.getElementById("vehiculo-matricula")?.value.trim();
+        document
+            .getElementById("vehiculo-matricula")
+            ?.value
+            .trim();
 
     const marca =
-        document.getElementById("vehiculo-marca")?.value.trim();
+        document
+            .getElementById("vehiculo-marca")
+            ?.value
+            .trim();
 
     const modelo =
-        document.getElementById("vehiculo-modelo")?.value.trim();
+        document
+            .getElementById("vehiculo-modelo")
+            ?.value
+            .trim();
 
     const tipoVehiculo =
-        document.getElementById("vehiculo-tipo")?.value;
+        document
+            .getElementById("vehiculo-tipo")
+            ?.value;
+
+    const anioValor =
+        document
+            .getElementById("vehiculo-anio")
+            ?.value
+            .trim();
+
 
     if (!transportistaId) {
+
         console.error(
             "RODAX Vehículos: no se ha podido obtener el transportista_id"
         );
+
         return;
     }
+
 
     if (!matricula) {
-        alert("Introduce la matrícula del vehículo.");
+
+        alert(
+            "Introduce la matrícula del vehículo."
+        );
+
         return;
     }
+
 
     if (!tipoVehiculo) {
-        alert("Selecciona el tipo de vehículo.");
+
+        alert(
+            "Selecciona el tipo de vehículo."
+        );
+
         return;
     }
 
+
+    if (!anioValor) {
+
+        alert(
+            "Introduce el año del vehículo."
+        );
+
+        return;
+    }
+
+
+    const anio =
+        parseInt(anioValor, 10);
+
+
+    if (Number.isNaN(anio)) {
+
+        alert(
+            "El año introducido no es válido."
+        );
+
+        return;
+    }
+
+
+    const anioActual =
+        new Date().getFullYear();
+
+
+    if (
+        anio < 1900 ||
+        anio > anioActual
+    ) {
+
+        alert(
+            `Introduce un año válido entre 1900 y ${anioActual}.`
+        );
+
+        return;
+    }
+
+
     const datosVehiculo = {
-        transportista_id: transportistaId,
-        matricula: matricula,
-        marca: marca || null,
-        modelo: modelo || null,
-        tipo_vehiculo: tipoVehiculo
+
+        transportista_id:
+            transportistaId,
+
+        matricula:
+            matricula,
+
+        marca:
+            marca || null,
+
+        modelo:
+            modelo || null,
+
+        tipo_vehiculo:
+            tipoVehiculo,
+
+        anio:
+            anio
     };
+
 
     console.log(
         "RODAX Vehículos — datos preparados:",
         datosVehiculo
     );
 
-    const cliente = window.dbClient;
+
+    const cliente =
+        window.dbClient;
+
 
     if (!cliente) {
+
         console.error(
             "RODAX Vehículos: no se encontró dbClient."
         );
+
         return;
     }
 
-    const { data, error } = await cliente
+
+    const {
+        data,
+        error
+    } = await cliente
+
         .from("vehiculos")
-        .insert([datosVehiculo])
+
+        .insert([
+            datosVehiculo
+        ])
+
         .select()
+
         .single();
 
+
     if (error) {
+
         console.error(
             "RODAX Vehículos: error guardando vehículo:",
             error
         );
+
         alert(
             "No se ha podido guardar el vehículo: " +
             error.message
         );
+
         return;
     }
 
-        console.log(
+
+    console.log(
         "RODAX Vehículos: vehículo guardado correctamente:",
         data
     );
 
+
     cerrarFormularioVehiculo();
 
-    await cargarMisVehiculos();
 
+    await cargarMisVehiculos();
 }
 
 async function abrirGestionVehiculo(vehiculoId) {
