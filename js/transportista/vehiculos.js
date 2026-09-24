@@ -4096,41 +4096,42 @@ async function renderizarFotografiasVehiculo(modal, vehiculoId) {
         fotografiasPorTipo[foto.tipo_fotografia] = foto;
     });
 
-    contenedor.innerHTML =
-        TIPOS_FOTOGRAFIAS_VEHICULO.map((config) => {
+        const tarjetasHtml = await Promise.all(
+        TIPOS_FOTOGRAFIAS_VEHICULO.map(async (config) => {
 
             const foto =
                 fotografiasPorTipo[config.tipo];
 
             let imagenUrl = "";
 
-if (foto?.archivo_path && window.dbClient) {
+            if (foto?.archivo_path && window.dbClient) {
 
-    const {
-        data: signedUrlData,
-        error: signedUrlError
-    } = await window.dbClient.storage
-        .from("documentos-vehiculos")
-        .createSignedUrl(
-            foto.archivo_path,
-            3600
-        );
+                const {
+                    data: signedUrlData,
+                    error: signedUrlError
+                } = await window.dbClient.storage
+                    .from("documentos-vehiculos")
+                    .createSignedUrl(
+                        foto.archivo_path,
+                        3600
+                    );
 
-    if (signedUrlError) {
+                if (signedUrlError) {
 
-        console.error(
-            "RODAX Vehículos: error generando URL de fotografía:",
-            signedUrlError
-        );
+                    console.error(
+                        "RODAX Vehículos: error generando URL de fotografía:",
+                        signedUrlError
+                    );
 
-    } else {
+                } else {
 
-        imagenUrl =
-            signedUrlData?.signedUrl || "";
-    }
-}
+                    imagenUrl =
+                        signedUrlData?.signedUrl || "";
+                }
+            }
 
             return `
+            
                 <div class="rounded-2xl border border-slate-200
                             bg-white overflow-hidden shadow-sm">
 
@@ -4286,9 +4287,12 @@ if (foto?.archivo_path && window.dbClient) {
                     </div>
 
                 </div>
-            `;
+                        `;
 
-        }).join("");
+        })
+    );
+
+    contenedor.innerHTML = tarjetasHtml.join("");
 
     if (typeof lucide !== "undefined") {
         lucide.createIcons();
