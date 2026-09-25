@@ -1099,6 +1099,24 @@ if (!vehiculos || vehiculos.length === 0) {
 
                                     </button>
 
+                                    <button
+    type="button"
+    onclick="event.stopPropagation(); eliminarDocumentoVehiculo('${documento.id}', '${vehiculo.id}')"
+    class="inline-flex items-center gap-2
+           px-3 py-2 rounded-lg
+           bg-red-50 text-red-600
+           text-xs font-semibold
+           hover:bg-red-100
+           transition">
+
+    <i
+        data-lucide="trash-2"
+        class="w-4 h-4">
+    </i>
+
+    Eliminar
+</button>
+
                                 </div>
 
                             </div>
@@ -5389,6 +5407,149 @@ if (
     }, 1000);
 }
 
+async function eliminarDocumentoVehiculo(documentoId, vehiculoId) {
+
+    const cliente = window.dbClient;
+
+    if (!cliente) {
+        alert("No se ha podido conectar con el sistema.");
+        return;
+    }
+
+    if (!documentoId) {
+        alert("No se ha podido identificar el documento.");
+        return;
+    }
+
+    const confirmar = confirm(
+        "¿Seguro que quieres eliminar este documento?\n\n" +
+        "El archivo también se eliminará permanentemente."
+    );
+
+    if (!confirmar) {
+        return;
+    }
+
+    try {
+
+        const {
+            data: documento,
+            error: errorConsulta
+        } = await cliente
+            .from("vehiculos_documentacion")
+            .select("id, vehiculo_id, archivo_path")
+            .eq("id", documentoId)
+            .single();
+
+        if (errorConsulta) {
+            console.error(
+                "RODAX Vehículos: error obteniendo documento:",
+                errorConsulta
+            );
+
+            alert(
+                "No se ha podido obtener el documento.\n\n" +
+                errorConsulta.message
+            );
+
+            return;
+        }
+
+        if (
+            vehiculoId &&
+            documento.vehiculo_id !== vehiculoId
+        ) {
+            console.error(
+                "RODAX Vehículos: el documento no pertenece al vehículo."
+            );
+
+            alert(
+                "No se puede eliminar este documento."
+            );
+
+            return;
+        }
+
+        if (documento.archivo_path) {
+
+            const {
+                error: errorStorage
+            } = await cliente.storage
+                .from("documentos-vehiculos")
+                .remove([
+                    documento.archivo_path
+                ]);
+
+            if (errorStorage) {
+                console.error(
+                    "RODAX Vehículos: error eliminando archivo de Storage:",
+                    errorStorage
+                );
+
+                alert(
+                    "No se ha podido eliminar el archivo.\n\n" +
+                    errorStorage.message
+                );
+
+                return;
+            }
+        }
+
+        const {
+            error: errorDelete
+        } = await cliente
+            .from("vehiculos_documentacion")
+            .delete()
+            .eq("id", documentoId);
+
+        if (errorDelete) {
+            console.error(
+                "RODAX Vehículos: error eliminando registro:",
+                errorDelete
+            );
+
+            alert(
+                "El archivo se ha eliminado de Storage, " +
+                "pero no se pudo eliminar el registro.\n\n" +
+                errorDelete.message
+            );
+
+            return;
+        }
+
+        console.log(
+            "RODAX Vehículos — documento eliminado:",
+            documentoId
+        );
+
+        alert(
+            "Documento eliminado correctamente."
+        );
+
+        const transportistaId =
+            window.Transportista?.currentUserId ||
+            window.currentUserId ||
+            null;
+
+        if (transportistaId) {
+            await cargarDocumentacionVehiculos(
+                transportistaId
+            );
+        }
+
+    } catch (error) {
+
+        console.error(
+            "RODAX Vehículos: error inesperado eliminando documento:",
+            error
+        );
+
+        alert(
+            "Se ha producido un error al eliminar el documento."
+        );
+    }
+}
+
 async function verDocumentoVehiculo(archivoPath) {
 
     if (!archivoPath) {
@@ -5460,5 +5621,8 @@ window.subirDocumentoVehiculo =
 
 window.verDocumentoVehiculo =
     verDocumentoVehiculo;
+
+    window.eliminarDocumentoVehiculo =
+    eliminarDocumentoVehiculo;
 
 })();
