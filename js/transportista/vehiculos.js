@@ -2141,20 +2141,34 @@ async function guardarDocumentoVehiculo() {
                 );
 
 
-            if (errorSubida) {
+           if (errorSubida) {
+    console.error(
+        "RODAX Vehículos: error subiendo archivo:",
+        errorSubida
+    );
 
-                console.error(
-                    "RODAX Vehículos: error subiendo archivo:",
-                    errorSubida
-                );
+    // Evitar dejar un registro huérfano sin archivo
+    if (documentoGuardado?.id) {
+        const { error: errorRollbackBD } = await cliente
+            .from("vehiculos_documentacion")
+            .delete()
+            .eq("id", documentoGuardado.id);
 
-                alert(
-                    "Los datos del documento se han guardado, pero el archivo no se ha podido subir.\n\n" +
-                    errorSubida.message
-                );
+        if (errorRollbackBD) {
+            console.error(
+                "RODAX Vehículos: no se pudo eliminar el registro tras fallar la subida:",
+                errorRollbackBD
+            );
+        }
+    }
 
-                return;
-            }
+    alert(
+        "No se ha podido subir el archivo.\n\n" +
+        errorSubida.message
+    );
+
+    return;
+}
 
 
             /*
