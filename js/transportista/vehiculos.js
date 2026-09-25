@@ -2096,7 +2096,7 @@ async function guardarDocumentoVehiculo() {
              */
 
             const rutaArchivo =
-                `documentos-vehiculos/${transportistaId}/${vehiculoId}/${carpetaTipo}/${nombreArchivo}`;
+    `${transportistaId}/${vehiculoId}/${carpetaTipo}/${nombreArchivo}`;
 
 
             console.log(
@@ -4377,7 +4377,7 @@ async function subirFotografiaVehiculo(
             `${tipoFotografia}-${Date.now()}-${nombreSeguro}.${extension}`;
 
         const ruta =
-            `vehiculos/${vehiculoId}/fotografias/${nombreFinal}`;
+    `${vehiculoId}/fotografias/${nombreFinal}`;
 
         const {
             error: errorStorage
@@ -4420,7 +4420,7 @@ async function subirFotografiaVehiculo(
             if (errorUpdate) {
 
                 await cliente.storage
-                    .from("documentos")
+                    .from("documentos-vehiculos")
                     .remove([ruta]);
 
                 console.error(
@@ -4438,7 +4438,7 @@ async function subirFotografiaVehiculo(
             if (fotografiaAnterior.archivo_path) {
 
                 await cliente.storage
-                    .from("documentos")
+                    .from("documentos-vehiculos")
                     .remove([
                         fotografiaAnterior.archivo_path
                     ]);
@@ -4461,7 +4461,7 @@ async function subirFotografiaVehiculo(
             if (errorInsert) {
 
                 await cliente.storage
-                    .from("documentos")
+                    .from("documentos-vehiculos")
                     .remove([ruta]);
 
                 console.error(
