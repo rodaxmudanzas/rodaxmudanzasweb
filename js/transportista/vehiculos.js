@@ -5229,7 +5229,7 @@ if (!EXTENSIONES_PERMITIDAS.includes(extension)) {
                  * Ruta organizada del documento
                  */
                 const rutaArchivo =
-                    `documentos-vehiculos/${transportistaId}/${vehiculoId}/${tipoDocumento}/${nombreArchivo}`;
+    `${transportistaId}/${vehiculoId}/${tipoDocumento}/${nombreArchivo}`;
 
                 console.log(
                     "RODAX Vehículos — subiendo archivo:",
