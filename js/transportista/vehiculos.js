@@ -2112,7 +2112,7 @@ async function guardarDocumentoVehiculo() {
             const {
                 error: errorSubida
             } = await cliente.storage
-                .from("documentos")
+                .from("documentos-vehiculos")
                 .upload(
                     rutaArchivo,
                     archivo,
@@ -4528,11 +4528,49 @@ async function eliminarFotografiaVehiculo(
         console.error(
             "RODAX Vehículos: no se encontró dbClient."
         );
+
+        alert(
+            "No se ha podido conectar con el sistema."
+        );
+
         return;
     }
 
     try {
 
+        /*
+         * 1. Si existe archivo, eliminarlo primero de Storage.
+         */
+        if (archivoPath) {
+
+            const {
+                error: errorStorage
+            } = await cliente.storage
+                .from("documentos-vehiculos")
+                .remove([
+                    archivoPath
+                ]);
+
+            if (errorStorage) {
+
+                console.error(
+                    "RODAX Vehículos: error eliminando fotografía de Storage:",
+                    errorStorage
+                );
+
+                alert(
+                    "No se ha podido eliminar el archivo de la fotografía.\n\n" +
+                    errorStorage.message
+                );
+
+                return;
+            }
+        }
+
+        /*
+         * 2. Una vez eliminado correctamente el archivo,
+         * eliminar el registro de BD.
+         */
         const {
             error: errorDelete
         } = await cliente
@@ -4544,40 +4582,26 @@ async function eliminarFotografiaVehiculo(
         if (errorDelete) {
 
             console.error(
-                "RODAX Vehículos: error eliminando fotografía:",
+                "RODAX Vehículos: error eliminando registro:",
                 errorDelete
             );
 
             alert(
-                "No se ha podido eliminar la fotografía."
+                "El archivo se ha eliminado de Storage, " +
+                "pero no se ha podido eliminar el registro.\n\n" +
+                errorDelete.message
             );
 
             return;
         }
 
-        if (archivoPath) {
-
-            const {
-                error: errorStorage
-            } = await cliente.storage
-                .from("documentos-vehiculos")
-                .remove([archivoPath]);
-
-            if (errorStorage) {
-
-                console.warn(
-                    "RODAX Vehículos: registro eliminado, " +
-                    "pero no se pudo eliminar el archivo de Storage:",
-                    errorStorage
-                );
-            }
-        }
-
-       /*
- * Obtener directamente el modal de gestión del vehículo.
- */
-const modal =
-    document.getElementById("modal-gestionar-vehiculo");
+        /*
+         * 3. Recargar fotografías.
+         */
+        const modal =
+            document.getElementById(
+                "modal-gestionar-vehiculo"
+            );
 
         if (!modal) {
 
@@ -4589,12 +4613,6 @@ const modal =
             return;
         }
 
-        /*
-         * Volver a cargar inmediatamente las fotografías.
-         * La fotografía eliminada ya no existe en Supabase,
-         * por lo que desaparecerá de la interfaz sin
-         * necesidad de actualizar la página.
-         */
         await renderizarFotografiasVehiculo(
             modal,
             vehiculoId
@@ -5116,6 +5134,23 @@ async function subirDocumentoVehiculo(documentoId, vehiculoId, tipoDocumento) {
                 return;
             }
 
+            const TIPOS_PERMITIDOS = [
+    "application/pdf",
+    "image/jpeg",
+    "image/png",
+    "image/webp"
+];
+
+if (!TIPOS_PERMITIDOS.includes(archivo.type)) {
+
+    alert(
+        "Tipo de archivo no permitido.\n\n" +
+        "Solo se permiten PDF, JPG, PNG y WebP."
+    );
+
+    return;
+}
+
             /*
              * Límite inicial: 10 MB
              */
@@ -5161,9 +5196,26 @@ async function subirDocumentoVehiculo(documentoId, vehiculoId, tipoDocumento) {
                     archivo.name.split(".");
 
                 const extension =
-                    partesNombre.length > 1
-                        ? partesNombre.pop().toLowerCase()
-                        : "archivo";
+    partesNombre.length > 1
+        ? partesNombre.pop().toLowerCase()
+        : "";
+
+const EXTENSIONES_PERMITIDAS = [
+    "pdf",
+    "jpg",
+    "jpeg",
+    "png",
+    "webp"
+];
+
+if (!EXTENSIONES_PERMITIDAS.includes(extension)) {
+
+    alert(
+        "Extensión de archivo no permitida."
+    );
+
+    return;
+}
 
                 /*
                  * Nombre único del archivo
@@ -5229,18 +5281,40 @@ async function subirDocumentoVehiculo(documentoId, vehiculoId, tipoDocumento) {
 
                 if (errorActualizacion) {
 
-                    console.error(
-                        "RODAX Vehículos: error actualizando documento:",
-                        errorActualizacion
-                    );
+    console.error(
+        "RODAX Vehículos: error actualizando documento:",
+        errorActualizacion
+    );
 
-                    alert(
-                        "El archivo se ha subido, pero no se ha podido vincular al documento.\n\n" +
-                        errorActualizacion.message
-                    );
+    /*
+     * La BD no se pudo actualizar.
+     * Eliminamos el nuevo archivo para evitar
+     * dejar un archivo huérfano en Storage.
+     */
+    const {
+        error: errorRollback
+    } = await cliente.storage
+        .from("documentos-vehiculos")
+        .remove([
+            rutaArchivo
+        ]);
 
-                    return;
-                }
+    if (errorRollback) {
+
+        console.error(
+            "RODAX Vehículos: tampoco se pudo eliminar " +
+            "el archivo nuevo durante el rollback:",
+            errorRollback
+        );
+    }
+
+    alert(
+        "No se ha podido vincular el documento. " +
+        "El archivo nuevo no se ha conservado."
+    );
+
+    return;
+}
                 
 /*
  * Eliminar el archivo anterior de Storage
