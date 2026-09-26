@@ -100,7 +100,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
 
                     <div
-    id="resumen-documentacion"
+    <div
+    id="resumen-renovacion"
     class="bg-white rounded-2xl border border-slate-200 p-5"
 >
     <div class="flex items-center gap-4">
@@ -133,8 +134,11 @@
                     </div>
 
 
-                    <div class="bg-white rounded-2xl border border-slate-200 p-5">
-                        <div class="flex items-center gap-4">
+                    <div
+    id="resumen-documentacion"
+    class="bg-white rounded-2xl border border-slate-200 p-5"
+>
+    <div class="flex items-center gap-4">
 
                             <div class="w-12 h-12 rounded-full bg-blue-50
                                         flex items-center justify-center">
@@ -166,8 +170,11 @@
                     </div>
 
 
-                    <div class="bg-white rounded-2xl border border-slate-200 p-5">
-                        <div class="flex items-center gap-4">
+                    <div
+    id="resumen-seguros"
+    class="bg-white rounded-2xl border border-slate-200 p-5"
+>
+    <div class="flex items-center gap-4">
 
                             <div class="w-12 h-12 rounded-full bg-emerald-50
                                         flex items-center justify-center">
