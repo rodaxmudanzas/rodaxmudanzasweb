@@ -425,9 +425,91 @@
         `;
 
         if (typeof lucide !== "undefined") {
-            lucide.createIcons();
-        }
+    lucide.createIcons();
+}
+
+/*
+ * ============================================================
+ * ACTUALIZAR RESUMEN DE DOCUMENTACIÓN Y SEGUROS
+ * ============================================================
+ */
+
+if (vehiculos.length === 0) {
+
+    actualizarResumenDocumentacion(
+        [],
+        []
+    );
+
+} else {
+
+    const idsVehiculos =
+        vehiculos.map(vehiculo => vehiculo.id);
+
+    const {
+        data: documentosResumen,
+        error: errorDocumentosResumen
+    } = await cliente
+        .from("vehiculos_documentacion")
+        .select("*")
+        .in("vehiculo_id", idsVehiculos)
+        .order("creado_en", {
+            ascending: false
+        });
+
+    if (errorDocumentosResumen) {
+
+        console.error(
+            "RODAX Vehículos: error cargando resumen de documentación:",
+            errorDocumentosResumen
+        );
+
+        const tarjetaDocumentacion =
+            document.getElementById(
+                "resumen-documentacion"
+            );
+
+        const tarjetaSeguros =
+            document.getElementById(
+                "resumen-seguros"
+            );
+
+        const tarjetaRenovacion =
+            document.getElementById(
+                "resumen-renovacion"
+            );
+
+        [
+            tarjetaDocumentacion,
+            tarjetaSeguros,
+            tarjetaRenovacion
+        ].forEach(tarjeta => {
+
+            if (!tarjeta) {
+                return;
+            }
+
+            const texto =
+                tarjeta.querySelector(
+                    "[data-resumen-texto]"
+                );
+
+            if (texto) {
+                texto.textContent =
+                    "No disponible";
+            }
+
+        });
+
+    } else {
+
+        actualizarResumenDocumentacion(
+            vehiculos,
+            documentosResumen || []
+        );
+
     }
+}
 
     window.cargarMisVehiculos = cargarMisVehiculos;
 
