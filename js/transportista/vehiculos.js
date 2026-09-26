@@ -99,8 +99,11 @@
                 <!-- RESUMEN -->
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
 
-                    <div class="bg-white rounded-2xl border border-slate-200 p-5">
-                        <div class="flex items-center gap-4">
+                    <div
+    id="resumen-documentacion"
+    class="bg-white rounded-2xl border border-slate-200 p-5"
+>
+    <div class="flex items-center gap-4">
 
                             <div class="w-12 h-12 rounded-full bg-blue-50
                                         flex items-center justify-center">
@@ -144,13 +147,19 @@
                                     Documentación al día
                                 </div>
 
-                                <div class="text-2xl font-bold text-slate-900">
-                                    —
-                                </div>
+                                <div
+    data-resumen-valor
+    class="text-2xl font-bold text-slate-900"
+>
+    —
+</div>
 
-                                <div class="text-xs text-slate-500">
-                                    Pendiente de registrar vehículos
-                                </div>
+<div
+    data-resumen-texto
+    class="text-xs text-slate-500"
+>
+    Cargando...
+</div>
                             </div>
 
                         </div>
@@ -171,13 +180,19 @@
                                     Seguros activos
                                 </div>
 
-                                <div class="text-2xl font-bold text-slate-900">
-                                    —
-                                </div>
+                                <div
+    data-resumen-valor
+    class="text-2xl font-bold text-slate-900"
+>
+    —
+</div>
 
-                                <div class="text-xs text-slate-500">
-                                    Pendiente de registrar vehículos
-                                </div>
+<div
+    data-resumen-texto
+    class="text-xs text-slate-500"
+>
+    Cargando...
+</div>
                             </div>
 
                         </div>
@@ -194,13 +209,19 @@
                             </div>
 
                             <div>
-                                <div class="text-sm text-slate-500">
-                                    Próxima renovación
-                                </div>
+                                <div
+    data-resumen-valor
+    class="text-2xl font-bold text-slate-900"
+>
+    —
+</div>
 
-                                <div class="text-2xl font-bold text-slate-900">
-                                    —
-                                </div>
+<div
+    data-resumen-texto
+    class="text-xs text-slate-500"
+>
+    Cargando...
+</div>
 
                                 <div class="text-xs text-slate-500">
                                     Sin datos todavía
@@ -767,6 +788,11 @@ if (!vehiculos || vehiculos.length === 0) {
         return;
     }
 
+    actualizarResumenDocumentacion(
+    vehiculos,
+    documentos || []
+);
+
 
     console.log(
         "RODAX Vehículos — documentación cargada:",
@@ -881,6 +907,323 @@ if (!vehiculos || vehiculos.length === 0) {
         };
     }
 
+ function actualizarResumenDocumentacion(
+    vehiculos,
+    documentos
+) {
+
+    const listaVehiculos =
+        Array.isArray(vehiculos)
+            ? vehiculos
+            : [];
+
+    const listaDocumentos =
+        Array.isArray(documentos)
+            ? documentos
+            : [];
+
+    /*
+     * ============================================================
+     * DOCUMENTACIÓN OBLIGATORIA
+     * ============================================================
+     */
+
+    const documentosObligatorios = [
+        "permiso_circulacion",
+        "ficha_tecnica",
+        "itv"
+    ];
+
+    /*
+     * ============================================================
+     * FUNCIÓN PARA SABER SI UN DOCUMENTO ESTÁ VIGENTE
+     * ============================================================
+     */
+
+    function documentoVigente(documento) {
+
+        if (!documento) {
+            return false;
+        }
+
+        /*
+         * Si existe pero no tiene fecha de caducidad,
+         * se considera registrado/válido.
+         */
+        if (!documento.fecha_caducidad) {
+            return true;
+        }
+
+        const hoy = new Date();
+
+        hoy.setHours(0, 0, 0, 0);
+
+        const fechaCaducidad =
+            new Date(
+                documento.fecha_caducidad + "T00:00:00"
+            );
+
+        return fechaCaducidad >= hoy;
+    }
+
+    /*
+     * ============================================================
+     * 1. DOCUMENTACIÓN AL DÍA
+     *
+     * Un vehículo está al día cuando tiene:
+     * - Permiso de circulación
+     * - Ficha técnica
+     * - ITV
+     *
+     * registrados y vigentes.
+     * ============================================================
+     */
+
+    let vehiculosDocumentacionAlDia = 0;
+
+    listaVehiculos.forEach(vehiculo => {
+
+        const documentosVehiculo =
+            listaDocumentos.filter(
+                documento =>
+                    documento.vehiculo_id === vehiculo.id
+            );
+
+        const documentacionCompleta =
+            documentosObligatorios.every(tipo => {
+
+                const documento =
+                    documentosVehiculo.find(
+                        doc =>
+                            doc.tipo_documento === tipo
+                    );
+
+                return documentoVigente(documento);
+            });
+
+        if (documentacionCompleta) {
+            vehiculosDocumentacionAlDia++;
+        }
+    });
+
+    /*
+     * ============================================================
+     * 2. SEGUROS ACTIVOS
+     *
+     * Se consideran activos cuando están vigentes:
+     * - Seguro del vehículo
+     * - Seguro de mercancías / transporte
+     * ============================================================
+     */
+
+    const tiposSeguro = [
+        "seguro_vehiculo",
+        "seguro_transporte"
+    ];
+
+    let vehiculosSegurosActivos = 0;
+
+    listaVehiculos.forEach(vehiculo => {
+
+        const documentosVehiculo =
+            listaDocumentos.filter(
+                documento =>
+                    documento.vehiculo_id === vehiculo.id
+            );
+
+        const segurosActivos =
+            tiposSeguro.every(tipo => {
+
+                const seguro =
+                    documentosVehiculo.find(
+                        doc =>
+                            doc.tipo_documento === tipo
+                    );
+
+                return documentoVigente(seguro);
+            });
+
+        if (segurosActivos) {
+            vehiculosSegurosActivos++;
+        }
+    });
+
+    /*
+     * ============================================================
+     * 3. PRÓXIMA RENOVACIÓN
+     *
+     * Busca la fecha futura más cercana entre todos
+     * los documentos que tengan fecha de caducidad.
+     * ============================================================
+     */
+
+    const hoy = new Date();
+
+    hoy.setHours(0, 0, 0, 0);
+
+    const renovacionesFuturas =
+        listaDocumentos
+            .filter(documento =>
+                documento.fecha_caducidad
+            )
+            .map(documento => ({
+                documento,
+                fecha:
+                    new Date(
+                        documento.fecha_caducidad +
+                        "T00:00:00"
+                    )
+            }))
+            .filter(item =>
+                item.fecha >= hoy
+            )
+            .sort(
+                (a, b) =>
+                    a.fecha - b.fecha
+            );
+
+    const proximaRenovacion =
+        renovacionesFuturas[0] || null;
+
+    /*
+     * ============================================================
+     * ACTUALIZAR TARJETA DOCUMENTACIÓN
+     * ============================================================
+     */
+
+    const tarjetaDocumentacion =
+        document.getElementById(
+            "resumen-documentacion"
+        );
+
+    if (tarjetaDocumentacion) {
+
+        const valor =
+            tarjetaDocumentacion.querySelector(
+                "[data-resumen-valor]"
+            );
+
+        const texto =
+            tarjetaDocumentacion.querySelector(
+                "[data-resumen-texto]"
+            );
+
+        if (valor) {
+            valor.textContent =
+                `${vehiculosDocumentacionAlDia} / ${listaVehiculos.length}`;
+        }
+
+        if (texto) {
+            texto.textContent =
+                "Vehículos con documentación vigente";
+        }
+    }
+
+    /*
+     * ============================================================
+     * ACTUALIZAR TARJETA SEGUROS
+     * ============================================================
+     */
+
+    const tarjetaSeguros =
+        document.getElementById(
+            "resumen-seguros"
+        );
+
+    if (tarjetaSeguros) {
+
+        const valor =
+            tarjetaSeguros.querySelector(
+                "[data-resumen-valor]"
+            );
+
+        const texto =
+            tarjetaSeguros.querySelector(
+                "[data-resumen-texto]"
+            );
+
+        if (valor) {
+            valor.textContent =
+                `${vehiculosSegurosActivos} / ${listaVehiculos.length}`;
+        }
+
+        if (texto) {
+            texto.textContent =
+                "Vehículos con seguros vigentes";
+        }
+    }
+
+    /*
+     * ============================================================
+     * ACTUALIZAR TARJETA PRÓXIMA RENOVACIÓN
+     * ============================================================
+     */
+
+    const tarjetaRenovacion =
+        document.getElementById(
+            "resumen-renovacion"
+        );
+
+    if (tarjetaRenovacion) {
+
+        const valor =
+            tarjetaRenovacion.querySelector(
+                "[data-resumen-valor]"
+            );
+
+        const texto =
+            tarjetaRenovacion.querySelector(
+                "[data-resumen-texto]"
+            );
+
+        if (proximaRenovacion) {
+
+            if (valor) {
+                valor.textContent =
+                    formatearFecha(
+                        proximaRenovacion.documento.fecha_caducidad
+                    );
+            }
+
+            if (texto) {
+
+                const nombresDocumentos = {
+                    permiso_circulacion:
+                        "Permiso de circulación",
+
+                    ficha_tecnica:
+                        "Ficha técnica",
+
+                    itv:
+                        "ITV",
+
+                    seguro_vehiculo:
+                        "Seguro del vehículo",
+
+                    seguro_transporte:
+                        "Seguro de mercancías / transporte"
+                };
+
+                texto.textContent =
+                    nombresDocumentos[
+                        proximaRenovacion.documento.tipo_documento
+                    ] ||
+                    "Documento";
+            }
+
+        } else {
+
+            if (valor) {
+                valor.textContent = "—";
+            }
+
+            if (texto) {
+                texto.textContent =
+                    "Sin renovaciones pendientes";
+            }
+        }
+    }
+}   
 
     /*
      * ============================================================
