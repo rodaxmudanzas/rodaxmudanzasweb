@@ -678,321 +678,7 @@ if (vehiculos.length === 0) {
     cargarDocumentacionVehiculos(transportistaId);
 }
 
-async function cargarDocumentacionVehiculos(transportistaId) {
-
-    const contenedor =
-        document.getElementById("vehiculos-documentacion-lista");
-
-    if (!contenedor) {
-        console.error(
-            "RODAX Vehículos: no se encontró el contenedor de documentación."
-        );
-        return;
-    }
-
-    const cliente = window.dbClient;
-
-    if (!cliente) {
-        console.error(
-            "RODAX Vehículos: no se encontró dbClient."
-        );
-        return;
-    }
-
-    /*
-     * ============================================================
-     * 1. CARGAR VEHÍCULOS DEL TRANSPORTISTA
-     * ============================================================
-     */
-
-    const { data: vehiculos, error: errorVehiculos } =
-        await cliente
-            .from("vehiculos")
-            .select("*")
-            .eq("transportista_id", transportistaId)
-            .order("creado_en", {
-                ascending: false
-            });
-
-    if (errorVehiculos) {
-
-        console.error(
-            "RODAX Vehículos: error cargando vehículos:",
-            errorVehiculos
-        );
-
-        contenedor.innerHTML = `
-            <div class="bg-white border border-red-200
-                        rounded-2xl p-8">
-
-                <div class="flex items-start gap-4">
-
-                    <div class="w-11 h-11 rounded-xl bg-red-50
-                                flex items-center justify-center">
-
-                        <i data-lucide="alert-circle"
-                           class="w-6 h-6 text-red-600"></i>
-
-                    </div>
-
-                    <div>
-
-                        <h3 class="font-semibold text-red-800">
-                            No se han podido cargar los vehículos
-                        </h3>
-
-                        <p class="text-sm text-red-700 mt-1">
-                            ${errorVehiculos.message || "Error desconocido"}
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-        `;
-
-        if (typeof lucide !== "undefined") {
-            lucide.createIcons();
-        }
-
-        return;
-}
-
-window._rodaxVehiculosDocumentacion = vehiculos || [];
-
-if (!vehiculos || vehiculos.length === 0) {
-
-        contenedor.innerHTML = `
-
-            <div class="bg-white border border-slate-200
-                        rounded-2xl p-10 text-center">
-
-                <div class="w-16 h-16 mx-auto mb-5 rounded-full
-                            bg-blue-50 flex items-center justify-center">
-
-                    <i data-lucide="file-text"
-                       class="w-8 h-8 text-blue-600"></i>
-
-                </div>
-
-                <h3 class="text-xl font-bold text-slate-900 mb-2">
-                    No tienes vehículos registrados
-                </h3>
-
-                <p class="text-slate-500 max-w-md mx-auto mb-6">
-                    Añade primero un vehículo para poder gestionar
-                    posteriormente su documentación.
-                </p>
-
-                <button
-                    type="button"
-                    onclick="abrirFormularioVehiculo()"
-                    class="inline-flex items-center gap-2 px-6 py-3
-                           rounded-xl bg-blue-600 hover:bg-blue-700
-                           text-white font-semibold transition">
-
-                    <i data-lucide="plus" class="w-5 h-5"></i>
-
-                    Añadir vehículo
-
-                </button>
-
-            </div>
-        `;
-
-        if (typeof lucide !== "undefined") {
-            lucide.createIcons();
-        }
-
-        return;
-    }
-
-
-    /*
-     * ============================================================
-     * 3. CARGAR DOCUMENTACIÓN REAL
-     * ============================================================
-     */
-
-    const idsVehiculos =
-        vehiculos.map(vehiculo => vehiculo.id);
-
-    const { data: documentos, error: errorDocumentos } =
-        await cliente
-            .from("vehiculos_documentacion")
-            .select("*")
-            .in("vehiculo_id", idsVehiculos)
-            .order("creado_en", {
-                ascending: false
-            });
-
-
-    if (errorDocumentos) {
-
-        console.error(
-            "RODAX Vehículos: error cargando documentación:",
-            errorDocumentos
-        );
-
-        contenedor.innerHTML = `
-            <div class="bg-white border border-red-200
-                        rounded-2xl p-8">
-
-                <div class="flex items-start gap-4">
-
-                    <div class="w-11 h-11 rounded-xl bg-red-50
-                                flex items-center justify-center">
-
-                        <i data-lucide="alert-circle"
-                           class="w-6 h-6 text-red-600"></i>
-
-                    </div>
-
-                    <div>
-
-                        <h3 class="font-semibold text-red-800">
-                            No se ha podido cargar la documentación
-                        </h3>
-
-                        <p class="text-sm text-red-700 mt-1">
-                            ${errorDocumentos.message || "Error desconocido"}
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-        `;
-
-        if (typeof lucide !== "undefined") {
-            lucide.createIcons();
-        }
-
-        return;
-    }
-
-    actualizarResumenDocumentacion(
-    vehiculos,
-    documentos || []
-);
-
-
-    console.log(
-        "RODAX Vehículos — documentación cargada:",
-        documentos
-    );
-
-
-    /*
-     * ============================================================
-     * 4. TIPOS DE DOCUMENTACIÓN
-     * ============================================================
-     */
-
-    const tiposDocumentacion = [
-
-        {
-            tipo: "permiso_circulacion",
-            nombre: "Permiso de circulación",
-            icono: "file-text",
-            color: "blue"
-        },
-
-        {
-            tipo: "ficha_tecnica",
-            nombre: "Ficha técnica",
-            icono: "file-check",
-            color: "blue"
-        },
-
-        {
-            tipo: "itv",
-            nombre: "ITV",
-            icono: "clipboard-check",
-            color: "blue"
-        },
-
-        {
-            tipo: "seguro_vehiculo",
-            nombre: "Seguro del vehículo",
-            icono: "shield-check",
-            color: "green"
-        },
-
-        {
-            tipo: "seguro_transporte",
-            nombre: "Seguro de mercancías / transporte",
-            icono: "shield",
-            color: "green"
-        }
-
-    ];
-
-
-    /*
-     * ============================================================
-     * 5. CALCULAR ESTADO SEGÚN FECHA DE CADUCIDAD
-     * ============================================================
-     */
-
-    function obtenerEstadoDocumento(documento) {
-
-        if (!documento) {
-            return {
-                texto: "Pendiente de registrar",
-                clase: "text-slate-500",
-                fondo: "bg-slate-100"
-            };
-        }
-
-        if (!documento.fecha_caducidad) {
-            return {
-                texto: "Registrado",
-                clase: "text-blue-700",
-                fondo: "bg-blue-50"
-            };
-        }
-
-        const hoy = new Date();
-        hoy.setHours(0, 0, 0, 0);
-
-        const caducidad =
-            new Date(documento.fecha_caducidad + "T00:00:00");
-
-        const diferencia =
-            Math.ceil(
-                (caducidad - hoy) /
-                (1000 * 60 * 60 * 24)
-            );
-
-        if (diferencia < 0) {
-
-            return {
-                texto: "Caducado",
-                clase: "text-red-700",
-                fondo: "bg-red-50"
-            };
-        }
-
-        if (diferencia <= 30) {
-
-            return {
-                texto: `Caduca en ${diferencia} días`,
-                clase: "text-amber-700",
-                fondo: "bg-amber-50"
-            };
-        }
-
-        return {
-            texto: "Vigente",
-            clase: "text-emerald-700",
-            fondo: "bg-emerald-50"
-        };
-    }
-
- function actualizarResumenDocumentacion(
+function actualizarResumenDocumentacion(
     vehiculos,
     documentos
 ) {
@@ -1309,6 +995,320 @@ if (!vehiculos || vehiculos.length === 0) {
         }
     }
 }   
+
+async function cargarDocumentacionVehiculos(transportistaId) {
+
+    const contenedor =
+        document.getElementById("vehiculos-documentacion-lista");
+
+    if (!contenedor) {
+        console.error(
+            "RODAX Vehículos: no se encontró el contenedor de documentación."
+        );
+        return;
+    }
+
+    const cliente = window.dbClient;
+
+    if (!cliente) {
+        console.error(
+            "RODAX Vehículos: no se encontró dbClient."
+        );
+        return;
+    }
+
+    /*
+     * ============================================================
+     * 1. CARGAR VEHÍCULOS DEL TRANSPORTISTA
+     * ============================================================
+     */
+
+    const { data: vehiculos, error: errorVehiculos } =
+        await cliente
+            .from("vehiculos")
+            .select("*")
+            .eq("transportista_id", transportistaId)
+            .order("creado_en", {
+                ascending: false
+            });
+
+    if (errorVehiculos) {
+
+        console.error(
+            "RODAX Vehículos: error cargando vehículos:",
+            errorVehiculos
+        );
+
+        contenedor.innerHTML = `
+            <div class="bg-white border border-red-200
+                        rounded-2xl p-8">
+
+                <div class="flex items-start gap-4">
+
+                    <div class="w-11 h-11 rounded-xl bg-red-50
+                                flex items-center justify-center">
+
+                        <i data-lucide="alert-circle"
+                           class="w-6 h-6 text-red-600"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3 class="font-semibold text-red-800">
+                            No se han podido cargar los vehículos
+                        </h3>
+
+                        <p class="text-sm text-red-700 mt-1">
+                            ${errorVehiculos.message || "Error desconocido"}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+        if (typeof lucide !== "undefined") {
+            lucide.createIcons();
+        }
+
+        return;
+}
+
+window._rodaxVehiculosDocumentacion = vehiculos || [];
+
+if (!vehiculos || vehiculos.length === 0) {
+
+        contenedor.innerHTML = `
+
+            <div class="bg-white border border-slate-200
+                        rounded-2xl p-10 text-center">
+
+                <div class="w-16 h-16 mx-auto mb-5 rounded-full
+                            bg-blue-50 flex items-center justify-center">
+
+                    <i data-lucide="file-text"
+                       class="w-8 h-8 text-blue-600"></i>
+
+                </div>
+
+                <h3 class="text-xl font-bold text-slate-900 mb-2">
+                    No tienes vehículos registrados
+                </h3>
+
+                <p class="text-slate-500 max-w-md mx-auto mb-6">
+                    Añade primero un vehículo para poder gestionar
+                    posteriormente su documentación.
+                </p>
+
+                <button
+                    type="button"
+                    onclick="abrirFormularioVehiculo()"
+                    class="inline-flex items-center gap-2 px-6 py-3
+                           rounded-xl bg-blue-600 hover:bg-blue-700
+                           text-white font-semibold transition">
+
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+
+                    Añadir vehículo
+
+                </button>
+
+            </div>
+        `;
+
+        if (typeof lucide !== "undefined") {
+            lucide.createIcons();
+        }
+
+        return;
+    }
+
+
+    /*
+     * ============================================================
+     * 3. CARGAR DOCUMENTACIÓN REAL
+     * ============================================================
+     */
+
+    const idsVehiculos =
+        vehiculos.map(vehiculo => vehiculo.id);
+
+    const { data: documentos, error: errorDocumentos } =
+        await cliente
+            .from("vehiculos_documentacion")
+            .select("*")
+            .in("vehiculo_id", idsVehiculos)
+            .order("creado_en", {
+                ascending: false
+            });
+
+
+    if (errorDocumentos) {
+
+        console.error(
+            "RODAX Vehículos: error cargando documentación:",
+            errorDocumentos
+        );
+
+        contenedor.innerHTML = `
+            <div class="bg-white border border-red-200
+                        rounded-2xl p-8">
+
+                <div class="flex items-start gap-4">
+
+                    <div class="w-11 h-11 rounded-xl bg-red-50
+                                flex items-center justify-center">
+
+                        <i data-lucide="alert-circle"
+                           class="w-6 h-6 text-red-600"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3 class="font-semibold text-red-800">
+                            No se ha podido cargar la documentación
+                        </h3>
+
+                        <p class="text-sm text-red-700 mt-1">
+                            ${errorDocumentos.message || "Error desconocido"}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+        if (typeof lucide !== "undefined") {
+            lucide.createIcons();
+        }
+
+        return;
+    }
+
+    actualizarResumenDocumentacion(
+    vehiculos,
+    documentos || []
+);
+
+
+    console.log(
+        "RODAX Vehículos — documentación cargada:",
+        documentos
+    );
+
+
+    /*
+     * ============================================================
+     * 4. TIPOS DE DOCUMENTACIÓN
+     * ============================================================
+     */
+
+    const tiposDocumentacion = [
+
+        {
+            tipo: "permiso_circulacion",
+            nombre: "Permiso de circulación",
+            icono: "file-text",
+            color: "blue"
+        },
+
+        {
+            tipo: "ficha_tecnica",
+            nombre: "Ficha técnica",
+            icono: "file-check",
+            color: "blue"
+        },
+
+        {
+            tipo: "itv",
+            nombre: "ITV",
+            icono: "clipboard-check",
+            color: "blue"
+        },
+
+        {
+            tipo: "seguro_vehiculo",
+            nombre: "Seguro del vehículo",
+            icono: "shield-check",
+            color: "green"
+        },
+
+        {
+            tipo: "seguro_transporte",
+            nombre: "Seguro de mercancías / transporte",
+            icono: "shield",
+            color: "green"
+        }
+
+    ];
+
+
+    /*
+     * ============================================================
+     * 5. CALCULAR ESTADO SEGÚN FECHA DE CADUCIDAD
+     * ============================================================
+     */
+
+    function obtenerEstadoDocumento(documento) {
+
+        if (!documento) {
+            return {
+                texto: "Pendiente de registrar",
+                clase: "text-slate-500",
+                fondo: "bg-slate-100"
+            };
+        }
+
+        if (!documento.fecha_caducidad) {
+            return {
+                texto: "Registrado",
+                clase: "text-blue-700",
+                fondo: "bg-blue-50"
+            };
+        }
+
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+
+        const caducidad =
+            new Date(documento.fecha_caducidad + "T00:00:00");
+
+        const diferencia =
+            Math.ceil(
+                (caducidad - hoy) /
+                (1000 * 60 * 60 * 24)
+            );
+
+        if (diferencia < 0) {
+
+            return {
+                texto: "Caducado",
+                clase: "text-red-700",
+                fondo: "bg-red-50"
+            };
+        }
+
+        if (diferencia <= 30) {
+
+            return {
+                texto: `Caduca en ${diferencia} días`,
+                clase: "text-amber-700",
+                fondo: "bg-amber-50"
+            };
+        }
+
+        return {
+            texto: "Vigente",
+            clase: "text-emerald-700",
+            fondo: "bg-emerald-50"
+        };
+    }
 
     /*
      * ============================================================
