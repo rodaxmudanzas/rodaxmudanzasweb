@@ -586,38 +586,6 @@ window.cargarMisVehiculos = cargarMisVehiculos;
 
 </div>
 
-<!-- PESTAÑAS -->
-<div class="bg-white rounded-2xl border border-slate-200
-            flex items-center overflow-hidden">
-
-    <!-- MIS VEHÍCULOS -->
-    <button
-        type="button"
-        onclick="cargarMisVehiculos()"
-        class="flex-1 flex items-center justify-center gap-2
-               px-5 py-4 text-slate-600
-               hover:bg-slate-50 transition">
-
-        <i data-lucide="truck" class="w-5 h-5"></i>
-
-        Mis vehículos
-
-    </button>
-
-    <!-- DOCUMENTACIÓN ACTIVA -->
-    <button
-        type="button"
-        class="flex-1 flex items-center justify-center gap-2
-               px-5 py-4 bg-blue-600 text-white font-semibold">
-
-        <i data-lucide="file-text" class="w-5 h-5"></i>
-
-        Documentación
-
-    </button>
-
-</div>
-
 </div>
 
 <!-- RESUMEN -->
@@ -764,6 +732,38 @@ window.cargarMisVehiculos = cargarMisVehiculos;
 
         </div>
     </div>
+
+</div>
+
+<!-- PESTAÑAS -->
+<div class="bg-white rounded-2xl border border-slate-200
+            flex items-center overflow-hidden">
+
+    <!-- MIS VEHÍCULOS -->
+    <button
+        type="button"
+        onclick="cargarMisVehiculos()"
+        class="flex-1 flex items-center justify-center gap-2
+               px-5 py-4 text-slate-600
+               hover:bg-slate-50 transition">
+
+        <i data-lucide="truck" class="w-5 h-5"></i>
+
+        Mis vehículos
+
+    </button>
+
+    <!-- DOCUMENTACIÓN ACTIVA -->
+    <button
+        type="button"
+        class="flex-1 flex items-center justify-center gap-2
+               px-5 py-4 bg-blue-600 text-white font-semibold">
+
+        <i data-lucide="file-text" class="w-5 h-5"></i>
+
+        Documentación
+
+    </button>
 
 </div>
 
