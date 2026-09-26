@@ -6064,7 +6064,9 @@ window.subirDocumentoVehiculo =
 window.verDocumentoVehiculo =
     verDocumentoVehiculo;
 
-    window.eliminarDocumentoVehiculo =
+   window.eliminarDocumentoVehiculo =
     eliminarDocumentoVehiculo;
+
+}
 
 })();
