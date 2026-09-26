@@ -215,7 +215,11 @@
                             </div>
 
                             <div>
-                                <div
+                                <div class="text-sm text-slate-500">
+    Próximo documento a caducar
+</div>
+
+<div
     data-resumen-valor
     class="text-2xl font-bold text-slate-900"
 >
