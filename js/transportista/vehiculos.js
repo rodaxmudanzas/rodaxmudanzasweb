@@ -138,13 +138,13 @@
 
                             <div class="w-12 h-12 rounded-full bg-blue-50
                                         flex items-center justify-center">
-                                <i data-lucide="file-text"
-                                   class="w-6 h-6 text-blue-600"></i>
+                                <i data-lucide="clipboard-check"
+   class="w-6 h-6 text-blue-600"></i>
                             </div>
 
                             <div>
                                 <div class="text-sm text-slate-500">
-                                    Documentación al día
+                                    ITV vigente
                                 </div>
 
                                 <div
@@ -695,17 +695,6 @@ function actualizarResumenDocumentacion(
             ? documentos
             : [];
 
-    /*
-     * ============================================================
-     * DOCUMENTACIÓN OBLIGATORIA
-     * ============================================================
-     */
-
-    const documentosObligatorios = [
-        "permiso_circulacion",
-        "ficha_tecnica",
-        "itv"
-    ];
 
     /*
      * ============================================================
@@ -740,86 +729,65 @@ function actualizarResumenDocumentacion(
     }
 
     /*
-     * ============================================================
-     * 1. DOCUMENTACIÓN AL DÍA
-     *
-     * Un vehículo está al día cuando tiene:
-     * - Permiso de circulación
-     * - Ficha técnica
-     * - ITV
-     *
-     * registrados y vigentes.
-     * ============================================================
-     */
+ * ============================================================
+ * 1. ITV VIGENTE
+ *
+ * Cuenta los vehículos que tienen una ITV registrada
+ * y cuya fecha de caducidad no ha pasado.
+ * ============================================================
+ */
 
-    let vehiculosDocumentacionAlDia = 0;
+let vehiculosITVVigente = 0;
 
-    listaVehiculos.forEach(vehiculo => {
+listaVehiculos.forEach(vehiculo => {
 
-        const documentosVehiculo =
-            listaDocumentos.filter(
-                documento =>
-                    documento.vehiculo_id === vehiculo.id
-            );
+    const documentoITV =
+        listaDocumentos.find(
+            documento =>
+                documento.vehiculo_id === vehiculo.id &&
+                documento.tipo_documento === "itv"
+        );
 
-        const documentacionCompleta =
-            documentosObligatorios.every(tipo => {
+    if (
+        documentoITV &&
+        documentoVigente(documentoITV)
+    ) {
+        vehiculosITVVigente++;
+    }
+});
 
-                const documento =
-                    documentosVehiculo.find(
-                        doc =>
-                            doc.tipo_documento === tipo
-                    );
+  /*
+ * ============================================================
+ * 2. SEGURO DEL VEHÍCULO ACTIVO
+ *
+ * SOLO se tiene en cuenta:
+ * - seguro_vehiculo
+ *
+ * NO se tiene en cuenta:
+ * - seguro_transporte
+ *
+ * El seguro de mercancías/transporte es independiente.
+ * ============================================================
+ */
 
-                return documentoVigente(documento);
-            });
+let vehiculosSeguroActivo = 0;
 
-        if (documentacionCompleta) {
-            vehiculosDocumentacionAlDia++;
-        }
-    });
+listaVehiculos.forEach(vehiculo => {
 
-    /*
-     * ============================================================
-     * 2. SEGUROS ACTIVOS
-     *
-     * Se consideran activos cuando están vigentes:
-     * - Seguro del vehículo
-     * - Seguro de mercancías / transporte
-     * ============================================================
-     */
+    const seguroVehiculo =
+        listaDocumentos.find(
+            documento =>
+                documento.vehiculo_id === vehiculo.id &&
+                documento.tipo_documento === "seguro_vehiculo"
+        );
 
-    const tiposSeguro = [
-        "seguro_vehiculo",
-        "seguro_transporte"
-    ];
-
-    let vehiculosSegurosActivos = 0;
-
-    listaVehiculos.forEach(vehiculo => {
-
-        const documentosVehiculo =
-            listaDocumentos.filter(
-                documento =>
-                    documento.vehiculo_id === vehiculo.id
-            );
-
-        const segurosActivos =
-            tiposSeguro.every(tipo => {
-
-                const seguro =
-                    documentosVehiculo.find(
-                        doc =>
-                            doc.tipo_documento === tipo
-                    );
-
-                return documentoVigente(seguro);
-            });
-
-        if (segurosActivos) {
-            vehiculosSegurosActivos++;
-        }
-    });
+    if (
+        seguroVehiculo &&
+        documentoVigente(seguroVehiculo)
+    ) {
+        vehiculosSeguroActivo++;
+    }
+});
 
     /*
      * ============================================================
@@ -859,73 +827,73 @@ function actualizarResumenDocumentacion(
         renovacionesFuturas[0] || null;
 
     /*
-     * ============================================================
-     * ACTUALIZAR TARJETA DOCUMENTACIÓN
-     * ============================================================
-     */
+ * ============================================================
+ * ACTUALIZAR TARJETA ITV
+ * ============================================================
+ */
 
-    const tarjetaDocumentacion =
-        document.getElementById(
-            "resumen-documentacion"
+const tarjetaITV =
+    document.getElementById(
+        "resumen-documentacion"
+    );
+
+if (tarjetaITV) {
+
+    const valor =
+        tarjetaITV.querySelector(
+            "[data-resumen-valor]"
         );
 
-    if (tarjetaDocumentacion) {
-
-        const valor =
-            tarjetaDocumentacion.querySelector(
-                "[data-resumen-valor]"
-            );
-
-        const texto =
-            tarjetaDocumentacion.querySelector(
-                "[data-resumen-texto]"
-            );
-
-        if (valor) {
-            valor.textContent =
-                `${vehiculosDocumentacionAlDia} / ${listaVehiculos.length}`;
-        }
-
-        if (texto) {
-            texto.textContent =
-                "Vehículos con documentación vigente";
-        }
-    }
-
-    /*
-     * ============================================================
-     * ACTUALIZAR TARJETA SEGUROS
-     * ============================================================
-     */
-
-    const tarjetaSeguros =
-        document.getElementById(
-            "resumen-seguros"
+    const texto =
+        tarjetaITV.querySelector(
+            "[data-resumen-texto]"
         );
 
-    if (tarjetaSeguros) {
-
-        const valor =
-            tarjetaSeguros.querySelector(
-                "[data-resumen-valor]"
-            );
-
-        const texto =
-            tarjetaSeguros.querySelector(
-                "[data-resumen-texto]"
-            );
-
-        if (valor) {
-            valor.textContent =
-                `${vehiculosSegurosActivos} / ${listaVehiculos.length}`;
-        }
-
-        if (texto) {
-            texto.textContent =
-                "Vehículos con seguros vigentes";
-        }
+    if (valor) {
+        valor.textContent =
+            `${vehiculosITVVigente} / ${listaVehiculos.length}`;
     }
 
+    if (texto) {
+        texto.textContent =
+            "Vehículos con ITV vigente";
+    }
+}
+
+    
+/*
+ * ============================================================
+ * ACTUALIZAR TARJETA SEGUROS
+ * ============================================================
+ */
+
+const tarjetaSeguros =
+    document.getElementById(
+        "resumen-seguros"
+    );
+
+if (tarjetaSeguros) {
+
+    const valor =
+        tarjetaSeguros.querySelector(
+            "[data-resumen-valor]"
+        );
+
+    const texto =
+        tarjetaSeguros.querySelector(
+            "[data-resumen-texto]"
+        );
+
+    if (valor) {
+        valor.textContent =
+            `${vehiculosSeguroActivo} / ${listaVehiculos.length}`;
+    }
+
+    if (texto) {
+        texto.textContent =
+            "Vehículos con seguro vigente";
+    }
+}
     /*
      * ============================================================
      * ACTUALIZAR TARJETA PRÓXIMA RENOVACIÓN
