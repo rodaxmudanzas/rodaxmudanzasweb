@@ -670,23 +670,48 @@
 
  
 
-                            <!-- NOMBRE -->
+                            <!-- NOMBRE COMERCIAL -->
 
- 
+<div class="
+    rounded-xl
+    bg-blue-50
+    border
+    border-blue-100
+    p-4
+">
 
-                            <div class="
+    <div class="
+        text-[10px]
+        uppercase
+        tracking-wider
+        text-blue-500
+        font-black
+    ">
+        Nombre comercial
+    </div>
 
-                                rounded-xl
+    <div class="
+        font-bold
+        text-slate-800
+        mt-1
+    ">
+        ${escaparHTML(
+            perfil.nombre_comercial || "Sin definir"
+        )}
+    </div>
 
-                                bg-slate-50
+</div>
 
-                                border
 
-                                border-slate-200
+<!-- NOMBRE -->
 
-                                p-4
-
-                            ">
+<div class="
+    rounded-xl
+    bg-slate-50
+    border
+    border-slate-200
+    p-4
+">
 
  
 
