@@ -511,7 +511,9 @@ if (vehiculos.length === 0) {
     }
 }
 
-    window.cargarMisVehiculos = cargarMisVehiculos;
+}
+
+window.cargarMisVehiculos = cargarMisVehiculos;
 
     function formatearFecha(fecha) {
     if (!fecha) {
@@ -6064,9 +6066,7 @@ window.subirDocumentoVehiculo =
 window.verDocumentoVehiculo =
     verDocumentoVehiculo;
 
-   window.eliminarDocumentoVehiculo =
+window.eliminarDocumentoVehiculo =
     eliminarDocumentoVehiculo;
-
-}
 
 })();
