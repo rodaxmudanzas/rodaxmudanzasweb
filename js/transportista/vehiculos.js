@@ -618,6 +618,160 @@ window.cargarMisVehiculos = cargarMisVehiculos;
 
 </div>
 
+</div>
+
+<!-- RESUMEN -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+
+    <!-- VEHÍCULOS REGISTRADOS -->
+    <div class="bg-white rounded-2xl border border-slate-200 p-5">
+        <div class="flex items-center gap-4">
+
+            <div class="w-12 h-12 rounded-full bg-blue-50
+                        flex items-center justify-center">
+                <i data-lucide="truck"
+                   class="w-6 h-6 text-blue-600"></i>
+            </div>
+
+            <div>
+                <div class="text-sm text-slate-500">
+                    Vehículos registrados
+                </div>
+
+                <div class="text-2xl font-bold text-slate-900">
+                    ${window._rodaxVehiculosDocumentacion?.length || 0}
+                </div>
+
+                <div class="text-xs text-slate-500">
+                    ${
+                        (window._rodaxVehiculosDocumentacion?.length || 0) === 1
+                            ? "Vehículo registrado"
+                            : "Vehículos registrados"
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ITV VIGENTE -->
+    <div
+        id="resumen-documentacion"
+        class="bg-white rounded-2xl border border-slate-200 p-5"
+    >
+        <div class="flex items-center gap-4">
+
+            <div class="w-12 h-12 rounded-full bg-blue-50
+                        flex items-center justify-center">
+                <i data-lucide="clipboard-check"
+                   class="w-6 h-6 text-blue-600"></i>
+            </div>
+
+            <div>
+                <div class="text-sm text-slate-500">
+                    ITV vigente
+                </div>
+
+                <div
+                    data-resumen-valor
+                    class="text-2xl font-bold text-slate-900"
+                >
+                    —
+                </div>
+
+                <div
+                    data-resumen-texto
+                    class="text-xs text-slate-500"
+                >
+                    Cargando...
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- SEGUROS ACTIVOS -->
+    <div
+        id="resumen-seguros"
+        class="bg-white rounded-2xl border border-slate-200 p-5"
+    >
+        <div class="flex items-center gap-4">
+
+            <div class="w-12 h-12 rounded-full bg-emerald-50
+                        flex items-center justify-center">
+                <i data-lucide="shield-check"
+                   class="w-6 h-6 text-emerald-600"></i>
+            </div>
+
+            <div>
+                <div class="text-sm text-slate-500">
+                    Seguros activos
+                </div>
+
+                <div
+                    data-resumen-valor
+                    class="text-2xl font-bold text-slate-900"
+                >
+                    —
+                </div>
+
+                <div
+                    data-resumen-texto
+                    class="text-xs text-slate-500"
+                >
+                    Cargando...
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- PRÓXIMO DOCUMENTO A CADUCAR -->
+    <div
+        id="resumen-renovacion"
+        class="bg-white rounded-2xl border border-slate-200 p-5"
+    >
+        <div class="flex items-center gap-4">
+
+            <div class="w-12 h-12 rounded-full bg-blue-50
+                        flex items-center justify-center">
+                <i data-lucide="calendar-days"
+                   class="w-6 h-6 text-blue-600"></i>
+            </div>
+
+            <div>
+                <div class="text-sm text-slate-500">
+                    Próximo documento a caducar
+                </div>
+
+                <div
+                    data-resumen-valor
+                    class="text-2xl font-bold text-slate-900"
+                >
+                    —
+                </div>
+
+                <div
+                    data-resumen-texto
+                    class="text-xs text-slate-500"
+                >
+                    Cargando...
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<!-- INFORMACIÓN -->
+<div class="bg-blue-50 border border-blue-100
+            rounded-2xl p-5">
+
             <!-- INFORMACIÓN -->
             <div class="bg-blue-50 border border-blue-100
                         rounded-2xl p-5">
@@ -699,6 +853,33 @@ function actualizarResumenDocumentacion(
             ? documentos
             : [];
 
+            const tarjetaVehiculos =
+    document.getElementById("resumen-vehiculos");
+
+if (tarjetaVehiculos) {
+
+    const valor =
+        tarjetaVehiculos.querySelector(
+            "[data-resumen-valor]"
+        );
+
+    const texto =
+        tarjetaVehiculos.querySelector(
+            "[data-resumen-texto]"
+        );
+
+    if (valor) {
+        valor.textContent =
+            listaVehiculos.length;
+    }
+
+    if (texto) {
+        texto.textContent =
+            listaVehiculos.length === 1
+                ? "Vehículo registrado"
+                : "Vehículos registrados";
+    }
+}
 
     /*
      * ============================================================
