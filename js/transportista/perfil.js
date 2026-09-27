@@ -553,56 +553,64 @@
                     ">
 
  
-
- 
-
-                        <div class="
+<div class="
     flex
     items-center
     justify-between
-    gap-3
+    gap-4
     mb-6
 ">
 
+    <!-- IZQUIERDA: ICONO + TÍTULO -->
     <div class="
-        w-10
-        h-10
-        rounded-xl
-        bg-blue-50
         flex
         items-center
-        justify-center
+        gap-3
     ">
 
-        <i
-            data-lucide="user"
-            class="w-5 h-5 text-blue-600">
-        </i>
+        <div class="
+            w-10
+            h-10
+            rounded-xl
+            bg-blue-50
+            flex
+            items-center
+            justify-center
+            shrink-0
+        ">
+
+            <i
+                data-lucide="user"
+                class="w-5 h-5 text-blue-600">
+            </i>
+
+        </div>
+
+
+        <div>
+
+            <h2 class="
+                text-lg
+                font-black
+                text-slate-800
+            ">
+                Mi perfil
+            </h2>
+
+            <p class="
+                text-xs
+                text-slate-500
+            ">
+                Información de tu cuenta
+                de transportista.
+            </p>
+
+        </div>
 
     </div>
 
 
-    <div>
-
-        <h2 class="
-            text-lg
-            font-black
-            text-slate-800
-        ">
-            Mi perfil
-        </h2>
-
-        <p class="
-            text-xs
-            text-slate-500
-        ">
-            Información de tu cuenta
-            de transportista.
-        </p>
-
-    </div>
-
-
+    <!-- DERECHA: EDITAR PERFIL -->
     <button
         type="button"
         onclick="editarPerfil()"
@@ -622,12 +630,14 @@
             shrink-0
         "
     >
+
         <i
             data-lucide="pencil"
             class="w-4 h-4">
         </i>
 
         Editar perfil
+
     </button>
 
 </div>
