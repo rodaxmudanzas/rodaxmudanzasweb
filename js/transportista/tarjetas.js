@@ -3154,7 +3154,7 @@ function solicitarCancelacion(mudanzaId) {
                     </div>
 
                     <div class="mt-1 text-sm font-black text-slate-900">
-                        ${escapeHTML(
+                        ${escapeHtml(
                             mudanza.codigo_reserva ||
                             mudanza.codigo ||
                             `RDX-${mudanza.id}`
@@ -3273,5 +3273,28 @@ function solicitarCancelacion(mudanzaId) {
         lucide.createIcons();
     }
 }
+
+//////////////////////////////////////////////////////////
+// CERRAR MODAL DE CANCELACIÓN
+//////////////////////////////////////////////////////////
+
+function cerrarModalCancelacion() {
+
+    const modal = document.getElementById(
+        "modal-solicitud-cancelacion"
+    );
+
+    if (modal) {
+        modal.remove();
+    }
+
+}
+
+//////////////////////////////////////////////////////////
+// EXPONER CANCELACIÓN AL PANEL
+//////////////////////////////////////////////////////////
+
+window.solicitarCancelacion = solicitarCancelacion;
+window.cerrarModalCancelacion = cerrarModalCancelacion;
 
 })();
