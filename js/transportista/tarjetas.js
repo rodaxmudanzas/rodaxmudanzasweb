@@ -3248,6 +3248,47 @@ if (!mudanza) {
 
                 </div>
 
+                <!-- DOCUMENTACIÓN JUSTIFICATIVA -->
+                <div>
+
+                    <label
+                        class="mb-1 block text-sm font-bold text-slate-700"
+                    >
+                        Documentación justificativa
+                    </label>
+
+                    <p class="mb-2 text-xs text-slate-500">
+                        Puedes adjuntar fotografías o documentos que ayuden a justificar la cancelación.
+                    </p>
+
+                    <input
+                        type="file"
+                        id="adjuntos-cancelacion"
+                        multiple
+                        accept=".pdf,.jpg,.jpeg,.png,.webp"
+                        class="hidden"
+                        onchange="seleccionarAdjuntosCancelacion(this.files)"
+                    >
+
+                    <button
+                        type="button"
+                        onclick="document.getElementById('adjuntos-cancelacion').click()"
+                        class="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700"
+                    >
+                        <i data-lucide="paperclip" class="h-5 w-5"></i>
+                        Adjuntar documentos o imágenes
+                    </button>
+
+                    <div
+                        id="lista-adjuntos-cancelacion"
+                        class="mt-3 space-y-2"
+                    ></div>
+
+                    <div class="mt-2 text-xs text-slate-400">
+                        Máximo 5 archivos · PDF, JPG, JPEG, PNG o WEBP · 10 MB por archivo.
+                    </div>
+
+                </div>
 
                 <div class="rounded-xl bg-amber-50 p-4 text-xs leading-5 text-amber-800">
 
@@ -3288,6 +3329,180 @@ if (!mudanza) {
         lucide.createIcons();
     }
 }
+
+//////////////////////////////////////////////////////////
+// ADJUNTOS DE LA SOLICITUD DE CANCELACIÓN
+//////////////////////////////////////////////////////////
+
+window.adjuntosCancelacion = [];
+
+
+function seleccionarAdjuntosCancelacion(files) {
+
+    const nuevosArchivos = Array.from(files || []);
+
+    const maxArchivos = 5;
+    const maxTamano = 10 * 1024 * 1024;
+
+    const tiposPermitidos = [
+        "application/pdf",
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+    ];
+
+    for (const archivo of nuevosArchivos) {
+
+        if (window.adjuntosCancelacion.length >= maxArchivos) {
+
+            alert(
+                "Solo puedes adjuntar un máximo de 5 archivos."
+            );
+
+            break;
+        }
+
+        if (!tiposPermitidos.includes(archivo.type)) {
+
+            alert(
+                `El archivo "${archivo.name}" no tiene un formato permitido.\n\n` +
+                "Formatos permitidos: PDF, JPG, JPEG, PNG y WEBP."
+            );
+
+            continue;
+        }
+
+        if (archivo.size > maxTamano) {
+
+            alert(
+                `El archivo "${archivo.name}" supera el tamaño máximo de 10 MB.`
+            );
+
+            continue;
+        }
+
+        const duplicado = window.adjuntosCancelacion.some(
+            existente =>
+                existente.name === archivo.name &&
+                existente.size === archivo.size
+        );
+
+        if (duplicado) {
+            continue;
+        }
+
+        window.adjuntosCancelacion.push(archivo);
+    }
+
+    renderizarAdjuntosCancelacion();
+}
+
+
+function renderizarAdjuntosCancelacion() {
+
+    const contenedor = document.getElementById(
+        "lista-adjuntos-cancelacion"
+    );
+
+    if (!contenedor) {
+        return;
+    }
+
+    if (!window.adjuntosCancelacion.length) {
+
+        contenedor.innerHTML = "";
+
+        return;
+    }
+
+    contenedor.innerHTML =
+        window.adjuntosCancelacion
+            .map((archivo, indice) => {
+
+                const tamanoMB =
+                    (archivo.size / (1024 * 1024))
+                        .toFixed(2);
+
+                const esImagen =
+                    archivo.type.startsWith("image/");
+
+                const icono =
+                    esImagen
+                        ? "image"
+                        : "file-text";
+
+                return `
+                    <div
+                        class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2.5"
+                    >
+
+                        <div class="flex min-w-0 items-center gap-3">
+
+                            <div
+                                class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600"
+                            >
+                                <i
+                                    data-lucide="${icono}"
+                                    class="h-4 w-4"
+                                ></i>
+                            </div>
+
+                            <div class="min-w-0">
+
+                                <div
+                                    class="truncate text-sm font-bold text-slate-700"
+                                    title="${escapeHtml(archivo.name)}"
+                                >
+                                    ${escapeHtml(archivo.name)}
+                                </div>
+
+                                <div class="text-xs text-slate-400">
+                                    ${tamanoMB} MB
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            onclick="eliminarAdjuntoCancelacion(${indice})"
+                            class="shrink-0 rounded-lg p-2 text-slate-400 hover:bg-red-50 hover:text-red-600"
+                            title="Eliminar archivo"
+                        >
+                            <i
+                                data-lucide="trash-2"
+                                class="h-4 w-4"
+                            ></i>
+                        </button>
+
+                    </div>
+                `;
+            })
+            .join("");
+
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+}
+
+
+function eliminarAdjuntoCancelacion(indice) {
+
+    window.adjuntosCancelacion.splice(
+        indice,
+        1
+    );
+
+    renderizarAdjuntosCancelacion();
+}
+
+
+window.seleccionarAdjuntosCancelacion =
+    seleccionarAdjuntosCancelacion;
+
+window.eliminarAdjuntoCancelacion =
+    eliminarAdjuntoCancelacion;
 
 //////////////////////////////////////////////////////////
 // CERRAR MODAL DE CANCELACIÓN
