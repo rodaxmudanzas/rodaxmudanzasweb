@@ -2791,6 +2791,288 @@ ${
         "✅ tarjetas.js cargado correctamente — versión modular RODAX"
     );
 
+//////////////////////////////////////////////////////////
+// CANCELACIÓN — FECHA DEL SERVICIO
+//////////////////////////////////////////////////////////
+
+function obtenerFechaServicioCancelacion(mudanza) {
+
+    if (!mudanza) {
+        return null;
+    }
+
+    const fecha = String(
+        mudanza.fecha || ""
+    ).trim();
+
+    if (!fecha) {
+        return null;
+    }
+
+    /*
+     * La tarjeta activa de RODAX utiliza actualmente
+     * mudanza.fecha con formato YYYY-MM-DD.
+     *
+     * Creamos la fecha a medianoche local para evitar
+     * desplazamientos provocados por UTC.
+     */
+
+    const match = fecha.match(
+        /^(\d{4})-(\d{2})-(\d{2})/
+    );
+
+    if (match) {
+
+        const fechaServicio = new Date(
+            Number(match[1]),
+            Number(match[2]) - 1,
+            Number(match[3]),
+            0,
+            0,
+            0,
+            0
+        );
+
+        if (!Number.isNaN(fechaServicio.getTime())) {
+            return fechaServicio;
+        }
+
+    }
+
+    const fechaServicio = new Date(fecha);
+
+    if (
+        Number.isNaN(
+            fechaServicio.getTime()
+        )
+    ) {
+        return null;
+    }
+
+    return fechaServicio;
+}
+
+
+//////////////////////////////////////////////////////////
+// CANCELACIÓN — CÁLCULO DE PENALIZACIÓN
+//////////////////////////////////////////////////////////
+
+function calcularPenalizacionCancelacion(
+    fechaServicio,
+    mudanza
+) {
+
+    const ahora = new Date();
+
+    const diferenciaMs =
+        fechaServicio.getTime() -
+        ahora.getTime();
+
+    const horasRestantes =
+        diferenciaMs /
+        (1000 * 60 * 60);
+
+    const diasRestantes =
+        horasRestantes / 24;
+
+
+    ////////////////////////////////////////////////////////
+    // FECHA VISIBLE
+    ////////////////////////////////////////////////////////
+
+    const fechaTexto =
+        fechaServicio.toLocaleDateString(
+            "es-ES",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            }
+        );
+
+
+    ////////////////////////////////////////////////////////
+    // TIEMPO RESTANTE
+    ////////////////////////////////////////////////////////
+
+    let tiempoRestante = "";
+
+    if (horasRestantes <= 0) {
+
+        tiempoRestante =
+            "Servicio iniciado o fecha superada";
+
+    } else if (horasRestantes < 24) {
+
+        tiempoRestante =
+            `${Math.max(
+                1,
+                Math.floor(horasRestantes)
+            )} h`;
+
+    } else {
+
+        const dias =
+            Math.floor(diasRestantes);
+
+        const horas =
+            Math.floor(
+                horasRestantes -
+                (dias * 24)
+            );
+
+        tiempoRestante =
+            `${dias} día${dias === 1 ? "" : "s"}` +
+            (
+                horas > 0
+                    ? ` y ${horas} h`
+                    : ""
+            );
+
+    }
+
+
+    ////////////////////////////////////////////////////////
+    // REGLAS DOCUMENTADAS DE RODAX
+    ////////////////////////////////////////////////////////
+
+    /*
+     * Más de 15 días  → Sin penalización
+     * 8–15 días       → Muy baja
+     * 3–7 días        → Baja
+     * 24–72 horas     → Media
+     * Menos de 24 h   → Alta
+     *
+     * Estas categorías proceden del documento RODAX.
+     */
+
+    if (diasRestantes > 15) {
+
+        return {
+
+            nivel:
+                "Sin penalización",
+
+            detalle:
+                "La solicitud se realiza con más de 15 días de antelación.",
+
+            clase:
+                "border-emerald-200 bg-emerald-50 text-emerald-700",
+
+            fechaTexto,
+
+            tiempoRestante,
+
+            horasRestantes,
+
+            diasRestantes
+
+        };
+
+    }
+
+
+    if (diasRestantes >= 8) {
+
+        return {
+
+            nivel:
+                "Penalización muy baja",
+
+            detalle:
+                "La solicitud se realiza entre 8 y 15 días antes del servicio.",
+
+            clase:
+                "border-yellow-200 bg-yellow-50 text-yellow-700",
+
+            fechaTexto,
+
+            tiempoRestante,
+
+            horasRestantes,
+
+            diasRestantes
+
+        };
+
+    }
+
+
+    if (diasRestantes >= 3) {
+
+        return {
+
+            nivel:
+                "Penalización baja",
+
+            detalle:
+                "La solicitud se realiza entre 3 y 7 días antes del servicio.",
+
+            clase:
+                "border-orange-200 bg-orange-50 text-orange-700",
+
+            fechaTexto,
+
+            tiempoRestante,
+
+            horasRestantes,
+
+            diasRestantes
+
+        };
+
+    }
+
+
+    if (horasRestantes >= 24) {
+
+        return {
+
+            nivel:
+                "Penalización media",
+
+            detalle:
+                "La solicitud se realiza entre 24 y 72 horas antes del servicio.",
+
+            clase:
+                "border-orange-300 bg-orange-50 text-orange-800",
+
+            fechaTexto,
+
+            tiempoRestante,
+
+            horasRestantes,
+
+            diasRestantes
+
+        };
+
+    }
+
+
+    return {
+
+        nivel:
+            "Penalización alta",
+
+        detalle:
+            "La solicitud se realiza con menos de 24 horas de antelación.",
+
+        clase:
+            "border-red-300 bg-red-50 text-red-700",
+
+        fechaTexto,
+
+        tiempoRestante,
+
+        horasRestantes,
+
+        diasRestantes
+
+    };
+
+}
+
     //////////////////////////////////////////////////////////
 // SOLICITUD DE CANCELACIÓN
 //////////////////////////////////////////////////////////
@@ -2872,7 +3154,7 @@ function solicitarCancelacion(mudanzaId) {
                     </div>
 
                     <div class="mt-1 text-sm font-black text-slate-900">
-                        ${escaparHTML(
+                        ${escapeHTML(
                             mudanza.codigo_reserva ||
                             mudanza.codigo ||
                             `RDX-${mudanza.id}`
