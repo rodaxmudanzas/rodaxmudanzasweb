@@ -1354,6 +1354,627 @@
 
     }
 
+        ////////////////////////////////////////////////////////////
+    // EDITAR PERFIL
+    ////////////////////////////////////////////////////////////
+
+    async function editarPerfil() {
+
+        const supabase = obtenerSupabase();
+        const transportistaId = obtenerTransportistaId();
+
+        if (!supabase || !transportistaId) {
+            console.error(
+                "No se pudo obtener Supabase o el ID del transportista."
+            );
+            return;
+        }
+
+        try {
+
+            const {
+                data: perfil,
+                error
+            } = await supabase
+                .from("transportistas")
+                .select("*")
+                .eq("id", transportistaId)
+                .maybeSingle();
+
+            if (error) {
+                throw error;
+            }
+
+            if (!perfil) {
+                alert("No se encontró la información del transportista.");
+                return;
+            }
+
+            const modalExistente =
+                document.getElementById("modal-editar-perfil");
+
+            if (modalExistente) {
+                modalExistente.remove();
+            }
+
+            const modal = document.createElement("div");
+
+            modal.id = "modal-editar-perfil";
+
+            modal.className = `
+                fixed
+                inset-0
+                z-[9999]
+                bg-slate-900/50
+                flex
+                items-center
+                justify-center
+                p-4
+            `;
+
+            modal.innerHTML = `
+
+                <div
+                    class="
+                        w-full
+                        max-w-2xl
+                        bg-white
+                        rounded-2xl
+                        shadow-2xl
+                        border
+                        border-slate-200
+                        overflow-hidden
+                    "
+                >
+
+                    <!-- CABECERA -->
+
+                    <div
+                        class="
+                            flex
+                            items-center
+                            justify-between
+                            px-6
+                            py-5
+                            border-b
+                            border-slate-200
+                        "
+                    >
+
+                        <div>
+
+                            <h2
+                                class="
+                                    text-lg
+                                    font-black
+                                    text-slate-800
+                                "
+                            >
+                                Editar perfil
+                            </h2>
+
+                            <p
+                                class="
+                                    text-xs
+                                    text-slate-500
+                                    mt-1
+                                "
+                            >
+                                Actualiza los datos básicos de tu perfil de transportista.
+                            </p>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            onclick="cerrarEditarPerfil()"
+                            class="
+                                w-9
+                                h-9
+                                rounded-xl
+                                flex
+                                items-center
+                                justify-center
+                                text-slate-400
+                                hover:bg-slate-100
+                                hover:text-slate-700
+                            "
+                        >
+                            <i
+                                data-lucide="x"
+                                class="w-5 h-5"
+                            ></i>
+                        </button>
+
+                    </div>
+
+
+                    <!-- FORMULARIO -->
+
+                    <form
+                        id="form-editar-perfil"
+                        class="p-6"
+                    >
+
+                        <div
+                            class="
+                                grid
+                                grid-cols-1
+                                md:grid-cols-2
+                                gap-4
+                            "
+                        >
+
+                            <!-- NOMBRE COMERCIAL -->
+
+                            <div class="md:col-span-2">
+
+                                <label
+                                    class="
+                                        block
+                                        text-xs
+                                        font-bold
+                                        text-slate-600
+                                        mb-2
+                                    "
+                                >
+                                    Nombre comercial
+                                </label>
+
+                                <input
+                                    id="editar-nombre-comercial"
+                                    type="text"
+                                    maxlength="80"
+                                    value="${escaparHTML(
+                                        perfil.nombre_comercial || ""
+                                    )}"
+                                    placeholder="Ej.: FLORES18"
+                                    class="
+                                        w-full
+                                        px-4
+                                        py-3
+                                        rounded-xl
+                                        border
+                                        border-slate-300
+                                        text-sm
+                                        font-semibold
+                                        text-slate-800
+                                        focus:outline-none
+                                        focus:ring-2
+                                        focus:ring-blue-500
+                                        focus:border-blue-500
+                                    "
+                                >
+
+                                <p
+                                    class="
+                                        text-[11px]
+                                        text-slate-400
+                                        mt-2
+                                    "
+                                >
+                                    Este será el nombre con el que te identificarán
+                                    como transportista en RODAX.
+                                </p>
+
+                            </div>
+
+
+                            <!-- NOMBRE -->
+
+                            <div>
+
+                                <label
+                                    class="
+                                        block
+                                        text-xs
+                                        font-bold
+                                        text-slate-600
+                                        mb-2
+                                    "
+                                >
+                                    Nombre
+                                </label>
+
+                                <input
+                                    id="editar-nombre"
+                                    type="text"
+                                    value="${escaparHTML(
+                                        perfil.nombre || ""
+                                    )}"
+                                    class="
+                                        w-full
+                                        px-4
+                                        py-3
+                                        rounded-xl
+                                        border
+                                        border-slate-300
+                                        text-sm
+                                        text-slate-800
+                                        focus:outline-none
+                                        focus:ring-2
+                                        focus:ring-blue-500
+                                        focus:border-blue-500
+                                    "
+                                >
+
+                            </div>
+
+
+                            <!-- TELÉFONO -->
+
+                            <div>
+
+                                <label
+                                    class="
+                                        block
+                                        text-xs
+                                        font-bold
+                                        text-slate-600
+                                        mb-2
+                                    "
+                                >
+                                    Teléfono
+                                </label>
+
+                                <input
+                                    id="editar-telefono"
+                                    type="tel"
+                                    value="${escaparHTML(
+                                        perfil.telefono ||
+                                        perfil.phone ||
+                                        ""
+                                    )}"
+                                    class="
+                                        w-full
+                                        px-4
+                                        py-3
+                                        rounded-xl
+                                        border
+                                        border-slate-300
+                                        text-sm
+                                        text-slate-800
+                                        focus:outline-none
+                                        focus:ring-2
+                                        focus:ring-blue-500
+                                        focus:border-blue-500
+                                    "
+                                >
+
+                            </div>
+
+
+                            <!-- EMAIL -->
+
+                            <div class="md:col-span-2">
+
+                                <label
+                                    class="
+                                        block
+                                        text-xs
+                                        font-bold
+                                        text-slate-600
+                                        mb-2
+                                    "
+                                >
+                                    Email
+                                </label>
+
+                                <input
+                                    type="email"
+                                    value="${escaparHTML(
+                                        perfil.email || ""
+                                    )}"
+                                    disabled
+                                    class="
+                                        w-full
+                                        px-4
+                                        py-3
+                                        rounded-xl
+                                        border
+                                        border-slate-200
+                                        bg-slate-50
+                                        text-sm
+                                        text-slate-500
+                                        cursor-not-allowed
+                                    "
+                                >
+
+                                <p
+                                    class="
+                                        text-[11px]
+                                        text-slate-400
+                                        mt-2
+                                    "
+                                >
+                                    El email de acceso a tu cuenta no se modifica desde aquí.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- BOTONES -->
+
+                        <div
+                            class="
+                                flex
+                                items-center
+                                justify-end
+                                gap-3
+                                mt-6
+                                pt-5
+                                border-t
+                                border-slate-200
+                            "
+                        >
+
+                            <button
+                                type="button"
+                                onclick="cerrarEditarPerfil()"
+                                class="
+                                    px-4
+                                    py-2.5
+                                    rounded-xl
+                                    border
+                                    border-slate-300
+                                    text-sm
+                                    font-semibold
+                                    text-slate-700
+                                    hover:bg-slate-50
+                                "
+                            >
+                                Cancelar
+                            </button>
+
+                            <button
+                                type="submit"
+                                class="
+                                    inline-flex
+                                    items-center
+                                    gap-2
+                                    px-5
+                                    py-2.5
+                                    rounded-xl
+                                    bg-blue-600
+                                    text-white
+                                    text-sm
+                                    font-bold
+                                    hover:bg-blue-700
+                                "
+                            >
+
+                                <i
+                                    data-lucide="save"
+                                    class="w-4 h-4"
+                                ></i>
+
+                                Guardar cambios
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            `;
+
+            document.body.appendChild(modal);
+
+
+            ////////////////////////////////////////////////////////
+            // CERRAR AL HACER CLICK FUERA
+            ////////////////////////////////////////////////////////
+
+            modal.addEventListener("click", function (event) {
+
+                if (event.target === modal) {
+                    cerrarEditarPerfil();
+                }
+
+            });
+
+
+            ////////////////////////////////////////////////////////
+            // GUARDAR
+            ////////////////////////////////////////////////////////
+
+            const formulario =
+                document.getElementById(
+                    "form-editar-perfil"
+                );
+
+            formulario.addEventListener(
+                "submit",
+                async function (event) {
+
+                    event.preventDefault();
+
+                    const nombreComercial =
+                        document
+                            .getElementById(
+                                "editar-nombre-comercial"
+                            )
+                            .value
+                            .trim();
+
+                    const nombre =
+                        document
+                            .getElementById(
+                                "editar-nombre"
+                            )
+                            .value
+                            .trim();
+
+                    const telefono =
+                        document
+                            .getElementById(
+                                "editar-telefono"
+                            )
+                            .value
+                            .trim();
+
+
+                    if (!nombreComercial) {
+
+                        alert(
+                            "Debes indicar un nombre comercial."
+                        );
+
+                        return;
+
+                    }
+
+
+                    const boton =
+                        formulario.querySelector(
+                            'button[type="submit"]'
+                        );
+
+                    boton.disabled = true;
+
+                    boton.innerHTML = `
+                        <i
+                            data-lucide="loader-2"
+                            class="w-4 h-4 animate-spin"
+                        ></i>
+                        Guardando...
+                    `;
+
+
+                    try {
+
+                        const {
+                            error: errorUpdate
+                        } = await supabase
+
+                            .from("transportistas")
+
+                            .update({
+
+                                nombre_comercial:
+                                    nombreComercial,
+
+                                nombre:
+                                    nombre,
+
+                                telefono:
+                                    telefono
+
+                            })
+
+                            .eq(
+                                "id",
+                                transportistaId
+                            );
+
+
+                        if (errorUpdate) {
+                            throw errorUpdate;
+                        }
+
+
+                        cerrarEditarPerfil();
+
+                        await cargarPerfil();
+
+
+                    } catch (error) {
+
+                        console.error(
+                            "Error actualizando perfil:",
+                            error
+                        );
+
+                        alert(
+                            "No se pudieron guardar los cambios."
+                        );
+
+
+                        boton.disabled = false;
+
+                        boton.innerHTML = `
+                            <i
+                                data-lucide="save"
+                                class="w-4 h-4"
+                            ></i>
+                            Guardar cambios
+                        `;
+
+                        if (
+                            window.lucide &&
+                            typeof window.lucide.createIcons ===
+                                "function"
+                        ) {
+
+                            window.lucide.createIcons();
+
+                        }
+
+                    }
+
+                }
+            );
+
+
+            if (
+                window.lucide &&
+                typeof window.lucide.createIcons ===
+                    "function"
+            ) {
+
+                window.lucide.createIcons();
+
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                "Error abriendo editor de perfil:",
+                error
+            );
+
+            alert(
+                "No se pudo abrir el editor del perfil."
+            );
+
+        }
+
+    }
+
+
+    ////////////////////////////////////////////////////////////
+    // CERRAR EDITOR DE PERFIL
+    ////////////////////////////////////////////////////////////
+
+    function cerrarEditarPerfil() {
+
+        const modal =
+            document.getElementById(
+                "modal-editar-perfil"
+            );
+
+        if (modal) {
+            modal.remove();
+        }
+
+    }
+
+
+    ////////////////////////////////////////////////////////////
+    // EXPONER FUNCIONES
+    ////////////////////////////////////////////////////////////
+
+    window.editarPerfil =
+        editarPerfil;
+
+    window.cerrarEditarPerfil =
+        cerrarEditarPerfil;
+
     window.cargarPerfil = cargarPerfil;
 
 })(window);
