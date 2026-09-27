@@ -1666,6 +1666,10 @@ const provincia =
 
                     }
 
+                    if (codigoPostal && !/^\d{5}$/.test(codigoPostal)) {
+    alert("El código postal debe tener exactamente 5 números.");
+    return;
+}
 
                     const boton =
                         formulario.querySelector(
