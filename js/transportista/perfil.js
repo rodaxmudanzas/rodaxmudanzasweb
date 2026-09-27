@@ -6,26 +6,9 @@
 
  * Archivo : js/transportista/perfil.js
 
- * Módulo  : Mi perfil + Equipo / Operarios
+ * Módulo  : Mi perfil + Equipo
 
  * ==========================================================
-
- *
-
- * La sección Equipo / Operarios queda preparada para una
-
- * futura tabla de operarios en Supabase.
-
- *
-
- * NO se realiza ninguna consulta de operarios mientras
-
- * dicha estructura no exista.
-
- * ==========================================================
-
- */
-
  
 
 (function (window) {
@@ -1315,6 +1298,111 @@
 
                             </div>
 
+<!-- DIRECCION -->
+
+<div>
+    <label class="block text-sm font-medium text-slate-700 mb-1">
+        Dirección
+    </label>
+
+    <input
+        id="editar-direccion"
+        type="text"
+        value="${escaparHTML(perfil.direccion || "")}"
+        placeholder="Ej.: Calle Mayor, 18"
+        class="
+            w-full
+            px-4
+            py-3
+            rounded-xl
+            border
+            border-slate-300
+            focus:outline-none
+            focus:ring-2
+            focus:ring-slate-400
+        "
+    >
+</div>
+
+<!-- CODIGO POSTAL -->
+
+<div>
+    <label class="block text-sm font-medium text-slate-700 mb-1">
+        Código postal
+    </label>
+
+    <input
+        id="editar-codigo-postal"
+        type="text"
+        maxlength="5"
+        inputmode="numeric"
+        value="${escaparHTML(perfil.codigo_postal || "")}"
+        placeholder="Ej.: 45612"
+        class="
+            w-full
+            px-4
+            py-3
+            rounded-xl
+            border
+            border-slate-300
+            focus:outline-none
+            focus:ring-2
+            focus:ring-slate-400
+        "
+    >
+</div>
+
+<!-- PROVINCIA -->
+
+<div>
+    <label class="block text-sm font-medium text-slate-700 mb-1">
+        Provincia
+    </label>
+
+    <input
+        id="editar-provincia"
+        type="text"
+        value="${escaparHTML(perfil.provincia || "")}"
+        placeholder="Ej.: Toledo"
+        class="
+            w-full
+            px-4
+            py-3
+            rounded-xl
+            border
+            border-slate-300
+            focus:outline-none
+            focus:ring-2
+            focus:ring-slate-400
+        "
+    >
+</div>
+
+<!-- CIUDAD -->
+
+<div>
+    <label class="block text-sm font-medium text-slate-700 mb-1">
+        Localidad
+    </label>
+
+    <input
+        id="editar-ciudad"
+        type="text"
+        value="${escaparHTML(perfil.ciudad || "")}"
+        placeholder="Ej.: Velada"
+        class="
+            w-full
+            px-4
+            py-3
+            rounded-xl
+            border
+            border-slate-300
+            focus:outline-none
+            focus:ring-2
+            focus:ring-slate-400
+        "
+    >
+</div>
 
                             <!-- EMAIL -->
 
@@ -1489,6 +1577,38 @@
                             .value
                             .trim();
 
+                            const direccion =
+    document
+        .getElementById(
+            "editar-direccion"
+        )
+        .value
+        .trim();
+
+const codigoPostal =
+    document
+        .getElementById(
+            "editar-codigo-postal"
+        )
+        .value
+        .trim();
+
+const ciudad =
+    document
+        .getElementById(
+            "editar-ciudad"
+        )
+        .value
+        .trim();
+
+const provincia =
+    document
+        .getElementById(
+            "editar-provincia"
+        )
+        .value
+        .trim();
+
 
                     if (!nombreComercial) {
 
@@ -1526,17 +1646,27 @@
                             .from("transportistas")
 
                             .update({
+    nombre_comercial:
+        nombreComercial,
 
-                                nombre_comercial:
-                                    nombreComercial,
+    nombre:
+        nombre,
 
-                                nombre:
-                                    nombre,
+    telefono:
+        telefono,
 
-                                telefono:
-                                    telefono
+    direccion:
+        direccion,
 
-                            })
+    codigo_postal:
+        codigoPostal,
+
+    ciudad:
+        ciudad,
+
+    provincia:
+        provincia
+})
 
                             .eq(
                                 "id",
