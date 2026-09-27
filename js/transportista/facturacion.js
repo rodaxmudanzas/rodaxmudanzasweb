@@ -409,8 +409,6 @@
         </tbody>
     </table>
 
-    ${crearExtrasFacturacion(mudanza)}
-
     <div class="totales">
         <div class="fila"><span>Base imponible</span><strong>${formatearEuros(base)}</strong></div>
         <div class="fila"><span>IVA (${ivaPorcentaje.toLocaleString("es-ES")}%)</span><strong>${formatearEuros(iva)}</strong></div>
@@ -545,49 +543,6 @@ function formatearGrupoFecha(fechaClave) {
     );
 }
 
-    function crearExtrasFacturacion(mudanza) {
-
-        const esTotal =
-            String(mudanza?.tipo_servicio || "")
-                .toLowerCase()
-                .includes("total");
-
-        if (
-            !esTotal ||
-            !window.Transportista ||
-            typeof window.Transportista.obtenerExtrasMudanzaTotal !== "function"
-        ) {
-            return "";
-        }
-
-        const datos =
-            window.Transportista.obtenerExtrasMudanzaTotal(mudanza);
-
-        const filas = [
-            ["Cajas pequeñas", datos?.["Cajas pequeñas"]],
-            ["Cajas medianas", datos?.["Cajas medianas"]],
-            ["Cajas grandes", datos?.["Cajas grandes"]]
-        ].filter(item => Number(item[1]) > 0);
-
-        if (!filas.length) return "";
-
-        return `
-            <div class="mt-4 bg-emerald-50 border border-emerald-200 rounded-xl p-3">
-                <div class="text-[10px] font-black uppercase tracking-wider text-emerald-700 mb-2">
-                    EXTRAS — PROVEER ESTAS CAJAS
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    ${filas.map(([nombre,cantidad]) => `
-                        <div class="flex items-center justify-between gap-2 bg-white border border-emerald-100 rounded-lg px-3 py-2">
-                            <span class="text-xs font-semibold text-slate-700">${escaparHTML(nombre)}</span>
-                            <strong class="bg-emerald-600 text-white px-2 py-0.5 rounded-md text-[10px]">x${Number(cantidad)}</strong>
-                        </div>
-                    `).join("")}
-                </div>
-            </div>
-        `;
-    }
-
     function renderPagoCard(pago, modo) {
         const mudanza = pago.__mudanza || {};
 const procesado = modo === "procesados";
@@ -624,12 +579,10 @@ const factura = procesado
                         <p class="mt-1 text-sm text-slate-500">${escaparHTML(mudanza.origen || "Origen no disponible")} → ${escaparHTML(mudanza.destino || "Destino no disponible")}</p>
                     </div>
                     <div class="lg:text-right">
-                        <div class="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Importe transportista</div>
+                        <div class="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">COBRO DEL TRANSPORTISTA</div>
                         <div class="mt-1 text-2xl font-black text-blue-700">${formatearEuros(importe)}</div>
                     </div>
                 </div>
-
-                ${crearExtrasFacturacion(mudanza)}
 
                 <div class="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
                     <div class="rounded-xl bg-slate-50 p-4">
