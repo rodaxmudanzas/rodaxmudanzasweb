@@ -2876,21 +2876,37 @@ function calcularPenalizacionCancelacion(fechaServicio, mudanza) {
         };
     }
 
-    /*
-     * ============================================================
-     * PRECIO TOTAL DE LA MUDANZA
-     * ============================================================
-     *
-     * La penalización se calcula sobre el precio total de la
-     * mudanza y NO sobre lo que cobra individualmente el
-     * transportista.
-     */
+    //////////////////////////////////////////////////////////
+// PRECIO TOTAL REAL DE LA MUDANZA
+//////////////////////////////////////////////////////////
 
-    const precioTotal = Number(
-        mudanza?.precio_total ??
-        mudanza?.precio ??
-        0
+const posiblesPrecios = [
+    mudanza?.precio_total,
+    mudanza?.precio_total_mudanza,
+    mudanza?.precio_mudanza,
+    mudanza?.importe_total,
+    mudanza?.importe_mudanza,
+    mudanza?.total,
+    mudanza?.precio
+];
+
+const precioEncontrado = posiblesPrecios.find(
+    valor =>
+        valor !== null &&
+        valor !== undefined &&
+        valor !== "" &&
+        !Number.isNaN(Number(valor))
+);
+
+const precioTotal = Number(precioEncontrado || 0);
+
+if (precioTotal <= 0) {
+
+    console.warn(
+        "⚠️ CANCELACIÓN: no se ha encontrado el precio total de la mudanza.",
+        mudanza
     );
+}
 
     /*
      * ============================================================
@@ -3174,10 +3190,13 @@ if (!mudanza) {
     modal.id = "modal-solicitud-cancelacion";
 
     modal.className =
-        "fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/60 p-4";
+    "fixed inset-0 z-[9999] flex items-center justify-center overflow-y-auto bg-slate-900/60 p-4";
 
     modal.innerHTML = `
-        <div class="w-full max-w-lg rounded-2xl bg-white shadow-2xl">
+        <div
+    class="flex w-full max-w-lg max-h-[calc(100vh-2rem)] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+    onclick="event.stopPropagation()"
+>
 
             <div class="border-b border-slate-200 px-6 py-5">
 
@@ -3206,7 +3225,7 @@ if (!mudanza) {
             </div>
 
 
-            <div class="space-y-4 px-6 py-5">
+            <div class="min-h-0 flex-1 overflow-y-auto space-y-4 px-6 py-5">
 
                 <div class="rounded-xl bg-slate-50 p-4">
 
@@ -3409,7 +3428,7 @@ if (!mudanza) {
             </div>
 
 
-            <div class="flex flex-col-reverse gap-2 border-t border-slate-200 px-6 py-4 sm:flex-row sm:justify-end">
+            <div class="shrink-0 flex flex-col-reverse gap-2 border-t border-slate-200 bg-white px-6 py-4 sm:flex-row sm:justify-end">
 
                 <button
                     type="button"
@@ -3433,6 +3452,14 @@ if (!mudanza) {
     `;
 
     document.body.appendChild(modal);
+
+    modal.addEventListener("click", function (event) {
+
+    if (event.target === modal) {
+        cerrarModalCancelacion();
+    }
+
+});
 
     if (window.lucide) {
         lucide.createIcons();
