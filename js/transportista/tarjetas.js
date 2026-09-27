@@ -3079,14 +3079,22 @@ function calcularPenalizacionCancelacion(
 
 function solicitarCancelacion(mudanzaId) {
 
-    const mudanza = window.mudanzasActivas?.find(
-        m => String(m.id) === String(mudanzaId)
+    const mudanza = window.state?.activas?.find(
+    m => String(m.id) === String(mudanzaId)
+);
+
+if (!mudanza) {
+    console.error(
+        "❌ CANCELACIÓN: no se encontró la mudanza.",
+        {
+            mudanzaId,
+            activas: window.state?.activas
+        }
     );
 
-    if (!mudanza) {
-        alert("No se ha podido localizar el servicio.");
-        return;
-    }
+    alert("No se ha podido localizar el servicio.");
+    return;
+}
 
     const fechaServicio = obtenerFechaServicioCancelacion(mudanza);
 
