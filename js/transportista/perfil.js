@@ -557,102 +557,81 @@
  
 
                         <div class="
+    flex
+    items-center
+    justify-between
+    gap-3
+    mb-6
+">
 
-                            flex
+    <div class="
+        w-10
+        h-10
+        rounded-xl
+        bg-blue-50
+        flex
+        items-center
+        justify-center
+    ">
 
-                            items-center
+        <i
+            data-lucide="user"
+            class="w-5 h-5 text-blue-600">
+        </i>
 
-                            gap-3
+    </div>
 
-                            mb-6
 
-                        ">
+    <div>
 
- 
+        <h2 class="
+            text-lg
+            font-black
+            text-slate-800
+        ">
+            Mi perfil
+        </h2>
 
-                            <div class="
+        <p class="
+            text-xs
+            text-slate-500
+        ">
+            Información de tu cuenta
+            de transportista.
+        </p>
 
-                                w-10
+    </div>
 
-                                h-10
 
-                                rounded-xl
+    <button
+        type="button"
+        onclick="editarPerfil()"
+        class="
+            inline-flex
+            items-center
+            gap-2
+            px-4
+            py-2
+            rounded-xl
+            bg-slate-900
+            text-white
+            text-sm
+            font-semibold
+            hover:bg-slate-800
+            transition
+            shrink-0
+        "
+    >
+        <i
+            data-lucide="pencil"
+            class="w-4 h-4">
+        </i>
 
-                                bg-blue-50
+        Editar perfil
+    </button>
 
-                                flex
+</div>
 
-                                items-center
-
-                                justify-center
-
-                            ">
-
- 
-
-                                <i
-
-                                    data-lucide="user"
-
-                                    class="w-5 h-5 text-blue-600">
-
-                                </i>
-
- 
-
-                            </div>
-
- 
-
- 
-
-                            <div>
-
- 
-
-                                <h2 class="
-
-                                    text-lg
-
-                                    font-black
-
-                                    text-slate-800
-
-                                ">
-
-                                    Mi perfil
-
-                                </h2>
-
- 
-
- 
-
-                                <p class="
-
-                                    text-xs
-
-                                    text-slate-500
-
-                                ">
-
-                                    Información de tu cuenta
-
-                                    de transportista.
-
-                                </p>
-
- 
-
-                            </div>
-
- 
-
-                        </div>
-
- 
-
- 
 
                         <div class="
 
