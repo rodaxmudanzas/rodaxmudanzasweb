@@ -2563,6 +2563,15 @@ ${
                         Ficha PDF
                     </button>
 
+<button
+    type="button"
+    onclick="event.stopPropagation(); solicitarCancelacion(${d.id})"
+    class="no-print inline-flex w-full max-w-[240px] min-w-[210px] items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-black text-red-700 transition-all hover:border-red-300 hover:bg-red-100 active:scale-[0.99]"
+>
+    <i data-lucide="circle-x" class="h-4 w-4"></i>
+    Solicitar cancelación
+</button>
+
                     <button
                         type="button"
                         onclick="event.stopPropagation(); marcarCompletada(${d.id})"
