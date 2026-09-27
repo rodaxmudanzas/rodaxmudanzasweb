@@ -6,10 +6,10 @@
 
  * Archivo : js/transportista/perfil.js
 
- * Módulo  : Mi perfil + Equipo
+  * Módulo  : Mi perfil
 
  * ==========================================================
- 
+ */
 
 (function (window) {
 
