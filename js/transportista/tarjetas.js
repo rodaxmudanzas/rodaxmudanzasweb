@@ -2791,5 +2791,205 @@ ${
         "✅ tarjetas.js cargado correctamente — versión modular RODAX"
     );
 
+    //////////////////////////////////////////////////////////
+// SOLICITUD DE CANCELACIÓN
+//////////////////////////////////////////////////////////
+
+function solicitarCancelacion(mudanzaId) {
+
+    const mudanza = window.mudanzasActivas?.find(
+        m => String(m.id) === String(mudanzaId)
+    );
+
+    if (!mudanza) {
+        alert("No se ha podido localizar el servicio.");
+        return;
+    }
+
+    const fechaServicio = obtenerFechaServicioCancelacion(mudanza);
+
+    if (!fechaServicio) {
+        alert("No se ha podido determinar la fecha del servicio.");
+        return;
+    }
+
+    const evaluacion = calcularPenalizacionCancelacion(
+        fechaServicio,
+        mudanza
+    );
+
+    const existente = document.getElementById(
+        "modal-solicitud-cancelacion"
+    );
+
+    if (existente) {
+        existente.remove();
+    }
+
+    const modal = document.createElement("div");
+
+    modal.id = "modal-solicitud-cancelacion";
+
+    modal.className =
+        "fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/60 p-4";
+
+    modal.innerHTML = `
+        <div class="w-full max-w-lg rounded-2xl bg-white shadow-2xl">
+
+            <div class="border-b border-slate-200 px-6 py-5">
+
+                <div class="flex items-start justify-between gap-4">
+
+                    <div>
+                        <h2 class="text-lg font-black text-slate-900">
+                            Solicitar cancelación
+                        </h2>
+
+                        <p class="mt-1 text-sm text-slate-500">
+                            La solicitud será revisada antes de liberar el servicio.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        onclick="cerrarModalCancelacion()"
+                        class="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                    >
+                        <i data-lucide="x" class="h-5 w-5"></i>
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="space-y-4 px-6 py-5">
+
+                <div class="rounded-xl bg-slate-50 p-4">
+
+                    <div class="text-xs font-bold uppercase tracking-wide text-slate-400">
+                        Servicio
+                    </div>
+
+                    <div class="mt-1 text-sm font-black text-slate-900">
+                        ${escaparHTML(
+                            mudanza.codigo_reserva ||
+                            mudanza.codigo ||
+                            `RDX-${mudanza.id}`
+                        )}
+                    </div>
+
+                </div>
+
+
+                <div class="grid grid-cols-2 gap-3">
+
+                    <div class="rounded-xl border border-slate-200 p-4">
+
+                        <div class="text-xs font-bold uppercase tracking-wide text-slate-400">
+                            Fecha
+                        </div>
+
+                        <div class="mt-1 text-sm font-black text-slate-900">
+                            ${evaluacion.fechaTexto}
+                        </div>
+
+                    </div>
+
+
+                    <div class="rounded-xl border border-slate-200 p-4">
+
+                        <div class="text-xs font-bold uppercase tracking-wide text-slate-400">
+                            Tiempo restante
+                        </div>
+
+                        <div class="mt-1 text-sm font-black text-slate-900">
+                            ${evaluacion.tiempoRestante}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="rounded-xl border ${evaluacion.clase} p-4">
+
+                    <div class="text-xs font-bold uppercase tracking-wide">
+                        Penalización prevista
+                    </div>
+
+                    <div class="mt-1 text-base font-black">
+                        ${evaluacion.nivel}
+                    </div>
+
+                    <div class="mt-1 text-sm">
+                        ${evaluacion.detalle}
+                    </div>
+
+                </div>
+
+
+                <div>
+                    <label
+                        for="motivo-cancelacion"
+                        class="mb-1 block text-sm font-bold text-slate-700"
+                    >
+                        Motivo de la cancelación
+                    </label>
+
+                    <textarea
+                        id="motivo-cancelacion"
+                        rows="4"
+                        maxlength="500"
+                        placeholder="Explica brevemente el motivo..."
+                        class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    ></textarea>
+
+                    <div class="mt-1 text-xs text-slate-400">
+                        Máximo 500 caracteres.
+                    </div>
+
+                </div>
+
+
+                <div class="rounded-xl bg-amber-50 p-4 text-xs leading-5 text-amber-800">
+
+                    La cancelación no queda aprobada automáticamente.
+                    El servicio continuará asignado hasta que la solicitud sea revisada.
+
+                </div>
+
+            </div>
+
+
+            <div class="flex flex-col-reverse gap-2 border-t border-slate-200 px-6 py-4 sm:flex-row sm:justify-end">
+
+                <button
+                    type="button"
+                    onclick="cerrarModalCancelacion()"
+                    class="rounded-xl border border-slate-300 px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    onclick="enviarSolicitudCancelacion(${mudanza.id})"
+                    class="rounded-xl bg-red-600 px-5 py-2.5 text-sm font-black text-white hover:bg-red-700"
+                >
+                    Enviar solicitud
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+}
 
 })();
