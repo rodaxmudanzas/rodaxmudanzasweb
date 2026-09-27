@@ -3162,12 +3162,19 @@ if (!mudanza) {
                     </div>
 
                     <div class="mt-1 text-sm font-black text-slate-900">
-                        ${escapeHtml(
-                            mudanza.codigo_reserva ||
-                            mudanza.codigo ||
-                            `RDX-${mudanza.id}`
-                        )}
-                    </div>
+    ${escapeHtml(
+        (
+            window.Transportista &&
+            typeof window.Transportista.getNumeroReserva === "function"
+        )
+            ? window.Transportista.getNumeroReserva(mudanza)
+            : (
+                mudanza.codigo_reserva ||
+                mudanza.codigo ||
+                `RDX-${mudanza.id}`
+            )
+    )}
+</div>
 
                 </div>
 
