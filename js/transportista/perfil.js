@@ -866,7 +866,53 @@
                             </div>
 
 
- 
+ <!-- DIRECCIÓN / UBICACIÓN -->
+
+<div class="
+    md:col-span-2
+    rounded-xl
+    bg-slate-50
+    border
+    border-slate-200
+    p-4
+">
+
+    <div class="
+        text-[10px]
+        uppercase
+        tracking-wider
+        text-slate-400
+        font-black
+    ">
+        Dirección
+    </div>
+
+    <div class="
+        font-bold
+        text-slate-800
+        mt-1
+    ">
+        ${escaparHTML(
+            perfil.direccion || "—"
+        )}
+    </div>
+
+    <div class="
+        text-xs
+        text-slate-500
+        mt-1
+    ">
+        ${escaparHTML(
+            [
+                perfil.ciudad,
+                perfil.codigo_postal,
+                perfil.provincia
+            ].filter(Boolean).join(" · ") ||
+            "Ubicación no indicada"
+        )}
+    </div>
+
+</div>
 
                         </div>
 
