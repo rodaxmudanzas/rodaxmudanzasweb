@@ -701,29 +701,90 @@ class="w-64 flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-f
 
 
 
-        <div
+        <div class="relative">
 
-            class="relative cursor-pointer p-2 hover:bg-slate-100 rounded-full transition-colors duration-200">
+    <button
+        type="button"
+        onclick="toggleNotificaciones(event)"
+        aria-label="Notificaciones"
+        class="relative p-2 hover:bg-slate-100 rounded-full transition-colors duration-200">
 
+        <i
+            data-lucide="bell"
+            class="w-6 h-6 text-slate-600">
+        </i>
 
+        <span
+            id="badge-notificaciones-top"
+            class="hidden absolute top-1 right-1 bg-sky-500 text-white text-[10px] font-bold w-5 h-5 items-center justify-center rounded-full border-2 border-white shadow-sm">
+            0
+        </span>
 
-            <i data-lucide="bell" class="w-6 h-6 text-slate-600"></i>
+    </button>
 
+    <!-- PANEL DE NOTIFICACIONES -->
+    <div
+        id="panel-notificaciones"
+        class="hidden absolute right-0 top-12 w-[380px] max-w-[calc(100vw-32px)] bg-white rounded-2xl border border-slate-200 shadow-xl z-[9999] overflow-hidden">
 
+        <!-- CABECERA -->
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
 
-            <span
+            <div>
+                <h3 class="text-sm font-bold text-slate-800">
+                    Notificaciones
+                </h3>
 
-                id="badge-notificaciones-top"
+                <p
+                    id="notificaciones-resumen"
+                    class="text-[11px] text-slate-400 mt-0.5">
+                    Sin notificaciones nuevas
+                </p>
+            </div>
 
-                class="absolute top-1 right-1 bg-sky-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
-
-                0
-
-            </span>
-
-
+            <button
+                type="button"
+                onclick="marcarTodasNotificacionesLeidas(event)"
+                class="text-[11px] font-semibold text-blue-600 hover:text-blue-800">
+                Marcar todas como leídas
+            </button>
 
         </div>
+
+        <!-- LISTA -->
+        <div
+            id="lista-notificaciones"
+            class="max-h-[420px] overflow-y-auto">
+
+            <!-- ESTADO VACÍO -->
+            <div
+                id="notificaciones-vacias"
+                class="px-6 py-10 text-center">
+
+                <div class="mx-auto w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center mb-3">
+
+                    <i
+                        data-lucide="bell-off"
+                        class="w-5 h-5 text-slate-400">
+                    </i>
+
+                </div>
+
+                <p class="text-sm font-semibold text-slate-700">
+                    No tienes notificaciones nuevas
+                </p>
+
+                <p class="text-xs text-slate-400 mt-1">
+                    Aquí aparecerán avisos importantes sobre tus servicios.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 
 
@@ -3209,7 +3270,81 @@ class="relative h-[48px] w-full flex items-center bg-white/10 hover:bg-white/15 
 
     }
 
- 
+ function toggleNotificaciones(event) {
+
+    if (event) {
+        event.stopPropagation();
+    }
+
+    const panel =
+        document.getElementById(
+            "panel-notificaciones"
+        );
+
+    if (!panel) {
+        return;
+    }
+
+    panel.classList.toggle("hidden");
+}
+
+document.addEventListener(
+    "click",
+    function () {
+
+        const panel =
+            document.getElementById(
+                "panel-notificaciones"
+            );
+
+        if (!panel) {
+            return;
+        }
+
+        panel.classList.add("hidden");
+
+    }
+);
+
+function marcarTodasNotificacionesLeidas(event) {
+
+    if (event) {
+        event.stopPropagation();
+    }
+
+    const badge =
+        document.getElementById(
+            "badge-notificaciones-top"
+        );
+
+    if (badge) {
+
+        badge.textContent = "0";
+
+        badge.classList.add("hidden");
+    }
+
+    const resumen =
+        document.getElementById(
+            "notificaciones-resumen"
+        );
+
+    if (resumen) {
+
+        resumen.textContent =
+            "Sin notificaciones nuevas";
+    }
+
+    const panel =
+        document.getElementById(
+            "panel-notificaciones"
+        );
+
+    if (panel) {
+
+        panel.classList.add("hidden");
+    }
+}
 
     function actualizarContadorNotificaciones(
 
