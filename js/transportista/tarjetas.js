@@ -2857,220 +2857,273 @@ function obtenerFechaServicioCancelacion(mudanza) {
 // CANCELACIÓN — CÁLCULO DE PENALIZACIÓN
 //////////////////////////////////////////////////////////
 
-function calcularPenalizacionCancelacion(
-    fechaServicio,
-    mudanza
-) {
+function calcularPenalizacionCancelacion(fechaServicio, mudanza) {
 
     const ahora = new Date();
+    const fecha = new Date(fechaServicio);
 
-    const diferenciaMs =
-        fechaServicio.getTime() -
-        ahora.getTime();
+    if (isNaN(fecha.getTime())) {
+        return {
+            fechaTexto: "Fecha no disponible",
+            tiempoRestante: "No disponible",
+            nivel: "No disponible",
+            detalle: "No se ha podido calcular la penalización.",
+            porcentaje: 0,
+            importePenalizacion: 0,
+            precioTotal: 0,
+            diasBloqueo: 0,
+            clase: "border-slate-200 bg-slate-50 text-slate-700"
+        };
+    }
 
-    const horasRestantes =
-        diferenciaMs /
-        (1000 * 60 * 60);
+    /*
+     * ============================================================
+     * PRECIO TOTAL DE LA MUDANZA
+     * ============================================================
+     *
+     * La penalización se calcula sobre el precio total de la
+     * mudanza y NO sobre lo que cobra individualmente el
+     * transportista.
+     */
 
-    const diasRestantes =
-        horasRestantes / 24;
+    const precioTotal = Number(
+        mudanza?.precio_total ??
+        mudanza?.precio ??
+        0
+    );
+
+    /*
+     * ============================================================
+     * TIEMPO RESTANTE
+     * ============================================================
+     */
+
+    const diferenciaMs = fecha.getTime() - ahora.getTime();
+
+    const diferenciaHoras = diferenciaMs / (1000 * 60 * 60);
+
+    const diferenciaDias = diferenciaHoras / 24;
 
 
-    ////////////////////////////////////////////////////////
-    // FECHA VISIBLE
-    ////////////////////////////////////////////////////////
+    /*
+     * ============================================================
+     * MISMO DÍA
+     * ============================================================
+     *
+     * Esta regla tiene PRIORIDAD sobre "menos de 24 horas".
+     *
+     * Si el servicio y la solicitud de cancelación ocurren en
+     * la misma fecha del calendario, se considera:
+     *
+     * 100 % + 5 días de bloqueo
+     */
 
-    const fechaTexto =
-        fechaServicio.toLocaleDateString(
-            "es-ES",
-            {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric"
-            }
-        );
+    const mismoDia =
+        fecha.getFullYear() === ahora.getFullYear() &&
+        fecha.getMonth() === ahora.getMonth() &&
+        fecha.getDate() === ahora.getDate();
 
 
-    ////////////////////////////////////////////////////////
-    // TIEMPO RESTANTE
-    ////////////////////////////////////////////////////////
+    /*
+     * ============================================================
+     * REGLAS DEFINITIVAS RODAX
+     * ============================================================
+     */
 
-    let tiempoRestante = "";
+    let porcentaje = 0;
+    let diasBloqueo = 0;
+    let nivel = "";
+    let detalle = "";
+    let clase = "";
 
-    if (horasRestantes <= 0) {
 
-        tiempoRestante =
-            "Servicio iniciado o fecha superada";
+    if (mismoDia) {
 
-    } else if (horasRestantes < 24) {
+        porcentaje = 100;
+        diasBloqueo = 5;
 
-        tiempoRestante =
-            `${Math.max(
-                1,
-                Math.floor(horasRestantes)
-            )} h`;
+        nivel = "Penalización máxima";
+
+        detalle =
+            "La cancelación se solicita el mismo día del servicio. " +
+            "Se prevé una penalización del 100 % del precio total " +
+            "de la mudanza y 5 días de bloqueo para aceptar nuevos trabajos.";
+
+        clase =
+            "border-red-200 bg-red-50 text-red-800";
+
+
+    } else if (diferenciaHoras < 24) {
+
+        porcentaje = 75;
+        diasBloqueo = 3;
+
+        nivel = "Penalización muy alta";
+
+        detalle =
+            "La solicitud se realiza con menos de 24 horas de antelación. " +
+            "Se prevé una penalización del 75 % del precio total " +
+            "de la mudanza y 3 días de bloqueo.";
+
+        clase =
+            "border-orange-200 bg-orange-50 text-orange-800";
+
+
+    } else if (diferenciaHoras <= 72) {
+
+        porcentaje = 50;
+        diasBloqueo = 2;
+
+        nivel = "Penalización alta";
+
+        detalle =
+            "La solicitud se realiza entre 24 y 72 horas antes del servicio. " +
+            "Se prevé una penalización del 50 % del precio total " +
+            "de la mudanza y 2 días de bloqueo.";
+
+        clase =
+            "border-orange-200 bg-orange-50 text-orange-800";
+
+
+    } else if (diferenciaDias <= 7) {
+
+        porcentaje = 25;
+        diasBloqueo = 1;
+
+        nivel = "Penalización moderada";
+
+        detalle =
+            "La solicitud se realiza entre 3 y 7 días antes del servicio. " +
+            "Se prevé una penalización del 25 % del precio total " +
+            "de la mudanza y 1 día de bloqueo.";
+
+        clase =
+            "border-yellow-200 bg-yellow-50 text-yellow-800";
+
+
+    } else if (diferenciaDias <= 14) {
+
+        porcentaje = 10;
+        diasBloqueo = 0;
+
+        nivel = "Penalización baja";
+
+        detalle =
+            "La solicitud se realiza entre 8 y 14 días antes del servicio. " +
+            "Se prevé una penalización del 10 % del precio total " +
+            "de la mudanza.";
+
+        clase =
+            "border-amber-200 bg-amber-50 text-amber-800";
+
 
     } else {
 
-        const dias =
-            Math.floor(diasRestantes);
+        porcentaje = 0;
+        diasBloqueo = 0;
 
-        const horas =
-            Math.floor(
-                horasRestantes -
-                (dias * 24)
-            );
+        nivel = "Sin penalización";
 
-        tiempoRestante =
-            `${dias} día${dias === 1 ? "" : "s"}` +
-            (
-                horas > 0
-                    ? ` y ${horas} h`
-                    : ""
-            );
+        detalle =
+            "La solicitud se realiza con más de 14 días de antelación. " +
+            "No se prevé penalización económica ni bloqueo.";
 
+        clase =
+            "border-green-200 bg-green-50 text-green-800";
     }
 
-
-    ////////////////////////////////////////////////////////
-    // REGLAS DOCUMENTADAS DE RODAX
-    ////////////////////////////////////////////////////////
 
     /*
-     * Más de 15 días  → Sin penalización
-     * 8–15 días       → Muy baja
-     * 3–7 días        → Baja
-     * 24–72 horas     → Media
-     * Menos de 24 h   → Alta
-     *
-     * Estas categorías proceden del documento RODAX.
+     * ============================================================
+     * IMPORTE DE LA PENALIZACIÓN
+     * ============================================================
      */
 
-    if (diasRestantes > 15) {
+    const importePenalizacion =
+        Math.round(
+            precioTotal * (porcentaje / 100) * 100
+        ) / 100;
 
-        return {
 
-            nivel:
-                "Sin penalización",
+    /*
+     * ============================================================
+     * FORMATO DEL TIEMPO RESTANTE
+     * ============================================================
+     */
 
-            detalle:
-                "La solicitud se realiza con más de 15 días de antelación.",
+    let tiempoRestante = "";
 
-            clase:
-                "border-emerald-200 bg-emerald-50 text-emerald-700",
+    if (diferenciaMs <= 0) {
 
-            fechaTexto,
+        tiempoRestante = "Servicio iniciado o finalizado";
 
-            tiempoRestante,
+    } else {
 
-            horasRestantes,
+        const dias = Math.floor(diferenciaHoras / 24);
 
-            diasRestantes
+        const horas = Math.floor(diferenciaHoras % 24);
 
-        };
+        if (dias > 0 && horas > 0) {
 
+            tiempoRestante =
+                `${dias} ${dias === 1 ? "día" : "días"} y ` +
+                `${horas} ${horas === 1 ? "h" : "h"}`;
+
+        } else if (dias > 0) {
+
+            tiempoRestante =
+                `${dias} ${dias === 1 ? "día" : "días"}`;
+
+        } else {
+
+            tiempoRestante =
+                `${Math.max(0, Math.floor(diferenciaHoras))} h`;
+        }
     }
 
 
-    if (diasRestantes >= 8) {
+    /*
+     * ============================================================
+     * FECHA PARA MOSTRAR EN EL MODAL
+     * ============================================================
+     */
 
-        return {
-
-            nivel:
-                "Penalización muy baja",
-
-            detalle:
-                "La solicitud se realiza entre 8 y 15 días antes del servicio.",
-
-            clase:
-                "border-yellow-200 bg-yellow-50 text-yellow-700",
-
-            fechaTexto,
-
-            tiempoRestante,
-
-            horasRestantes,
-
-            diasRestantes
-
-        };
-
-    }
+    const fechaTexto = fecha.toLocaleDateString(
+        "es-ES",
+        {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        }
+    );
 
 
-    if (diasRestantes >= 3) {
-
-        return {
-
-            nivel:
-                "Penalización baja",
-
-            detalle:
-                "La solicitud se realiza entre 3 y 7 días antes del servicio.",
-
-            clase:
-                "border-orange-200 bg-orange-50 text-orange-700",
-
-            fechaTexto,
-
-            tiempoRestante,
-
-            horasRestantes,
-
-            diasRestantes
-
-        };
-
-    }
-
-
-    if (horasRestantes >= 24) {
-
-        return {
-
-            nivel:
-                "Penalización media",
-
-            detalle:
-                "La solicitud se realiza entre 24 y 72 horas antes del servicio.",
-
-            clase:
-                "border-orange-300 bg-orange-50 text-orange-800",
-
-            fechaTexto,
-
-            tiempoRestante,
-
-            horasRestantes,
-
-            diasRestantes
-
-        };
-
-    }
-
+    /*
+     * ============================================================
+     * RESULTADO
+     * ============================================================
+     */
 
     return {
-
-        nivel:
-            "Penalización alta",
-
-        detalle:
-            "La solicitud se realiza con menos de 24 horas de antelación.",
-
-        clase:
-            "border-red-300 bg-red-50 text-red-700",
 
         fechaTexto,
 
         tiempoRestante,
 
-        horasRestantes,
+        nivel,
 
-        diasRestantes
+        detalle,
 
+        porcentaje,
+
+        importePenalizacion,
+
+        precioTotal,
+
+        diasBloqueo,
+
+        clase
     };
-
 }
 
     //////////////////////////////////////////////////////////
@@ -3211,19 +3264,75 @@ if (!mudanza) {
 
                 <div class="rounded-xl border ${evaluacion.clase} p-4">
 
-                    <div class="text-xs font-bold uppercase tracking-wide">
-                        Penalización prevista
-                    </div>
+    <div class="text-xs font-bold uppercase tracking-wide">
+        Penalización prevista
+    </div>
 
-                    <div class="mt-1 text-base font-black">
-                        ${evaluacion.nivel}
-                    </div>
+    <div class="mt-1 text-base font-black">
+        ${evaluacion.nivel}
+    </div>
 
-                    <div class="mt-1 text-sm">
-                        ${evaluacion.detalle}
-                    </div>
+    <div class="mt-1 text-sm">
+        ${evaluacion.detalle}
+    </div>
 
-                </div>
+    <div class="mt-4 grid grid-cols-2 gap-3">
+
+        <div class="rounded-lg bg-white/70 p-3">
+
+            <div class="text-xs font-bold uppercase tracking-wide opacity-70">
+                Porcentaje
+            </div>
+
+            <div class="mt-1 text-lg font-black">
+                ${evaluacion.porcentaje} %
+            </div>
+
+        </div>
+
+        <div class="rounded-lg bg-white/70 p-3">
+
+            <div class="text-xs font-bold uppercase tracking-wide opacity-70">
+                Importe estimado
+            </div>
+
+            <div class="mt-1 text-lg font-black">
+                ${evaluacion.importePenalizacion.toLocaleString(
+                    "es-ES",
+                    {
+                        style: "currency",
+                        currency: "EUR"
+                    }
+                )}
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="mt-3 rounded-lg bg-white/70 p-3">
+
+        <div class="text-xs font-bold uppercase tracking-wide opacity-70">
+            Bloqueo previsto
+        </div>
+
+        <div class="mt-1 text-sm font-black">
+
+            ${
+                evaluacion.diasBloqueo === 0
+                    ? "Sin bloqueo para aceptar trabajos"
+                    : `${evaluacion.diasBloqueo} ${
+                        evaluacion.diasBloqueo === 1
+                            ? "día"
+                            : "días"
+                    } sin poder aceptar nuevos trabajos`
+            }
+
+        </div>
+
+    </div>
+
+</div>
 
 
                 <div>
