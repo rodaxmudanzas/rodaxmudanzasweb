@@ -1837,7 +1837,133 @@ class="relative h-[48px] w-full flex items-center bg-white/10 hover:bg-white/15 
 
 </div>
 
+<!-- MODAL CAMBIAR CONTRASEÑA -->
 
+<div
+    id="modal-cambiar-contrasena"
+    class="fixed inset-0 bg-gray-900/80 z-[110] flex items-center justify-center p-4 hidden backdrop-blur-sm">
+
+    <div
+        class="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
+
+        <!-- CABECERA -->
+        <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+
+            <div>
+                <h3 class="text-lg font-bold text-slate-800">
+                    Cambiar contraseña
+                </h3>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Actualiza la contraseña de acceso a tu cuenta.
+                </p>
+            </div>
+
+            <button
+                type="button"
+                onclick="cerrarModalCambiarContrasena()"
+                class="w-9 h-9 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition">
+
+                <i
+                    data-lucide="x"
+                    class="w-5 h-5">
+                </i>
+
+            </button>
+
+        </div>
+
+
+        <!-- CONTENIDO -->
+        <div class="p-5">
+
+            <form
+                id="form-cambiar-contrasena"
+                onsubmit="cambiarContrasena(event)">
+
+                <!-- NUEVA CONTRASEÑA -->
+                <div class="mb-4">
+
+                    <label
+                        for="nueva-contrasena"
+                        class="block text-sm font-semibold text-slate-700 mb-2">
+
+                        Nueva contraseña
+
+                    </label>
+
+                    <input
+                        id="nueva-contrasena"
+                        type="password"
+                        autocomplete="new-password"
+                        required
+                        minlength="8"
+                        class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        placeholder="Introduce tu nueva contraseña">
+
+                </div>
+
+
+                <!-- CONFIRMAR CONTRASEÑA -->
+                <div class="mb-5">
+
+                    <label
+                        for="confirmar-contrasena"
+                        class="block text-sm font-semibold text-slate-700 mb-2">
+
+                        Confirmar nueva contraseña
+
+                    </label>
+
+                    <input
+                        id="confirmar-contrasena"
+                        type="password"
+                        autocomplete="new-password"
+                        required
+                        minlength="8"
+                        class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        placeholder="Repite la nueva contraseña">
+
+                </div>
+
+
+                <!-- MENSAJE -->
+                <div
+                    id="mensaje-cambiar-contrasena"
+                    class="hidden mb-4 rounded-xl px-4 py-3 text-sm">
+                </div>
+
+
+                <!-- BOTONES -->
+                <div class="flex gap-3 justify-end">
+
+                    <button
+                        type="button"
+                        onclick="cerrarModalCambiarContrasena()"
+                        class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">
+
+                        Cancelar
+
+                    </button>
+
+                    <button
+                        id="btn-confirmar-cambio-contrasena"
+                        type="submit"
+                        class="px-4 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition">
+
+                        Actualizar contraseña
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
 
 <!-- MODAL -->
 
