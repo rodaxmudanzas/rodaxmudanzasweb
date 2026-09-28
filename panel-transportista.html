@@ -8899,7 +8899,39 @@ console.log(
 
 <script src="js/core/router.js"></script>
 
+<script>
+    // ==========================================
+    // CAMBIAR CONTRASEÑA - MODAL
+    // ==========================================
 
+    function abrirModalCambiarContrasena() {
+        const modal = document.getElementById('modal-cambiar-contrasena');
+
+        if (!modal) {
+            console.error('❌ No se encontró el modal de cambiar contraseña');
+            return;
+        }
+
+        modal.classList.remove('hidden');
+
+        // Actualizar iconos Lucide si están disponibles
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }
+
+
+    function cerrarModalCambiarContrasena() {
+        const modal = document.getElementById('modal-cambiar-contrasena');
+
+        if (!modal) {
+            console.error('❌ No se encontró el modal de cambiar contraseña');
+            return;
+        }
+
+        modal.classList.add('hidden');
+    }
+</script>
 
 </body>
 
