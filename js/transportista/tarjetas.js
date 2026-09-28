@@ -2342,8 +2342,9 @@ if (!fechaValida) {
 
         return `
             <article
-                class="tarjeta-mudanza-premium w-full rounded-2xl border border-l-4 border-l-blue-500 border-slate-200 bg-white px-4 py-4 md:px-5 shadow-sm transition-all duration-200 hover:shadow-md"
-            >
+    data-mudanza-id="${d.id}"
+    class="tarjeta-mudanza-premium w-full rounded-2xl border border-l-4 border-l-blue-500 border-slate-200 bg-white px-4 py-4 md:px-5 shadow-sm transition-all duration-200 hover:shadow-md"
+>
 
                 <!-- CABECERA -->
                 <div class="flex items-center justify-between gap-3">
@@ -2563,14 +2564,27 @@ ${
                         Ficha PDF
                     </button>
 
-<button
-    type="button"
-    onclick="event.stopPropagation(); solicitarCancelacion(${d.id})"
-    class="no-print inline-flex w-full max-w-[240px] min-w-[210px] items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-black text-red-700 transition-all hover:border-red-300 hover:bg-red-100 active:scale-[0.99]"
->
-    <i data-lucide="circle-x" class="h-4 w-4"></i>
-    Solicitar cancelación
-</button>
+${
+    mudanza.solicitud_cancelacion_pendiente
+        ? `
+            <div
+                class="inline-flex w-full max-w-[240px] min-w-[210px] items-center justify-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm font-black text-amber-700"
+            >
+                <i data-lucide="clock-3" class="h-4 w-4"></i>
+                Cancelación pendiente de revisión
+            </div>
+        `
+        : `
+            <button
+                type="button"
+                onclick="event.stopPropagation(); solicitarCancelacion(${d.id})"
+                class="no-print inline-flex w-full max-w-[240px] min-w-[210px] items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-black text-red-700 transition-all hover:border-red-300 hover:bg-red-100 active:scale-[0.99]"
+            >
+                <i data-lucide="circle-x" class="h-4 w-4"></i>
+                Solicitar cancelación
+            </button>
+        `
+}
 
                     <button
                         type="button"
@@ -3968,23 +3982,59 @@ async function enviarSolicitudCancelacion(mudanzaId) {
             });
 
         if (errorInsert) {
+    throw errorInsert;
+}
 
-            throw errorInsert;
+// ==========================================================
+// ACTUALIZAR ESTADO LOCAL
+// ==========================================================
+
+mudanza.solicitud_cancelacion_pendiente = true;
+
+// ==========================================================
+// ACTUALIZAR TARJETA VISUALMENTE
+// ==========================================================
+
+const tarjeta = document.querySelector(
+    `[data-mudanza-id="${mudanza.id}"]`
+);
+
+if (tarjeta) {
+
+    const botonCancelacion = tarjeta.querySelector(
+        'button[onclick*="solicitarCancelacion"]'
+    );
+
+    if (botonCancelacion) {
+
+        botonCancelacion.outerHTML = `
+            <div
+                class="inline-flex w-full max-w-[240px] min-w-[210px] items-center justify-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm font-black text-amber-700"
+            >
+                <i data-lucide="clock-3" class="h-4 w-4"></i>
+                Cancelación pendiente de revisión
+            </div>
+        `;
+
+        if (window.lucide) {
+            window.lucide.createIcons();
         }
+    }
+}
 
-        //////////////////////////////////////////////////////////
-        // LIMPIAR INTERFAZ
-        //////////////////////////////////////////////////////////
+// ==========================================================
+// LIMPIAR INTERFAZ
+// ==========================================================
 
-        window.adjuntosCancelacion = [];
+window.adjuntosCancelacion = [];
 
-        cerrarModalCancelacion();
+cerrarModalCancelacion();
 
-        alert(
-            `Solicitud de cancelación enviada correctamente.\n\n` +
-            `Servicio: ${numeroReserva}\n` +
-            `Estado: Pendiente de revisión`
-        );
+alert(
+    `Solicitud de cancelación enviada correctamente.\n\n` +
+    `Servicio: ${numeroReserva}\n` +
+    `Estado: Pendiente de revisión`
+);
 
         console.log(
             "✅ SOLICITUD DE CANCELACIÓN CREADA",
