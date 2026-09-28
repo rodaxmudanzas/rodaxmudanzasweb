@@ -214,6 +214,188 @@ console.log(updateData.length);
 
         console.log(updateData);
 
+        // ==========================================================
+// 🔔 NOTIFICACIÓN — NUEVO TRABAJO DISPONIBLE
+// ==========================================================
+
+try {
+
+    const mudanzaActualizada =
+        Array.isArray(updateData) &&
+        updateData.length > 0
+            ? updateData[0]
+            : null;
+
+    if (!mudanzaActualizada) {
+
+        console.warn(
+            "⚠️ NOTIFICACIONES: no se creó aviso porque no se encontró la mudanza actualizada."
+        );
+
+    } else {
+
+        const {
+
+            id: mudanzaId,
+            numero_reserva: reservaNumero
+
+        } = mudanzaActualizada;
+
+        const {
+
+            data: transportistas,
+            error: errorTransportistas
+
+        } = await supabase
+            .from("transportistas")
+            .select("id")
+            .eq("estado", "Activo");
+
+        if (errorTransportistas) {
+
+            console.error(
+                "❌ ERROR OBTENIENDO TRANSPORTISTAS PARA NOTIFICACIÓN:",
+                errorTransportistas
+            );
+
+        } else if (
+            Array.isArray(transportistas) &&
+            transportistas.length > 0
+        ) {
+
+            for (const transportista of transportistas) {
+
+                const eventoClave =
+                    `nuevo_trabajo:${mudanzaId}:${reservaNumero}`;
+
+                const {
+                    data: existente,
+                    error: errorExistente
+                } = await supabase
+                    .from("notificaciones")
+                    .select("id")
+                    .eq(
+                        "transportista_id",
+                        transportista.id
+                    )
+                    .eq(
+                        "metadata->>evento_clave",
+                        eventoClave
+                    )
+                    .limit(1);
+
+                if (errorExistente) {
+
+                    console.error(
+                        "❌ ERROR COMPROBANDO DUPLICADO DE NOTIFICACIÓN:",
+                        errorExistente
+                    );
+
+                    continue;
+                }
+
+                if (
+                    Array.isArray(existente) &&
+                    existente.length > 0
+                ) {
+
+                    console.log(
+                        "🔔 NOTIFICACIÓN YA EXISTE:",
+                        eventoClave
+                    );
+
+                    continue;
+                }
+
+                const {
+                    error: errorNotificacion
+                } = await supabase
+                    .from("notificaciones")
+                    .insert({
+
+                        transportista_id:
+                            transportista.id,
+
+                        tipo:
+                            "nuevo_trabajo",
+
+                        titulo:
+                            "Nuevo trabajo disponible",
+
+                        mensaje:
+                            `Hay una nueva mudanza disponible que puede encajar con tus rutas.`,
+
+                        mudanza_id:
+                            mudanzaId,
+
+                        numero_reserva:
+                            reservaNumero,
+
+                        metadata: {
+
+                            evento_clave:
+                                eventoClave,
+
+                            estado:
+                                mudanzaActualizada.estado,
+
+                            fecha_servicio:
+                                mudanzaActualizada.fecha,
+
+                            origen_ciudad:
+                                mudanzaActualizada.origen_ciudad,
+
+                            destino_ciudad:
+                                mudanzaActualizada.destino_ciudad
+
+                        },
+
+                        leida:
+                            false
+
+                    });
+
+                if (errorNotificacion) {
+
+                    console.error(
+                        "❌ ERROR CREANDO NOTIFICACIÓN:",
+                        errorNotificacion
+                    );
+
+                } else {
+
+                    console.log(
+                        "🔔 NOTIFICACIÓN NUEVO TRABAJO CREADA:",
+                        {
+                            transportistaId:
+                                transportista.id,
+
+                            mudanzaId,
+
+                            numeroReserva:
+                                reservaNumero
+                        }
+                    );
+                }
+            }
+
+        } else {
+
+            console.warn(
+                "⚠️ NOTIFICACIONES: no hay transportistas activos."
+            );
+        }
+    }
+
+} catch (errorNotificacionGeneral) {
+
+    console.error(
+        "❌ ERROR GENERAL EN NOTIFICACIONES:",
+        errorNotificacionGeneral
+    );
+
+}
+
         console.log("WEBHOOK FINALIZADO CORRECTAMENTE");
 
         return res.status(200).json({
