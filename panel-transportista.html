@@ -611,7 +611,7 @@ class="w-64 flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-f
 
                     <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
 
-                    <span>Configuraciión</span>
+                    <span>Configuración</span>
 
                 </button>
 
@@ -1577,7 +1577,262 @@ class="relative h-[48px] w-full flex items-center bg-white/10 hover:bg-white/15 
 
     </section>
 
+<!-- CONFIGURACIÓN -->
 
+<section
+    id="tab-configuracion"
+    class="hidden fade-in">
+
+    <div class="max-w-4xl mx-auto space-y-6">
+
+        <!-- CABECERA -->
+        <div>
+            <h2 class="text-xl font-bold text-slate-800">
+                Configuración
+            </h2>
+
+            <p class="text-sm text-slate-500 mt-1">
+                Gestiona la seguridad y las preferencias de tu cuenta.
+            </p>
+        </div>
+
+        <!-- CUENTA Y SEGURIDAD -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm">
+
+            <div class="p-5 border-b border-slate-100">
+                <h3 class="font-semibold text-slate-800">
+                    Cuenta y seguridad
+                </h3>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Opciones relacionadas con el acceso y la seguridad de tu cuenta.
+                </p>
+            </div>
+
+            <div class="divide-y divide-slate-100">
+
+                <!-- CAMBIAR CONTRASEÑA -->
+                <button
+                    type="button"
+                    class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-50 transition">
+
+                    <div class="flex items-center gap-3">
+
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
+                            <i data-lucide="key-round"
+                               class="w-5 h-5 text-slate-600"></i>
+                        </div>
+
+                        <div>
+                            <div class="font-medium text-slate-800">
+                                Cambiar contraseña
+                            </div>
+
+                            <div class="text-sm text-slate-500">
+                                Actualiza la contraseña de acceso a tu cuenta.
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <i data-lucide="chevron-right"
+                       class="w-5 h-5 text-slate-400"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- NOTIFICACIONES -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm">
+
+            <div class="p-5 border-b border-slate-100">
+
+                <h3 class="font-semibold text-slate-800">
+                    Notificaciones
+                </h3>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Gestiona cómo quieres recibir determinados avisos.
+                </p>
+
+            </div>
+
+            <div class="divide-y divide-slate-100">
+
+                <!-- NOTIFICACIONES DE SERVICIOS -->
+                <div class="flex items-center justify-between p-5">
+
+                    <div class="flex items-center gap-3">
+
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
+                            <i data-lucide="bell"
+                               class="w-5 h-5 text-slate-600"></i>
+                        </div>
+
+                        <div>
+
+                            <div class="font-medium text-slate-800">
+                                Notificaciones de servicios
+                            </div>
+
+                            <div class="text-sm text-slate-500">
+                                Recibir avisos relacionados con tus servicios.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="text-sm font-medium text-emerald-600">
+                        Activas
+                    </div>
+
+                </div>
+
+
+                <!-- EMAIL -->
+                <div class="flex items-center justify-between p-5">
+
+                    <div class="flex items-center gap-3">
+
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
+                            <i data-lucide="mail"
+                               class="w-5 h-5 text-slate-600"></i>
+                        </div>
+
+                        <div>
+
+                            <div class="font-medium text-slate-800">
+                                Avisos por email
+                            </div>
+
+                            <div class="text-sm text-slate-500">
+                                Recibir comunicaciones importantes por correo electrónico.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="text-sm font-medium text-slate-400">
+                        Próximamente
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PREFERENCIAS -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm">
+
+            <div class="p-5 border-b border-slate-100">
+
+                <h3 class="font-semibold text-slate-800">
+                    Preferencias
+                </h3>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Preferencias generales de la plataforma.
+                </p>
+
+            </div>
+
+            <div class="p-5">
+
+                <div class="flex items-center justify-between">
+
+                    <div class="flex items-center gap-3">
+
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
+                            <i data-lucide="languages"
+                               class="w-5 h-5 text-slate-600"></i>
+                        </div>
+
+                        <div>
+
+                            <div class="font-medium text-slate-800">
+                                Idioma
+                            </div>
+
+                            <div class="text-sm text-slate-500">
+                                Idioma utilizado en el panel.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="text-sm text-slate-600">
+                        Español
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PRIVACIDAD -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm">
+
+            <div class="p-5 border-b border-slate-100">
+
+                <h3 class="font-semibold text-slate-800">
+                    Privacidad
+                </h3>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Información relacionada con tus datos y privacidad.
+                </p>
+
+            </div>
+
+            <div class="divide-y divide-slate-100">
+
+                <button
+                    type="button"
+                    class="w-full flex items-center justify-between p-5 text-left hover:bg-slate-50 transition">
+
+                    <div class="flex items-center gap-3">
+
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
+                            <i data-lucide="shield-check"
+                               class="w-5 h-5 text-slate-600"></i>
+                        </div>
+
+                        <div>
+
+                            <div class="font-medium text-slate-800">
+                                Privacidad y datos
+                            </div>
+
+                            <div class="text-sm text-slate-500">
+                                Consulta la información sobre el tratamiento de tus datos.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <i data-lucide="chevron-right"
+                       class="w-5 h-5 text-slate-400"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
 
 </div>
 
@@ -3621,19 +3876,13 @@ function recargarDatos() {
  
 
         const tabs = [
-
     'disponibles',
-
     'mis-mudanzas',
-
     'historial-servicios',
-
     'facturacion',
-
     'mis-vehiculos',
-
-    'mi-perfil'
-
+    'mi-perfil',
+    'configuracion'
 ];
 
  
@@ -3771,10 +4020,13 @@ function recargarDatos() {
  
 
             'mis-vehiculos':
-    'Mis ve­hículos',
+    'Mis vehículos',
 
 'mi-perfil':
-    'Mi perfil'
+    'Mi perfil',
+
+'configuracion':
+    'Configuración'
 
         };
 
