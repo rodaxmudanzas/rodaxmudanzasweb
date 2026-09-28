@@ -198,9 +198,15 @@ if(updateData){
             console.log("Filas actualizadas:");
 console.log(updateData);
 console.log("Cantidad:");
-console.log(updateData.length);
+console.log(updateData?.length ?? 0);
 
-        if (error) {
+if (error) {
+
+    console.error("ERROR SUPABASE:");
+    console.error(error);
+
+    throw error;
+}
 
             console.error("ERROR SUPABASE:");
 
