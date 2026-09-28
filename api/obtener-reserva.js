@@ -1,3 +1,8 @@
+const Stripe = require("stripe");
+
+const stripe = new Stripe(
+    process.env.STRIPE_SECRET_KEY
+);
 
 const { createClient } = require("@supabase/supabase-js");
 
@@ -93,20 +98,15 @@ if (session.payment_status === "paid") {
 
 return res.status(200).json(reservaPorNumero);
 
-        if (error) throw error;
 
-        return res.status(200).json(data);
+        }
 
-    }
-    
     catch (err) {
 
         console.error(err);
 
         return res.status(500).json({
-
             error: err.message
-
         });
 
     }
