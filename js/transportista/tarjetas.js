@@ -2971,14 +2971,14 @@ if (precioTotal <= 0) {
 
     } else if (diferenciaHoras < 24) {
 
-        porcentaje = 75;
+        porcentaje = 70;
         diasBloqueo = 3;
 
         nivel = "Penalización muy alta";
 
         detalle =
             "La solicitud se realiza con menos de 24 horas de antelación. " +
-            "Se prevé una penalización del 75 % del precio total " +
+            "Se prevé una penalización del 70 % del precio total " +
             "de la mudanza y 3 días de bloqueo.";
 
         clase =
@@ -3440,7 +3440,7 @@ if (!mudanza) {
 
                 <button
                     type="button"
-                    onclick="enviarSolicitudCancelacion(${mudanza.id})"
+                    onclick="window.enviarSolicitudCancelacion(${mudanza.id})"
                     class="rounded-xl bg-red-600 px-5 py-2.5 text-sm font-black text-white hover:bg-red-700"
                 >
                     Enviar solicitud
@@ -3639,6 +3639,428 @@ window.seleccionarAdjuntosCancelacion =
 
 window.eliminarAdjuntoCancelacion =
     eliminarAdjuntoCancelacion;
+
+  //////////////////////////////////////////////////////////
+// ENVIAR SOLICITUD DE CANCELACIÓN
+//////////////////////////////////////////////////////////
+
+async function enviarSolicitudCancelacion(mudanzaId) {
+
+    const motivoElement =
+        document.getElementById("motivo-cancelacion");
+
+    const motivo =
+        motivoElement?.value?.trim() || "";
+
+    if (!motivo) {
+
+        alert(
+            "Debes indicar el motivo de la cancelación."
+        );
+
+        motivoElement?.focus();
+
+        return;
+    }
+
+    if (motivo.length > 500) {
+
+        alert(
+            "El motivo no puede superar los 500 caracteres."
+        );
+
+        return;
+    }
+
+    const mudanza =
+        window.state?.activas?.find(
+            m => String(m.id) === String(mudanzaId)
+        );
+
+    if (!mudanza) {
+
+        alert(
+            "No se ha podido localizar el servicio."
+        );
+
+        return;
+    }
+
+    const fechaServicio =
+        obtenerFechaServicioCancelacion(mudanza);
+
+    if (!fechaServicio) {
+
+        alert(
+            "No se ha podido determinar la fecha del servicio."
+        );
+
+        return;
+    }
+
+    const evaluacion =
+        calcularPenalizacionCancelacion(
+            fechaServicio,
+            mudanza
+        );
+
+    const db =
+        window.dbClient;
+
+    if (!db) {
+
+        console.error(
+            "❌ CANCELACIÓN: dbClient no disponible."
+        );
+
+        alert(
+            "No se ha podido conectar con el sistema."
+        );
+
+        return;
+    }
+
+    let transportistaId =
+        window.currentUserId ||
+        window.Transportista?.currentUserId ||
+        null;
+
+    if (!transportistaId) {
+
+        const {
+            data,
+            error
+        } = await db.auth.getUser();
+
+        if (error || !data?.user?.id) {
+
+            console.error(
+                "❌ CANCELACIÓN: no se pudo obtener el usuario.",
+                error
+            );
+
+            alert(
+                "No se ha podido identificar al transportista."
+            );
+
+            return;
+        }
+
+        transportistaId =
+            data.user.id;
+    }
+
+    //////////////////////////////////////////////////////////
+    // EVITAR SOLICITUDES DUPLICADAS
+    //////////////////////////////////////////////////////////
+
+    const {
+        data: solicitudExistente,
+        error: errorExistente
+    } = await db
+        .from("solicitudes_cancelacion")
+        .select("id, estado")
+        .eq("mudanza_id", mudanza.id)
+        .eq("transportista_id", transportistaId)
+        .eq("estado", "pendiente")
+        .limit(1);
+
+    if (errorExistente) {
+
+        console.error(
+            "❌ CANCELACIÓN: error comprobando solicitudes existentes.",
+            errorExistente
+        );
+
+        alert(
+            "No se ha podido comprobar si ya existe una solicitud."
+        );
+
+        return;
+    }
+
+    if (solicitudExistente?.length) {
+
+        alert(
+            "Ya existe una solicitud de cancelación pendiente para este servicio."
+        );
+
+        cerrarModalCancelacion();
+
+        return;
+    }
+
+    //////////////////////////////////////////////////////////
+    // CONFIRMACIÓN FINAL
+    //////////////////////////////////////////////////////////
+
+    const confirmar =
+        confirm(
+            "¿Quieres enviar la solicitud de cancelación?\n\n" +
+            "La cancelación no se aprobará automáticamente. " +
+            "El servicio continuará asignado hasta que Administración la revise."
+        );
+
+    if (!confirmar) {
+        return;
+    }
+
+    //////////////////////////////////////////////////////////
+    // DESACTIVAR BOTÓN
+    //////////////////////////////////////////////////////////
+
+    const boton =
+        document.querySelector(
+            '#modal-solicitud-cancelacion button[onclick^="enviarSolicitudCancelacion"]'
+        );
+
+    if (boton) {
+
+        boton.disabled = true;
+
+        boton.textContent =
+            "Enviando...";
+
+        boton.classList.add(
+            "opacity-60",
+            "cursor-not-allowed"
+        );
+    }
+
+    //////////////////////////////////////////////////////////
+    // ID DE LA SOLICITUD
+    //////////////////////////////////////////////////////////
+
+    const solicitudId =
+        crypto.randomUUID();
+
+    //////////////////////////////////////////////////////////
+    // SUBIR ADJUNTOS
+    //////////////////////////////////////////////////////////
+
+    const adjuntosSubidos = [];
+
+    try {
+
+        for (
+            const archivo
+            of (window.adjuntosCancelacion || [])
+        ) {
+
+            const nombreSeguro =
+                archivo.name
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")
+                    .replace(/[^a-zA-Z0-9._-]/g, "_");
+
+            const ruta =
+                `${transportistaId}/${mudanza.id}/${solicitudId}/${nombreSeguro}`;
+
+            const {
+                error: errorUpload
+            } = await db
+                .storage
+                .from("cancelaciones")
+                .upload(
+                    ruta,
+                    archivo,
+                    {
+                        upsert: false,
+                        contentType:
+                            archivo.type ||
+                            "application/octet-stream"
+                    }
+                );
+
+            if (errorUpload) {
+
+                throw errorUpload;
+            }
+
+            adjuntosSubidos.push({
+
+                nombre:
+                    archivo.name,
+
+                tipo:
+                    archivo.type,
+
+                tamano:
+                    archivo.size,
+
+                ruta
+
+            });
+        }
+
+        //////////////////////////////////////////////////////////
+        // GUARDAR SOLICITUD
+        //////////////////////////////////////////////////////////
+
+        const numeroReserva =
+            (
+                window.Transportista &&
+                typeof window.Transportista.getNumeroReserva === "function"
+            )
+                ? window.Transportista.getNumeroReserva(mudanza)
+                : (
+                    mudanza.codigo_reserva ||
+                    mudanza.codigo ||
+                    `RDX-${mudanza.id}`
+                );
+
+        const {
+            error: errorInsert
+        } = await db
+            .from("solicitudes_cancelacion")
+            .insert({
+
+                id:
+                    solicitudId,
+
+                mudanza_id:
+                    mudanza.id,
+
+                transportista_id:
+                    transportistaId,
+
+                estado:
+                    "pendiente",
+
+                fecha_servicio:
+                    mudanza.fecha || null,
+
+                tiempo_restante_horas:
+                    evaluacion.tiempoRestante
+                        ? (
+                            (
+                                fechaServicio.getTime() -
+                                Date.now()
+                            ) /
+                            (1000 * 60 * 60)
+                        )
+                        : null,
+
+                categoria_penalizacion:
+                    evaluacion.nivel,
+
+                porcentaje_penalizacion:
+                    evaluacion.porcentaje,
+
+                precio_total:
+                    evaluacion.precioTotal,
+
+                importe_penalizacion:
+                    evaluacion.importePenalizacion,
+
+                dias_bloqueo:
+                    evaluacion.diasBloqueo,
+
+                motivo:
+                    motivo,
+
+                adjuntos:
+                    adjuntosSubidos,
+
+                comentario_admin:
+                    null
+
+            });
+
+        if (errorInsert) {
+
+            throw errorInsert;
+        }
+
+        //////////////////////////////////////////////////////////
+        // LIMPIAR INTERFAZ
+        //////////////////////////////////////////////////////////
+
+        window.adjuntosCancelacion = [];
+
+        cerrarModalCancelacion();
+
+        alert(
+            `Solicitud de cancelación enviada correctamente.\n\n` +
+            `Servicio: ${numeroReserva}\n` +
+            `Estado: Pendiente de revisión`
+        );
+
+        console.log(
+            "✅ SOLICITUD DE CANCELACIÓN CREADA",
+            {
+                solicitudId,
+                mudanzaId: mudanza.id,
+                transportistaId,
+                porcentaje:
+                    evaluacion.porcentaje,
+                importe:
+                    evaluacion.importePenalizacion,
+                diasBloqueo:
+                    evaluacion.diasBloqueo,
+                adjuntos:
+                    adjuntosSubidos
+            }
+        );
+
+    } catch (error) {
+
+        console.error(
+            "❌ ERROR ENVIANDO SOLICITUD DE CANCELACIÓN:",
+            error
+        );
+
+        //////////////////////////////////////////////////////////
+        // LIMPIAR ARCHIVOS SI FALLÓ LA CREACIÓN
+        //////////////////////////////////////////////////////////
+
+        if (adjuntosSubidos.length) {
+
+            const rutas =
+                adjuntosSubidos.map(
+                    archivo =>
+                        archivo.ruta
+                );
+
+            const {
+                error: errorRemove
+            } = await db
+                .storage
+                .from("cancelaciones")
+                .remove(rutas);
+
+            if (errorRemove) {
+
+                console.error(
+                    "⚠️ No se pudieron limpiar todos los adjuntos:",
+                    errorRemove
+                );
+            }
+        }
+
+        alert(
+            "No se ha podido enviar la solicitud de cancelación.\n\n" +
+            "La solicitud no ha sido registrada."
+        );
+
+        if (boton) {
+
+            boton.disabled = false;
+
+            boton.textContent =
+                "Enviar solicitud";
+
+            boton.classList.remove(
+                "opacity-60",
+                "cursor-not-allowed"
+            );
+        }
+    }
+}
+
+window.enviarSolicitudCancelacion = function (mudanzaId) {
+    return enviarSolicitudCancelacion(mudanzaId);
+};  
 
 //////////////////////////////////////////////////////////
 // CERRAR MODAL DE CANCELACIÓN
