@@ -458,10 +458,59 @@ hover:shadow-[0_20px_50px_rgba(37,99,235,0.45)]">
                     <label class="block text-sm font-bold text-gray-300 mb-2">Contraseña</label>
                     <input type="password" id="login-password" required class="w-full form-input px-4 py-3 border rounded-xl" placeholder="••••••••">
                 </div>
-                <button type="submit" id="btn_login_submit" class="w-full bg-blue-600 text-black hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-xl transition-colors mt-4 flex justify-center items-center">
+                                <button type="submit" id="btn_login_submit" class="w-full bg-blue-600 text-black hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-xl transition-colors mt-4 flex justify-center items-center">
                     Entrar al Panel
                 </button>
+                <button type="button" id="btn-olvide-password" class="w-full text-center text-sm text-blue-400 hover:text-blue-300 font-semibold mt-3 transition-colors">
+                    ¿Has olvidado tu contraseña?
+                </button>
                 <div id="login-error" class="text-red-500 text-sm font-bold text-center mt-2 hidden">Credenciales incorrectas. Inténtalo de nuevo.</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL RECUPERAR CONTRASEÑA -->
+    <div id="recover-modal" class="fixed inset-0 bg-black/90 z-[100] flex items-center justify-center p-4 hidden backdrop-blur-sm transition-opacity">
+        <div class="bg-gray-800 border border-gray-700 rounded-3xl shadow-2xl max-w-md w-full p-8 relative">
+            <button id="btn-close-recover" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
+            <h3 class="text-2xl font-black text-white mb-2 text-center">Recuperar contraseña</h3>
+            <p class="text-sm text-gray-400 text-center mb-6">Te enviaremos un enlace a tu correo para restablecer tu contraseña.</p>
+            <form id="recover-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-300 mb-2">Correo Electrónico</label>
+                    <input type="email" id="recover-email" required class="w-full form-input px-4 py-3 border rounded-xl" placeholder="tu@email.com">
+                </div>
+                <button type="submit" id="btn_recover_submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-xl transition-colors mt-2 flex justify-center items-center">
+                    Enviar enlace de recuperación
+                </button>
+                <div id="recover-success" class="text-emerald-400 text-sm font-bold text-center mt-2 hidden">Te hemos enviado un correo con el enlace de recuperación.</div>
+                <div id="recover-error" class="text-red-500 text-sm font-bold text-center mt-2 hidden">No se pudo enviar el correo. Inténtalo de nuevo.</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL ESTABLECER NUEVA CONTRASEÑA (TRAS ENLACE DE RECUPERACIÓN) -->
+    <div id="new-password-modal" class="fixed inset-0 bg-black/90 z-[110] flex items-center justify-center p-4 hidden backdrop-blur-sm transition-opacity">
+        <div class="bg-gray-800 border border-gray-700 rounded-3xl shadow-2xl max-w-md w-full p-8 relative">
+            <h3 class="text-2xl font-black text-white mb-2 text-center">Establece tu nueva contraseña</h3>
+            <p class="text-sm text-gray-400 text-center mb-6">Introduce y confirma tu nueva contraseña de acceso.</p>
+            <form id="new-password-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-300 mb-2">Nueva contraseña</label>
+                    <input type="password" id="new-password-1" required minlength="6" class="w-full form-input px-4 py-3 border rounded-xl" placeholder="Mínimo 6 caracteres">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-300 mb-2">Confirmar nueva contraseña</label>
+                    <input type="password" id="new-password-2" required minlength="6" class="w-full form-input px-4 py-3 border rounded-xl" placeholder="Repite la contraseña">
+                </div>
+                <button type="submit" id="btn_new_password_submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-xl transition-colors mt-2 flex justify-center items-center">
+                    Guardar nueva contraseña
+                </button>
+                <button type="button" id="btn-cancel-new-password" class="w-full text-center text-xs text-gray-400 hover:text-gray-300 mt-3">
+                    Cancelar
+                </button>
+                <div id="new-password-success" class="text-emerald-400 text-sm font-bold text-center mt-2 hidden">Contraseña actualizada correctamente. Ya puedes iniciar sesión.</div>
+                <div id="new-password-error" class="text-red-500 text-sm font-bold text-center mt-2 hidden"></div>
             </form>
         </div>
     </div>
@@ -586,10 +635,137 @@ const dbClient = window.supabase.createClient(URL_DB, KEY_DB);
                 loginModal.classList.remove('hidden');
                 document.getElementById('mobile-menu').classList.add('hidden');
             });
-            document.getElementById('btn-close-login')?.addEventListener('click', () => {
+                        document.getElementById('btn-close-login')?.addEventListener('click', () => {
                 loginModal.classList.add('hidden');
                 loginError.classList.add('hidden');
             });
+
+            // ==========================================
+            // RECUPERAR CONTRASEÑA
+            // ==========================================
+
+            const recoverModal = document.getElementById('recover-modal');
+            const recoverError = document.getElementById('recover-error');
+            const recoverSuccess = document.getElementById('recover-success');
+            const newPasswordModal = document.getElementById('new-password-modal');
+
+            document.getElementById('btn-olvide-password')?.addEventListener('click', () => {
+                loginModal.classList.add('hidden');
+                recoverModal.classList.remove('hidden');
+                recoverError.classList.add('hidden');
+                recoverSuccess.classList.add('hidden');
+            });
+
+            document.getElementById('btn-close-recover')?.addEventListener('click', () => {
+                recoverModal.classList.add('hidden');
+            });
+
+            const recoverForm = document.getElementById('recover-form');
+            if (recoverForm) {
+                recoverForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('recover-email').value.trim();
+
+                    const btnRecover = document.getElementById('btn_recover_submit');
+                    const textoOriginalRecover = btnRecover.innerHTML;
+                    btnRecover.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 mr-2 animate-spin"></i> Enviando...`;
+                    btnRecover.disabled = true;
+                    lucide.createIcons();
+                    recoverError.classList.add('hidden');
+                    recoverSuccess.classList.add('hidden');
+
+                    try {
+                        const { error } = await dbClient.auth.resetPasswordForEmail(email, {
+                            redirectTo: 'https://rodaxmudanzasweb.vercel.app/transportistas.html'
+                        });
+
+                        if (error) throw error;
+
+                        recoverSuccess.classList.remove('hidden');
+                        recoverForm.reset();
+
+                    } catch (error) {
+                        console.error("Error recuperación de contraseña:", error);
+                        recoverError.classList.remove('hidden');
+                    } finally {
+                        btnRecover.innerHTML = textoOriginalRecover;
+                        btnRecover.disabled = false;
+                        lucide.createIcons();
+                    }
+                });
+            }
+
+            // Detecta cuando el usuario vuelve desde el enlace de recuperación del email
+            dbClient.auth.onAuthStateChange((event) => {
+                if (event === 'PASSWORD_RECOVERY') {
+                    loginModal.classList.add('hidden');
+                    recoverModal.classList.add('hidden');
+                    newPasswordModal.classList.remove('hidden');
+                    lucide.createIcons();
+                }
+            });
+
+            document.getElementById('btn-cancel-new-password')?.addEventListener('click', async () => {
+                await dbClient.auth.signOut();
+                newPasswordModal.classList.add('hidden');
+            });
+
+            const newPasswordForm = document.getElementById('new-password-form');
+            if (newPasswordForm) {
+                newPasswordForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const nueva = document.getElementById('new-password-1').value;
+                    const confirmar = document.getElementById('new-password-2').value;
+                    const errorEl = document.getElementById('new-password-error');
+                    const successEl = document.getElementById('new-password-success');
+
+                    errorEl.classList.add('hidden');
+                    successEl.classList.add('hidden');
+
+                    if (nueva.length < 8) {
+    errorEl.textContent = 'La contraseña debe tener al menos 8 caracteres.';
+    errorEl.classList.remove('hidden');
+    return;
+}
+
+                    if (nueva !== confirmar) {
+                        errorEl.textContent = 'Las contraseñas no coinciden.';
+                        errorEl.classList.remove('hidden');
+                        return;
+                    }
+
+                    const btnNewPassword = document.getElementById('btn_new_password_submit');
+                    const textoOriginalNueva = btnNewPassword.innerHTML;
+                    btnNewPassword.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 mr-2 animate-spin"></i> Guardando...`;
+                    btnNewPassword.disabled = true;
+                    lucide.createIcons();
+
+                    try {
+                        const { error } = await dbClient.auth.updateUser({ password: nueva });
+
+                        if (error) throw error;
+
+                        successEl.classList.remove('hidden');
+                        newPasswordForm.reset();
+
+                        await dbClient.auth.signOut();
+
+                        setTimeout(() => {
+                            newPasswordModal.classList.add('hidden');
+                            loginModal.classList.remove('hidden');
+                        }, 1800);
+
+                    } catch (error) {
+                        console.error("Error actualizando contraseña:", error);
+                        errorEl.textContent = error?.message || 'No se pudo actualizar la contraseña.';
+                        errorEl.classList.remove('hidden');
+                    } finally {
+                        btnNewPassword.innerHTML = textoOriginalNueva;
+                        btnNewPassword.disabled = false;
+                        lucide.createIcons();
+                    }
+                });
+            }
             document.getElementById('menu-toggle')?.addEventListener('click', () => {
                 document.getElementById('mobile-menu').classList.toggle('hidden');
             });

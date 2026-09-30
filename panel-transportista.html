@@ -525,7 +525,7 @@ class="w-64 flex-shrink-0 fixed md:relative h-full z-50 transform -translate-x-f
         </div>
 
 
-
+loginModal.classList.add('hidden');
         <!-- MI NEGOCIO -->
 
         <div>
@@ -1663,7 +1663,7 @@ class="relative h-[48px] w-full flex items-center bg-white/10 hover:bg-white/15 
 
             <div class="divide-y divide-slate-100">
 
-                <!-- NOTIFICACIONES DE SERVICIOS -->
+                                <!-- NOTIFICACIONES DE SERVICIOS -->
                 <div class="flex items-center justify-between p-5">
 
                     <div class="flex items-center gap-3">
@@ -1687,8 +1687,27 @@ class="relative h-[48px] w-full flex items-center bg-white/10 hover:bg-white/15 
 
                     </div>
 
-                    <div class="text-sm font-medium text-emerald-600">
-                        Activas
+                    <div class="flex items-center gap-2.5">
+
+                        <span
+                            id="texto-notificaciones-servicios"
+                            class="text-sm font-medium text-emerald-600">
+                            Activadas
+                        </span>
+
+                        <button
+                            type="button"
+                            id="toggle-notificaciones-servicios"
+                            onclick="alternarNotificacionesServicios()"
+                            role="switch"
+                            aria-checked="true"
+                            class="relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors duration-200 bg-emerald-500 disabled:opacity-60 disabled:cursor-wait">
+                            <span
+                                id="toggle-notificaciones-servicios-knob"
+                                class="inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200 translate-x-6">
+                            </span>
+                        </button>
+
                     </div>
 
                 </div>
@@ -4200,10 +4219,17 @@ if (
 }
 
 if (
-    tabId === "mis-vehiculos" &&
+    tboton.textContent = 'Actualizar contraseña';abId === "mis-vehiculos" &&
     typeof window.cargarMisVehiculos === "function"
 ) {
     window.cargarMisVehiculos();
+}
+
+if (
+    tabId === "configuracion" &&
+    typeof window.cargarConfiguracionNotificaciones === "function"
+) {
+    window.cargarConfiguracionNotificaciones();
 }
 
         cerrarMenuMovil();
@@ -9050,7 +9076,7 @@ async function cambiarContrasena(event) {
             error?.message ||
             'No se pudo actualizar la contraseña.';
 
-    } finally {
+       } finally {
 
         if (boton) {
             boton.disabled = false;
@@ -9059,6 +9085,175 @@ async function cambiarContrasena(event) {
 
     }
 }
+
+// ==========================================
+// NOTIFICACIONES DE SERVICIOS (toggle)
+// ==========================================
+
+let notificacionesServiciosActual = true;
+let notificacionesServiciosCargando = false;
+
+async function cargarConfiguracionNotificaciones() {
+
+    const toggle = document.getElementById(
+        'toggle-notificaciones-servicios'
+    );
+
+    if (!toggle) {
+        return;
+    }
+
+    if (!window.dbClient || !window.currentUserId) {
+        console.error(
+            '❌ No se pudo cargar la configuración: falta dbClient o currentUserId'
+        );
+        return;
+    }
+
+    try {
+
+        const { data, error } = await window.dbClient
+            .from('transportistas')
+            .select('notificaciones_servicios')
+            .eq('id', window.currentUserId)
+            .maybeSingle();
+
+        if (error) {
+            throw error;
+        }
+
+        // Si la columna todavía es NULL para este transportista,
+        // se trata como activado por defecto (mismo comportamiento visual que ya tenía).
+        const activo =
+            data?.notificaciones_servicios !== false;
+
+        notificacionesServiciosActual = activo;
+
+        actualizarToggleNotificacionesServicios(activo);
+
+    } catch (error) {
+
+        console.error(
+            '❌ Error cargando notificaciones_servicios:',
+            error
+        );
+    }
+}
+
+function actualizarToggleNotificacionesServicios(activo) {
+
+    const toggle = document.getElementById(
+        'toggle-notificaciones-servicios'
+    );
+
+    const knob = document.getElementById(
+        'toggle-notificaciones-servicios-knob'
+    );
+
+    const texto = document.getElementById(
+        'texto-notificaciones-servicios'
+    );
+
+    if (!toggle || !knob || !texto) {
+        return;
+    }
+
+    toggle.setAttribute('aria-checked', activo ? 'true' : 'false');
+
+    if (activo) {
+
+        toggle.classList.remove('bg-slate-300');
+        toggle.classList.add('bg-emerald-500');
+
+        knob.classList.remove('translate-x-1');
+        knob.classList.add('translate-x-6');
+
+        texto.textContent = 'Activadas';
+        texto.classList.remove('text-slate-400');
+        texto.classList.add('text-emerald-600');
+
+    } else {
+
+        toggle.classList.remove('bg-emerald-500');
+        toggle.classList.add('bg-slate-300');
+
+        knob.classList.remove('translate-x-6');
+        knob.classList.add('translate-x-1');
+
+        texto.textContent = 'Desactivadas';
+        texto.classList.remove('text-emerald-600');
+        texto.classList.add('text-slate-400');
+    }
+}
+
+async function alternarNotificacionesServicios() {
+
+    if (notificacionesServiciosCargando) {
+        return;
+    }
+
+    if (!window.dbClient || !window.currentUserId) {
+        alert('No se pudo conectar con el sistema.');
+        return;
+    }
+
+    const toggle = document.getElementById(
+        'toggle-notificaciones-servicios'
+    );
+
+    const estadoAnterior = notificacionesServiciosActual;
+    const nuevoEstado = !estadoAnterior;
+
+    notificacionesServiciosCargando = true;
+
+    if (toggle) {
+        toggle.disabled = true;
+    }
+
+    // Actualización optimista de la interfaz
+    notificacionesServiciosActual = nuevoEstado;
+    actualizarToggleNotificacionesServicios(nuevoEstado);
+
+    try {
+
+        const { error } = await window.dbClient
+            .from('transportistas')
+            .update({
+                notificaciones_servicios: nuevoEstado
+            })
+            .eq('id', window.currentUserId);
+
+        if (error) {
+            throw error;
+        }
+
+    } catch (error) {
+
+        console.error(
+            '❌ Error guardando notificaciones_servicios:',
+            error
+        );
+
+        // Revertir al estado anterior si falla el guardado
+        notificacionesServiciosActual = estadoAnterior;
+        actualizarToggleNotificacionesServicios(estadoAnterior);
+
+        alert(
+            'No se pudo guardar el cambio. Inténtalo de nuevo.'
+        );
+
+    } finally {
+
+        notificacionesServiciosCargando = false;
+
+        if (toggle) {
+            toggle.disabled = false;
+        }
+    }
+}
+
+window.cargarConfiguracionNotificaciones = cargarConfiguracionNotificaciones;
+window.alternarNotificacionesServicios = alternarNotificacionesServicios;
 
 </script>
 
