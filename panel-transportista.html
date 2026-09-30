@@ -8931,6 +8931,135 @@ console.log(
 
         modal.classList.add('hidden');
     }
+
+async function cambiarContrasena(event) {
+
+    event.preventDefault();
+
+    const nueva = document.getElementById(
+        'nueva-contrasena'
+    );
+
+    const confirmar = document.getElementById(
+        'confirmar-contrasena'
+    );
+
+    const mensaje = document.getElementById(
+        'mensaje-cambiar-contrasena'
+    );
+
+    if (!nueva || !confirmar || !mensaje) {
+        console.error(
+            '❌ No se encontraron los elementos del formulario de contraseña'
+        );
+        return;
+    }
+
+    const nuevaContrasena = nueva.value.trim();
+    const confirmarContrasena = confirmar.value.trim();
+
+    mensaje.className =
+        'hidden mb-4 rounded-xl px-4 py-3 text-sm';
+
+    mensaje.textContent = '';
+
+    if (nuevaContrasena.length < 8) {
+
+        mensaje.className =
+            'mb-4 rounded-xl px-4 py-3 text-sm bg-red-50 text-red-700 border border-red-200';
+
+        mensaje.textContent =
+            'La contraseña debe tener al menos 8 caracteres.';
+
+        return;
+    }
+
+    if (nuevaContrasena !== confirmarContrasena) {
+
+        mensaje.className =
+            'mb-4 rounded-xl px-4 py-3 text-sm bg-red-50 text-red-700 border border-red-200';
+
+        mensaje.textContent =
+            'Las contraseñas no coinciden.';
+
+        return;
+    }
+
+    if (!window.dbClient) {
+
+        mensaje.className =
+            'mb-4 rounded-xl px-4 py-3 text-sm bg-red-50 text-red-700 border border-red-200';
+
+        mensaje.textContent =
+            'No se pudo conectar con el sistema de autenticación.';
+
+        console.error(
+            '❌ window.dbClient no está disponible'
+        );
+
+        return;
+    }
+
+    const boton = document.querySelector(
+        '#form-cambiar-contrasena button[type="submit"]'
+    );
+
+    if (boton) {
+        boton.disabled = true;
+        boton.textContent = 'Actualizando...';
+    }
+
+    try {
+
+        const {
+            error
+        } = await window.dbClient.auth.updateUser({
+            password: nuevaContrasena
+        });
+
+        if (error) {
+            throw error;
+        }
+
+        mensaje.className =
+            'mb-4 rounded-xl px-4 py-3 text-sm bg-emerald-50 text-emerald-700 border border-emerald-200';
+
+        mensaje.textContent =
+            'Contraseña actualizada correctamente.';
+
+        nueva.value = '';
+        confirmar.value = '';
+
+        setTimeout(() => {
+
+            cerrarModalCambiarContrasena();
+
+        }, 1200);
+
+    } catch (error) {
+
+        console.error(
+            '❌ Error cambiando contraseña:',
+            error
+        );
+
+        mensaje.className =
+            'mb-4 rounded-xl px-4 py-3 text-sm bg-red-50 text-red-700 border border-red-200';
+
+        mensaje.textContent =
+            error?.message ||
+            'No se pudo actualizar la contraseña.';
+
+    } finally {
+
+        if (boton) {
+            boton.disabled = false;
+            boton.textContent = 'Actualizar contraseña';
+        }
+
+    }
+}
+
 </script>
 
 </body>
