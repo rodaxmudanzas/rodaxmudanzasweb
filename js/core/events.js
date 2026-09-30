@@ -1,20 +1,24 @@
 /* ============================================================
    RODAX CORE EVENTS
-   Carga del módulo de estadísticas de vehículos.
+   Carga de módulos globales del panel.
    ============================================================ */
 
 (function () {
     "use strict";
 
-    const src = "js/transportista/estadisticasVehiculo.js";
+    const scripts = [
+        "js/transportista/estadisticasVehiculo.js",
+        "js/transportista/configuracionNotificaciones.js"
+    ];
 
-    if (document.querySelector(`script[src="${src}"]`)) {
-        return;
-    }
+    scripts.forEach(src => {
+        if (document.querySelector(`script[src="${src}"]`)) {
+            return;
+        }
 
-    const script = document.createElement("script");
-    script.src = src;
-    script.defer = true;
-
-    document.head.appendChild(script);
+        const script = document.createElement("script");
+        script.src = src;
+        script.defer = true;
+        document.head.appendChild(script);
+    });
 })();
