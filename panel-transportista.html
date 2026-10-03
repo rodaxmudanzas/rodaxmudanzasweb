@@ -4226,6 +4226,13 @@ if (
 }
 
 if (
+    tabId === "mis-mudanzas" &&
+    typeof cargarMisMudanzas === "function"
+) {
+    cargarMisMudanzas();
+}
+
+if (
     tabId === "configuracion" &&
     typeof window.cargarConfiguracionNotificaciones === "function"
 ) {
