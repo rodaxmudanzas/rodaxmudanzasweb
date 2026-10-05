@@ -712,14 +712,110 @@ const dbClient = window.supabase.createClient(URL_DB, KEY_DB);
             }
 
             // Detecta cuando el usuario vuelve desde el enlace de recuperación del email
-            dbClient.auth.onAuthStateChange((event) => {
-                if (event === 'PASSWORD_RECOVERY') {
-                    loginModal.classList.add('hidden');
-                    recoverModal.classList.add('hidden');
-                    newPasswordModal.classList.remove('hidden');
-                    lucide.createIcons();
+            dbClient.auth.onAuthStateChange(async (event, session) => {
+
+    // ==========================================
+    // RECUPERACIÓN DE CONTRASEÑA
+    // ==========================================
+    if (event === 'PASSWORD_RECOVERY') {
+
+        loginModal.classList.add('hidden');
+        recoverModal.classList.add('hidden');
+        newPasswordModal.classList.remove('hidden');
+
+        lucide.createIcons();
+
+        return;
+    }
+
+
+    // ==========================================
+    // LOGIN CON GOOGLE
+    // ==========================================
+    if (event === 'SIGNED_IN' && session?.user) {
+
+        const googleLogin = sessionStorage.getItem('rodax_google_login');
+
+        if (googleLogin === '1') {
+
+            console.log('✅ Google autenticado correctamente');
+            console.log('👤 Usuario:', session.user.email);
+
+            // Evitar procesar dos veces
+            sessionStorage.removeItem('rodax_google_login');
+
+            try {
+
+                const usuario = session.user;
+
+                // Comprobar si el transportista ya existe
+                const { data: perfilExistente, error: errorConsulta } =
+                    await dbClient
+                        .from('transportistas')
+                        .select('id')
+                        .eq('id', usuario.id)
+                        .maybeSingle();
+
+                if (errorConsulta) {
+                    throw errorConsulta;
                 }
-            });
+
+
+                // Crear perfil si es el primer acceso con Google
+                if (!perfilExistente) {
+
+                    const metadata = usuario.user_metadata || {};
+
+                    const { error: errorPerfil } =
+                        await dbClient
+                            .from('transportistas')
+                            .insert([{
+                                id: usuario.id,
+                                email: usuario.email,
+                                nombre:
+                                    metadata.full_name ||
+                                    metadata.name ||
+                                    '',
+                                telefono:
+                                    metadata.telefono || null,
+                                ciudad:
+                                    metadata.ciudad || null,
+                                vehiculo:
+                                    metadata.vehiculo || null,
+                                estado:
+                                    'Activo'
+                            }]);
+
+                    if (errorPerfil) {
+                        throw errorPerfil;
+                    }
+
+                    console.log('✅ Perfil de transportista creado');
+                }
+
+
+                // Entrar al panel
+                console.log('🚚 Entrando al panel de transportista...');
+
+                window.location.href = 'panel-transportista.html';
+
+            } catch (error) {
+
+                console.error(
+                    '❌ Error preparando el acceso Google:',
+                    error
+                );
+
+                sessionStorage.removeItem('rodax_google_login');
+
+                loginError.textContent =
+                    'Tu cuenta de Google se autenticó, pero no se pudo preparar el acceso al panel.';
+
+                loginError.classList.remove('hidden');
+            }
+        }
+    }
+});
 
             document.getElementById('btn-cancel-new-password')?.addEventListener('click', async () => {
                 await dbClient.auth.signOut();
@@ -886,6 +982,8 @@ if (btnGoogleLogin) {
         }
 
         try {
+
+            sessionStorage.setItem('rodax_google_login', '1');
 
             const { error } = await dbClient.auth.signInWithOAuth({
                 provider: 'google',
