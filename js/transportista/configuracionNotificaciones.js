@@ -1,8 +1,8 @@
 /* ============================================================
- * RODAX TRANSPORTISTA — PREFERENCIA DE NOTIFICACIONES
- * Gestiona la opción "Notificaciones de servicios" desde
- * Configuración y evita crear nuevas notificaciones de servicio
- * cuando el transportista las desactiva.
+ * RODAX TRANSPORTISTA — PREFERENCIAS DE NOTIFICACIONES
+ * Gestiona desde Configuración:
+ *   1) Notificaciones de servicios
+ *   2) Avisos por email
  * ============================================================ */
 
 (function () {
@@ -22,6 +22,7 @@
 
     let transportistaId = null;
     let notificacionesServiciosActivas = true;
+    let avisosEmailActivos = true;
     let wrapperAplicado = false;
 
     function obtenerDb() {
@@ -42,12 +43,12 @@
         return data.user.id;
     }
 
-    function obtenerFilaConfiguracion() {
+    function obtenerFilaConfiguracion(texto) {
         const candidatos = Array.from(document.querySelectorAll("div"));
 
         const titulo = candidatos.find(el =>
             el.children.length === 0 &&
-            el.textContent.trim() === "Notificaciones de servicios"
+            el.textContent.trim() === texto
         );
 
         if (!titulo) return null;
@@ -55,41 +56,66 @@
         return titulo.closest(".flex.items-center.justify-between");
     }
 
-    function pintarInterruptor() {
-        const fila = obtenerFilaConfiguracion();
+    function pintarInterruptor(fila, atributo, activo, etiqueta) {
         if (!fila) return false;
 
-        let control = fila.querySelector("[data-rodax-notificaciones-servicios]");
+        let control = fila.querySelector(`[${atributo}]`);
 
         if (!control) {
             control = document.createElement("button");
             control.type = "button";
-            control.setAttribute("data-rodax-notificaciones-servicios", "true");
-            control.className = "relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200";
-            control.addEventListener("click", cambiarPreferencia);
+            control.setAttribute(atributo, "true");
             fila.lastElementChild.replaceWith(control);
         }
 
         control.setAttribute("role", "switch");
-        control.setAttribute("aria-checked", String(notificacionesServiciosActivas));
-        control.setAttribute("aria-label", "Notificaciones de servicios");
-        control.title = notificacionesServiciosActivas
-            ? "Desactivar notificaciones de servicios"
-            : "Activar notificaciones de servicios";
+        control.setAttribute("aria-checked", String(activo));
+        control.setAttribute("aria-label", etiqueta);
+        control.title = activo
+            ? `Desactivar ${etiqueta.toLowerCase()}`
+            : `Activar ${etiqueta.toLowerCase()}`;
 
         control.className = "relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200 " +
-            (notificacionesServiciosActivas ? "bg-emerald-500" : "bg-slate-300");
+            (activo ? "bg-emerald-500" : "bg-slate-300");
 
         control.innerHTML = `
             <span class="inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform duration-200 ${
-                notificacionesServiciosActivas ? "translate-x-6" : "translate-x-1"
+                activo ? "translate-x-6" : "translate-x-1"
             }"></span>
         `;
 
         return true;
     }
 
-    async function cargarPreferencia() {
+    function pintarPreferencias() {
+        pintarInterruptor(
+            obtenerFilaConfiguracion("Notificaciones de servicios"),
+            "data-rodax-notificaciones-servicios",
+            notificacionesServiciosActivas,
+            "Notificaciones de servicios"
+        );
+
+        pintarInterruptor(
+            obtenerFilaConfiguracion("Avisos por email"),
+            "data-rodax-avisos-email",
+            avisosEmailActivos,
+            "Avisos por email"
+        );
+
+        const emailControl = document.querySelector("[data-rodax-avisos-email]");
+        if (emailControl && !emailControl.dataset.listenerAttached) {
+            emailControl.addEventListener("click", cambiarAvisosEmail);
+            emailControl.dataset.listenerAttached = "true";
+        }
+
+        const serviciosControl = document.querySelector("[data-rodax-notificaciones-servicios]");
+        if (serviciosControl && !serviciosControl.dataset.listenerAttached) {
+            serviciosControl.addEventListener("click", cambiarPreferencia);
+            serviciosControl.dataset.listenerAttached = "true";
+        }
+    }
+
+    async function cargarPreferencias() {
         const db = obtenerDb();
         if (!db) return;
 
@@ -98,17 +124,19 @@
 
         const { data, error } = await db
             .from("transportistas")
-            .select("notificaciones_servicios")
+            .select("notificaciones_servicios, avisos_email")
             .eq("id", transportistaId)
             .maybeSingle();
 
         if (error) {
-            console.error("❌ Error cargando preferencia de notificaciones:", error);
+            console.error("❌ Error cargando preferencias de notificaciones:", error);
             return;
         }
 
         notificacionesServiciosActivas = data?.notificaciones_servicios !== false;
-        pintarInterruptor();
+        avisosEmailActivos = data?.avisos_email !== false;
+
+        pintarPreferencias();
         aplicarWrapperNotificaciones();
     }
 
@@ -121,7 +149,7 @@
         const anterior = notificacionesServiciosActivas;
         const nuevoValor = !anterior;
         notificacionesServiciosActivas = nuevoValor;
-        pintarInterruptor();
+        pintarPreferencias();
 
         const control = document.querySelector("[data-rodax-notificaciones-servicios]");
         if (control) control.disabled = true;
@@ -136,12 +164,41 @@
         if (error) {
             console.error("❌ Error guardando preferencia de notificaciones:", error);
             notificacionesServiciosActivas = anterior;
-            pintarInterruptor();
+            pintarPreferencias();
             alert("No se pudo guardar la preferencia de notificaciones.");
             return;
         }
 
         aplicarWrapperNotificaciones();
+    }
+
+    async function cambiarAvisosEmail(event) {
+        event?.preventDefault();
+
+        const db = obtenerDb();
+        if (!db || !transportistaId) return;
+
+        const anterior = avisosEmailActivos;
+        const nuevoValor = !anterior;
+        avisosEmailActivos = nuevoValor;
+        pintarPreferencias();
+
+        const control = document.querySelector("[data-rodax-avisos-email]");
+        if (control) control.disabled = true;
+
+        const { error } = await db
+            .from("transportistas")
+            .update({ avisos_email: nuevoValor })
+            .eq("id", transportistaId);
+
+        if (control) control.disabled = false;
+
+        if (error) {
+            console.error("❌ Error guardando preferencia de avisos por email:", error);
+            avisosEmailActivos = anterior;
+            pintarPreferencias();
+            alert("No se pudo guardar la preferencia de avisos por email.");
+        }
     }
 
     function aplicarWrapperNotificaciones() {
@@ -165,14 +222,13 @@
     }
 
     async function iniciar() {
-        // Esperamos a que el panel haya cargado Supabase y el sistema de notificaciones.
         let intentos = 0;
         const maxIntentos = 60;
 
         const esperar = async () => {
             const db = obtenerDb();
             if (db && document.readyState !== "loading") {
-                await cargarPreferencia();
+                await cargarPreferencias();
                 aplicarWrapperNotificaciones();
                 return;
             }
@@ -185,8 +241,8 @@
 
         esperar();
 
-        // El sistema de notificaciones se carga después de este módulo.
         const interval = setInterval(() => {
+            pintarPreferencias();
             aplicarWrapperNotificaciones();
             if (wrapperAplicado) clearInterval(interval);
         }, 250);
@@ -195,8 +251,9 @@
     }
 
     window.RodaxPreferenciasNotificaciones = {
-        cargar: cargarPreferencia,
-        estaActiva: () => notificacionesServiciosActivas
+        cargar: cargarPreferencias,
+        estaActiva: () => notificacionesServiciosActivas,
+        avisosEmailActivos: () => avisosEmailActivos
     };
 
     if (document.readyState === "loading") {
