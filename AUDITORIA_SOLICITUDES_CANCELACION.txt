@@ -1,0 +1,8 @@
+﻿============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 3775
+CONTENIDO:         .from("solicitudes_cancelacion")
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 3929
+CONTENIDO:             .from("solicitudes_cancelacion")

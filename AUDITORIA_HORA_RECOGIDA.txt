@@ -1,0 +1,4 @@
+﻿============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 1727
+CONTENIDO:     t.hora_recogida ??

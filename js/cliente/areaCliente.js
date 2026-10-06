@@ -24,9 +24,61 @@
   }
 
   function money(v) {
-    const n = Number(String(v ?? '').replace(',', '.').replace(/[^\d.-]/g, ''));
-    return Number.isFinite(n) ? n.toLocaleString('es-ES', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €' : '—';
+  if (v === null || v === undefined || v === '') {
+    return '—';
   }
+
+  if (typeof v === 'number') {
+    return Number.isFinite(v)
+      ? v.toLocaleString('es-ES', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }) + ' €'
+      : '—';
+  }
+
+  let text = String(v).trim();
+
+  if (!text) {
+    return '—';
+  }
+
+  text = text
+    .replace(/\s/g, '')
+    .replace(/€/g, '');
+
+  /*
+   * Admite:
+   * 1274.80
+   * 1274,80
+   * 1.274,80
+   * 1,274.80
+   */
+
+  if (text.includes(',') && text.includes('.')) {
+    const lastComma = text.lastIndexOf(',');
+    const lastDot = text.lastIndexOf('.');
+
+    if (lastComma > lastDot) {
+      text = text
+        .replace(/\./g, '')
+        .replace(',', '.');
+    } else {
+      text = text.replace(/,/g, '');
+    }
+  } else if (text.includes(',')) {
+    text = text.replace(',', '.');
+  }
+
+  const n = Number(text);
+
+  return Number.isFinite(n)
+    ? n.toLocaleString('es-ES', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + ' €'
+    : '—';
+}
 
   function fecha(v) {
     if (!v) return '—';
@@ -94,7 +146,7 @@
 
           <div class="card-bottom">
             <span>📅 ${escapeHtml(fecha(r.fecha))}</span>
-            <span>${money(r.preciototal)}</span>
+            <span>${money(r.importe_total ?? r.preciototal)}</span>
           </div>
         </button>`;
     }).join('');
@@ -238,7 +290,7 @@
           </div>
         </div>
 
-        <strong>${money(r.preciototal)}</strong>
+        <strong>${money(r.importe_total ?? r.preciototal)}</strong>
       </div>
 
       <div class="detail-grid">
@@ -270,7 +322,7 @@
           <span>💳</span>
           <div>
             <small>Reserva</small>
-            <strong>${money(r.precioreserva)}</strong>
+            <strong>${money(r.importe_reserva ?? r.precioreserva)}</strong>
           </div>
         </div>
       </div>

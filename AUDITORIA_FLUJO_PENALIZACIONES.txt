@@ -1,0 +1,92 @@
+﻿============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 2886
+CONTENIDO:             importePenalizacion: 0,
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 2888
+CONTENIDO:             diasBloqueo: 0,
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 2964
+CONTENIDO:     let diasBloqueo = 0;
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 2973
+CONTENIDO:         diasBloqueo = 5;
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 2989
+CONTENIDO:         diasBloqueo = 3;
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 3005
+CONTENIDO:         diasBloqueo = 2;
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 3021
+CONTENIDO:         diasBloqueo = 1;
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 3037
+CONTENIDO:         diasBloqueo = 0;
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 3053
+CONTENIDO:         diasBloqueo = 0;
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 3072
+CONTENIDO:     const importePenalizacion =
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 3149
+CONTENIDO:         importePenalizacion,
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 3153
+CONTENIDO:         diasBloqueo,
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 3333
+CONTENIDO:                 ${evaluacion.importePenalizacion.toLocaleString(
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 3355
+CONTENIDO:                 evaluacion.diasBloqueo === 0
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 3357
+CONTENIDO:                     : `${evaluacion.diasBloqueo} ${
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 3358
+CONTENIDO:                         evaluacion.diasBloqueo === 1
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 3958
+CONTENIDO:                 categoria_penalizacion:
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 3961
+CONTENIDO:                 porcentaje_penalizacion:
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 3968
+CONTENIDO:                     evaluacion.importePenalizacion,
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 3971
+CONTENIDO:                     evaluacion.diasBloqueo,
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 4048
+CONTENIDO:                     evaluacion.importePenalizacion,
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 4049
+CONTENIDO:                 diasBloqueo:
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 4050
+CONTENIDO:                     evaluacion.diasBloqueo,

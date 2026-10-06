@@ -1,0 +1,84 @@
+﻿============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\api\cliente-reservas.js
+LINEA: 229
+CONTENIDO:           "franja_horaria_recogida",
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\api\create-checkout-session.js
+LINEA: 67
+CONTENIDO:                     franja_horaria_recogida:
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\api\create-checkout-session.js
+LINEA: 69
+CONTENIDO:                             req.body.franja_horaria_recogida || ""
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\api\guardar-reserva.js
+LINEA: 75
+CONTENIDO:     !datos.franja_horaria_recogida ||
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\api\guardar-reserva.js
+LINEA: 102
+CONTENIDO:         datos.franja_horaria_recogida
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\api\guardar-reserva.js
+LINEA: 182
+CONTENIDO:     franja_horaria_recogida:
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\api\guardar-reserva.js
+LINEA: 183
+CONTENIDO:         datos.franja_horaria_recogida,
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\api\webhook.js
+LINEA: 158
+CONTENIDO:     session.metadata?.franja_horaria_recogida
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\cliente\areaCliente.js
+LINEA: 257
+CONTENIDO:             <strong>${escapeHtml(r.franja_horaria_recogida || '—')}</strong>
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\cliente\areaCliente.js
+LINEA: 353
+CONTENIDO:     $('mod-franja').value = r.franja_horaria_recogida || '';
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\cliente\areaCliente.js
+LINEA: 464
+CONTENIDO:         franja_horaria_recogida: $('mod-franja').value,
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\agenda.js
+LINEA: 114
+CONTENIDO:             mudanza?.franja_horaria_recogida ||
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\drawer.js
+LINEA: 303
+CONTENIDO:         mudanza.franja_horaria_recogida || "—";
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\historialServicios.js
+LINEA: 307
+CONTENIDO:             mudanza?.franja_horaria_recogida ||
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\marketplace.js
+LINEA: 5224
+CONTENIDO:         franja_horaria_recogida,
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\tarjetas.js
+LINEA: 410
+CONTENIDO:     t.franja_horaria_recogida,
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\index.html
+LINEA: 1903
+CONTENIDO:                 name="franja_horaria_recogida"
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\index.html
+LINEA: 1916
+CONTENIDO:                 name="franja_horaria_recogida"
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\script.js
+LINEA: 1274
+CONTENIDO: franja_horaria_recogida:
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\script.js
+LINEA: 1364
+CONTENIDO:         'input[name="franja_horaria_recogida"]:checked'
+============================================================
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\script.js
+LINEA: 1504
+CONTENIDO: franja_horaria_recogida:

@@ -242,8 +242,8 @@ module.exports = async (req, res) => {
 
           "tipo_servicio",
 
-          "preciototal",
-          "precioreserva",
+          "precio_total",
+          "precio_reserva",
 
           "estado",
           "estado_pago",
