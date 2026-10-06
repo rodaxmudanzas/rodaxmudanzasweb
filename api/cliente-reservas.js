@@ -242,8 +242,12 @@ module.exports = async (req, res) => {
 
           "tipo_servicio",
 
-          "precio_total",
-          "precio_reserva",
+                    "preciototal",
+          "precioreserva",
+
+          "importe_total",
+          "importe_reserva",
+          "importe_restante",
 
           "estado",
           "estado_pago",
