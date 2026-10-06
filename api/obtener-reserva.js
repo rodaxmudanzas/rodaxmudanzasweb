@@ -75,24 +75,64 @@ if (!reservaPorNumero) {
 
 if (session.payment_status === "paid") {
 
+    // Recuperamos los importes originales guardados
+    // al crear la reserva.
+    const importeTotal = Number(
+        String(reservaPorNumero.preciototal ?? "")
+            .replace("€", "")
+            .replace(/\s/g, "")
+            .replace(/\./g, "")
+            .replace(",", ".")
+    );
+
+    const importeReserva = Number(
+        String(reservaPorNumero.precioreserva ?? "")
+            .replace("€", "")
+            .replace(/\s/g, "")
+            .replace(/\./g, "")
+            .replace(",", ".")
+    );
+
+    if (
+        !Number.isFinite(importeTotal) ||
+        !Number.isFinite(importeReserva)
+    ) {
+        return res.status(500).json({
+            error:
+                "La reserva no contiene importes válidos para completar el pago."
+        });
+    }
+
+    const importeRestante =
+        Number(
+            (importeTotal - importeReserva).toFixed(2)
+        );
+
     const payload = {
         stripe_session_id: session.id,
         stripe_payment_intent: session.payment_intent,
         estado: "Pendiente de asignación",
-        estado_pago: "Pagado 30 % - Pendiente 70 %"
+        estado_pago: "Pagado 30 % - Pendiente 70 %",
+        importe_total: importeTotal,
+        importe_reserva: importeReserva,
+        importe_restante: importeRestante
     };
 
-    const { data: sincronizada, error: errorSync } = await supabase
-        .from("mudanzas")
-        .update(payload)
-        .eq("id", reservaPorNumero.id)
-        .select("*")
-        .maybeSingle();
+    const { data: sincronizada, error: errorSync } =
+        await supabase
+            .from("mudanzas")
+            .update(payload)
+            .eq("id", reservaPorNumero.id)
+            .select("*")
+            .maybeSingle();
 
     if (errorSync) throw errorSync;
 
     return res.status(200).json(
-        sincronizada || reservaPorNumero
+        sincronizada || {
+            ...reservaPorNumero,
+            ...payload
+        }
     );
 }
 
