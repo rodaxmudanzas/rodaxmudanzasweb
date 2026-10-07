@@ -238,16 +238,19 @@ module.exports = async (req, res) => {
           "piso_destino",
 
           "extras",
-          "observaciones",
+"observaciones",
 
-          "tipo_servicio",
+"inventario",
+"urls_fotos",
 
-                    "preciototal",
-          "precioreserva",
+"tipo_servicio",
 
-          "importe_total",
-          "importe_reserva",
-          "importe_restante",
+"preciototal",
+"precioreserva",
+
+"importe_total",
+"importe_reserva",
+"importe_restante",
 
           "estado",
           "estado_pago",
