@@ -115,21 +115,119 @@ if (!numeroReserva) {
 
 console.log("Reserva:", numeroReserva);
 
-        const importeTotal = Number(
-            String(data.preciototal)
-                .replace("€", "")
-                .replace(",", ".")
+               function parseImporte(value) {
+            let texto = String(value ?? "")
                 .trim()
+                .replace(/[€\s]/g, "");
+
+            if (!texto) {
+                return NaN;
+            }
+
+            const tieneComa = texto.includes(",");
+            const tienePunto = texto.includes(".");
+
+            if (tieneComa && tienePunto) {
+                // Formato español: 1.274,80
+                if (texto.lastIndexOf(",") > texto.lastIndexOf(".")) {
+                    texto = texto
+                        .replace(/\./g, "")
+                        .replace(",", ".");
+                } else {
+                    // Formato internacional: 1,274.80
+                    texto = texto.replace(/,/g, "");
+                }
+            } else if (tieneComa) {
+                texto = texto.replace(",", ".");
+            }
+
+            return Number(texto);
+        }
+
+        // ==========================================================
+// IMPORTES DEL SERVICIO
+// ==========================================================
+
+// El importe total de Stripe está expresado en céntimos.
+// Ejemplo:
+// 194755 -> 1947.55 €
+const importeTotalStripe = Number(session.amount_total);
+
+if (!Number.isFinite(importeTotalStripe)) {
+
+    console.error(
+        "Stripe no contiene amount_total válido:",
+        session.amount_total
+    );
+
+    return res.status(400).json({
+        error: "Stripe no contiene un importe total válido."
+    });
+
+}
+
+const importeTotal =
+    Number(
+        (importeTotalStripe / 100).toFixed(2)
+    );
+
+
+// La reserva procede de nuestra metadata.
+// En el proyecto puede llegar:
+// 58426     -> 584.26 €
+// 584.26    -> 584.26 €
+const importeReservaRaw =
+    parseImporte(data.precioreserva);
+
+if (!Number.isFinite(importeReservaRaw)) {
+
+    console.error(
+        "Importe de reserva inválido:",
+        data.precioreserva
+    );
+
+    return res.status(400).json({
+        error: "El importe de la reserva no es válido."
+    });
+
+}
+
+let importeReserva = importeReservaRaw;
+
+
+// Si la reserva llega como céntimos,
+// será mayor que el importe total expresado en euros.
+// Ejemplo:
+// 58426 > 1947.55
+//
+// En ese caso convertimos:
+// 58426 -> 584.26
+if (importeReserva > importeTotal) {
+
+    importeReserva =
+        Number(
+            (importeReserva / 100).toFixed(2)
         );
 
-        const importeReserva = Number(
-            String(data.precioreserva)
-                .replace("€", "")
-                .replace(",", ".")
-                .trim()
-        );
+}
 
-        const importeRestante = importeTotal - importeReserva;
+
+// El 70 % restante se calcula a partir de
+// los importes reales guardados en euros.
+const importeRestante =
+    Number(
+        (importeTotal - importeReserva).toFixed(2)
+    );
+
+
+console.log("================================");
+console.log("IMPORTES NORMALIZADOS");
+console.log("Total Stripe:", session.amount_total);
+console.log("Importe total €:", importeTotal);
+console.log("Reserva original:", data.precioreserva);
+console.log("Reserva €:", importeReserva);
+console.log("Pendiente €:", importeRestante);
+console.log("================================");
 
         console.log("Importe total:", importeTotal);
         console.log("Reserva:", importeReserva);
@@ -208,13 +306,6 @@ if (error) {
     throw error;
 }
 
-            console.error("ERROR SUPABASE:");
-
-            console.error(error);
-
-            throw error;
-
-        }
 
         console.log("Resultado actualización:");
 

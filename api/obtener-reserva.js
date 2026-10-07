@@ -75,23 +75,46 @@ if (!reservaPorNumero) {
 
 if (session.payment_status === "paid") {
 
-    // Recuperamos los importes originales guardados
-    // al crear la reserva.
-    const importeTotal = Number(
-        String(reservaPorNumero.preciototal ?? "")
-            .replace("€", "")
-            .replace(/\s/g, "")
-            .replace(/\./g, "")
-            .replace(",", ".")
-    );
+        // Convierte correctamente importes en formato español o decimal.
+    // Ejemplos:
+    // "953.13 €"     -> 953.13
+    // "1.274,80 €"   -> 1274.80
+    // "1274.80 €"    -> 1274.80
+    function parseImporte(value) {
+        let texto = String(value ?? "")
+            .trim()
+            .replace(/[€\s]/g, "");
 
-    const importeReserva = Number(
-        String(reservaPorNumero.precioreserva ?? "")
-            .replace("€", "")
-            .replace(/\s/g, "")
-            .replace(/\./g, "")
-            .replace(",", ".")
-    );
+        if (!texto) {
+            return NaN;
+        }
+
+        const tieneComa = texto.includes(",");
+        const tienePunto = texto.includes(".");
+
+        if (tieneComa && tienePunto) {
+            // Formato español: 1.274,80
+            if (texto.lastIndexOf(",") > texto.lastIndexOf(".")) {
+                texto = texto
+                    .replace(/\./g, "")
+                    .replace(",", ".");
+            } else {
+                // Formato internacional: 1,274.80
+                texto = texto.replace(/,/g, "");
+            }
+        } else if (tieneComa) {
+            // 953,13
+            texto = texto.replace(",", ".");
+        }
+
+        return Number(texto);
+    }
+
+    const importeTotal =
+        parseImporte(reservaPorNumero.preciototal);
+
+    const importeReserva =
+        parseImporte(reservaPorNumero.precioreserva);
 
     if (
         !Number.isFinite(importeTotal) ||
