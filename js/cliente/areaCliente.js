@@ -132,11 +132,28 @@
       return `
         <button class="reserva-card ${selected ? 'selected' : ''}" data-index="${i}">
           <div class="card-top">
-            <span class="reservation-number">${escapeHtml(r.numero_reserva || 'RDX')}</span>
-            <span class="status ${statusClass(r.estado)}">${escapeHtml(r.estado || 'En gestión')}</span>
-          </div>
+  <span class="reservation-number">
+    ${escapeHtml(r.numero_reserva || 'RDX')}
+  </span>
+</div>
 
-          <div class="service-type">${escapeHtml(serviceTypeLabel(r))}</div>
+<div class="service-type-badge ${isTotal(r) ? 'total' : 'standard'}">
+  <span class="service-type-icon">
+    ${isTotal(r) ? '⭐' : '🚚'}
+  </span>
+
+  <div>
+    <strong>
+      ${isTotal(r) ? 'MUDANZA TOTAL' : 'MUDANZA ESTÁNDAR'}
+    </strong>
+
+    <small>
+      ${isTotal(r)
+        ? 'Todos los servicios premium incluidos'
+        : 'Transporte profesional'}
+    </small>
+  </div>
+</div>
 
           <div class="route-mini">
             <strong>${escapeHtml(route.origen)}</strong>
@@ -267,26 +284,26 @@
 
     panel.innerHTML = `
       <div class="detail-header">
-        <div>
-          <span class="eyebrow">MI MUDANZA</span>
-          <h2>${escapeHtml(r.numero_reserva || '')}</h2>
-        </div>
-
-        <span class="status ${statusClass(r.estado)}">
-          ${escapeHtml(r.estado || 'En gestión')}
-        </span>
-      </div>
-
-      <div class="type-banner ${total ? 'total' : ''}">
   <div>
-    <span>${total ? '⭐' : '🚚'}</span>
+    <span class="eyebrow">MI MUDANZA</span>
+    <h2>${escapeHtml(r.numero_reserva || '')}</h2>
+  </div>
+</div>
+
+      <div class="type-banner ${total ? 'total' : 'standard'}">
+  <div>
+    <span class="type-banner-icon">
+      ${total ? '⭐' : '🚚'}
+    </span>
 
     <div>
-      <strong>${escapeHtml(serviceTypeLabel(r))}</strong>
+      <strong>
+        ${total ? 'MUDANZA TOTAL' : 'MUDANZA ESTÁNDAR'}
+      </strong>
 
       <small>
         ${total
-          ? 'Incluye todos los servicios premium · +249 €'
+          ? 'Todos los servicios premium incluidos · +249 €'
           : 'Transporte profesional'}
       </small>
     </div>
