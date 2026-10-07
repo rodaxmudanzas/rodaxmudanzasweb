@@ -278,54 +278,96 @@
       </div>
 
       <div class="type-banner ${total ? 'total' : ''}">
-        <div>
-          <span>${total ? '⭐' : '🚚'}</span>
-          <div>
-            <strong>${escapeHtml(serviceTypeLabel(r))}</strong>
-            <small>
-              ${total
-                ? 'Incluye todos los servicios premium · +249 €'
-                : 'Transporte profesional'}
-            </small>
-          </div>
-        </div>
+  <div>
+    <span>${total ? '⭐' : '🚚'}</span>
 
-        <strong>${money(r.importe_total ?? r.preciototal)}</strong>
-      </div>
+    <div>
+      <strong>${escapeHtml(serviceTypeLabel(r))}</strong>
+
+      <small>
+        ${total
+          ? 'Incluye todos los servicios premium · +249 €'
+          : 'Transporte profesional'}
+      </small>
+    </div>
+  </div>
+</div>
 
       <div class="detail-grid">
-        <div class="info-card">
-          <span>📅</span>
-          <div>
-            <small>Fecha</small>
-            <strong>${escapeHtml(fecha(r.fecha))}</strong>
-          </div>
-        </div>
+  <div class="info-card">
+    <span>📅</span>
+    <div>
+      <small>Fecha</small>
+      <strong>${escapeHtml(fecha(r.fecha))}</strong>
+    </div>
+  </div> 
 
-        <div class="info-card">
-          <span>🕐</span>
-          <div>
-            <small>Recogida</small>
-            <strong>${escapeHtml(r.franja_horaria_recogida || '—')}</strong>
-          </div>
-        </div>
+  <div class="info-card">
+    <span>🕐</span>
+    <div>
+      <small>Recogida</small>
+      <strong>${escapeHtml(r.franja_horaria_recogida || '—')}</strong>
+    </div>
+  </div>
 
-        <div class="info-card">
-          <span>📦</span>
-          <div>
-            <small>Volumen</small>
-            <strong>${escapeHtml(r.volumen || '—')}</strong>
-          </div>
-        </div>
+  <div class="info-card">
+    <span>📦</span>
+    <div>
+      <small>Volumen</small>
+      <strong>${escapeHtml(r.volumen || '—')}</strong>
+    </div>
+  </div>
 
-        <div class="info-card">
-          <span>💳</span>
-          <div>
-            <small>Reserva</small>
-            <strong>${money(r.importe_reserva ?? r.precioreserva)}</strong>
-          </div>
-        </div>
-      </div>
+  <div class="info-card">
+    <span>💳</span>
+    <div>
+      <small>Reserva</small>
+      <strong>${money(r.importe_reserva ?? r.precioreserva)}</strong>
+    </div>
+  </div>
+</div>
+
+<div class="economy-card">
+  <div class="economy-header">
+    <div>
+      <span class="eyebrow">RESUMEN ECONÓMICO</span>
+      <h3>Precio de tu mudanza</h3>
+    </div>
+  </div>
+
+  <div class="economy-row economy-total">
+    <div>
+      <strong>Total</strong>
+      <small>100 % del servicio</small>
+    </div>
+
+    <strong>
+      ${money(r.importe_total ?? r.preciototal)}
+    </strong>
+  </div>
+
+  <div class="economy-row">
+    <div>
+      <strong>Reserva pagada</strong>
+      <small>30 %</small>
+    </div>
+
+    <strong>
+      ${money(r.importe_reserva ?? r.precioreserva)}
+    </strong>
+  </div>
+
+  <div class="economy-row economy-pending">
+    <div>
+      <strong>Pendiente de pago</strong>
+      <small>70 %</small>
+    </div>
+
+    <strong>
+      ${money(r.importe_restante)}
+    </strong>
+  </div>
+</div>
 
       <div class="route-box">
         <div class="route-row">
