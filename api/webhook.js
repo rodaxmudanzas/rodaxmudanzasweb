@@ -144,38 +144,35 @@ console.log("Reserva:", numeroReserva);
             return Number(texto);
         }
 
-        // ==========================================================
+       // ==========================================================
 // IMPORTES DEL SERVICIO
 // ==========================================================
 
-// El importe total de Stripe está expresado en céntimos.
-// Ejemplo:
-// 194755 -> 1947.55 €
-const importeTotalStripe = Number(session.amount_total);
+// El precio TOTAL de la mudanza procede de nuestra propia metadata
+// (preciototal, en euros, p. ej. "970.60 €" o "1.274,80 €").
+// session.amount_total NO es el total: es solo lo que Stripe cobra en
+// este checkout, es decir, la reserva del 30 % expresada en céntimos.
 
-if (!Number.isFinite(importeTotalStripe)) {
+const importeTotal = parseImporte(data.preciototal);
+
+if (!Number.isFinite(importeTotal) || importeTotal <= 0) {
 
     console.error(
-        "Stripe no contiene amount_total válido:",
-        session.amount_total
+        "Precio total inválido en metadata:",
+        data.preciototal
     );
 
     return res.status(400).json({
-        error: "Stripe no contiene un importe total válido."
+        error: "El precio total de la mudanza no es válido."
     });
-
 }
-
-const importeTotal =
-    Number(
-        (importeTotalStripe / 100).toFixed(2)
-    );
 
 
 // La reserva procede de nuestra metadata.
 // En el proyecto puede llegar:
 // 58426     -> 584.26 €
 // 584.26    -> 584.26 €
+
 const importeReservaRaw =
     parseImporte(data.precioreserva);
 
@@ -189,19 +186,21 @@ if (!Number.isFinite(importeReservaRaw)) {
     return res.status(400).json({
         error: "El importe de la reserva no es válido."
     });
-
 }
+
 
 let importeReserva = importeReservaRaw;
 
 
 // Si la reserva llega como céntimos,
 // será mayor que el importe total expresado en euros.
+//
 // Ejemplo:
 // 58426 > 1947.55
 //
 // En ese caso convertimos:
 // 58426 -> 584.26
+
 if (importeReserva > importeTotal) {
 
     importeReserva =
@@ -212,8 +211,23 @@ if (importeReserva > importeTotal) {
 }
 
 
+// Comprobación informativa:
+// lo cobrado por Stripe debe coincidir con la reserva.
+
+if (Math.round(importeReserva * 100) !== Number(session.amount_total)) {
+
+    console.warn(
+        "Aviso: amount_total de Stripe (céntimos) no coincide con la reserva:",
+        session.amount_total,
+        importeReserva
+    );
+
+}
+
+
 // El 70 % restante se calcula a partir de
 // los importes reales guardados en euros.
+
 const importeRestante =
     Number(
         (importeTotal - importeReserva).toFixed(2)
