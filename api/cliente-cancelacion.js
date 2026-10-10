@@ -2,13 +2,6 @@
 const { createClient } = require("@supabase/supabase-js");
 const Stripe = require("stripe");
 
-const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-);
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
 function respuesta(res, codigo, datos) {
     return res.status(codigo).json(datos);
 }
@@ -148,6 +141,13 @@ module.exports = async function clienteCancelaciones(req, res) {
             error: "El servicio de cancelaciones no está configurado."
         });
     }
+
+    const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
     let solicitudId = null;
     let mudanzaId = null;
