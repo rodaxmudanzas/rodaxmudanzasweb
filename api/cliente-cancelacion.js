@@ -142,12 +142,16 @@ module.exports = async function clienteCancelaciones(req, res) {
         });
     }
 
+    
     const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+        process.env.SUPABASE_URL,
+        process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+    const stripe = new Stripe(
+        process.env.STRIPE_SECRET_KEY
+    );
+
 
     let solicitudId = null;
     let mudanzaId = null;
@@ -232,16 +236,16 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
         const estadoActual = normalizarEstado(reserva.estado);
 
-        if (
-            estadoActual.includes("cancel") ||
-            estadoActual.includes("completad") ||
-            estadoActual.includes("finaliz") ||
-            estadoActual.includes("realizad")
-        ) {
-            return respuesta(res, 409, {
-                error: "Esta mudanza ya está cancelada o finalizada."
-            });
-        }
+if (
+    estadoActual.includes("cancel") ||
+    estadoActual.includes("completad") ||
+    estadoActual.includes("finaliz") ||
+    estadoActual.includes("realizad")
+) {
+    return respuesta(res, 409, {
+        error: "Esta mudanza ya está cancelada o finalizada."
+    });
+}
 
         // 4. No aceptar cancelaciones sin un pago identificable.
         const importeReserva = obtenerImporteReserva(reserva);
@@ -253,6 +257,28 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
                     "La reserva no tiene un importe pagado o un pago de Stripe verificable. No se ha realizado ningún reembolso."
             });
         }
+
+        // Verificar en Stripe que el pago de la reserva se completó.
+let pagoStripe;
+
+try {
+    pagoStripe = await stripe.paymentIntents.retrieve(paymentIntent);
+} catch (errorStripe) {
+    console.error(
+        "Cancelaciones: no se pudo verificar el pago en Stripe.",
+        errorStripe.message
+    );
+
+    return respuesta(res, 502, {
+        error: "No se ha podido verificar el pago en Stripe. No se ha iniciado ningún reembolso."
+    });
+}
+
+if (pagoStripe.status !== "succeeded") {
+    return respuesta(res, 409, {
+        error: "El pago de la reserva no figura como completado en Stripe. No se ha iniciado ningún reembolso."
+    });
+}
 
         // 5. Calcular la penalización en el servidor.
         const evaluacion = calcularPenalizacion(reserva.fecha);
@@ -293,24 +319,26 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
             });
         }
 
-        if (solicitudExistente) {
-            if (
-                normalizarEstado(solicitudExistente.estado) ===
-                "completada"
-            ) {
-                return respuesta(res, 200, {
-                    ok: true,
-                    mensaje: "La cancelación ya se había completado.",
-                    numero_reserva: reserva.numero_reserva
-                });
-            }
+       if (solicitudExistente) {
+    const estadoSolicitud = normalizarEstado(
+        solicitudExistente.estado
+    );
 
-            return respuesta(res, 409, {
-                error:
-                    "Ya existe una solicitud de cancelación para esta mudanza. No se ha creado otra ni se ha iniciado un segundo reembolso.",
-                estado: solicitudExistente.estado
-            });
-        }
+    if (estadoSolicitud === "completada") {
+        return respuesta(res, 200, {
+            ok: true,
+            mensaje: "La cancelación ya se había completado.",
+            numero_reserva: reserva.numero_reserva,
+            stripe_refund_id: solicitudExistente.stripe_refund_id
+        });
+    }
+
+    return respuesta(res, 409, {
+        error:
+            "Ya existe una solicitud de cancelación para esta mudanza. No se iniciará otro reembolso.",
+        estado: solicitudExistente.estado
+    });
+}
 
         // 7. Registrar la solicitud antes de solicitar el reembolso.
         const {
