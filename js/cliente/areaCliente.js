@@ -766,7 +766,8 @@
 
       ${renderContact(r)}
 
-      <div class="actions">
+            <div class="actions">
+
         <button class="primary" id="btn-modificar-2">
           ✏️ Solicitar modificación
         </button>
@@ -774,12 +775,131 @@
         <button class="secondary" id="btn-refrescar">
           ↻ Actualizar
         </button>
+
+        <button class="cancel-button" id="btn-cancelar">
+          ✕ Cancelar mudanza
+        </button>
+
       </div>
     `;
 
     $('btn-modificar').onclick = openModification;
-    $('btn-modificar-2').onclick = openModification;
-    $('btn-refrescar').onclick = loadReservas;
+$('btn-modificar-2').onclick = openModification;
+$('btn-refrescar').onclick = loadReservas;
+
+$('btn-cancelar').onclick = openCancellation;
+
+$('btn-cerrar-cancelacion').onclick = () => {
+  $('modal-cancelacion').classList.add('hidden');
+};
+
+$('btn-cerrar-cancelacion-2').onclick = () => {
+  $('modal-cancelacion').classList.add('hidden');
+};
+  }
+
+    function openCancellation() {
+    const r = reservaActual;
+
+    if (!r) return;
+
+    const modal = $('modal-cancelacion');
+
+    if (!modal) return;
+
+    const reserva = toNumber(
+      r.importe_reserva ??
+      r.precioreserva ??
+      0
+    );
+
+    const fechaServicio = r.fecha
+      ? new Date(`${r.fecha}T00:00:00`)
+      : null;
+
+    const hoy = new Date();
+
+    hoy.setHours(0, 0, 0, 0);
+
+    let diasRestantes = null;
+
+    if (
+      fechaServicio &&
+      !Number.isNaN(fechaServicio.getTime())
+    ) {
+      diasRestantes = Math.ceil(
+        (fechaServicio - hoy) /
+        (1000 * 60 * 60 * 24)
+      );
+    }
+
+    
+let porcentaje = 0;
+
+if (diasRestantes === null) {
+  porcentaje = 0;
+} else if (diasRestantes <= 1) {
+  porcentaje = 100;
+} else if (diasRestantes <= 3) {
+  porcentaje = 50;
+} else if (diasRestantes <= 7) {
+  porcentaje = 25;
+} else if (diasRestantes <= 14) {
+  porcentaje = 10;
+}
+
+
+    const penalizacion = reserva * (porcentaje / 100);
+    const devolucion = reserva - penalizacion;
+
+    $('cancelacion-fecha').textContent =
+      fecha(r.fecha);
+
+    $('cancelacion-reserva').textContent =
+      money(reserva);
+
+    $('cancelacion-porcentaje').textContent =
+      `${porcentaje} %`;
+
+    $('cancelacion-importe').textContent =
+      money(penalizacion);
+
+    $('cancelacion-devolucion').textContent =
+      money(devolucion);
+
+    const aviso = $('cancelacion-aviso');
+
+    if (porcentaje >= 100) {
+
+      aviso.className = 'cancel-warning danger';
+
+      aviso.innerHTML = `
+        ⚠️ <strong>Cancelación con penalización del 100 %.</strong>
+        Al cancelar el mismo día del servicio,
+        perderás el importe completo de la reserva.
+      `;
+
+    } else if (porcentaje > 0) {
+
+      aviso.className = 'cancel-warning warning';
+
+      aviso.innerHTML = `
+        ⚠️ Esta cancelación tiene una penalización del
+        <strong>${porcentaje} %</strong> sobre la reserva pagada.
+      `;
+
+    } else {
+
+      aviso.className = 'cancel-warning safe';
+
+      aviso.innerHTML = `
+        ✓ En este momento no se aplica penalización.
+        La reserva será reembolsada íntegramente,
+        según las condiciones de cancelación.
+      `;
+    }
+
+    modal.classList.remove('hidden');
   }
 
   function openModification() {
