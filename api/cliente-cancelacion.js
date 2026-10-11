@@ -142,7 +142,7 @@ module.exports = async function clienteCancelaciones(req, res) {
         });
     }
 
-    
+
     const supabase = createClient(
         process.env.SUPABASE_URL,
         process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -313,7 +313,7 @@ if (
 
         const porcentajePenalizacion = evaluacion.porcentaje;
 
-       
+
                 // 6. Consultar y reconciliar solicitudes anteriores.
         const {
             data: solicitudExistente,
@@ -404,15 +404,9 @@ if (
                 });
             }
 
-            if (
-                refundRecuperado &&
-                refundRecuperado.status !== "succeeded"
-            ) {
-
 if (refundRecuperado) {
-    const reembolsoValido =
+    const reembolsoCoincide =
         refundRecuperado.payment_intent === paymentIntent &&
-        refundRecuperado.status === "succeeded" &&
         Number(refundRecuperado.amount) ===
             Math.round(
                 Number(solicitudExistente.importe_reembolso) * 100
@@ -420,46 +414,54 @@ if (refundRecuperado) {
         refundRecuperado.metadata?.rodax_mudanza_id ===
             String(reserva.id);
 
-    if (!reembolsoValido) {
+    if (!reembolsoCoincide) {
         console.error(
-            "Cancelaciones: el reembolso recuperado no coincide con la solicitud.",
-            {
-                solicitudId,
-                refundId: refundRecuperado.id,
-                mudanzaId: reserva.id
-            }
+            "El reembolso recuperado no coincide con la solicitud."
         );
 
         return respuesta(res, 409, {
-            error:
-                "El reembolso recuperado no coincide con la solicitud. Requiere revisión; no se realizará otro reembolso."
+            error: "El reembolso recuperado no coincide con la solicitud. Requiere revisión antes de continuar."
+        });
+    }
+
+    if (refundRecuperado.status === "pending") {
+        const { error: errorGuardarPendiente } = await supabase
+            .from("solicitudes_cancelacion_cliente")
+            .update({
+                estado: "procesando",
+                stripe_refund_id: refundRecuperado.id,
+                updated_at: new Date().toISOString()
+            })
+            .eq("id", solicitudId);
+
+        if (errorGuardarPendiente) {
+            console.error(
+                "Error guardando el estado pendiente:",
+                errorGuardarPendiente
+            );
+
+            return respuesta(res, 500, {
+                error: "No se pudo actualizar el estado del reembolso."
+            });
+        }
+
+        return respuesta(res, 409, {
+            error: "Stripe todavía está procesando el reembolso. No vuelvas a solicitarlo.",
+            estado: "procesando"
+        });
+    }
+
+    if (
+    refundRecuperado &&
+    refundRecuperado.status !== "succeeded"
+) {
+        return respuesta(res, 409, {
+            error: "El reembolso anterior no figura como completado en Stripe. Requiere revisión antes de continuar.",
+            estado: refundRecuperado.status
         });
     }
 }
 
-                if (
-                    refundRecuperado.status === "pending"
-                ) {
-                    await supabase
-                        .from("solicitudes_cancelacion_cliente")
-                        .update({
-                            estado: "procesando",
-                            stripe_refund_id: refundRecuperado.id,
-                            updated_at: new Date().toISOString()
-                        })
-                        .eq("id", solicitudId);
-
-                    return respuesta(res, 409, {
-                        error: "Stripe todavía está procesando el reembolso. No vuelvas a solicitarlo.",
-                        estado: "procesando"
-                    });
-                }
-
-                return respuesta(res, 409, {
-                    error: "El reembolso anterior no figura como completado en Stripe. Requiere revisión antes de continuar.",
-                    estado: refundRecuperado.status
-                });
-            }
 
             // Stripe confirmó el reembolso (o el importe es cero).
             // Completar el registro para permitir recuperar una operación interrumpida.
@@ -579,7 +581,7 @@ if (refundRecuperado) {
 
         if (importeReembolso > 0) {
             try {
-                
+
 const reembolso = await stripe.refunds.create(
     {
         payment_intent: paymentIntent,
