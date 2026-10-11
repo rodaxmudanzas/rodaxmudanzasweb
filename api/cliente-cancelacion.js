@@ -408,6 +408,35 @@ if (
                 refundRecuperado &&
                 refundRecuperado.status !== "succeeded"
             ) {
+
+if (refundRecuperado) {
+    const reembolsoValido =
+        refundRecuperado.payment_intent === paymentIntent &&
+        refundRecuperado.status === "succeeded" &&
+        Number(refundRecuperado.amount) ===
+            Math.round(
+                Number(solicitudExistente.importe_reembolso) * 100
+            ) &&
+        refundRecuperado.metadata?.rodax_mudanza_id ===
+            String(reserva.id);
+
+    if (!reembolsoValido) {
+        console.error(
+            "Cancelaciones: el reembolso recuperado no coincide con la solicitud.",
+            {
+                solicitudId,
+                refundId: refundRecuperado.id,
+                mudanzaId: reserva.id
+            }
+        );
+
+        return respuesta(res, 409, {
+            error:
+                "El reembolso recuperado no coincide con la solicitud. Requiere revisión; no se realizará otro reembolso."
+        });
+    }
+}
+
                 if (
                     refundRecuperado.status === "pending"
                 ) {
