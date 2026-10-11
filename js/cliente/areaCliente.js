@@ -1073,6 +1073,90 @@ if (diasRestantes === null) {
     $('form-modificacion').onsubmit =
       requestModification;
 
+      
+    $('btn-confirmar-cancelacion').onclick =
+      confirmarCancelacion;
+
+    async function confirmarCancelacion() {
+      const r = reservaActual;
+
+      if (!r || !r.id) {
+        alert('No se ha podido identificar la reserva.');
+        return;
+      }
+
+      const {
+        data: { session },
+        error: errorSesion
+      } = await db.auth.getSession();
+
+      if (errorSesion || !session) {
+        alert('Tu sesión ha caducado. Vuelve a acceder a tu Área Cliente.');
+        return;
+      }
+
+      const boton = $('btn-confirmar-cancelacion');
+      const textoOriginal = boton.textContent;
+
+      const confirmar = window.confirm(
+        '¿Confirmas la cancelación de la reserva ' +
+        (r.numero_reserva || '') +
+        '?\n\nSe aplicará la penalización mostrada en pantalla.'
+      );
+
+      if (!confirmar) return;
+
+      boton.disabled = true;
+      boton.textContent = 'Procesando cancelación…';
+
+      try {
+        const res = await fetch('/api/cliente-cancelacion', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`
+          },
+          body: JSON.stringify({
+            mudanza_id: Number(r.id)
+          })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          alert(
+            data.error ||
+            'No se ha podido completar la cancelación. Revisa el estado de tu reserva antes de volver a intentarlo.'
+          );
+          return;
+        }
+
+        $('modal-cancelacion').classList.add('hidden');
+
+        alert(
+          data.mensaje ||
+          'La cancelación se ha procesado correctamente.'
+        );
+
+        await loadReservas();
+
+      } catch (error) {
+        console.error(
+          'Error al solicitar la cancelación:',
+          error
+        );
+
+        alert(
+          'No se ha podido confirmar el resultado de la operación. Comprueba el estado de la reserva antes de volver a intentarlo.'
+        );
+
+      } finally {
+        boton.disabled = false;
+        boton.textContent = textoOriginal;
+      }
+    }
+
+
     db.auth.onAuthStateChange(() =>
       loadReservas().catch(e =>
         setLoginMessage(e.message, true)
