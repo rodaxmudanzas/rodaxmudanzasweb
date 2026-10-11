@@ -280,6 +280,35 @@ if (pagoStripe.status !== "succeeded") {
     });
 }
 
+
+const importeCobradoStripe = Number(pagoStripe.amount_received) / 100;
+const monedaStripe = String(pagoStripe.currency || "").toLowerCase();
+
+const importeReservaCentimos = Math.round(importeReserva * 100);
+
+if (
+    !Number.isSafeInteger(pagoStripe.amount_received) ||
+    pagoStripe.amount_received <= 0 ||
+    !monedaStripe ||
+    Math.round(importeCobradoStripe * 100) < importeReservaCentimos ||
+    monedaStripe !== "eur"
+) {
+    console.error(
+        "Cancelaciones: el importe o la moneda de Stripe no coinciden con los requisitos.",
+        {
+            mudanzaId,
+            importeCobradoCentimos: pagoStripe.amount_received,
+            importeReservaCentimos,
+            monedaStripe
+        }
+    );
+
+    return respuesta(res, 409, {
+        error: "No se ha podido verificar que el pago cubra la reserva en euros. No se ha iniciado ningún reembolso."
+    });
+}
+
+
         // 5. Calcular la penalización en el servidor.
         const evaluacion = calcularPenalizacion(reserva.fecha);
 
@@ -296,6 +325,7 @@ if (pagoStripe.status !== "succeeded") {
 
         const porcentajePenalizacion = evaluacion.porcentaje;
 
+       
         // 6. Consultar si ya existe una solicitud para esta mudanza.
         const {
             data: solicitudExistente,
@@ -319,26 +349,59 @@ if (pagoStripe.status !== "succeeded") {
             });
         }
 
-       if (solicitudExistente) {
-    const estadoSolicitud = normalizarEstado(
-        solicitudExistente.estado
-    );
+        if (solicitudExistente) {
+            const estadoSolicitud = normalizarEstado(
+                solicitudExistente.estado
+            );
 
-    if (estadoSolicitud === "completada") {
-        return respuesta(res, 200, {
-            ok: true,
-            mensaje: "La cancelación ya se había completado.",
-            numero_reserva: reserva.numero_reserva,
-            stripe_refund_id: solicitudExistente.stripe_refund_id
-        });
-    }
+            if (estadoSolicitud === "completada") {
+                // Recuperar el estado de la mudanza si la operación
+                // financiera terminó, pero falló la actualización anterior.
+                const {
+                    error: errorEstadoReserva
+                } = await supabase
+                    .from("mudanzas")
+                    .update({
+                        estado: "Cancelada por cliente"
+                    })
+                    .eq("id", reserva.id)
+                    .ilike("email", emailUsuario);
 
-    return respuesta(res, 409, {
-        error:
-            "Ya existe una solicitud de cancelación para esta mudanza. No se iniciará otro reembolso.",
-        estado: solicitudExistente.estado
-    });
-}
+                if (errorEstadoReserva) {
+                    console.error(
+                        "Cancelaciones: no se pudo recuperar el estado de la mudanza.",
+                        {
+                            mudanzaId: reserva.id,
+                            solicitudId: solicitudExistente.id,
+                            error: errorEstadoReserva.message
+                        }
+                    );
+
+                    return respuesta(res, 500, {
+                        error: "La cancelación financiera ya consta como completada, pero el estado de la mudanza necesita revisión. No vuelvas a solicitar el reembolso."
+                    });
+                }
+
+                return respuesta(res, 200, {
+                    ok: true,
+                    mensaje: "La cancelación ya estaba completada y se ha verificado el estado de la mudanza.",
+                    numero_reserva: reserva.numero_reserva,
+                    porcentaje_penalizacion:
+                        solicitudExistente.porcentaje_penalizacion,
+                    importe_reembolso:
+                        solicitudExistente.importe_reembolso,
+                    stripe_refund_id:
+                        solicitudExistente.stripe_refund_id
+                });
+            }
+
+            // No iniciar un segundo reembolso automáticamente.
+            // Los estados procesando y error requieren reconciliar Stripe.
+            return respuesta(res, 409, {
+                error: "Ya existe una solicitud de cancelación que no está completada. No se ha iniciado otro reembolso; es necesario revisar su estado antes de continuar.",
+                estado: solicitudExistente.estado
+            });
+        }
 
         // 7. Registrar la solicitud antes de solicitar el reembolso.
         const {
@@ -381,16 +444,21 @@ if (pagoStripe.status !== "succeeded") {
 
         if (importeReembolso > 0) {
             try {
-                const reembolso = await stripe.refunds.create(
-                    {
-                        payment_intent: paymentIntent,
-                        amount: Math.round(importeReembolso * 100)
-                    },
-                    {
-                        idempotencyKey:
-                            `rodax-cliente-cancelacion-${reserva.id}`
-                    }
-                );
+                
+const reembolso = await stripe.refunds.create(
+    {
+        payment_intent: paymentIntent,
+        amount: Math.round(importeReembolso * 100),
+        metadata: {
+            rodax_mudanza_id: String(reserva.id),
+            rodax_numero_reserva: String(reserva.numero_reserva)
+        }
+    },
+    {
+        idempotencyKey:
+            `rodax-cliente-cancelacion-${reserva.id}`
+    }
+);
 
                 refundId = reembolso.id;
             } catch (errorStripe) {
