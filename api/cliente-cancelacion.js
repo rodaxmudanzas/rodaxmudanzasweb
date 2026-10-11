@@ -451,15 +451,14 @@ if (refundRecuperado) {
         });
     }
 
-    if (
-    refundRecuperado &&
-    refundRecuperado.status !== "succeeded"
-) {
+    
+    if (refundRecuperado.status !== "succeeded") {
         return respuesta(res, 409, {
             error: "El reembolso anterior no figura como completado en Stripe. Requiere revisión antes de continuar.",
             estado: refundRecuperado.status
         });
     }
+
 }
 
 
