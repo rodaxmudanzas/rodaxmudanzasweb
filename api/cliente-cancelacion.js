@@ -120,6 +120,59 @@ function obtenerImporteReserva(reserva) {
     return null;
 }
 
+/*
+ * El email se compara con ILIKE para ignorar mayúsculas. Los caracteres
+ * % y _ son comodines en ILIKE, así que se escapan para que un email
+ * como "a_b@dominio.com" no pueda coincidir con otro cliente distinto.
+ */
+function escaparPatronIlike(valor) {
+    return String(valor).replace(/[\\%_]/g, "\\$&");
+}
+
+/*
+ * Busca en Stripe, recorriendo todas las páginas, los reembolsos del
+ * PaymentIntent creados para esta mudanza (metadata.rodax_mudanza_id).
+ * Si hay varios, prioriza el completado y después el pendiente.
+ * Si no puede recorrer todo el listado lanza error: nunca se asume
+ * que la primera página contiene todos los reembolsos.
+ */
+async function buscarReembolsoDeMudanza(stripe, paymentIntent, mudanzaId) {
+    const coincidentes = [];
+    let startingAfter = null;
+
+    for (let pagina = 0; pagina < 20; pagina++) {
+        const parametros = {
+            payment_intent: paymentIntent,
+            limit: 100
+        };
+
+        if (startingAfter) {
+            parametros.starting_after = startingAfter;
+        }
+
+        const resultado = await stripe.refunds.list(parametros);
+
+        for (const refund of resultado.data) {
+            if (refund.metadata?.rodax_mudanza_id === String(mudanzaId)) {
+                coincidentes.push(refund);
+            }
+        }
+
+        if (!resultado.has_more || resultado.data.length === 0) {
+            return (
+                coincidentes.find((r) => r.status === "succeeded") ||
+                coincidentes.find((r) => r.status === "pending") ||
+                coincidentes[0] ||
+                null
+            );
+        }
+
+        startingAfter = resultado.data[resultado.data.length - 1].id;
+    }
+
+    throw new Error("Listado de reembolsos demasiado extenso para verificarlo.");
+}
+
 module.exports = async function clienteCancelaciones(req, res) {
     if (req.method !== "POST") {
         res.setHeader("Allow", "POST");
@@ -203,6 +256,7 @@ module.exports = async function clienteCancelaciones(req, res) {
         }
 
         mudanzaId = Number(idRecibido);
+        const emailIlike = escaparPatronIlike(emailUsuario);
 
         // 3. Buscar la reserva y verificar que pertenece al cliente.
         const {
@@ -214,7 +268,7 @@ module.exports = async function clienteCancelaciones(req, res) {
                 "id, numero_reserva, email, fecha, estado, estado_pago, importe_reserva, stripe_payment_intent"
             )
             .eq("id", mudanzaId)
-            .ilike("email", emailUsuario)
+            .ilike("email", emailIlike)
             .maybeSingle();
 
         if (errorReserva) {
@@ -297,23 +351,6 @@ if (
 }
 
 
-        // 5. Calcular la penalización en el servidor.
-        const evaluacion = calcularPenalizacion(reserva.fecha);
-
-        const importePenalizacion =
-            Math.round(
-                importeReserva *
-                evaluacion.porcentaje
-            ) / 100;
-
-        const importeReembolso =
-            Math.round(
-                (importeReserva - importePenalizacion) * 100
-            ) / 100;
-
-        const porcentajePenalizacion = evaluacion.porcentaje;
-
-
                 // 6. Consultar y reconciliar solicitudes anteriores.
         const {
             data: solicitudExistente,
@@ -372,16 +409,11 @@ if (
                 // El registro pudo fallar después de que Stripe recibiera
                 // la petición. Buscar el reembolso antes de permitir otro intento.
                 try {
-                    const resultadoReembolsos = await stripe.refunds.list({
-                        payment_intent: paymentIntent,
-                        limit: 100
-                    });
-
-                    refundRecuperado =
-                        resultadoReembolsos.data.find((refund) =>
-                            refund.metadata?.rodax_mudanza_id ===
-                            String(reserva.id)
-                        ) || null;
+                    refundRecuperado = await buscarReembolsoDeMudanza(
+                        stripe,
+                        paymentIntent,
+                        reserva.id
+                    );
                 } catch (errorStripe) {
                     console.error(
                         "Cancelaciones: error reconciliando reembolsos.",
@@ -499,7 +531,7 @@ if (refundRecuperado) {
                     estado: "Cancelada por cliente"
                 })
                 .eq("id", reserva.id)
-                .ilike("email", emailUsuario);
+                .ilike("email", emailIlike);
 
             if (errorEstadoRecuperado) {
                 console.error(
@@ -538,6 +570,33 @@ if (refundRecuperado) {
                 error: "Esta mudanza ya está cancelada o finalizada."
             });
         }
+
+        // 5. Calcular la penalización en el servidor.
+        // Se calcula después de reconciliar solicitudes anteriores: una
+        // operación interrumpida se cierra con los importes ya guardados
+        // aunque la fecha del servicio haya pasado entre intentos.
+        let evaluacion;
+
+        try {
+            evaluacion = calcularPenalizacion(reserva.fecha);
+        } catch (errorFecha) {
+            return respuesta(res, 409, {
+                error: `${errorFecha.message} No se ha realizado ningún reembolso.`
+            });
+        }
+
+        const importePenalizacion =
+            Math.round(
+                importeReserva *
+                evaluacion.porcentaje
+            ) / 100;
+
+        const importeReembolso =
+            Math.round(
+                (importeReserva - importePenalizacion) * 100
+            ) / 100;
+
+        const porcentajePenalizacion = evaluacion.porcentaje;
 
         // 7. Registrar la solicitud antes de solicitar el reembolso.
         const {
@@ -696,7 +755,7 @@ const reembolso = await stripe.refunds.create(
                 estado: "Cancelada por cliente"
             })
             .eq("id", reserva.id)
-            .ilike("email", emailUsuario);
+            .ilike("email", emailIlike);
 
         if (errorActualizarReserva) {
             console.error(

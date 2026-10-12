@@ -798,6 +798,44 @@ $('btn-cerrar-cancelacion-2').onclick = () => {
 };
   }
 
+    // Días naturales hasta el servicio, calculados igual que en el servidor
+    // (api/cliente-cancelacion.js): fecha de hoy en Europe/Madrid y diferencia
+    // en días de calendario, sin depender de la zona horaria del navegador
+    // ni de los cambios de hora.
+    function diasHastaServicioMadrid(fechaServicio) {
+      if (
+        typeof fechaServicio !== 'string' ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(fechaServicio)
+      ) {
+        return null;
+      }
+
+      const [anio, mes, dia] = fechaServicio.split('-').map(Number);
+      const servicioUTC = Date.UTC(anio, mes - 1, dia);
+      const comprobada = new Date(servicioUTC);
+
+      if (
+        comprobada.getUTCFullYear() !== anio ||
+        comprobada.getUTCMonth() !== mes - 1 ||
+        comprobada.getUTCDate() !== dia
+      ) {
+        return null;
+      }
+
+      const hoy = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Europe/Madrid',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).format(new Date());
+
+      const [anioHoy, mesHoy, diaHoy] = hoy.split('-').map(Number);
+
+      return Math.round(
+        (servicioUTC - Date.UTC(anioHoy, mesHoy - 1, diaHoy)) / 86400000
+      );
+    }
+
     function openCancellation() {
     const r = reservaActual;
 
@@ -807,50 +845,57 @@ $('btn-cerrar-cancelacion-2').onclick = () => {
 
     if (!modal) return;
 
-    const reserva = toNumber(
-      r.importe_reserva ??
-      r.precioreserva ??
-      0
-    );
+    const estadoReserva = String(r.estado || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
 
-    const fechaServicio = r.fecha
-      ? new Date(`${r.fecha}T00:00:00`)
-      : null;
-
-    const hoy = new Date();
-
-    hoy.setHours(0, 0, 0, 0);
-
-    let diasRestantes = null;
-
-    if (
-      fechaServicio &&
-      !Number.isNaN(fechaServicio.getTime())
-    ) {
-      diasRestantes = Math.ceil(
-        (fechaServicio - hoy) /
-        (1000 * 60 * 60 * 24)
-      );
+    if (/cancel|completad|finaliz|realizad/.test(estadoReserva)) {
+      alert('Esta mudanza ya está cancelada o finalizada.');
+      return;
     }
 
-    
-let porcentaje = 0;
+    const reserva = Math.round(
+      toNumber(
+        r.importe_reserva ??
+        r.precioreserva ??
+        0
+      ) * 100
+    ) / 100;
 
-if (diasRestantes === null) {
-  porcentaje = 0;
-} else if (diasRestantes <= 1) {
-  porcentaje = 100;
-} else if (diasRestantes <= 3) {
-  porcentaje = 50;
-} else if (diasRestantes <= 7) {
-  porcentaje = 25;
-} else if (diasRestantes <= 14) {
-  porcentaje = 10;
-}
+    const diasRestantes = diasHastaServicioMadrid(r.fecha);
 
+    if (diasRestantes === null) {
+      alert(
+        'No se puede calcular la penalización porque la fecha de la mudanza no es válida.'
+      );
+      return;
+    }
 
-    const penalizacion = reserva * (porcentaje / 100);
-    const devolucion = reserva - penalizacion;
+    if (diasRestantes < 0) {
+      alert(
+        'No se puede cancelar mediante este proceso una mudanza cuya fecha ya ha pasado.'
+      );
+      return;
+    }
+
+    // Misma tabla que el servidor. mudanzas.fecha no guarda la hora,
+    // por lo que el cálculo se hace por días naturales.
+    let porcentaje = 0;
+
+    if (diasRestantes <= 1) {
+      porcentaje = 100;
+    } else if (diasRestantes <= 3) {
+      porcentaje = 50;
+    } else if (diasRestantes <= 7) {
+      porcentaje = 25;
+    } else if (diasRestantes <= 14) {
+      porcentaje = 10;
+    }
+
+    // Mismo redondeo que el servidor.
+    const penalizacion = Math.round(reserva * porcentaje) / 100;
+    const devolucion = Math.round((reserva - penalizacion) * 100) / 100;
 
     $('cancelacion-fecha').textContent =
       fecha(r.fecha);
@@ -1074,10 +1119,25 @@ if (diasRestantes === null) {
       requestModification;
 
       
+    let cancelacionEnCurso = false;
+
     $('btn-confirmar-cancelacion').onclick =
       confirmarCancelacion;
 
+    // Evita solicitudes repetidas (doble clic) también durante la espera
+    // de la sesión y el cuadro de confirmación, antes de deshabilitar el botón.
     async function confirmarCancelacion() {
+      if (cancelacionEnCurso) return;
+      cancelacionEnCurso = true;
+
+      try {
+        await ejecutarCancelacion();
+      } finally {
+        cancelacionEnCurso = false;
+      }
+    }
+
+    async function ejecutarCancelacion() {
       const r = reservaActual;
 
       if (!r || !r.id) {
