@@ -586,6 +586,171 @@
     return `<p>${escapeHtml(r.extras || 'Solo transporte básico')}</p>`;
   }
 
+  async function llamarApiFotografias(payload) {
+    const { data: { session } } = await db.auth.getSession();
+
+    if (!session) {
+      throw new Error("Tu sesión ha caducado. Vuelve a entrar.");
+    }
+
+    const response = await fetch("/api/cliente-fotografias", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "No se pudo gestionar la fotografía.");
+    }
+
+    return data;
+  }
+
+  function renderFotografias(r) {
+    const fotos = Array.isArray(r.urls_fotos) ? r.urls_fotos : [];
+
+    return `
+      <div class="section-card photos-card">
+        <div class="section-title">
+          <h3>Fotografías de tu mudanza</h3>
+          <label class="photos-add-button" for="cliente-fotos-input">
+            + Añadir fotos
+          </label>
+        </div>
+
+        <p>JPG, PNG o WEBP. Máximo 10 MB por fotografía.</p>
+
+        <input
+          id="cliente-fotos-input"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          multiple
+          hidden
+        >
+
+        <div id="cliente-fotos-mensaje" class="photos-message" role="status"></div>
+
+        <div class="photos-grid">
+          ${fotos.length
+            ? fotos.map((foto, index) => `
+                <div class="photo-item">
+                  <a href="${escapeHtml(foto)}" target="_blank" rel="noopener noreferrer">
+                    <img src="${escapeHtml(foto)}" alt="Fotografía ${index + 1}" loading="lazy">
+                  </a>
+                  <button type="button" class="photo-delete" data-photo-index="${index}">
+                    Eliminar
+                  </button>
+                </div>
+              `).join("")
+            : `<p class="photos-empty">Todavía no hay fotografías en esta mudanza.</p>`
+          }
+        </div>
+      </div>
+    `;
+  }
+
+  async function subirFotografias(files) {
+    const r = reservaActual;
+    if (!r || !files.length) return;
+
+    const input = $("cliente-fotos-input");
+    const mensaje = $("cliente-fotos-mensaje");
+    const addButton = document.querySelector(".photos-add-button");
+
+    if (addButton) addButton.classList.add("disabled");
+    if (input) input.disabled = true;
+
+    try {
+      for (const file of files) {
+        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+          throw new Error("Solo se permiten imágenes JPG, PNG o WEBP.");
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+          throw new Error(`La imagen "${file.name}" supera los 10 MB.`);
+        }
+
+        mensaje.textContent = `Subiendo ${file.name}…`;
+
+        const preparada = await llamarApiFotografias({
+          accion: "preparar",
+          mudanza_id: r.id,
+          nombre: file.name,
+          tipo: file.type
+        });
+
+        const { error: uploadError } = await db.storage
+          .from("documentos")
+          .uploadToSignedUrl(
+            preparada.path,
+            preparada.token,
+            file,
+            { contentType: file.type, upsert: false }
+          );
+
+        if (uploadError) throw uploadError;
+
+        const registrada = await llamarApiFotografias({
+          accion: "registrar",
+          mudanza_id: r.id,
+          url: preparada.publicUrl
+        });
+
+        r.urls_fotos = registrada.urls_fotos;
+      }
+
+      renderLista();
+      renderDetalle();
+    } catch (error) {
+      console.error("Error con fotografías:", error);
+      const mensajeActual = $("cliente-fotos-mensaje");
+      if (mensajeActual) {
+        mensajeActual.textContent = error.message || "No se pudieron subir las fotografías.";
+      }
+    } finally {
+      const inputActual = $("cliente-fotos-input");
+      const addButtonActual = document.querySelector(".photos-add-button");
+
+      if (inputActual) {
+        inputActual.disabled = false;
+        inputActual.value = "";
+      }
+      if (addButtonActual) addButtonActual.classList.remove("disabled");
+    }
+  }
+
+  async function eliminarFotografia(index) {
+    const r = reservaActual;
+    if (!r) return;
+
+    const fotos = Array.isArray(r.urls_fotos) ? r.urls_fotos : [];
+    const url = fotos[index];
+
+    if (!url || !confirm("¿Quieres quitar esta fotografía de la mudanza?")) {
+      return;
+    }
+
+    try {
+      await llamarApiFotografias({
+        accion: "eliminar",
+        mudanza_id: r.id,
+        url
+      });
+
+      r.urls_fotos = fotos.filter((foto, i) => i !== index);
+      renderLista();
+      renderDetalle();
+    } catch (error) {
+      console.error("Error al eliminar fotografía:", error);
+      alert(error.message || "No se pudo eliminar la fotografía.");
+    }
+  }
+
   function renderDetalle() {
     const r = reservaActual;
     const panel = $('detalle');
@@ -638,7 +803,7 @@
       <small>Fecha</small>
       <strong>${escapeHtml(fecha(r.fecha))}</strong>
     </div>
-  </div> 
+  </div>
 
   <div class="info-card">
     <span>🕐</span>
@@ -744,6 +909,8 @@
         ${renderDetailServices(r)}
       </div>
 
+            ${renderFotografias(r)}
+
       ${renderInventory(r)}
 
       <div class="section-card">
@@ -786,6 +953,18 @@
     $('btn-modificar').onclick = openModification;
 $('btn-modificar-2').onclick = openModification;
 $('btn-refrescar').onclick = loadReservas;
+
+
+    $('cliente-fotos-input').addEventListener('change', event => {
+      subirFotografias(Array.from(event.target.files || []));
+    });
+
+    document.querySelectorAll('.photo-delete').forEach(button => {
+      button.addEventListener('click', () => {
+        eliminarFotografia(Number(button.dataset.photoIndex));
+      });
+    });
+
 
 $('btn-cancelar').onclick = openCancellation;
 
@@ -1118,7 +1297,7 @@ $('btn-cerrar-cancelacion-2').onclick = () => {
     $('form-modificacion').onsubmit =
       requestModification;
 
-      
+
     let cancelacionEnCurso = false;
 
     $('btn-confirmar-cancelacion').onclick =

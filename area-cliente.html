@@ -485,6 +485,96 @@
 
 @media(max-width:900px){.layout{grid-template-columns:1fr}.detail-grid{grid-template-columns:1fr 1fr}.side{order:2}.detail{order:1}}
 @media(max-width:560px){.wrap{padding:20px 12px}.top-in{padding:13px 14px}.detail{padding:16px}.detail-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.welcome h1{font-size:25px}}
+
+
+/* GALERÍA DE FOTOGRAFÍAS DE LA MUDANZA */
+.photos-card .photos-add-button {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 9px;
+  background: #0B1E5B;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.photos-card .photos-add-button.disabled {
+  opacity: .55;
+  pointer-events: none;
+}
+
+.photos-message {
+  margin-top: 10px;
+  color: #475569;
+  font-size: 12px;
+}
+
+.photos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.photo-item {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.photo-item a {
+  display: block;
+}
+
+.photo-item img {
+  display: block;
+  width: 100%;
+  height: 125px;
+  object-fit: cover;
+  background: #f1f5f9;
+}
+
+.photo-delete {
+  display: block;
+  width: 100%;
+  padding: 9px;
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+  background: #fff1f2;
+  color: #be123c;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.photo-delete:hover {
+  background: #ffe4e6;
+}
+
+.photos-empty {
+  grid-column: 1 / -1;
+  padding: 16px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  color: #64748b;
+  font-size: 12px;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .photos-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .photo-item img {
+    height: 110px;
+  }
+}
+
+
 </style>
 </head>
 <body>
