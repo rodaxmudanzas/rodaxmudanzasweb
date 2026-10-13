@@ -706,7 +706,7 @@
 
       renderLista();
       renderDetalle();
-        } catch (error) {
+    } catch (error) {
       console.error("Error con fotografías:", error);
 
       // Actualizar la galería por si alguna foto anterior
