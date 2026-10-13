@@ -62,6 +62,23 @@ async function obtenerMudanza(id, user) {
   return data || null;
 }
 
+async function obtenerObjetoStorage(path) {
+  const separador = path.lastIndexOf("/");
+  const carpeta = path.slice(0, separador);
+  const nombre = path.slice(separador + 1);
+
+  const { data, error } = await supabase.storage
+    .from(BUCKET)
+    .list(carpeta, {
+      limit: 100,
+      search: nombre
+    });
+
+  if (error) throw error;
+
+  return (data || []).find(objeto => objeto.name === nombre) || null;
+}
+
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
     return responder(res, 405, { error: "Método no permitido." });
@@ -127,76 +144,143 @@ module.exports = async (req, res) => {
     }
 
     if (accion === "registrar") {
-      const path = rutaDesdeUrl(url);
+  if (typeof url !== "string") {
+    return responder(res, 400, {
+      error: "La URL de la fotografía no es válida."
+    });
+  }
 
-      if (
-        !path ||
-        !path.startsWith(`${CARPETA}/${mudanza.id}/`) ||
-        !/\.(jpe?g|png|webp)$/i.test(path)
-      ) {
-        return responder(res, 400, {
-          error: "La fotografía no pertenece a esta mudanza."
-        });
-      }
+  const path = rutaDesdeUrl(url);
 
-      const { data: publicData } = supabase.storage
-        .from(BUCKET)
-        .getPublicUrl(path);
+  if (
+    !path ||
+    !path.startsWith(`${CARPETA}/${mudanza.id}/`) ||
+    !/\.(jpe?g|png|webp)$/i.test(path)
+  ) {
+    return responder(res, 400, {
+      error: "La fotografía no pertenece a esta mudanza."
+    });
+  }
 
-      if (url !== publicData.publicUrl) {
-        return responder(res, 400, {
-          error: "La URL de la fotografía no es válida."
-        });
-      }
+  const { data: publicData } = supabase.storage
+    .from(BUCKET)
+    .getPublicUrl(path);
 
-      if (!fotos.includes(url)) fotos.push(url);
+  if (url !== publicData.publicUrl) {
+    return responder(res, 400, {
+      error: "La URL de la fotografía no es válida."
+    });
+  }
 
-      const { error } = await supabase
-        .from("mudanzas")
-        .update({ urls_fotos: fotos })
-        .eq("id", mudanza.id)
-        .eq("email", user.email);
+  // Comprobar que el archivo existe realmente en Storage.
+  const objeto = await obtenerObjetoStorage(path);
 
-      if (error) throw error;
+  if (!objeto) {
+    return responder(res, 400, {
+      error: "La fotografía todavía no está subida a Storage."
+    });
+  }
 
-      return responder(res, 200, { ok: true, urls_fotos: fotos });
-    }
+  const metadata = objeto.metadata || {};
+  const bytes = Number(metadata.size ?? metadata.contentLength);
+  const mime = String(metadata.mimetype || "").toLowerCase();
+
+  if (!Number.isFinite(bytes) || bytes < 0) {
+    return responder(res, 422, {
+      error: "No se pudo verificar el tamaño de la fotografía."
+    });
+  }
+
+  if (bytes > MAX_BYTES) {
+    return responder(res, 413, {
+      error: "La fotografía supera el límite de 10 MB."
+    });
+  }
+
+  const extensionesMime = {
+    ".jpg": ["image/jpeg"],
+    ".jpeg": ["image/jpeg"],
+    ".png": ["image/png"],
+    ".webp": ["image/webp"]
+  };
+
+  const extension = path
+    .slice(path.lastIndexOf("."))
+    .toLowerCase();
+
+  if (!extensionesMime[extension]?.includes(mime)) {
+    return responder(res, 400, {
+      error: "El formato real de la fotografía no es válido."
+    });
+  }
+
+  if (!fotos.includes(url)) {
+    fotos.push(url);
+  }
+
+  const { error } = await supabase
+    .from("mudanzas")
+    .update({ urls_fotos: fotos })
+    .eq("id", mudanza.id)
+    .eq("email", user.email);
+
+  if (error) throw error;
+
+  return responder(res, 200, {
+    ok: true,
+    urls_fotos: fotos
+  });
+}
 
     if (accion === "eliminar") {
-      if (typeof url !== "string" || !fotos.includes(url)) {
-        return responder(res, 404, {
-          error: "La fotografía no figura en esta mudanza."
-        });
-      }
+  if (typeof url !== "string" || !fotos.includes(url)) {
+    return responder(res, 404, {
+      error: "La fotografía no figura en esta mudanza."
+    });
+  }
 
-      const path = rutaDesdeUrl(url);
+  const path = rutaDesdeUrl(url);
+  const esFotoNueva = Boolean(
+    path && path.startsWith(`${CARPETA}/${mudanza.id}/`)
+  );
 
-      // Solo borramos físicamente archivos guardados en la carpeta
-      // individual de esta mudanza. Las fotos antiguas pueden estar
-      // en una carpeta compartida y no se borran físicamente aquí.
-      if (path && path.startsWith(`${CARPETA}/${mudanza.id}/`)) {
-        const { error: storageError } = await supabase.storage
-          .from(BUCKET)
-          .remove([path]);
+  const restantes = fotos.filter(foto => foto !== url);
 
-        if (storageError) throw storageError;
-      }
+  // Primero quitamos la referencia de la base de datos.
+  const { error: dbError } = await supabase
+    .from("mudanzas")
+    .update({ urls_fotos: restantes })
+    .eq("id", mudanza.id)
+    .eq("email", user.email);
 
-      const restantes = fotos.filter(foto => foto !== url);
+  if (dbError) throw dbError;
 
-      const { error } = await supabase
-        .from("mudanzas")
-        .update({ urls_fotos: restantes })
-        .eq("id", mudanza.id)
-        .eq("email", user.email);
+  // Solo borramos físicamente las fotos de la carpeta individual.
+  // Si falla Storage, la foto ya no aparecerá en la galería.
+  if (esFotoNueva) {
+    const { error: storageError } = await supabase.storage
+      .from(BUCKET)
+      .remove([path]);
 
-      if (error) throw error;
+    if (storageError) {
+      console.error(
+        "No se pudo borrar el archivo de Storage:",
+        storageError
+      );
 
       return responder(res, 200, {
         ok: true,
-        urls_fotos: restantes
+        urls_fotos: restantes,
+        aviso: "La foto se quitó de la galería, pero el archivo no pudo eliminarse del almacenamiento."
       });
     }
+  }
+
+  return responder(res, 200, {
+    ok: true,
+    urls_fotos: restantes
+  });
+}
 
     return responder(res, 400, { error: "Acción no válida." });
   } catch (error) {

@@ -706,11 +706,19 @@
 
       renderLista();
       renderDetalle();
-    } catch (error) {
+        } catch (error) {
       console.error("Error con fotografías:", error);
+
+      // Actualizar la galería por si alguna foto anterior
+      // de la selección ya se subió correctamente.
+      renderLista();
+      renderDetalle();
+
       const mensajeActual = $("cliente-fotos-mensaje");
+
       if (mensajeActual) {
-        mensajeActual.textContent = error.message || "No se pudieron subir las fotografías.";
+        mensajeActual.textContent =
+          error.message || "No se pudieron subir las fotografías.";
       }
     } finally {
       const inputActual = $("cliente-fotos-input");
