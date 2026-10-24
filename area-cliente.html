@@ -537,17 +537,37 @@
   background: #f1f5f9;
 }
 
+.photo-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-top: 1px solid #e2e8f0;
+}
+
+.photo-replace,
 .photo-delete {
   display: block;
   width: 100%;
-  padding: 9px;
+  padding: 9px 6px;
   border: 0;
-  border-top: 1px solid #e2e8f0;
-  background: #fff1f2;
-  color: #be123c;
   font-size: 12px;
   font-weight: 800;
   cursor: pointer;
+}
+
+.photo-replace {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.photo-replace:hover {
+  background: #dbeafe;
+}
+
+.photo-delete {
+  border-left: 1px solid #e2e8f0;
+  background: #fff1f2;
+  color: #be123c;
 }
 
 .photo-delete:hover {

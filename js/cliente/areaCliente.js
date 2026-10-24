@@ -611,8 +611,40 @@
     return data;
   }
 
-  function renderFotografias(r) {
-    const fotos = Array.isArray(r.urls_fotos) ? r.urls_fotos : [];
+  // Normaliza las fotografías recibidas desde Supabase.
+  // Admite arrays y textos JSON heredados.
+  function normalizarUrlsFotos(value) {
+    if (Array.isArray(value)) {
+      return value.filter(
+        url => typeof url === "string" && url.trim()
+      );
+    }
+
+    if (typeof value === "string" && value.trim()) {
+      try {
+        const parsed = JSON.parse(value);
+
+        if (Array.isArray(parsed)) {
+          return parsed.filter(
+            url => typeof url === "string" && url.trim()
+          );
+        }
+
+        return [];
+      } catch (_) {
+        return value
+          .split(/,|\s*\|\s*/)
+          .map(url => url.trim())
+          .filter(Boolean);
+      }
+    }
+
+    return [];
+  }
+
+        function renderFotografias(r) {
+    const fotos = normalizarUrlsFotos(r.urls_fotos);
+    r.urls_fotos = fotos;
 
     return `
       <div class="section-card photos-card">
@@ -747,7 +779,7 @@
       return;
     }
 
-    const fotos = Array.isArray(r.urls_fotos) ? r.urls_fotos : [];
+    const fotos = normalizarUrlsFotos(r.urls_fotos);
     const urlAnterior = fotos[index];
     if (!urlAnterior) return;
 
@@ -1244,7 +1276,10 @@ $('btn-cerrar-cancelacion-2').onclick = () => {
       throw new Error(data.error || 'No se pudieron cargar tus mudanzas.');
     }
 
-    reservas = data.reservas || [];
+    reservas = (data.reservas || []).map(r => ({
+      ...r,
+      urls_fotos: normalizarUrlsFotos(r.urls_fotos)
+    }));
 
     const requested =
       new URLSearchParams(location.search).get('reserva');
