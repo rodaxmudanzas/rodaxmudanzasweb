@@ -642,9 +642,11 @@
                   <a href="${escapeHtml(foto)}" target="_blank" rel="noopener noreferrer">
                     <img src="${escapeHtml(foto)}" alt="Fotografía ${index + 1}" loading="lazy">
                   </a>
-                  <button type="button" class="photo-delete" data-photo-index="${index}">
-                    Eliminar
-                  </button>
+                  <div class="photo-actions">
+                    <button type="button" class="photo-replace" data-photo-index="${index}">Sustituir</button>
+                    <input type="file" class="photo-replace-input" data-photo-index="${index}" accept="image/jpeg,image/png,image/webp" hidden>
+                    <button type="button" class="photo-delete" data-photo-index="${index}">Eliminar</button>
+                  </div>
                 </div>
               `).join("")
             : `<p class="photos-empty">Todavía no hay fotografías en esta mudanza.</p>`
@@ -729,6 +731,57 @@
         inputActual.value = "";
       }
       if (addButtonActual) addButtonActual.classList.remove("disabled");
+    }
+  }
+
+  async function sustituirFotografia(index, file) {
+    const r = reservaActual;
+    if (!r || !file) return;
+
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      alert("Solo se permiten imágenes JPG, PNG o WEBP.");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      alert("La fotografía supera el límite de 10 MB.");
+      return;
+    }
+
+    const fotos = Array.isArray(r.urls_fotos) ? r.urls_fotos : [];
+    const urlAnterior = fotos[index];
+    if (!urlAnterior) return;
+
+    const mensaje = $("cliente-fotos-mensaje");
+    try {
+      if (mensaje) mensaje.textContent = `Subiendo ${file.name}…`;
+      const preparada = await llamarApiFotografias({
+        accion: "preparar", mudanza_id: r.id, nombre: file.name, tipo: file.type
+      });
+      const { error: uploadError } = await db.storage
+        .from("documentos")
+        .uploadToSignedUrl(preparada.path, preparada.token, file, {
+          contentType: file.type, upsert: false
+        });
+      if (uploadError) throw uploadError;
+
+      const registrada = await llamarApiFotografias({
+        accion: "registrar", mudanza_id: r.id, url: preparada.publicUrl
+      });
+      r.urls_fotos = registrada.urls_fotos;
+
+      // La nueva foto ya está registrada; ahora quitamos la anterior.
+      await llamarApiFotografias({
+        accion: "eliminar", mudanza_id: r.id, url: urlAnterior
+      });
+      r.urls_fotos = r.urls_fotos.filter(url => url !== urlAnterior);
+      renderLista();
+      renderDetalle();
+    } catch (error) {
+      console.error("Error al sustituir fotografía:", error);
+      renderLista();
+      renderDetalle();
+      const mensajeActual = $("cliente-fotos-mensaje");
+      if (mensajeActual) mensajeActual.textContent = error.message || "No se pudo sustituir la fotografía.";
     }
   }
 
@@ -970,6 +1023,20 @@ $('btn-refrescar').onclick = loadReservas;
     document.querySelectorAll('.photo-delete').forEach(button => {
       button.addEventListener('click', () => {
         eliminarFotografia(Number(button.dataset.photoIndex));
+      });
+    });
+
+    document.querySelectorAll('.photo-replace').forEach(button => {
+      button.addEventListener('click', () => {
+        const input = document.querySelector(`.photo-replace-input[data-photo-index="${button.dataset.photoIndex}"]`);
+        if (input) input.click();
+      });
+    });
+
+    document.querySelectorAll('.photo-replace-input').forEach(input => {
+      input.addEventListener('change', event => {
+        const file = event.target.files && event.target.files[0];
+        if (file) sustituirFotografia(Number(event.target.dataset.photoIndex), file);
       });
     });
 
