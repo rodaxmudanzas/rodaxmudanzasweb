@@ -586,6 +586,34 @@
     return `<p>${escapeHtml(r.extras || 'Solo transporte básico')}</p>`;
   }
 
+  // mudanzas.urls_fotos es text: URLs separadas por comas (formato histórico).
+  // También se aceptan arrays, JSON en texto y "|".
+  function normalizarFotos(valor) {
+    let lista = [];
+
+    if (Array.isArray(valor)) {
+      lista = valor;
+    } else if (typeof valor === 'string') {
+      const texto = valor.trim();
+      if (texto.startsWith('[')) {
+        try {
+          const parsed = JSON.parse(texto);
+          lista = Array.isArray(parsed) ? parsed : [];
+        } catch (_) {
+          lista = texto.split(/,|\s*\|\s*/);
+        }
+      } else {
+        lista = texto.split(/,|\s*\|\s*/);
+      }
+    }
+
+    const vistas = new Set();
+    return lista
+      .filter(url => typeof url === 'string')
+      .map(url => url.trim())
+      .filter(url => url && !vistas.has(url) && vistas.add(url));
+  }
+
   async function llamarApiFotografias(payload) {
     const { data: { session } } = await db.auth.getSession();
 
@@ -611,40 +639,8 @@
     return data;
   }
 
-  // Normaliza las fotografías recibidas desde Supabase.
-  // Admite arrays y textos JSON heredados.
-  function normalizarUrlsFotos(value) {
-    if (Array.isArray(value)) {
-      return value.filter(
-        url => typeof url === "string" && url.trim()
-      );
-    }
-
-    if (typeof value === "string" && value.trim()) {
-      try {
-        const parsed = JSON.parse(value);
-
-        if (Array.isArray(parsed)) {
-          return parsed.filter(
-            url => typeof url === "string" && url.trim()
-          );
-        }
-
-        return [];
-      } catch (_) {
-        return value
-          .split(/,|\s*\|\s*/)
-          .map(url => url.trim())
-          .filter(Boolean);
-      }
-    }
-
-    return [];
-  }
-
-        function renderFotografias(r) {
-    const fotos = normalizarUrlsFotos(r.urls_fotos);
-    r.urls_fotos = fotos;
+  function renderFotografias(r) {
+    const fotos = normalizarFotos(r.urls_fotos);
 
     return `
       <div class="section-card photos-card">
@@ -735,7 +731,7 @@
           url: preparada.publicUrl
         });
 
-        r.urls_fotos = registrada.urls_fotos;
+        r.urls_fotos = normalizarFotos(registrada.urls_fotos);
       }
 
       renderLista();
@@ -779,7 +775,7 @@
       return;
     }
 
-    const fotos = normalizarUrlsFotos(r.urls_fotos);
+    const fotos = normalizarFotos(r.urls_fotos);
     const urlAnterior = fotos[index];
     if (!urlAnterior) return;
 
@@ -799,15 +795,20 @@
       const registrada = await llamarApiFotografias({
         accion: "registrar", mudanza_id: r.id, url: preparada.publicUrl
       });
-      r.urls_fotos = registrada.urls_fotos;
+      r.urls_fotos = normalizarFotos(registrada.urls_fotos);
 
       // La nueva foto ya está registrada; ahora quitamos la anterior.
-      await llamarApiFotografias({
+      const eliminada = await llamarApiFotografias({
         accion: "eliminar", mudanza_id: r.id, url: urlAnterior
       });
-      r.urls_fotos = r.urls_fotos.filter(url => url !== urlAnterior);
+      r.urls_fotos = normalizarFotos(eliminada.urls_fotos);
       renderLista();
       renderDetalle();
+
+      if (eliminada.aviso) {
+        const mensajeAviso = $("cliente-fotos-mensaje");
+        if (mensajeAviso) mensajeAviso.textContent = eliminada.aviso;
+      }
     } catch (error) {
       console.error("Error al sustituir fotografía:", error);
       renderLista();
@@ -821,7 +822,7 @@
     const r = reservaActual;
     if (!r) return;
 
-    const fotos = Array.isArray(r.urls_fotos) ? r.urls_fotos : [];
+    const fotos = normalizarFotos(r.urls_fotos);
     const url = fotos[index];
 
     if (!url || !confirm("¿Quieres quitar esta fotografía de la mudanza?")) {
@@ -829,15 +830,20 @@
     }
 
     try {
-      await llamarApiFotografias({
+      const respuesta = await llamarApiFotografias({
         accion: "eliminar",
         mudanza_id: r.id,
         url
       });
 
-      r.urls_fotos = fotos.filter((foto, i) => i !== index);
+      r.urls_fotos = normalizarFotos(respuesta.urls_fotos);
       renderLista();
       renderDetalle();
+
+      if (respuesta.aviso) {
+        const mensajeAviso = $("cliente-fotos-mensaje");
+        if (mensajeAviso) mensajeAviso.textContent = respuesta.aviso;
+      }
     } catch (error) {
       console.error("Error al eliminar fotografía:", error);
       alert(error.message || "No se pudo eliminar la fotografía.");
@@ -1276,9 +1282,9 @@ $('btn-cerrar-cancelacion-2').onclick = () => {
       throw new Error(data.error || 'No se pudieron cargar tus mudanzas.');
     }
 
-    reservas = (data.reservas || []).map(r => ({
-      ...r,
-      urls_fotos: normalizarUrlsFotos(r.urls_fotos)
+    reservas = (data.reservas || []).map(reserva => ({
+      ...reserva,
+      urls_fotos: normalizarFotos(reserva.urls_fotos)
     }));
 
     const requested =

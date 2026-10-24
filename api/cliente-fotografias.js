@@ -1,4 +1,3 @@
-
 const { createClient } = require("@supabase/supabase-js");
 const crypto = require("crypto");
 
@@ -15,17 +14,36 @@ function responder(res, status, data) {
   return res.status(status).json(data);
 }
 
+// Formato canónico en la columna mudanzas.urls_fotos (tipo text):
+// URLs separadas por comas. Se aceptan también JSON-array en texto y "|".
 function listaFotos(value) {
-  if (Array.isArray(value)) return value.filter(v => typeof v === "string");
-  if (typeof value === "string") {
-    try {
-      const parsed = JSON.parse(value);
-      return Array.isArray(parsed) ? parsed.filter(v => typeof v === "string") : [];
-    } catch {
-      return [];
+  let lista = [];
+
+  if (Array.isArray(value)) {
+    lista = value;
+  } else if (typeof value === "string") {
+    const texto = value.trim();
+    if (texto.startsWith("[")) {
+      try {
+        const parsed = JSON.parse(texto);
+        lista = Array.isArray(parsed) ? parsed : [];
+      } catch {
+        lista = texto.split(/,|\s*\|\s*/);
+      }
+    } else {
+      lista = texto.split(/,|\s*\|\s*/);
     }
   }
-  return [];
+
+  const vistas = new Set();
+  return lista
+    .filter(v => typeof v === "string")
+    .map(v => v.trim())
+    .filter(v => v && !vistas.has(v) && vistas.add(v));
+}
+
+function serializarFotos(fotos) {
+  return fotos.join(",");
 }
 
 function rutaDesdeUrl(value) {
@@ -55,7 +73,7 @@ async function obtenerMudanza(id, user) {
     .from("mudanzas")
     .select("id,email,urls_fotos")
     .eq("id", id)
-    .eq("email", user.email)
+    .ilike("email", user.email.replace(/[\\%_]/g, "\\$&"))
     .maybeSingle();
 
   if (error) throw error;
@@ -220,9 +238,9 @@ module.exports = async (req, res) => {
 
   const { error } = await supabase
     .from("mudanzas")
-    .update({ urls_fotos: fotos })
+    .update({ urls_fotos: serializarFotos(fotos) })
     .eq("id", mudanza.id)
-    .eq("email", user.email);
+    .eq("email", mudanza.email);
 
   if (error) throw error;
 
@@ -249,9 +267,9 @@ module.exports = async (req, res) => {
   // Primero quitamos la referencia de la base de datos.
   const { error: dbError } = await supabase
     .from("mudanzas")
-    .update({ urls_fotos: restantes })
+    .update({ urls_fotos: serializarFotos(restantes) })
     .eq("id", mudanza.id)
-    .eq("email", user.email);
+    .eq("email", mudanza.email);
 
   if (dbError) throw dbError;
 
