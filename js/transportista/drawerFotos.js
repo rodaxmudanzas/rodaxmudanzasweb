@@ -16,7 +16,11 @@ function renderFotosDrawer(urlsFotosString) {
     contenedorDestino.innerHTML = ""; // Limpiar fotos de cargas o expedientes anteriores
 
     // Si el cliente no subió imágenes o viene vacío, mostramos un aviso limpio centrado
-    if (!urlsFotosString || urlsFotosString.trim() === "") {
+    if (
+    !urlsFotosString ||
+    (typeof urlsFotosString === "string" && urlsFotosString.trim() === "") ||
+    (Array.isArray(urlsFotosString) && urlsFotosString.length === 0)
+) {
         contenedorDestino.innerHTML = `<div class="text-center text-slate-400 text-xs py-6 italic w-full">El cliente no adjuntó fotografías para este servicio.</div>`;
         return;
     }
