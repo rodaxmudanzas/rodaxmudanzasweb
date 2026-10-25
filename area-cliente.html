@@ -505,6 +505,9 @@
 }
 
 .indicaciones-card .indic-text {
+       box-sizing: border-box;
+     max-height: 152px;
+     overflow-y: auto;
   margin-top: 12px;
   padding: 12px 14px;
   border: 1px solid #e2e8f0;
@@ -538,7 +541,8 @@
   font: inherit;
   font-size: 14px;
   line-height: 1.5;
-  resize: vertical;
+       height: 152px;
+     resize: none;
 }
 
 .indicaciones-card .indic-counter {
