@@ -639,6 +639,232 @@
     return data;
   }
 
+  // ===== INICIO BLOQUE 7 · INDICACIONES PARA EL TRANSPORTISTA =====
+  // Se guardan en mudanzas.observaciones: la misma columna que rellena la Home
+  // y que lee el Panel Transportista. Editable hasta las 00:00 (Europe/Madrid)
+  // del día del servicio. La validación definitiva se hace en
+  // /api/cliente-indicaciones.
+  const INDICACIONES_MAX = 500;
+
+  const INDICACIONES_EJEMPLOS = [
+    'Ejemplos:',
+    '',
+    '• Calles muy estrechas en origen o destino',
+    '• Horario restringido en origen o destino',
+    '• Difícil aparcar o se necesita permiso del Ayuntamiento',
+    '• Escalera de caracol',
+    '• Urbanización privada',
+    '• Ascensor pequeño',
+    '• Objetos muy delicados',
+    '• Hay mascotas',
+    '• El portero debe abrir la puerta',
+    '• Necesito algún requerimiento especial, etc.'
+  ].join('\n');
+
+  let indicacionesUI = { id: null, editando: false, borrador: '' };
+
+  // 'editable' | 'plazo' (ya es el día del servicio o posterior) | 'cerrada'
+  function indicacionesEstadoEdicion(r) {
+    const estado = String(r.estado || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+
+    if (/cancel|completad|finaliz|realizad/.test(estado)) return 'cerrada';
+
+    const dias = diasHastaServicioMadrid(String(r.fecha || '').slice(0, 10));
+
+    return dias !== null && dias > 0 ? 'editable' : 'plazo';
+  }
+
+  function renderIndicaciones(r) {
+    if (indicacionesUI.id !== r.id) {
+      indicacionesUI = { id: r.id, editando: false, borrador: '' };
+    }
+
+    const modo = indicacionesEstadoEdicion(r);
+    const texto = String(r.observaciones || '').trim();
+    const editando = indicacionesUI.editando && modo === 'editable';
+
+    let cuerpo;
+
+    if (editando) {
+      cuerpo = `
+        <textarea
+          id="indicaciones-texto"
+          maxlength="${INDICACIONES_MAX}"
+          rows="6"
+          placeholder="${escapeHtml(INDICACIONES_EJEMPLOS)}">${escapeHtml(indicacionesUI.borrador)}</textarea>
+
+        <div class="indic-counter">
+          <span id="indicaciones-contador">${indicacionesUI.borrador.length}</span>
+          / ${INDICACIONES_MAX} caracteres
+        </div>
+
+        <div class="indic-actions">
+          <button type="button" class="indic-btn primary" id="btn-indicaciones-guardar">
+            Guardar indicaciones
+          </button>
+          <button type="button" class="indic-btn secondary" id="btn-indicaciones-cancelar">
+            Cancelar
+          </button>
+        </div>`;
+    } else if (texto) {
+      cuerpo = `<div class="indic-text">${escapeHtml(texto)}</div>`;
+    } else {
+      cuerpo = `<p class="indic-empty">Todavía no has añadido indicaciones para el transportista.</p>`;
+    }
+
+    const pista =
+      modo === 'editable'
+        ? 'Puedes modificarlas hasta las 00:00 del día del servicio.'
+        : modo === 'plazo'
+          ? 'El plazo para modificarlas terminó a las 00:00 del día del servicio.'
+          : '';
+
+    const boton =
+      modo === 'editable' && !editando
+        ? `<button type="button" class="indic-edit-button" id="btn-indicaciones-editar">
+             ${texto ? '✏️ Editar' : '+ Añadir'}
+           </button>`
+        : '';
+
+    return `
+      <div class="section-card indicaciones-card" id="indicaciones-card">
+        <div class="section-title">
+          <h3>📝 Indicaciones para el transportista</h3>
+          ${boton}
+        </div>
+
+        ${pista ? `<p class="indic-hint">${pista}</p>` : ''}
+
+        ${cuerpo}
+
+        <div id="indicaciones-mensaje" class="photos-message" role="status"></div>
+      </div>`;
+  }
+
+  function repintarIndicaciones() {
+    const card = $('indicaciones-card');
+    const r = reservaActual;
+
+    if (!card || !r) return;
+
+    card.outerHTML = renderIndicaciones(r);
+    bindIndicaciones();
+  }
+
+  function bindIndicaciones() {
+    const editar = $('btn-indicaciones-editar');
+
+    if (editar) {
+      editar.onclick = () => {
+        indicacionesUI.editando = true;
+        indicacionesUI.borrador = String(
+          (reservaActual && reservaActual.observaciones) || ''
+        ).trim();
+        repintarIndicaciones();
+
+        const area = $('indicaciones-texto');
+        if (area) area.focus();
+      };
+    }
+
+    const area = $('indicaciones-texto');
+
+    if (area) {
+      area.addEventListener('input', () => {
+        indicacionesUI.borrador = area.value;
+
+        const contador = $('indicaciones-contador');
+        if (contador) contador.textContent = String(area.value.length);
+      });
+    }
+
+    const cancelar = $('btn-indicaciones-cancelar');
+
+    if (cancelar) {
+      cancelar.onclick = () => {
+        indicacionesUI.editando = false;
+        indicacionesUI.borrador = '';
+        repintarIndicaciones();
+      };
+    }
+
+    const guardar = $('btn-indicaciones-guardar');
+    if (guardar) guardar.onclick = guardarIndicaciones;
+  }
+
+  async function llamarApiIndicaciones(payload) {
+    const { data: { session } } = await db.auth.getSession();
+
+    if (!session) {
+      throw new Error('Tu sesión ha caducado. Vuelve a entrar.');
+    }
+
+    const response = await fetch('/api/cliente-indicaciones', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(data.error || 'No se pudieron guardar las indicaciones.');
+    }
+
+    return data;
+  }
+
+  async function guardarIndicaciones() {
+    const r = reservaActual;
+    const area = $('indicaciones-texto');
+    const boton = $('btn-indicaciones-guardar');
+    const mensaje = $('indicaciones-mensaje');
+
+    if (!r || !area) return;
+
+    const texto = area.value.replace(/\r\n?/g, '\n').trim();
+
+    if (texto.length > INDICACIONES_MAX) {
+      if (mensaje) {
+        mensaje.textContent =
+          `Las indicaciones no pueden superar los ${INDICACIONES_MAX} caracteres.`;
+      }
+      return;
+    }
+
+    if (boton) boton.disabled = true;
+    if (mensaje) mensaje.textContent = 'Guardando…';
+
+    try {
+      const respuesta = await llamarApiIndicaciones({
+        mudanza_id: r.id,
+        observaciones: texto
+      });
+
+      r.observaciones = respuesta.observaciones;
+      indicacionesUI = { id: r.id, editando: false, borrador: '' };
+      repintarIndicaciones();
+
+      const confirmacion = $('indicaciones-mensaje');
+      if (confirmacion) confirmacion.textContent = 'Indicaciones guardadas.';
+    } catch (error) {
+      console.error('Error al guardar indicaciones:', error);
+
+      if (boton) boton.disabled = false;
+      if (mensaje) {
+        mensaje.textContent =
+          error.message || 'No se pudieron guardar las indicaciones.';
+      }
+    }
+  }
+  // ===== FIN BLOQUE 7 · INDICACIONES PARA EL TRANSPORTISTA =====
+
   function renderFotografias(r) {
     const fotos = normalizarFotos(r.urls_fotos);
 
@@ -1010,6 +1236,8 @@
 
             ${renderFotografias(r)}
 
+      ${renderIndicaciones(r)}
+
       ${renderInventory(r)}
 
       <div class="section-card">
@@ -1078,6 +1306,8 @@ $('btn-refrescar').onclick = loadReservas;
       });
     });
 
+
+bindIndicaciones();
 
 $('btn-cancelar').onclick = openCancellation;
 
