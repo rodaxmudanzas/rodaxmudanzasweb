@@ -1481,6 +1481,17 @@ $('btn-cerrar-cancelacion-2').onclick = () => {
     $('mod-tipo').value = r.tipo_servicio || 'Mudanza Estándar';
     $('mod-cambios').value = '';
 
+    modificacionInicial = {
+      origen: $('mod-origen').value.trim(),
+      destino: $('mod-destino').value.trim(),
+      fecha: $('mod-fecha').value,
+      franja: $('mod-franja').value,
+      tipo: $('mod-tipo').value
+    };
+
+    mostrarMensajeModificacion('');
+    estadoBotonModificacion(false);
+
     $('modal-modificacion').classList.remove('hidden');
   }
 
@@ -1575,54 +1586,115 @@ $('btn-cerrar-cancelacion-2').onclick = () => {
       `login-message ${error ? 'error' : ''}`;
   }
 
+  // ===== INICIO MODAL MODIFICACIÓN: mensajes visibles dentro del modal =====
+  let modificacionInicial = null;
+
+  function mostrarMensajeModificacion(texto, tipo) {
+    const caja = $('mod-mensaje');
+    if (!caja) return;
+
+    caja.textContent = texto || '';
+    caja.className = tipo ? `mod-mensaje ${tipo}` : 'mod-mensaje';
+  }
+
+  function estadoBotonModificacion(enviando) {
+    const boton = $('btn-enviar-mod');
+    if (!boton) return;
+
+    boton.disabled = enviando;
+    boton.textContent = enviando
+      ? 'Enviando…'
+      : 'Enviar solicitud a RODAX';
+  }
+
+  function hayCambiosEnModificacion() {
+    if ($('mod-cambios').value.trim()) return true;
+    if (!modificacionInicial) return true;
+
+    return (
+      $('mod-origen').value.trim() !== modificacionInicial.origen ||
+      $('mod-destino').value.trim() !== modificacionInicial.destino ||
+      $('mod-fecha').value !== modificacionInicial.fecha ||
+      $('mod-franja').value !== modificacionInicial.franja ||
+      $('mod-tipo').value !== modificacionInicial.tipo
+    );
+  }
+
   async function requestModification(e) {
     e.preventDefault();
 
-    const {
-      data: { session }
-    } = await db.auth.getSession();
+    mostrarMensajeModificacion('');
 
-    if (!session) return;
-
-    const payload = {
-      mudanza_id: Number($('modificacion-id').value),
-
-      cambios: {
-        origen: $('mod-origen').value.trim(),
-        destino: $('mod-destino').value.trim(),
-        fecha: $('mod-fecha').value,
-        franja_horaria_recogida: $('mod-franja').value,
-        tipo_servicio: $('mod-tipo').value,
-        detalle: $('mod-cambios').value.trim()
-      }
-    };
-
-    const res = await fetch('/api/cliente-modificacion', {
-      method:'POST',
-
-      headers:{
-        'Content-Type':'application/json',
-        Authorization:`Bearer ${session.access_token}`
-      },
-
-      body:JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      return setLoginMessage(
-        data.error || 'No se pudo enviar la solicitud.',
-        true
+    if (!hayCambiosEnModificacion()) {
+      mostrarMensajeModificacion(
+        'No has cambiado ningún dato. Modifica algo o cuéntanos en «Qué quieres cambiar» lo que necesitas.',
+        'error'
       );
+      return;
     }
 
-    $('modal-modificacion').classList.add('hidden');
+    estadoBotonModificacion(true);
 
-    alert(
-      'Solicitud enviada. RODAX revisará los cambios y te confirmará cualquier modificación de precio antes de aplicarla.'
-    );
+    try {
+      const {
+        data: { session }
+      } = await db.auth.getSession();
+
+      if (!session) {
+        throw new Error('Tu sesión ha caducado. Vuelve a entrar.');
+      }
+
+      const payload = {
+        mudanza_id: Number($('modificacion-id').value),
+
+        cambios: {
+          origen: $('mod-origen').value.trim(),
+          destino: $('mod-destino').value.trim(),
+          fecha: $('mod-fecha').value,
+          franja_horaria_recogida: $('mod-franja').value,
+          tipo_servicio: $('mod-tipo').value,
+          detalle: $('mod-cambios').value.trim()
+        }
+      };
+
+      const res = await fetch('/api/cliente-modificacion', {
+        method:'POST',
+
+        headers:{
+          'Content-Type':'application/json',
+          Authorization:`Bearer ${session.access_token}`
+        },
+
+        body:JSON.stringify(payload)
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(
+          data.error || 'No se pudo enviar la solicitud. Inténtalo de nuevo.'
+        );
+      }
+
+      $('modal-modificacion').classList.add('hidden');
+
+      alert(
+        'Solicitud enviada. RODAX revisará los cambios y te confirmará cualquier modificación de precio antes de aplicarla.'
+      );
+    } catch (error) {
+      console.error('Error al enviar la solicitud de modificación:', error);
+
+      mostrarMensajeModificacion(
+        error instanceof TypeError
+          ? 'No se pudo conectar. Comprueba tu conexión e inténtalo de nuevo.'
+          : error.message || 'No se pudo enviar la solicitud. Inténtalo de nuevo.',
+        'error'
+      );
+    } finally {
+      estadoBotonModificacion(false);
+    }
   }
+  // ===== FIN MODAL MODIFICACIÓN =====
 
   document.addEventListener('DOMContentLoaded', async () => {
 
