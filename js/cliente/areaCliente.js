@@ -1243,7 +1243,9 @@
   </p>
 </div>
 
-      <div class="section-card">
+            ${renderFotografias(r)}
+
+            <div class="section-card">
         <div class="section-title">
           <h3>Servicios contratados</h3>
           <button id="btn-modificar">Modificar</button>
@@ -1251,8 +1253,6 @@
 
         ${renderDetailServices(r)}
       </div>
-
-            ${renderFotografias(r)}
 
 ${renderInventory(r)}
 
