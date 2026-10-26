@@ -486,6 +486,30 @@
 @media(max-width:900px){.layout{grid-template-columns:1fr}.detail-grid{grid-template-columns:1fr 1fr}.side{order:2}.detail{order:1}}
 @media(max-width:560px){.wrap{padding:20px 12px}.top-in{padding:13px 14px}.detail{padding:16px}.detail-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.welcome h1{font-size:25px}}
 
+/* MENSAJES DEL MODAL DE MODIFICACIÓN */
+.mod-mensaje {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.mod-mensaje:empty {
+  display: none;
+}
+
+.mod-mensaje.error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+
+.save:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
 /* INDICACIONES PARA EL TRANSPORTISTA */
 .indicaciones-card .indic-edit-button {
   border: 0;
@@ -734,7 +758,8 @@
         <div class="field full"><label>Tipo de mudanza</label><select id="mod-tipo"><option>Mudanza Estándar</option><option>Mudanza Total</option></select></div>
         <div class="field full"><label>Qué quieres cambiar</label><textarea id="mod-cambios" rows="5" placeholder="Ej.: añadir sofá, quitar armario, contratar embalaje, cambiar dirección, etc."></textarea></div>
       </div>
-      <button class="save" type="submit">Enviar solicitud a RODAX</button>
+      <div id="mod-mensaje" class="mod-mensaje" role="status" aria-live="polite"></div>
+      <button id="btn-enviar-mod" class="save" type="submit">Enviar solicitud a RODAX</button>
     </form>
   </div>
 </div>

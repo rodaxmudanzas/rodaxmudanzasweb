@@ -1226,6 +1226,24 @@
       </div>
 
       <div class="section-card">
+  <div class="section-title">
+    <h3>Accesos</h3>
+  </div>
+
+  <p>
+    Recogida:
+    ${r.ascensor_origen ? 'Ascensor' : 'Sin ascensor'}
+    · Piso ${escapeHtml(r.piso_origen ?? 0)}
+  </p>
+
+  <p>
+    Entrega:
+    ${r.ascensor_destino ? 'Ascensor' : 'Sin ascensor'}
+    · Piso ${escapeHtml(r.piso_destino ?? 0)}
+  </p>
+</div>
+
+      <div class="section-card">
         <div class="section-title">
           <h3>Servicios contratados</h3>
           <button id="btn-modificar">Modificar</button>
@@ -1236,27 +1254,9 @@
 
             ${renderFotografias(r)}
 
-      ${renderIndicaciones(r)}
+${renderInventory(r)}
 
-      ${renderInventory(r)}
-
-      <div class="section-card">
-        <div class="section-title">
-          <h3>Accesos</h3>
-        </div>
-
-        <p>
-          Recogida:
-          ${r.ascensor_origen ? 'Ascensor' : 'Sin ascensor'}
-          · Piso ${escapeHtml(r.piso_origen ?? 0)}
-        </p>
-
-        <p>
-          Entrega:
-          ${r.ascensor_destino ? 'Ascensor' : 'Sin ascensor'}
-          · Piso ${escapeHtml(r.piso_destino ?? 0)}
-        </p>
-      </div>
+${renderIndicaciones(r)}
 
       ${renderContact(r)}
 
