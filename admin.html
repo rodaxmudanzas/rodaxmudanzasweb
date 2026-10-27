@@ -584,12 +584,51 @@ ${extrasCajasHTML}
         }
 
         // 5. FUNCIONES DE ACCIÓN RÁPIDA
-        async function confirmarPago(id) {
-            if(confirm("¿Confirmas que has recibido el pago? \nPasará a 'Disponible' para transportistas.")) {
-                await dbClient.from('mudanzas').update({ estado: 'Disponible' }).eq('id', id);
-                cargarTodo();
-            }
-        }
+        ```javascript
+async function confirmarPago(id) {
+    if (!tienePermiso('confirmar_pagos')) {
+        alert('No tienes permisos para confirmar pagos.');
+        return;
+    }
+
+    if (!confirm("¿Confirmas que has recibido el pago?")) {
+        return;
+    }
+
+    const { data: { session }, error: errorSesion } =
+        await dbClient.auth.getSession();
+
+    if (errorSesion || !session) {
+        alert('Tu sesión ha caducado. Inicia sesión nuevamente.');
+        return;
+    }
+
+    const { data: rol, error: errorRol } = await dbClient
+        .from('admin_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+    if (errorRol || !rol) {
+        alert('Acceso denegado. No puedes confirmar pagos.');
+        return;
+    }
+
+    const { error } = await dbClient
+        .from('mudanzas')
+        .update({ estado: 'Disponible' })
+        .eq('id', id);
+
+    if (error) {
+        console.error('Error al confirmar el pago:', error);
+        alert('No se pudo confirmar el pago. Revisa los permisos y vuelve a intentarlo.');
+        return;
+    }
+
+    await cargarTodo();
+}
+```
 
         async function desasignarMudanza(id) {
             if(confirm("¿Desasignar transportista? La mudanza volverá a estar 'Disponible'.")) {
