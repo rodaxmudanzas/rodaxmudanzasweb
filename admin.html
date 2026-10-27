@@ -176,16 +176,18 @@ async function comprobarSesionAdmin() {
         return;
     }
 
-    const emailAdmin = 'hellotobby.gamer@gmail.com';
+    const { data: rolAdmin, error: errorRol } = await dbClient
+        .from('admin_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
 
-    if (
-        session.user.email?.toLowerCase() !==
-        emailAdmin.toLowerCase()
-    ) {
+    if (errorRol || !rolAdmin) {
         await dbClient.auth.signOut();
 
         loginError.textContent =
-            'Esta cuenta no tiene permisos de administrador.';
+            'Acceso denegado: esta cuenta no tiene permisos de administrador.';
         loginError.classList.remove('hidden');
 
         return;
