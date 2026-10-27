@@ -245,11 +245,11 @@ async function comprobarSesionAdmin() {
         });
 
         // 4. MOSTRAR EL PANEL
-        function mostrarPanel() {
-            loginScreen.classList.add('hidden');
-            adminPanel.classList.remove('hidden');
-            cargarTodo();
-        }
+function mostrarPanel() {
+    loginScreen.classList.add('hidden');
+    adminPanel.classList.remove('hidden');
+    cargarTodo();
+}
 
         // 5. CERRAR SESIÓN
         async function cerrarSesionAdmin() {
@@ -268,6 +268,32 @@ async function comprobarSesionAdmin() {
 
         // Comprobar la sesión al cargar la página
         comprobarSesionAdmin();
+
+        // CONTROL DE PERMISOS DEL PANEL ADMINISTRATIVO
+let rolActualAdmin = null;
+
+async function obtenerRolActual() {
+    const { data: { session }, error: errorSesion } =
+        await dbClient.auth.getSession();
+
+    if (errorSesion || !session) {
+        return null;
+    }
+
+    const { data, error } = await dbClient
+        .from('admin_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .maybeSingle();
+
+    if (error || !data) {
+        console.error('No se pudo obtener el rol:', error);
+        return null;
+    }
+
+    rolActualAdmin = data.role;
+    return rolActualAdmin;
+}
 
         // 4. CRUD Y RENDERIZADO
         async function cargarTodo() {
