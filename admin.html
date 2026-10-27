@@ -146,21 +146,16 @@
         </div>
     </div>
 
-    <script>
-        // 1. CREDENCIALES
-        const ADMIN_EMAIL = 'admin@rodax.com';
-        const ADMIN_PASS = 'admin123';
-
-        // 2. CONFIGURACIÓN SUPABASE
+            // 1. CONFIGURACIÓN SUPABASE
         const URL_DB = 'https://fitwaumzrdvsqozlzlit.supabase.co';
         const KEY_DB = 'sb_publishable_DfBOPKC1US-oy8-_O3hu6w__RBAJGWY';
         const dbClient = window.supabase.createClient(URL_DB, KEY_DB);
 
-        // Variables Globales
-        let listaMudanzas = []; 
-        let mapaTransportistas = {}; // NUEVO: Para guardar y asociar a los transportistas
+        // Variables globales
+        let listaMudanzas = [];
+        let mapaTransportistas = {};
 
-        // UI
+        // Elementos de la interfaz
         const loginScreen = document.getElementById('login-screen');
         const adminPanel = document.getElementById('admin-panel');
         const loginForm = document.getElementById('admin-login-form');
@@ -169,35 +164,94 @@
 
         lucide.createIcons();
 
-        // 3. LOGIN MANUAL
-        if(localStorage.getItem('rodax_admin_logged') === 'true') {
+        // 2. COMPROBAR LA SESIÓN DE SUPABASE
+        async function comprobarSesionAdmin() {
+            loginScreen.classList.remove('hidden');
+            adminPanel.classList.add('hidden');
+
+            const { data: { session }, error } =
+                await dbClient.auth.getSession();
+
+            if (error || !session) {
+                return;
+            }
+
             mostrarPanel();
         }
 
-        loginForm.addEventListener('submit', (e) => {
+        // 3. INICIAR SESIÓN CON SUPABASE AUTH
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('admin-email').value.trim();
-            const pass = document.getElementById('admin-password').value.trim();
 
-            if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
-                localStorage.setItem('rodax_admin_logged', 'true');
+            loginError.classList.add('hidden');
+
+            const email = document
+                .getElementById('admin-email')
+                .value.trim();
+
+            const pass = document
+                .getElementById('admin-password')
+                .value;
+
+            const boton = loginForm.querySelector(
+                'button[type="submit"]'
+            );
+
+            if (boton) boton.disabled = true;
+
+            try {
+                const { data, error } =
+                    await dbClient.auth.signInWithPassword({
+                        email,
+                        password: pass
+                    });
+
+                if (error || !data.user) {
+                    loginError.textContent =
+                        'No se ha podido iniciar sesión. Comprueba tus credenciales.';
+                    loginError.classList.remove('hidden');
+                    return;
+                }
+
                 mostrarPanel();
-            } else {
+
+            } catch (error) {
+                console.error('Error de autenticación:', error);
+
+                loginError.textContent =
+                    'Error de conexión. Inténtalo de nuevo.';
                 loginError.classList.remove('hidden');
+
+            } finally {
+                if (boton) boton.disabled = false;
             }
         });
 
+        // 4. MOSTRAR EL PANEL
         function mostrarPanel() {
             loginScreen.classList.add('hidden');
             adminPanel.classList.remove('hidden');
             cargarTodo();
         }
 
-        function cerrarSesionAdmin() {
-            localStorage.removeItem('rodax_admin_logged');
-            window.location.reload();
+        // 5. CERRAR SESIÓN
+        async function cerrarSesionAdmin() {
+            const { error } = await dbClient.auth.signOut();
+
+            if (error) {
+                console.error('Error al cerrar sesión:', error);
+                alert('No se pudo cerrar la sesión. Inténtalo de nuevo.');
+                return;
+            }
+
+            adminPanel.classList.add('hidden');
+            loginScreen.classList.remove('hidden');
+            loginForm.reset();
         }
 
+        // Comprobar la sesión al cargar la página
+        comprobarSesionAdmin();
+        
         // 4. CRUD Y RENDERIZADO
         async function cargarTodo() {
             // Primero descargamos la lista de transportistas para saber quién es quién
