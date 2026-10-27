@@ -245,11 +245,28 @@ async function comprobarSesionAdmin() {
         });
 
         // 4. MOSTRAR EL PANEL
-function mostrarPanel() {
+async function mostrarPanel() {
+    const rol = await obtenerRolActual();
+
+    if (!rol || !['admin', 'supervisor', 'operaciones'].includes(rol)) {
+        await dbClient.auth.signOut();
+
+        adminPanel.classList.add('hidden');
+        loginScreen.classList.remove('hidden');
+
+        loginError.textContent =
+            'Acceso denegado: no tienes un rol autorizado.';
+        loginError.classList.remove('hidden');
+
+        return;
+    }
+
     loginScreen.classList.add('hidden');
     adminPanel.classList.remove('hidden');
-    cargarTodo();
+
+    await cargarTodo();
 }
+
 
         // 5. CERRAR SESIÓN
         async function cerrarSesionAdmin() {
@@ -318,6 +335,25 @@ async function obtenerRolActual() {
             lucide.createIcons();
         }
 
+        function tienePermiso(accion) {
+    const permisos = {
+        admin: [
+            'ver_mudanzas',
+            'confirmar_pagos',
+            'desasignar_mudanzas'
+        ],
+        supervisor: [
+            'ver_mudanzas',
+            'desasignar_mudanzas'
+        ],
+        operaciones: [
+            'ver_mudanzas'
+        ]
+    };
+
+    return permisos[rolActualAdmin]?.includes(accion) ?? false;
+}
+
         function renderizar(mudanzas) {
             const tbody = document.getElementById('tabla-admin');
             
@@ -333,13 +369,25 @@ async function obtenerRolActual() {
                 if (m.estado === 'Asignada') badgeClass = 'bg-green-100 text-green-700 border border-green-200';
                 if (m.estado === 'Completada') badgeClass = 'bg-purple-100 text-purple-700 border border-purple-200';
 
-                const btnConfirmarPago = m.estado === 'Pendiente de Pago' 
+                const btnConfirmarPago =
+    m.estado === 'Pendiente de Pago' &&
+    tienePermiso('confirmar_pagos')
+        ? `<button onclick="confirmarPago(${m.id})" class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center justify-center mb-2 w-full">
+             <i data-lucide="check-circle" class="w-4 h-4 mr-1"></i> Confirmar Pago
+           </button>`
+        : ''; 
                     ? `<button onclick="confirmarPago(${m.id})" class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center justify-center mb-2 w-full">
                          <i data-lucide="check-circle" class="w-4 h-4 mr-1"></i> Confirmar Pago
                        </button>`
                     : '';
 
-                const btnDesasignar = m.estado === 'Asignada' 
+                const btnDesasignar =
+    m.estado === 'Asignada' &&
+    tienePermiso('desasignar_mudanzas')
+        ? `<button onclick="desasignarMudanza(${m.id})" class="text-xs bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center justify-center mb-2 w-full">
+             <i data-lucide="rotate-ccw" class="w-4 h-4 mr-1"></i> Desasignar
+           </button>`
+        : ''; 
                     ? `<button onclick="desasignarMudanza(${m.id})" class="text-xs bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center justify-center mb-2 w-full">
                          <i data-lucide="rotate-ccw" class="w-4 h-4 mr-1"></i> Desasignar
                        </button>`
