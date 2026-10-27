@@ -1,6 +1,6 @@
 /* ============================================================
  * RODAX CORE — SISTEMA DE NOTIFICACIONES
- * Archivo: js/core/notificaciones.js
+ * Archivo: transportista/js/core/notificaciones.js
  * ============================================================ */
 
 (function () {

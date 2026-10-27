@@ -1,4 +1,4 @@
-// js/transportista/drawerFotos.js
+// transportista/js/drawerFotos.js
 
 function renderFotosDrawer(urlsFotosString) {
     // Buscamos tanto el contenedor del resumen (si existe) como el de la pestaña de Fotos

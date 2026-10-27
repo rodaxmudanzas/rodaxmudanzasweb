@@ -4,7 +4,7 @@
 
  * RODAX Marketplace
 
- * Archivo : js/transportista/perfil.js
+ * Archivo : transportista/js/perfil.js
 
   * Módulo  : Mi perfil
 

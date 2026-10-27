@@ -1,7 +1,7 @@
 /**
  * ==========================================================
  * RODAX Marketplace
- * Archivo : js/transportista/facturacion.js
+ * Archivo : transportista/js/facturacion.js
  * Módulo  : Facturación
  * ----------------------------------------------------------
  * Función:

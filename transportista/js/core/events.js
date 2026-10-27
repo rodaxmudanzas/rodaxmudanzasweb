@@ -7,8 +7,8 @@
     "use strict";
 
     const scripts = [
-        "js/transportista/estadisticasVehiculo.js",
-        "js/transportista/configuracionNotificaciones.js"
+        "js/estadisticasVehiculo.js",
+        "js/configuracionNotificaciones.js"
     ];
 
     scripts.forEach(src => {
