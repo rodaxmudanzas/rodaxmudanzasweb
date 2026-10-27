@@ -165,19 +165,34 @@
         lucide.createIcons();
 
         // 2. COMPROBAR LA SESIÓN DE SUPABASE
-        async function comprobarSesionAdmin() {
-            loginScreen.classList.remove('hidden');
-            adminPanel.classList.add('hidden');
+async function comprobarSesionAdmin() {
+    loginScreen.classList.remove('hidden');
+    adminPanel.classList.add('hidden');
 
-            const { data: { session }, error } =
-                await dbClient.auth.getSession();
+    const { data: { session }, error } =
+        await dbClient.auth.getSession();
 
-            if (error || !session) {
-                return;
-            }
+    if (error || !session) {
+        return;
+    }
 
-            mostrarPanel();
-        }
+    const emailAdmin = 'hellotobby.gamer@gmail.com';
+
+    if (
+        session.user.email?.toLowerCase() !==
+        emailAdmin.toLowerCase()
+    ) {
+        await dbClient.auth.signOut();
+
+        loginError.textContent =
+            'Esta cuenta no tiene permisos de administrador.';
+        loginError.classList.remove('hidden');
+
+        return;
+    }
+
+    mostrarPanel();
+}
 
         // 3. INICIAR SESIÓN CON SUPABASE AUTH
         loginForm.addEventListener('submit', async (e) => {
@@ -213,9 +228,9 @@
                     return;
                 }
 
-                mostrarPanel();
+                await comprobarSesionAdmin();
 
-            } catch (error) {
+} catch (error) {
                 console.error('Error de autenticación:', error);
 
                 loginError.textContent =
@@ -251,7 +266,7 @@
 
         // Comprobar la sesión al cargar la página
         comprobarSesionAdmin();
-        
+
         // 4. CRUD Y RENDERIZADO
         async function cargarTodo() {
             // Primero descargamos la lista de transportistas para saber quién es quién
