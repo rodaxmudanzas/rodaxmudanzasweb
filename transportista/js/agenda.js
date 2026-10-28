@@ -1,7 +1,7 @@
 /**
  * ==========================================================
  * RODAX Marketplace
- * Archivo : js/transportista/agenda.js
+ * Archivo : transportista/js/agenda.js
  * Módulo  : Mi Agenda
  * ==========================================================
  *

@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    { "source": "/area-cliente.html", "destination": "/cliente/area-cliente.html", "permanent": true },
+    { "source": "/confirmacion.html", "destination": "/cliente/confirmacion.html", "permanent": true },
+    { "source": "/transportistas.html", "destination": "/transportista/transportistas.html", "permanent": true },
+    { "source": "/panel-transportista.html", "destination": "/transportista/panel-transportista.html", "permanent": true },
+    { "source": "/condiciones-transportista.html", "destination": "/transportista/condiciones-transportista.html", "permanent": true },
+    { "source": "/admin.html", "destination": "/admin/admin.html", "permanent": true }
+  ]
+}

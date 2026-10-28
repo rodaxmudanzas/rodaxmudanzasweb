@@ -4,7 +4,7 @@
 
  * RODAX Marketplace
 
- * Archivo : js/transportista/historialServicios.js
+ * Archivo : transportista/js/historialServicios.js
 
  * Módulo  : Historial de servicios
 

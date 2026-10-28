@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>RODAX · Administración</title>
+    <link rel="icon" type="image/png" href="/images/logo-rodax.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.53.0/dist/umd/supabase.js"></script>
+    <style>
+        @media (max-width: 1023px) {
+            #barra-lateral { position: fixed; inset: 0 auto 0 0; z-index: 40; transform: translateX(-100%); transition: transform .2s; }
+            #barra-lateral.abierta { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 font-sans text-slate-800">
+
+    <!-- ACCESO -->
+    <div id="login-screen" class="fixed inset-0 bg-slate-900 flex items-center justify-center z-50 p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-black text-slate-800">RODAX <span class="text-blue-600">ADMIN</span></h1>
+                <p class="text-slate-500 mt-2 text-sm font-medium">Acceso restringido al personal de Administración</p>
+            </div>
+            <form id="admin-login-form" class="space-y-5">
+                <div>
+                    <label for="admin-email" class="block text-sm font-bold text-slate-700 mb-2">Email</label>
+                    <input type="email" id="admin-email" required autocomplete="username"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all">
+                </div>
+                <div>
+                    <label for="admin-password" class="block text-sm font-bold text-slate-700 mb-2">Contraseña</label>
+                    <input type="password" id="admin-password" required autocomplete="current-password"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all">
+                </div>
+                <button type="submit" id="btn-login" class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-bold py-3.5 rounded-xl transition-colors">
+                    Entrar
+                </button>
+                <div id="login-error" role="alert" class="text-red-600 text-sm font-bold text-center hidden"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- APLICACIÓN -->
+    <div id="app" class="hidden min-h-screen lg:flex">
+
+        <aside id="barra-lateral" class="w-64 shrink-0 bg-slate-900 text-white flex flex-col p-4 lg:min-h-screen">
+            <div class="px-2 py-3 mb-4">
+                <p class="text-xl font-black">RODAX <span class="text-blue-400">ADMIN</span></p>
+            </div>
+            <nav id="menu" class="space-y-1 flex-1"></nav>
+            <div class="border-t border-slate-800 pt-4 mt-4">
+                <p id="usuario-nombre" class="text-sm font-bold truncate"></p>
+                <p id="usuario-rol" class="text-xs text-slate-400 mb-3"></p>
+                <button id="btn-salir" type="button" class="w-full flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-red-300 hover:bg-slate-800">
+                    <i data-lucide="log-out" class="w-4 h-4"></i> Cerrar sesión
+                </button>
+            </div>
+        </aside>
+
+        <div class="flex-1 min-w-0">
+            <header class="flex items-center justify-between gap-3 bg-white border-b border-slate-200 px-4 py-3 sticky top-0 z-30">
+                <button id="btn-menu" type="button" class="lg:hidden p-2 rounded-lg hover:bg-slate-100" aria-label="Abrir menú">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+                <span class="hidden lg:block text-sm text-slate-400 font-medium">Área Administración</span>
+                <button id="btn-refrescar" type="button" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 text-sm font-bold">
+                    <i data-lucide="refresh-cw" class="w-4 h-4"></i> Refrescar
+                </button>
+            </header>
+            <main id="vista"></main>
+        </div>
+    </div>
+
+    <!-- FICHA DE EXPEDIENTE -->
+    <div id="ficha" class="hidden fixed inset-0 z-50">
+        <div id="ficha-fondo" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <aside class="absolute right-0 top-0 h-full w-full max-w-2xl bg-white shadow-2xl overflow-y-auto">
+            <button id="ficha-cerrar" type="button" class="absolute right-4 top-4 p-2 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700" aria-label="Cerrar ficha">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div id="ficha-cuerpo"></div>
+        </aside>
+    </div>
+
+    <!-- CONFIRMACIÓN -->
+    <div id="modal-confirmacion" class="hidden fixed inset-0 z-[60] bg-slate-900/70 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6" role="dialog" aria-modal="true" aria-labelledby="confirmacion-titulo">
+            <h3 id="confirmacion-titulo" class="text-lg font-black text-slate-800"></h3>
+            <p id="confirmacion-mensaje" class="text-sm text-slate-600 mt-2"></p>
+            <div id="confirmacion-bloque" class="mt-4">
+                <label for="confirmacion-texto" id="confirmacion-etiqueta" class="block text-xs font-bold text-slate-500 uppercase mb-1"></label>
+                <textarea id="confirmacion-texto" rows="3" maxlength="500" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:border-blue-500"></textarea>
+                <p id="confirmacion-error" class="text-xs font-bold text-red-600 mt-1 hidden"></p>
+            </div>
+            <div class="flex justify-end gap-2 mt-5">
+                <button id="confirmacion-cancelar" type="button" class="px-5 py-2.5 rounded-xl font-bold text-slate-600 hover:bg-slate-100 text-sm">Cancelar</button>
+                <button id="confirmacion-aceptar" type="button" class="px-5 py-2.5 rounded-xl font-bold text-white bg-blue-600 text-sm">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="avisos" class="fixed bottom-4 right-4 z-[70] space-y-2" aria-live="polite"></div>
+
+    <script src="js/core.js"></script>
+    <script src="js/vistaDashboard.js"></script>
+    <script src="js/vistaExpedientes.js"></script>
+    <script src="js/vistaSolicitudes.js"></script>
+    <script src="js/vistaListados.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

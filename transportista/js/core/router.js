@@ -1,7 +1,7 @@
 /**
  * ==========================================================
  * RODAX Marketplace
- * Archivo : js/core/router.js
+ * Archivo : transportista/js/core/router.js
  * Módulo  : Router
  * ----------------------------------------------------------
  * Responsabilidad:

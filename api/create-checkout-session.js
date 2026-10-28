@@ -38,7 +38,7 @@ module.exports = async (req, res) => {
         console.log("CREATE CHECKOUT");
         console.log("SUCCESS URL:");
         console.log(
-            "https://rodaxmudanzasweb.vercel.app/confirmacion.html?session_id={CHECKOUT_SESSION_ID}"
+            "https://rodaxmudanzasweb.vercel.app/cliente/confirmacion.html?session_id={CHECKOUT_SESSION_ID}"
         );
         console.log("================================");
 
@@ -175,7 +175,7 @@ module.exports = async (req, res) => {
                 //////////////////////////////////////////////////
 
                 success_url:
-                    "https://rodaxmudanzasweb.vercel.app/confirmacion.html?session_id={CHECKOUT_SESSION_ID}",
+                    "https://rodaxmudanzasweb.vercel.app/cliente/confirmacion.html?session_id={CHECKOUT_SESSION_ID}",
 
                 cancel_url:
                     "https://rodaxmudanzasweb.vercel.app/?pago=cancel"

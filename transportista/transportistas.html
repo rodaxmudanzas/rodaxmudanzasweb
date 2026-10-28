@@ -204,9 +204,9 @@ border-b border-white/5">
         <div class="flex items-center justify-center gap-8">
 
             <!-- LOGO -->
-            <a href="index.html" class="flex items-center group cursor-pointer">
+            <a href="../index.html" class="flex items-center group cursor-pointer">
                 <img 
-                    src="images/logo-rodax.png" 
+                    src="../images/logo-rodax.png" 
                     alt="RODAX Furgo Mudanzas"
                     class="h-16 md:h-16 lg:h-16 w-auto object-contain 
                     drop-shadow-[0_6px_18px_rgba(0,0,0,0.18)] 
@@ -219,7 +219,7 @@ border-b border-white/5">
             <!-- MENÚ DESKTOP -->
             <nav class="hidden md:flex items-center space-x-6">
 
-                <a href="index.html" 
+                <a href="../index.html" 
                    class="text-sm font-semibold text-gray-200 hover:text-blue-400 transition-colors">
                    Volver a Inicio
                 </a>
@@ -264,7 +264,7 @@ hover:bg-[#445066]">
 
             <div class="flex flex-col space-y-3 px-1">
 
-                <a href="index.html" 
+                <a href="../index.html" 
                    class="font-bold text-gray-700 hover:text-blue-600 py-2">
                    Volver a Inicio
                 </a>
@@ -539,7 +539,7 @@ hover:shadow-[0_20px_50px_rgba(37,99,235,0.45)]">
         <div class="text-center mb-12">
             <div class="flex justify-center mb-5">
                 <img 
-                    src="images/logo-rodax.png" 
+                    src="../images/logo-rodax.png" 
                     alt="RODAX Plataforma de Transporte"
                     class="h-20 md:h-12 lg:h-12 w-auto object-contain"
                 />
@@ -891,7 +891,7 @@ const dbClient = window.supabase.createClient(URL_DB, KEY_DB);
 
                     if (email === 'admin@rodax.com' && password === 'admin123') {
                         localStorage.setItem('rodax_admin_logged', 'true');
-                        window.location.href = "admin.html";
+                        window.location.href = "../admin/admin.html";
                         return;
                     }
 

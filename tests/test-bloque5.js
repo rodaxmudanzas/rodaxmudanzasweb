@@ -262,8 +262,8 @@ function sembrar(env, { fecha, email = 'ana@ejemplo.com', reserva = 291.18, esta
   });
 
   // ---------- CLIENTE ----------
-  console.log('\n== CLIENTE: js/cliente/areaCliente.js (días y porcentaje) ==');
-  const src = fs.readFileSync(path.join(REPO, 'js/cliente/areaCliente.js'), 'utf8').replace(/\r\n/g, '\n');
+  console.log('\n== CLIENTE: cliente/js/areaCliente.js (días y porcentaje) ==');
+  const src = fs.readFileSync(path.join(REPO, 'cliente/js/areaCliente.js'), 'utf8').replace(/\r\n/g, '\n');
   const m = src.match(/function diasHastaServicioMadrid[\s\S]*?\n    }\n/);
   assert.ok(m, 'no se encontró diasHastaServicioMadrid');
   function conAhora(iso, fn) {

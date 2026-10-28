@@ -1,4 +1,4 @@
-// js/transportista/drawerInventario.js
+// transportista/js/drawerInventario.js
 //
 // MOD-003A
 // INVENTARIO + M3 + EXTRAS MUDANZA TOTAL
