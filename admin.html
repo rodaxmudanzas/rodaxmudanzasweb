@@ -375,13 +375,9 @@ async function obtenerRolActual() {
         ? `<button onclick="confirmarPago(${m.id})" class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center justify-center mb-2 w-full">
              <i data-lucide="check-circle" class="w-4 h-4 mr-1"></i> Confirmar Pago
            </button>`
-        : ''; 
-                    ? `<button onclick="confirmarPago(${m.id})" class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center justify-center mb-2 w-full">
-                         <i data-lucide="check-circle" class="w-4 h-4 mr-1"></i> Confirmar Pago
-                       </button>`
-                    : '';
+        : '';
 
-                const btnDesasignar =
+const btnDesasignar =
     m.estado === 'Asignada' &&
     tienePermiso('desasignar_mudanzas')
         ? `<button onclick="desasignarMudanza(${m.id})" class="text-xs bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center justify-center mb-2 w-full">
@@ -584,7 +580,6 @@ ${extrasCajasHTML}
         }
 
         // 5. FUNCIONES DE ACCIÓN RÁPIDA
-        ```javascript
 async function confirmarPago(id) {
     if (!tienePermiso('confirmar_pagos')) {
         alert('No tienes permisos para confirmar pagos.');
