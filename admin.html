@@ -363,42 +363,57 @@ async function obtenerRolActual() {
             }
 
             tbody.innerHTML = mudanzas.map(m => {
-                let badgeClass = 'bg-slate-100 text-slate-700';
-                if (m.estado === 'Pendiente de Pago') badgeClass = 'bg-orange-100 text-orange-700 border border-orange-200';
-                if (m.estado === 'Disponible') badgeClass = 'bg-blue-100 text-blue-700 border border-blue-200';
-                if (m.estado === 'Asignada') badgeClass = 'bg-green-100 text-green-700 border border-green-200';
-                if (m.estado === 'Completada') badgeClass = 'bg-purple-100 text-purple-700 border border-purple-200';
+    let badgeClass = 'bg-slate-100 text-slate-700';
 
-                const btnConfirmarPago =
-    m.estado === 'Pendiente de Pago' &&
-    tienePermiso('confirmar_pagos')
-        ? `<button onclick="confirmarPago(${m.id})" class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center justify-center mb-2 w-full">
-             <i data-lucide="check-circle" class="w-4 h-4 mr-1"></i> Confirmar Pago
-           </button>`
-        : '';
+    if (m.estado === 'Pendiente de Pago') {
+        badgeClass = 'bg-orange-100 text-orange-700 border border-orange-200';
+    }
+    if (m.estado === 'Disponible') {
+        badgeClass = 'bg-blue-100 text-blue-700 border border-blue-200';
+    }
+    if (m.estado === 'Asignada') {
+        badgeClass = 'bg-green-100 text-green-700 border border-green-200';
+    }
+    if (m.estado === 'Completada') {
+        badgeClass = 'bg-purple-100 text-purple-700 border border-purple-200';
+    }
 
-const btnDesasignar =
-    m.estado === 'Asignada' &&
-    tienePermiso('desasignar_mudanzas')
-        ? `<button onclick="desasignarMudanza(${m.id})" class="text-xs bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center justify-center mb-2 w-full">
-             <i data-lucide="rotate-ccw" class="w-4 h-4 mr-1"></i> Desasignar
-           </button>`
-        : ''; 
+    const btnConfirmarPago =
+        m.estado === 'Pendiente de Pago' &&
+        tienePermiso('confirmar_pagos')
+            ? `<button onclick="confirmarPago(${m.id})" class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center justify-center mb-2 w-full">
+                 <i data-lucide="check-circle" class="w-4 h-4 mr-1"></i> Confirmar Pago
+               </button>`
+            : '';
 
-                // FOTOS DE LA CARGA
-                let fotosHTML = '';
-                if (m.urls_fotos && m.urls_fotos.trim() !== '') {
-                    const urlsArray = m.urls_fotos.split(',').map(url => url.trim());
-                    fotosHTML = `
-                        <div class="mt-3 flex gap-2 flex-wrap">
-                            ${urlsArray.map(url => `
-                                <a href="${url}" target="_blank" title="Ver foto" class="relative block w-12 h-12 rounded-lg border border-slate-200 overflow-hidden shadow-sm hover:border-blue-500 hover:shadow-md transition-all group">
-                                    <img src="${url}" alt="Foto" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
-                                </a>
-                            `).join('')}
-                        </div>
-                    `;
-                }
+    const btnDesasignar =
+        m.estado === 'Asignada' &&
+        tienePermiso('desasignar_mudanzas')
+            ? `<button onclick="desasignarMudanza(${m.id})" class="text-xs bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center justify-center mb-2 w-full">
+                 <i data-lucide="rotate-ccw" class="w-4 h-4 mr-1"></i> Desasignar
+               </button>`
+            : '';
+
+    // FOTOS DE LA CARGA
+    let fotosHTML = '';
+
+    if (m.urls_fotos && m.urls_fotos.trim() !== '') {
+        const urlsArray = m.urls_fotos
+            .split(',')
+            .map(url => url.trim());
+
+        fotosHTML = `
+            <div class="mt-3 flex gap-2 flex-wrap">
+                ${urlsArray.map(url => `
+                    <a href="${url}" target="_blank" title="Ver foto"
+                       class="relative block w-12 h-12 rounded-lg border border-slate-200 overflow-hidden shadow-sm hover:border-blue-500 hover:shadow-md transition-all group">
+                        <img src="${url}" alt="Foto"
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform">
+                    </a>
+                `).join('')}
+            </div>
+        `;
+    }
 
                 // NUEVO: DATOS DEL TRANSPORTISTA ASIGNADO
                 let infoTransportistaHTML = '';
