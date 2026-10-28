@@ -146,21 +146,16 @@
         </div>
     </div>
 
-    <script>
-        // 1. CREDENCIALES
-        const ADMIN_EMAIL = 'admin@rodax.com';
-        const ADMIN_PASS = 'admin123';
-
-        // 2. CONFIGURACIÓN SUPABASE
+            // 1. CONFIGURACIÓN SUPABASE
         const URL_DB = 'https://fitwaumzrdvsqozlzlit.supabase.co';
         const KEY_DB = 'sb_publishable_DfBOPKC1US-oy8-_O3hu6w__RBAJGWY';
         const dbClient = window.supabase.createClient(URL_DB, KEY_DB);
 
-        // Variables Globales
-        let listaMudanzas = []; 
-        let mapaTransportistas = {}; // NUEVO: Para guardar y asociar a los transportistas
+        // Variables globales
+        let listaMudanzas = [];
+        let mapaTransportistas = {};
 
-        // UI
+        // Elementos de la interfaz
         const loginScreen = document.getElementById('login-screen');
         const adminPanel = document.getElementById('admin-panel');
         const loginForm = document.getElementById('admin-login-form');
@@ -169,34 +164,153 @@
 
         lucide.createIcons();
 
-        // 3. LOGIN MANUAL
-        if(localStorage.getItem('rodax_admin_logged') === 'true') {
-            mostrarPanel();
-        }
+        // 2. COMPROBAR LA SESIÓN DE SUPABASE
+async function comprobarSesionAdmin() {
+    loginScreen.classList.remove('hidden');
+    adminPanel.classList.add('hidden');
 
-        loginForm.addEventListener('submit', (e) => {
+    const { data: { session }, error } =
+        await dbClient.auth.getSession();
+
+    if (error || !session) {
+        return;
+    }
+
+    const { data: rolAdmin, error: errorRol } = await dbClient
+        .from('admin_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+    if (errorRol || !rolAdmin) {
+        await dbClient.auth.signOut();
+
+        loginError.textContent =
+            'Acceso denegado: esta cuenta no tiene permisos de administrador.';
+        loginError.classList.remove('hidden');
+
+        return;
+    }
+
+    mostrarPanel();
+}
+
+        // 3. INICIAR SESIÓN CON SUPABASE AUTH
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('admin-email').value.trim();
-            const pass = document.getElementById('admin-password').value.trim();
 
-            if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
-                localStorage.setItem('rodax_admin_logged', 'true');
-                mostrarPanel();
-            } else {
+            loginError.classList.add('hidden');
+
+            const email = document
+                .getElementById('admin-email')
+                .value.trim();
+
+            const pass = document
+                .getElementById('admin-password')
+                .value;
+
+            const boton = loginForm.querySelector(
+                'button[type="submit"]'
+            );
+
+            if (boton) boton.disabled = true;
+
+            try {
+                const { data, error } =
+                    await dbClient.auth.signInWithPassword({
+                        email,
+                        password: pass
+                    });
+
+                if (error || !data.user) {
+                    loginError.textContent =
+                        'No se ha podido iniciar sesión. Comprueba tus credenciales.';
+                    loginError.classList.remove('hidden');
+                    return;
+                }
+
+                await comprobarSesionAdmin();
+
+} catch (error) {
+                console.error('Error de autenticación:', error);
+
+                loginError.textContent =
+                    'Error de conexión. Inténtalo de nuevo.';
                 loginError.classList.remove('hidden');
+
+            } finally {
+                if (boton) boton.disabled = false;
             }
         });
 
-        function mostrarPanel() {
-            loginScreen.classList.add('hidden');
-            adminPanel.classList.remove('hidden');
-            cargarTodo();
+        // 4. MOSTRAR EL PANEL
+async function mostrarPanel() {
+    const rol = await obtenerRolActual();
+
+    if (!rol || !['admin', 'supervisor', 'operaciones'].includes(rol)) {
+        await dbClient.auth.signOut();
+
+        adminPanel.classList.add('hidden');
+        loginScreen.classList.remove('hidden');
+
+        loginError.textContent =
+            'Acceso denegado: no tienes un rol autorizado.';
+        loginError.classList.remove('hidden');
+
+        return;
+    }
+
+    loginScreen.classList.add('hidden');
+    adminPanel.classList.remove('hidden');
+
+    await cargarTodo();
+}
+
+
+        // 5. CERRAR SESIÓN
+        async function cerrarSesionAdmin() {
+            const { error } = await dbClient.auth.signOut();
+
+            if (error) {
+                console.error('Error al cerrar sesión:', error);
+                alert('No se pudo cerrar la sesión. Inténtalo de nuevo.');
+                return;
+            }
+
+            adminPanel.classList.add('hidden');
+            loginScreen.classList.remove('hidden');
+            loginForm.reset();
         }
 
-        function cerrarSesionAdmin() {
-            localStorage.removeItem('rodax_admin_logged');
-            window.location.reload();
-        }
+        // Comprobar la sesión al cargar la página
+        comprobarSesionAdmin();
+
+        // CONTROL DE PERMISOS DEL PANEL ADMINISTRATIVO
+let rolActualAdmin = null;
+
+async function obtenerRolActual() {
+    const { data: { session }, error: errorSesion } =
+        await dbClient.auth.getSession();
+
+    if (errorSesion || !session) {
+        return null;
+    }
+
+    const { data, error } = await dbClient
+        .from('admin_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .maybeSingle();
+
+    if (error || !data) {
+        console.error('No se pudo obtener el rol:', error);
+        return null;
+    }
+
+    rolActualAdmin = data.role;
+    return rolActualAdmin;
+}
 
         // 4. CRUD Y RENDERIZADO
         async function cargarTodo() {
@@ -221,6 +335,25 @@
             lucide.createIcons();
         }
 
+        function tienePermiso(accion) {
+    const permisos = {
+        admin: [
+            'ver_mudanzas',
+            'confirmar_pagos',
+            'desasignar_mudanzas'
+        ],
+        supervisor: [
+            'ver_mudanzas',
+            'desasignar_mudanzas'
+        ],
+        operaciones: [
+            'ver_mudanzas'
+        ]
+    };
+
+    return permisos[rolActualAdmin]?.includes(accion) ?? false;
+}
+
         function renderizar(mudanzas) {
             const tbody = document.getElementById('tabla-admin');
             
@@ -230,38 +363,57 @@
             }
 
             tbody.innerHTML = mudanzas.map(m => {
-                let badgeClass = 'bg-slate-100 text-slate-700';
-                if (m.estado === 'Pendiente de Pago') badgeClass = 'bg-orange-100 text-orange-700 border border-orange-200';
-                if (m.estado === 'Disponible') badgeClass = 'bg-blue-100 text-blue-700 border border-blue-200';
-                if (m.estado === 'Asignada') badgeClass = 'bg-green-100 text-green-700 border border-green-200';
-                if (m.estado === 'Completada') badgeClass = 'bg-purple-100 text-purple-700 border border-purple-200';
+    let badgeClass = 'bg-slate-100 text-slate-700';
 
-                const btnConfirmarPago = m.estado === 'Pendiente de Pago' 
-                    ? `<button onclick="confirmarPago(${m.id})" class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center justify-center mb-2 w-full">
-                         <i data-lucide="check-circle" class="w-4 h-4 mr-1"></i> Confirmar Pago
-                       </button>`
-                    : '';
+    if (m.estado === 'Pendiente de Pago') {
+        badgeClass = 'bg-orange-100 text-orange-700 border border-orange-200';
+    }
+    if (m.estado === 'Disponible') {
+        badgeClass = 'bg-blue-100 text-blue-700 border border-blue-200';
+    }
+    if (m.estado === 'Asignada') {
+        badgeClass = 'bg-green-100 text-green-700 border border-green-200';
+    }
+    if (m.estado === 'Completada') {
+        badgeClass = 'bg-purple-100 text-purple-700 border border-purple-200';
+    }
 
-                const btnDesasignar = m.estado === 'Asignada' 
-                    ? `<button onclick="desasignarMudanza(${m.id})" class="text-xs bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center justify-center mb-2 w-full">
-                         <i data-lucide="rotate-ccw" class="w-4 h-4 mr-1"></i> Desasignar
-                       </button>`
-                    : '';
+    const btnConfirmarPago =
+        m.estado === 'Pendiente de Pago' &&
+        tienePermiso('confirmar_pagos')
+            ? `<button onclick="confirmarPago(${m.id})" class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center justify-center mb-2 w-full">
+                 <i data-lucide="check-circle" class="w-4 h-4 mr-1"></i> Confirmar Pago
+               </button>`
+            : '';
 
-                // FOTOS DE LA CARGA
-                let fotosHTML = '';
-                if (m.urls_fotos && m.urls_fotos.trim() !== '') {
-                    const urlsArray = m.urls_fotos.split(',').map(url => url.trim());
-                    fotosHTML = `
-                        <div class="mt-3 flex gap-2 flex-wrap">
-                            ${urlsArray.map(url => `
-                                <a href="${url}" target="_blank" title="Ver foto" class="relative block w-12 h-12 rounded-lg border border-slate-200 overflow-hidden shadow-sm hover:border-blue-500 hover:shadow-md transition-all group">
-                                    <img src="${url}" alt="Foto" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
-                                </a>
-                            `).join('')}
-                        </div>
-                    `;
-                }
+    const btnDesasignar =
+        m.estado === 'Asignada' &&
+        tienePermiso('desasignar_mudanzas')
+            ? `<button onclick="desasignarMudanza(${m.id})" class="text-xs bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-colors flex items-center justify-center mb-2 w-full">
+                 <i data-lucide="rotate-ccw" class="w-4 h-4 mr-1"></i> Desasignar
+               </button>`
+            : '';
+
+    // FOTOS DE LA CARGA
+    let fotosHTML = '';
+
+    if (m.urls_fotos && m.urls_fotos.trim() !== '') {
+        const urlsArray = m.urls_fotos
+            .split(',')
+            .map(url => url.trim());
+
+        fotosHTML = `
+            <div class="mt-3 flex gap-2 flex-wrap">
+                ${urlsArray.map(url => `
+                    <a href="${url}" target="_blank" title="Ver foto"
+                       class="relative block w-12 h-12 rounded-lg border border-slate-200 overflow-hidden shadow-sm hover:border-blue-500 hover:shadow-md transition-all group">
+                        <img src="${url}" alt="Foto"
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform">
+                    </a>
+                `).join('')}
+            </div>
+        `;
+    }
 
                 // NUEVO: DATOS DEL TRANSPORTISTA ASIGNADO
                 let infoTransportistaHTML = '';
@@ -439,20 +591,94 @@ ${extrasCajasHTML}
         }
 
         // 5. FUNCIONES DE ACCIÓN RÁPIDA
-        async function confirmarPago(id) {
-            if(confirm("¿Confirmas que has recibido el pago? \nPasará a 'Disponible' para transportistas.")) {
-                await dbClient.from('mudanzas').update({ estado: 'Disponible' }).eq('id', id);
-                cargarTodo();
-            }
-        }
+async function confirmarPago(id) {
+    if (!tienePermiso('confirmar_pagos')) {
+        alert('No tienes permisos para confirmar pagos.');
+        return;
+    }
 
-        async function desasignarMudanza(id) {
-            if(confirm("¿Desasignar transportista? La mudanza volverá a estar 'Disponible'.")) {
-                await dbClient.from('mudanzas').update({ estado: 'Disponible', transportista_id: null }).eq('id', id);
-                cargarTodo();
-            }
-        }
+    if (!confirm("¿Confirmas que has recibido el pago?")) {
+        return;
+    }
 
+    const { data: { session }, error: errorSesion } =
+        await dbClient.auth.getSession();
+
+    if (errorSesion || !session) {
+        alert('Tu sesión ha caducado. Inicia sesión nuevamente.');
+        return;
+    }
+
+    const { data: rol, error: errorRol } = await dbClient
+        .from('admin_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+    if (errorRol || !rol) {
+        alert('Acceso denegado. No puedes confirmar pagos.');
+        return;
+    }
+
+    const { error } = await dbClient
+        .from('mudanzas')
+        .update({ estado: 'Disponible' })
+        .eq('id', id);
+
+    if (error) {
+        console.error('Error al confirmar el pago:', error);
+        alert('No se pudo confirmar el pago. Revisa los permisos y vuelve a intentarlo.');
+        return;
+    }
+
+    await cargarTodo();
+}
+
+async function desasignarMudanza(id) {
+    if (!tienePermiso('desasignar_mudanzas')) {
+        alert('No tienes permisos para desasignar mudanzas.');
+        return;
+    }
+
+    if (!confirm("¿Desasignar transportista? La mudanza volverá a estar disponible.")) {
+        return;
+    }
+
+    const { data: { session }, error: errorSesion } =
+        await dbClient.auth.getSession();
+
+    if (errorSesion || !session) {
+        alert('Tu sesión ha caducado. Inicia sesión nuevamente.');
+        return;
+    }
+
+    const { data: rol, error: errorRol } = await dbClient
+        .from('admin_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .in('role', ['admin', 'supervisor'])
+        .maybeSingle();
+
+    if (errorRol || !rol) {
+        alert('Acceso denegado. No puedes desasignar mudanzas.');
+        return;
+    }
+
+    const { error } = await dbClient
+        .from('mudanzas')
+        .update({ estado: 'Disponible' })
+        .eq('id', id);
+
+    if (error) {
+        console.error('Error al desasignar la mudanza:', error);
+        alert('No se pudo desasignar la mudanza. Revisa los permisos y vuelve a intentarlo.');
+        return;
+    }
+
+    await cargarTodo();
+}
+ 
         async function borrarMudanza(id) {
             if(confirm("¿Seguro que quieres borrar esta mudanza permanentemente?")) {
                 await dbClient.from('mudanzas').delete().eq('id', id);

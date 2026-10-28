@@ -16,13 +16,38 @@ function renderFotosDrawer(urlsFotosString) {
     contenedorDestino.innerHTML = ""; // Limpiar fotos de cargas o expedientes anteriores
 
     // Si el cliente no subió imágenes o viene vacío, mostramos un aviso limpio centrado
-    if (!urlsFotosString || urlsFotosString.trim() === "") {
+    if (
+    !urlsFotosString ||
+    (typeof urlsFotosString === "string" && urlsFotosString.trim() === "") ||
+    (Array.isArray(urlsFotosString) && urlsFotosString.length === 0)
+) {
         contenedorDestino.innerHTML = `<div class="text-center text-slate-400 text-xs py-6 italic w-full">El cliente no adjuntó fotografías para este servicio.</div>`;
         return;
     }
 
-    // Separamos la cadena de texto por comas (,) o barras verticales ( | ) para obtener los enlaces individuales
-    const arrayFotos = urlsFotosString.split(/,|\s*\|\s*/);
+    // Supabase puede devolver urls_fotos como array JSON o como texto heredado.
+    let arrayFotos = [];
+    if (Array.isArray(urlsFotosString)) {
+        arrayFotos = urlsFotosString;
+    } else if (typeof urlsFotosString === "string") {
+        const valor = urlsFotosString.trim();
+        if (valor.startsWith("[")) {
+            try {
+                const parsed = JSON.parse(valor);
+                arrayFotos = Array.isArray(parsed) ? parsed : [];
+            } catch (_) {
+                arrayFotos = valor.split(/,|\s*\|\s*/);
+            }
+        } else {
+            arrayFotos = valor.split(/,|\s*\|\s*/);
+        }
+    }
+    arrayFotos = arrayFotos.filter(url => typeof url === "string" && url.trim());
+
+    if (!arrayFotos.length) {
+        contenedorDestino.innerHTML = `<div class="text-center text-slate-400 text-xs py-6 italic w-full">El cliente no adjuntó fotografías para este servicio.</div>`;
+        return;
+    }
     
     // Creamos la cuadrícula Responsive: 3 columnas en móviles pequeños y 4 columnas en tablets/pantallas grandes
     const gridFotos = document.createElement("div");
@@ -31,14 +56,16 @@ function renderFotosDrawer(urlsFotosString) {
     arrayFotos.forEach(url => {
         const urlLimpia = url.trim();
         if (urlLimpia !== "") {
-            gridFotos.innerHTML += `
-                <div class="aspect-square rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shadow-sm cursor-pointer group relative"
-                     onclick="abrirVisorImagenRODAX('${urlLimpia}')">
-                    <img src="${urlLimpia}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" alt="Miniatura mueble">
+            const tarjeta = document.createElement("div");
+            tarjeta.className = "aspect-square rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shadow-sm cursor-pointer group relative";
+            tarjeta.addEventListener("click", () => window.abrirVisorImagenRODAX(urlLimpia));
+            tarjeta.innerHTML = `
+                    <img src="${urlLimpia.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;")}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" alt="Fotografía de la mudanza">
                     <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <svg xmlns="http://w3.org" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><line x1="11" x2="11" y1="8" y2="14"/><line x1="8" x2="14" y1="11" y2="11"/></svg>
                     </div>
-                </div>`;
+                `;
+            gridFotos.appendChild(tarjeta);
         }
     });
 

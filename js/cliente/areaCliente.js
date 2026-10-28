@@ -586,6 +586,496 @@
     return `<p>${escapeHtml(r.extras || 'Solo transporte básico')}</p>`;
   }
 
+  // mudanzas.urls_fotos es text: URLs separadas por comas (formato histórico).
+  // También se aceptan arrays, JSON en texto y "|".
+  function normalizarFotos(valor) {
+    let lista = [];
+
+    if (Array.isArray(valor)) {
+      lista = valor;
+    } else if (typeof valor === 'string') {
+      const texto = valor.trim();
+      if (texto.startsWith('[')) {
+        try {
+          const parsed = JSON.parse(texto);
+          lista = Array.isArray(parsed) ? parsed : [];
+        } catch (_) {
+          lista = texto.split(/,|\s*\|\s*/);
+        }
+      } else {
+        lista = texto.split(/,|\s*\|\s*/);
+      }
+    }
+
+    const vistas = new Set();
+    return lista
+      .filter(url => typeof url === 'string')
+      .map(url => url.trim())
+      .filter(url => url && !vistas.has(url) && vistas.add(url));
+  }
+
+  async function llamarApiFotografias(payload) {
+    const { data: { session } } = await db.auth.getSession();
+
+    if (!session) {
+      throw new Error("Tu sesión ha caducado. Vuelve a entrar.");
+    }
+
+    const response = await fetch("/api/cliente-fotografias", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "No se pudo gestionar la fotografía.");
+    }
+
+    return data;
+  }
+
+  // ===== INICIO BLOQUE 7 · INDICACIONES PARA EL TRANSPORTISTA =====
+  // Se guardan en mudanzas.observaciones: la misma columna que rellena la Home
+  // y que lee el Panel Transportista. Editable hasta las 00:00 (Europe/Madrid)
+  // del día del servicio. La validación definitiva se hace en
+  // /api/cliente-indicaciones.
+  const INDICACIONES_MAX = 500;
+
+  const INDICACIONES_EJEMPLOS = [
+    'Ejemplos:',
+    '',
+    '• Calles muy estrechas en origen o destino',
+    '• Horario restringido en origen o destino',
+    '• Difícil aparcar o se necesita permiso del Ayuntamiento',
+    '• Escalera de caracol',
+    '• Urbanización privada',
+    '• Ascensor pequeño',
+    '• Objetos muy delicados',
+    '• Hay mascotas',
+    '• El portero debe abrir la puerta',
+    '• Necesito algún requerimiento especial, etc.'
+  ].join('\n');
+
+  let indicacionesUI = { id: null, editando: false, borrador: '' };
+
+  // 'editable' | 'plazo' (ya es el día del servicio o posterior) | 'cerrada'
+  function indicacionesEstadoEdicion(r) {
+    const estado = String(r.estado || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+
+    if (/cancel|completad|finaliz|realizad/.test(estado)) return 'cerrada';
+
+    const dias = diasHastaServicioMadrid(String(r.fecha || '').slice(0, 10));
+
+    return dias !== null && dias > 0 ? 'editable' : 'plazo';
+  }
+
+  function renderIndicaciones(r) {
+    if (indicacionesUI.id !== r.id) {
+      indicacionesUI = { id: r.id, editando: false, borrador: '' };
+    }
+
+    const modo = indicacionesEstadoEdicion(r);
+    const texto = String(r.observaciones || '').trim();
+    const editando = indicacionesUI.editando && modo === 'editable';
+
+    let cuerpo;
+
+    if (editando) {
+      cuerpo = `
+        <textarea
+          id="indicaciones-texto"
+          maxlength="${INDICACIONES_MAX}"
+          rows="6"
+          placeholder="${escapeHtml(INDICACIONES_EJEMPLOS)}">${escapeHtml(indicacionesUI.borrador)}</textarea>
+
+        <div class="indic-counter">
+          <span id="indicaciones-contador">${indicacionesUI.borrador.length}</span>
+          / ${INDICACIONES_MAX} caracteres
+        </div>
+
+        <div class="indic-actions">
+          <button type="button" class="indic-btn primary" id="btn-indicaciones-guardar">
+            Guardar indicaciones
+          </button>
+          <button type="button" class="indic-btn secondary" id="btn-indicaciones-cancelar">
+            Cancelar
+          </button>
+        </div>`;
+    } else if (texto) {
+      cuerpo = `<div class="indic-text">${escapeHtml(texto)}</div>`;
+    } else {
+      cuerpo = `<p class="indic-empty">Todavía no has añadido indicaciones para el transportista.</p>`;
+    }
+
+    const pista =
+      modo === 'editable'
+        ? 'Puedes modificarlas hasta las 00:00 del día del servicio.'
+        : modo === 'plazo'
+          ? 'El plazo para modificarlas terminó a las 00:00 del día del servicio.'
+          : '';
+
+    const boton =
+      modo === 'editable' && !editando
+        ? `<button type="button" class="indic-edit-button" id="btn-indicaciones-editar">
+             ${texto ? '✏️ Editar' : '+ Añadir'}
+           </button>`
+        : '';
+
+    return `
+      <div class="section-card indicaciones-card" id="indicaciones-card">
+        <div class="section-title">
+          <h3>📝 Indicaciones para el transportista</h3>
+          ${boton}
+        </div>
+
+        ${pista ? `<p class="indic-hint">${pista}</p>` : ''}
+
+        ${cuerpo}
+
+        <div id="indicaciones-mensaje" class="photos-message" role="status"></div>
+      </div>`;
+  }
+
+  function repintarIndicaciones() {
+    const card = $('indicaciones-card');
+    const r = reservaActual;
+
+    if (!card || !r) return;
+
+    card.outerHTML = renderIndicaciones(r);
+    bindIndicaciones();
+  }
+
+  function bindIndicaciones() {
+    const editar = $('btn-indicaciones-editar');
+
+    if (editar) {
+      editar.onclick = () => {
+        indicacionesUI.editando = true;
+        indicacionesUI.borrador = String(
+          (reservaActual && reservaActual.observaciones) || ''
+        ).trim();
+        repintarIndicaciones();
+
+        const area = $('indicaciones-texto');
+        if (area) area.focus();
+      };
+    }
+
+    const area = $('indicaciones-texto');
+
+    if (area) {
+      area.addEventListener('input', () => {
+        indicacionesUI.borrador = area.value;
+
+        const contador = $('indicaciones-contador');
+        if (contador) contador.textContent = String(area.value.length);
+      });
+    }
+
+    const cancelar = $('btn-indicaciones-cancelar');
+
+    if (cancelar) {
+      cancelar.onclick = () => {
+        indicacionesUI.editando = false;
+        indicacionesUI.borrador = '';
+        repintarIndicaciones();
+      };
+    }
+
+    const guardar = $('btn-indicaciones-guardar');
+    if (guardar) guardar.onclick = guardarIndicaciones;
+  }
+
+  async function llamarApiIndicaciones(payload) {
+    const { data: { session } } = await db.auth.getSession();
+
+    if (!session) {
+      throw new Error('Tu sesión ha caducado. Vuelve a entrar.');
+    }
+
+    const response = await fetch('/api/cliente-indicaciones', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(data.error || 'No se pudieron guardar las indicaciones.');
+    }
+
+    return data;
+  }
+
+  async function guardarIndicaciones() {
+    const r = reservaActual;
+    const area = $('indicaciones-texto');
+    const boton = $('btn-indicaciones-guardar');
+    const mensaje = $('indicaciones-mensaje');
+
+    if (!r || !area) return;
+
+    const texto = area.value.replace(/\r\n?/g, '\n').trim();
+
+    if (texto.length > INDICACIONES_MAX) {
+      if (mensaje) {
+        mensaje.textContent =
+          `Las indicaciones no pueden superar los ${INDICACIONES_MAX} caracteres.`;
+      }
+      return;
+    }
+
+    if (boton) boton.disabled = true;
+    if (mensaje) mensaje.textContent = 'Guardando…';
+
+    try {
+      const respuesta = await llamarApiIndicaciones({
+        mudanza_id: r.id,
+        observaciones: texto
+      });
+
+      r.observaciones = respuesta.observaciones;
+      indicacionesUI = { id: r.id, editando: false, borrador: '' };
+      repintarIndicaciones();
+
+      const confirmacion = $('indicaciones-mensaje');
+      if (confirmacion) confirmacion.textContent = 'Indicaciones guardadas.';
+    } catch (error) {
+      console.error('Error al guardar indicaciones:', error);
+
+      if (boton) boton.disabled = false;
+      if (mensaje) {
+        mensaje.textContent =
+          error.message || 'No se pudieron guardar las indicaciones.';
+      }
+    }
+  }
+  // ===== FIN BLOQUE 7 · INDICACIONES PARA EL TRANSPORTISTA =====
+
+  function renderFotografias(r) {
+    const fotos = normalizarFotos(r.urls_fotos);
+
+    return `
+      <div class="section-card photos-card">
+        <div class="section-title">
+          <h3>Fotografías de tu mudanza</h3>
+          <label class="photos-add-button" for="cliente-fotos-input">
+            + Añadir fotos
+          </label>
+        </div>
+
+        <p>JPG, PNG o WEBP. Máximo 10 MB por fotografía.</p>
+
+        <input
+          id="cliente-fotos-input"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          multiple
+          hidden
+        >
+
+        <div id="cliente-fotos-mensaje" class="photos-message" role="status"></div>
+
+        <div class="photos-grid">
+          ${fotos.length
+            ? fotos.map((foto, index) => `
+                <div class="photo-item">
+                  <a href="${escapeHtml(foto)}" target="_blank" rel="noopener noreferrer">
+                    <img src="${escapeHtml(foto)}" alt="Fotografía ${index + 1}" loading="lazy">
+                  </a>
+                  <div class="photo-actions">
+                    <button type="button" class="photo-replace" data-photo-index="${index}">Sustituir</button>
+                    <input type="file" class="photo-replace-input" data-photo-index="${index}" accept="image/jpeg,image/png,image/webp" hidden>
+                    <button type="button" class="photo-delete" data-photo-index="${index}">Eliminar</button>
+                  </div>
+                </div>
+              `).join("")
+            : `<p class="photos-empty">Todavía no hay fotografías en esta mudanza.</p>`
+          }
+        </div>
+      </div>
+    `;
+  }
+
+  async function subirFotografias(files) {
+    const r = reservaActual;
+    if (!r || !files.length) return;
+
+    const input = $("cliente-fotos-input");
+    const mensaje = $("cliente-fotos-mensaje");
+    const addButton = document.querySelector(".photos-add-button");
+
+    if (addButton) addButton.classList.add("disabled");
+    if (input) input.disabled = true;
+
+    try {
+      for (const file of files) {
+        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+          throw new Error("Solo se permiten imágenes JPG, PNG o WEBP.");
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+          throw new Error(`La imagen "${file.name}" supera los 10 MB.`);
+        }
+
+        mensaje.textContent = `Subiendo ${file.name}…`;
+
+        const preparada = await llamarApiFotografias({
+          accion: "preparar",
+          mudanza_id: r.id,
+          nombre: file.name,
+          tipo: file.type
+        });
+
+        const { error: uploadError } = await db.storage
+          .from("documentos")
+          .uploadToSignedUrl(
+            preparada.path,
+            preparada.token,
+            file,
+            { contentType: file.type, upsert: false }
+          );
+
+        if (uploadError) throw uploadError;
+
+        const registrada = await llamarApiFotografias({
+          accion: "registrar",
+          mudanza_id: r.id,
+          url: preparada.publicUrl
+        });
+
+        r.urls_fotos = normalizarFotos(registrada.urls_fotos);
+      }
+
+      renderLista();
+      renderDetalle();
+    } catch (error) {
+      console.error("Error con fotografías:", error);
+
+      // Actualizar la galería por si alguna foto anterior
+      // de la selección ya se subió correctamente.
+      renderLista();
+      renderDetalle();
+
+      const mensajeActual = $("cliente-fotos-mensaje");
+
+      if (mensajeActual) {
+        mensajeActual.textContent =
+          error.message || "No se pudieron subir las fotografías.";
+      }
+    } finally {
+      const inputActual = $("cliente-fotos-input");
+      const addButtonActual = document.querySelector(".photos-add-button");
+
+      if (inputActual) {
+        inputActual.disabled = false;
+        inputActual.value = "";
+      }
+      if (addButtonActual) addButtonActual.classList.remove("disabled");
+    }
+  }
+
+  async function sustituirFotografia(index, file) {
+    const r = reservaActual;
+    if (!r || !file) return;
+
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      alert("Solo se permiten imágenes JPG, PNG o WEBP.");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      alert("La fotografía supera el límite de 10 MB.");
+      return;
+    }
+
+    const fotos = normalizarFotos(r.urls_fotos);
+    const urlAnterior = fotos[index];
+    if (!urlAnterior) return;
+
+    const mensaje = $("cliente-fotos-mensaje");
+    try {
+      if (mensaje) mensaje.textContent = `Subiendo ${file.name}…`;
+      const preparada = await llamarApiFotografias({
+        accion: "preparar", mudanza_id: r.id, nombre: file.name, tipo: file.type
+      });
+      const { error: uploadError } = await db.storage
+        .from("documentos")
+        .uploadToSignedUrl(preparada.path, preparada.token, file, {
+          contentType: file.type, upsert: false
+        });
+      if (uploadError) throw uploadError;
+
+      const registrada = await llamarApiFotografias({
+        accion: "registrar", mudanza_id: r.id, url: preparada.publicUrl
+      });
+      r.urls_fotos = normalizarFotos(registrada.urls_fotos);
+
+      // La nueva foto ya está registrada; ahora quitamos la anterior.
+      const eliminada = await llamarApiFotografias({
+        accion: "eliminar", mudanza_id: r.id, url: urlAnterior
+      });
+      r.urls_fotos = normalizarFotos(eliminada.urls_fotos);
+      renderLista();
+      renderDetalle();
+
+      if (eliminada.aviso) {
+        const mensajeAviso = $("cliente-fotos-mensaje");
+        if (mensajeAviso) mensajeAviso.textContent = eliminada.aviso;
+      }
+    } catch (error) {
+      console.error("Error al sustituir fotografía:", error);
+      renderLista();
+      renderDetalle();
+      const mensajeActual = $("cliente-fotos-mensaje");
+      if (mensajeActual) mensajeActual.textContent = error.message || "No se pudo sustituir la fotografía.";
+    }
+  }
+
+  async function eliminarFotografia(index) {
+    const r = reservaActual;
+    if (!r) return;
+
+    const fotos = normalizarFotos(r.urls_fotos);
+    const url = fotos[index];
+
+    if (!url || !confirm("¿Quieres quitar esta fotografía de la mudanza?")) {
+      return;
+    }
+
+    try {
+      const respuesta = await llamarApiFotografias({
+        accion: "eliminar",
+        mudanza_id: r.id,
+        url
+      });
+
+      r.urls_fotos = normalizarFotos(respuesta.urls_fotos);
+      renderLista();
+      renderDetalle();
+
+      if (respuesta.aviso) {
+        const mensajeAviso = $("cliente-fotos-mensaje");
+        if (mensajeAviso) mensajeAviso.textContent = respuesta.aviso;
+      }
+    } catch (error) {
+      console.error("Error al eliminar fotografía:", error);
+      alert(error.message || "No se pudo eliminar la fotografía.");
+    }
+  }
+
   function renderDetalle() {
     const r = reservaActual;
     const panel = $('detalle');
@@ -638,7 +1128,7 @@
       <small>Fecha</small>
       <strong>${escapeHtml(fecha(r.fecha))}</strong>
     </div>
-  </div> 
+  </div>
 
   <div class="info-card">
     <span>🕐</span>
@@ -736,6 +1226,26 @@
       </div>
 
       <div class="section-card">
+  <div class="section-title">
+    <h3>Accesos</h3>
+  </div>
+
+  <p>
+    Recogida:
+    ${r.ascensor_origen ? 'Ascensor' : 'Sin ascensor'}
+    · Piso ${escapeHtml(r.piso_origen ?? 0)}
+  </p>
+
+  <p>
+    Entrega:
+    ${r.ascensor_destino ? 'Ascensor' : 'Sin ascensor'}
+    · Piso ${escapeHtml(r.piso_destino ?? 0)}
+  </p>
+</div>
+
+            ${renderFotografias(r)}
+
+            <div class="section-card">
         <div class="section-title">
           <h3>Servicios contratados</h3>
           <button id="btn-modificar">Modificar</button>
@@ -744,25 +1254,9 @@
         ${renderDetailServices(r)}
       </div>
 
-      ${renderInventory(r)}
+${renderInventory(r)}
 
-      <div class="section-card">
-        <div class="section-title">
-          <h3>Accesos</h3>
-        </div>
-
-        <p>
-          Recogida:
-          ${r.ascensor_origen ? 'Ascensor' : 'Sin ascensor'}
-          · Piso ${escapeHtml(r.piso_origen ?? 0)}
-        </p>
-
-        <p>
-          Entrega:
-          ${r.ascensor_destino ? 'Ascensor' : 'Sin ascensor'}
-          · Piso ${escapeHtml(r.piso_destino ?? 0)}
-        </p>
-      </div>
+${renderIndicaciones(r)}
 
       ${renderContact(r)}
 
@@ -786,6 +1280,34 @@
     $('btn-modificar').onclick = openModification;
 $('btn-modificar-2').onclick = openModification;
 $('btn-refrescar').onclick = loadReservas;
+
+
+    $('cliente-fotos-input').addEventListener('change', event => {
+      subirFotografias(Array.from(event.target.files || []));
+    });
+
+    document.querySelectorAll('.photo-delete').forEach(button => {
+      button.addEventListener('click', () => {
+        eliminarFotografia(Number(button.dataset.photoIndex));
+      });
+    });
+
+    document.querySelectorAll('.photo-replace').forEach(button => {
+      button.addEventListener('click', () => {
+        const input = document.querySelector(`.photo-replace-input[data-photo-index="${button.dataset.photoIndex}"]`);
+        if (input) input.click();
+      });
+    });
+
+    document.querySelectorAll('.photo-replace-input').forEach(input => {
+      input.addEventListener('change', event => {
+        const file = event.target.files && event.target.files[0];
+        if (file) sustituirFotografia(Number(event.target.dataset.photoIndex), file);
+      });
+    });
+
+
+bindIndicaciones();
 
 $('btn-cancelar').onclick = openCancellation;
 
@@ -959,6 +1481,17 @@ $('btn-cerrar-cancelacion-2').onclick = () => {
     $('mod-tipo').value = r.tipo_servicio || 'Mudanza Estándar';
     $('mod-cambios').value = '';
 
+    modificacionInicial = {
+      origen: $('mod-origen').value.trim(),
+      destino: $('mod-destino').value.trim(),
+      fecha: $('mod-fecha').value,
+      franja: $('mod-franja').value,
+      tipo: $('mod-tipo').value
+    };
+
+    mostrarMensajeModificacion('');
+    estadoBotonModificacion(false);
+
     $('modal-modificacion').classList.remove('hidden');
   }
 
@@ -990,7 +1523,10 @@ $('btn-cerrar-cancelacion-2').onclick = () => {
       throw new Error(data.error || 'No se pudieron cargar tus mudanzas.');
     }
 
-    reservas = data.reservas || [];
+    reservas = (data.reservas || []).map(reserva => ({
+      ...reserva,
+      urls_fotos: normalizarFotos(reserva.urls_fotos)
+    }));
 
     const requested =
       new URLSearchParams(location.search).get('reserva');
@@ -1050,54 +1586,115 @@ $('btn-cerrar-cancelacion-2').onclick = () => {
       `login-message ${error ? 'error' : ''}`;
   }
 
+  // ===== INICIO MODAL MODIFICACIÓN: mensajes visibles dentro del modal =====
+  let modificacionInicial = null;
+
+  function mostrarMensajeModificacion(texto, tipo) {
+    const caja = $('mod-mensaje');
+    if (!caja) return;
+
+    caja.textContent = texto || '';
+    caja.className = tipo ? `mod-mensaje ${tipo}` : 'mod-mensaje';
+  }
+
+  function estadoBotonModificacion(enviando) {
+    const boton = $('btn-enviar-mod');
+    if (!boton) return;
+
+    boton.disabled = enviando;
+    boton.textContent = enviando
+      ? 'Enviando…'
+      : 'Enviar solicitud a RODAX';
+  }
+
+  function hayCambiosEnModificacion() {
+    if ($('mod-cambios').value.trim()) return true;
+    if (!modificacionInicial) return true;
+
+    return (
+      $('mod-origen').value.trim() !== modificacionInicial.origen ||
+      $('mod-destino').value.trim() !== modificacionInicial.destino ||
+      $('mod-fecha').value !== modificacionInicial.fecha ||
+      $('mod-franja').value !== modificacionInicial.franja ||
+      $('mod-tipo').value !== modificacionInicial.tipo
+    );
+  }
+
   async function requestModification(e) {
     e.preventDefault();
 
-    const {
-      data: { session }
-    } = await db.auth.getSession();
+    mostrarMensajeModificacion('');
 
-    if (!session) return;
-
-    const payload = {
-      mudanza_id: Number($('modificacion-id').value),
-
-      cambios: {
-        origen: $('mod-origen').value.trim(),
-        destino: $('mod-destino').value.trim(),
-        fecha: $('mod-fecha').value,
-        franja_horaria_recogida: $('mod-franja').value,
-        tipo_servicio: $('mod-tipo').value,
-        detalle: $('mod-cambios').value.trim()
-      }
-    };
-
-    const res = await fetch('/api/cliente-modificacion', {
-      method:'POST',
-
-      headers:{
-        'Content-Type':'application/json',
-        Authorization:`Bearer ${session.access_token}`
-      },
-
-      body:JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      return setLoginMessage(
-        data.error || 'No se pudo enviar la solicitud.',
-        true
+    if (!hayCambiosEnModificacion()) {
+      mostrarMensajeModificacion(
+        'No has cambiado ningún dato. Modifica algo o cuéntanos en «Qué quieres cambiar» lo que necesitas.',
+        'error'
       );
+      return;
     }
 
-    $('modal-modificacion').classList.add('hidden');
+    estadoBotonModificacion(true);
 
-    alert(
-      'Solicitud enviada. RODAX revisará los cambios y te confirmará cualquier modificación de precio antes de aplicarla.'
-    );
+    try {
+      const {
+        data: { session }
+      } = await db.auth.getSession();
+
+      if (!session) {
+        throw new Error('Tu sesión ha caducado. Vuelve a entrar.');
+      }
+
+      const payload = {
+        mudanza_id: Number($('modificacion-id').value),
+
+        cambios: {
+          origen: $('mod-origen').value.trim(),
+          destino: $('mod-destino').value.trim(),
+          fecha: $('mod-fecha').value,
+          franja_horaria_recogida: $('mod-franja').value,
+          tipo_servicio: $('mod-tipo').value,
+          detalle: $('mod-cambios').value.trim()
+        }
+      };
+
+      const res = await fetch('/api/cliente-modificacion', {
+        method:'POST',
+
+        headers:{
+          'Content-Type':'application/json',
+          Authorization:`Bearer ${session.access_token}`
+        },
+
+        body:JSON.stringify(payload)
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(
+          data.error || 'No se pudo enviar la solicitud. Inténtalo de nuevo.'
+        );
+      }
+
+      $('modal-modificacion').classList.add('hidden');
+
+      alert(
+        'Solicitud enviada. RODAX revisará los cambios y te confirmará cualquier modificación de precio antes de aplicarla.'
+      );
+    } catch (error) {
+      console.error('Error al enviar la solicitud de modificación:', error);
+
+      mostrarMensajeModificacion(
+        error instanceof TypeError
+          ? 'No se pudo conectar. Comprueba tu conexión e inténtalo de nuevo.'
+          : error.message || 'No se pudo enviar la solicitud. Inténtalo de nuevo.',
+        'error'
+      );
+    } finally {
+      estadoBotonModificacion(false);
+    }
   }
+  // ===== FIN MODAL MODIFICACIÓN =====
 
   document.addEventListener('DOMContentLoaded', async () => {
 
@@ -1118,7 +1715,7 @@ $('btn-cerrar-cancelacion-2').onclick = () => {
     $('form-modificacion').onsubmit =
       requestModification;
 
-      
+
     let cancelacionEnCurso = false;
 
     $('btn-confirmar-cancelacion').onclick =

@@ -485,6 +485,237 @@
 
 @media(max-width:900px){.layout{grid-template-columns:1fr}.detail-grid{grid-template-columns:1fr 1fr}.side{order:2}.detail{order:1}}
 @media(max-width:560px){.wrap{padding:20px 12px}.top-in{padding:13px 14px}.detail{padding:16px}.detail-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.welcome h1{font-size:25px}}
+
+/* MENSAJES DEL MODAL DE MODIFICACIÓN */
+.mod-mensaje {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.mod-mensaje:empty {
+  display: none;
+}
+
+.mod-mensaje.error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+
+.save:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+/* INDICACIONES PARA EL TRANSPORTISTA */
+.indicaciones-card .indic-edit-button {
+  border: 0;
+  padding: 8px 12px;
+  border-radius: 9px;
+  background: #0B1E5B;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.indicaciones-card .indic-hint {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.indicaciones-card .indic-text {
+       box-sizing: border-box;
+     max-height: 152px;
+     overflow-y: auto;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.indicaciones-card .indic-empty {
+  margin: 12px 0 0;
+  padding: 14px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  color: #64748b;
+  font-size: 13px;
+  text-align: center;
+}
+
+.indicaciones-card textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+       height: 152px;
+     resize: none;
+}
+
+.indicaciones-card .indic-counter {
+  margin-top: 6px;
+  color: #94a3b8;
+  font-size: 12px;
+  text-align: right;
+}
+
+.indicaciones-card .indic-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.indicaciones-card .indic-btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.indicaciones-card .indic-btn.primary {
+  border: 0;
+  background: #0B1E5B;
+  color: #fff;
+}
+
+.indicaciones-card .indic-btn.secondary {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+.indicaciones-card .indic-btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+/* GALERÍA DE FOTOGRAFÍAS DE LA MUDANZA */
+.photos-card .photos-add-button {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 9px;
+  background: #0B1E5B;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.photos-card .photos-add-button.disabled {
+  opacity: .55;
+  pointer-events: none;
+}
+
+.photos-message {
+  margin-top: 10px;
+  color: #475569;
+  font-size: 12px;
+}
+
+.photos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.photo-item {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.photo-item a {
+  display: block;
+}
+
+.photo-item img {
+  display: block;
+  width: 100%;
+  height: 125px;
+  object-fit: cover;
+  background: #f1f5f9;
+}
+
+.photo-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-top: 1px solid #e2e8f0;
+}
+
+.photo-replace,
+.photo-delete {
+  display: block;
+  width: 100%;
+  padding: 9px 6px;
+  border: 0;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.photo-replace {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.photo-replace:hover {
+  background: #dbeafe;
+}
+
+.photo-delete {
+  border-left: 1px solid #e2e8f0;
+  background: #fff1f2;
+  color: #be123c;
+}
+
+.photo-delete:hover {
+  background: #ffe4e6;
+}
+
+.photos-empty {
+  grid-column: 1 / -1;
+  padding: 16px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  color: #64748b;
+  font-size: 12px;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .photos-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .photo-item img {
+    height: 110px;
+  }
+}
+
+
 </style>
 </head>
 <body>
@@ -503,7 +734,17 @@
 </section>
 
 <section id="app" class="hidden">
-<header class="top"><div class="top-in"><div class="brand">RODAX <small>ÁREA CLIENTE</small></div><div><span id="cliente-email" style="font-size:12px;color:#64748b;margin-right:10px"></span><button id="btn-logout" class="logout">Salir</button></div></div></header>
+<header class="top">
+  <div class="top-in">
+    <a href="area-cliente.html" class="brand" aria-label="RODAX Mudanzas - Área Cliente">
+      <img src="images/logo-rodax.png" alt="RODAX Mudanzas" style="width: 260px; height: auto; display: block;">
+    </a>
+    <div>
+      <span id="cliente-email" style="font-size:12px;color:#64748b;margin-right:10px"></span>
+      <button id="btn-logout" class="logout">Salir</button>
+    </div>
+  </div>
+</header>
 <main class="wrap">
   <div class="welcome"><span class="eyebrow">MI CUENTA</span><h1>Hola, <span id="cliente-nombre">cliente</span> 👋</h1><p>Consulta y gestiona tus mudanzas desde cualquier dispositivo.</p></div>
   <div class="layout">
@@ -527,7 +768,8 @@
         <div class="field full"><label>Tipo de mudanza</label><select id="mod-tipo"><option>Mudanza Estándar</option><option>Mudanza Total</option></select></div>
         <div class="field full"><label>Qué quieres cambiar</label><textarea id="mod-cambios" rows="5" placeholder="Ej.: añadir sofá, quitar armario, contratar embalaje, cambiar dirección, etc."></textarea></div>
       </div>
-      <button class="save" type="submit">Enviar solicitud a RODAX</button>
+      <div id="mod-mensaje" class="mod-mensaje" role="status" aria-live="polite"></div>
+      <button id="btn-enviar-mod" class="save" type="submit">Enviar solicitud a RODAX</button>
     </form>
   </div>
 </div>
