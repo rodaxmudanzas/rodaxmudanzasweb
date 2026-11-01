@@ -889,12 +889,6 @@ const dbClient = window.supabase.createClient(URL_DB, KEY_DB);
                     const email = document.getElementById('login-email').value.trim();
                     const password = document.getElementById('login-password').value;
 
-                    if (email === 'admin@rodax.com' && password === 'admin123') {
-                        localStorage.setItem('rodax_admin_logged', 'true');
-                        window.location.href = "admin.html";
-                        return;
-                    }
-
                     const btnLogin = document.getElementById('btn_login_submit');
                     const textoOriginal = btnLogin.innerHTML;
                     btnLogin.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 mr-2 animate-spin"></i> Entrando...`;
