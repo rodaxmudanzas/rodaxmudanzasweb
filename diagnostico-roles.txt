@@ -1,0 +1,40 @@
+﻿ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\js\transportista\agenda.js
+LÍNEA: 18
+CÓDIGO: * La carga se hace desde panel-transportista.html.
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\admin.html
+LÍNEA: 180
+CÓDIGO: .from('admin_roles')
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\admin.html
+LÍNEA: 301
+CÓDIGO: .from('admin_roles')
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\admin.html
+LÍNEA: 613
+CÓDIGO: .from('admin_roles')
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\admin.html
+LÍNEA: 657
+CÓDIGO: .from('admin_roles')
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\condiciones-transportista.html
+LÍNEA: 56
+CÓDIGO: <a href="panel-transportista.html"
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\condiciones-transportista.html
+LÍNEA: 68
+CÓDIGO: <a href="panel-transportista.html"
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\transportistas.html
+LÍNEA: 800
+CÓDIGO: window.location.href = 'panel-transportista.html';
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\transportistas.html
+LÍNEA: 893
+CÓDIGO: localStorage.setItem('rodax_admin_logged', 'true');
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\transportistas.html
+LÍNEA: 951
+CÓDIGO: window.location.href = "panel-transportista.html";
+

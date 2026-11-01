@@ -1,0 +1,154 @@
+﻿
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\admin.html | LÍNEA: 168
+        lucide.createIcons();
+
+        // 2. COMPROBAR LA SESIÓN DE SUPABASE
+async function comprobarSesionAdmin() {
+    loginScreen.classList.remove('hidden');
+    adminPanel.classList.add('hidden');
+
+    const { data: { session }, error } =
+        await dbClient.auth.getSession();
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\admin.html | LÍNEA: 180
+    }
+
+    const { data: rolUsuario, error: errorRol } = await dbClient
+    .from('admin_roles')
+    .select('role')
+    .eq('user_id', session.user.id)
+    .in('role', ['admin', 'supervisor', 'operaciones'])
+    .maybeSingle();
+
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\admin.html | LÍNEA: 221
+
+            try {
+                const { data, error } =
+                    await dbClient.auth.signInWithPassword({
+                        email,
+                        password: pass
+                    });
+
+                if (error || !data.user) {
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\admin.html | LÍNEA: 233
+                    return;
+                }
+
+                await comprobarSesionAdmin();
+
+} catch (error) {
+                console.error('Error de autenticación:', error);
+
+                loginError.textContent =
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\admin.html | LÍNEA: 249
+
+        // 4. MOSTRAR EL PANEL
+async function mostrarPanel() {
+    const rol = await obtenerRolActual();
+
+    if (!rol || !['admin', 'supervisor', 'operaciones'].includes(rol)) {
+        await dbClient.auth.signOut();
+
+        adminPanel.classList.add('hidden');
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\admin.html | LÍNEA: 287
+        }
+
+        // Comprobar la sesión al cargar la página
+        comprobarSesionAdmin();
+
+        // CONTROL DE PERMISOS DEL PANEL ADMINISTRATIVO
+let rolActualAdmin = null;
+
+async function obtenerRolActual() {
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\admin.html | LÍNEA: 292
+        // CONTROL DE PERMISOS DEL PANEL ADMINISTRATIVO
+let rolActualAdmin = null;
+
+async function obtenerRolActual() {
+    const { data: { session }, error: errorSesion } =
+        await dbClient.auth.getSession();
+
+    if (errorSesion || !session) {
+        return null;
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\admin.html | LÍNEA: 301
+    }
+
+    const { data, error } = await dbClient
+        .from('admin_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .maybeSingle();
+
+    if (error || !data) {
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\admin.html | LÍNEA: 613
+    }
+
+    const { data: rol, error: errorRol } = await dbClient
+        .from('admin_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\admin.html | LÍNEA: 657
+    }
+
+    const { data: rol, error: errorRol } = await dbClient
+        .from('admin_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .in('role', ['admin', 'supervisor'])
+        .maybeSingle();
+
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\transportistas.html | LÍNEA: 800
+                // Entrar al panel
+                console.log('🚚 Entrando al panel de transportista...');
+
+                window.location.href = 'panel-transportista.html';
+
+            } catch (error) {
+
+                console.error(
+                    '❌ Error preparando el acceso Google:',
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\transportistas.html | LÍNEA: 894
+
+                    if (email === 'admin@rodax.com' && password === 'admin123') {
+                        localStorage.setItem('rodax_admin_logged', 'true');
+                        window.location.href = "admin.html";
+                        return;
+                    }
+
+                    const btnLogin = document.getElementById('btn_login_submit');
+                    const textoOriginal = btnLogin.innerHTML;
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\transportistas.html | LÍNEA: 907
+
+                    try {
+    // 1. Iniciar sesión con Supabase Auth
+    const { data, error } = await dbClient.auth.signInWithPassword({
+        email,
+        password
+    });
+
+    if (error) throw error;
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\transportistas.html | LÍNEA: 951
+    }
+
+    // 5. Entrar en el panel del transportista
+    window.location.href = "panel-transportista.html";
+                    } catch (error) {
+                        console.error("Error Login:", error);
+                        loginError.classList.remove('hidden');
+                        btnLogin.innerHTML = textoOriginal;
+                        btnLogin.disabled = false;

@@ -1,0 +1,16 @@
+﻿ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\admin.html
+LÍNEA: 22
+CÓDIGO: <input type="email" id="admin-email" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all" placeholder="admin@rodax.com">
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\admin.html
+LÍNEA: 26
+CÓDIGO: <input type="password" id="admin-password" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all" placeholder="admin123">
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\transportistas.html
+LÍNEA: 892
+CÓDIGO: if (email === 'admin@rodax.com' && password === 'admin123') {
+
+ARCHIVO: C:\Users\esteb\OneDrive\Escritorio\RODAX RENT furgo\2026\Documentos\Desarrollo\rodaxmudanzasweb\rodaxmudanzasweb\transportistas.html
+LÍNEA: 893
+CÓDIGO: localStorage.setItem('rodax_admin_logged', 'true');
+
