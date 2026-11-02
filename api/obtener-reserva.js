@@ -1,18 +1,38 @@
+
 const Stripe = require("stripe");
-
-const stripe = new Stripe(
-    process.env.STRIPE_SECRET_KEY
-);
-
 const { createClient } = require("@supabase/supabase-js");
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-module.exports = async (req, res) => {
+function parseImporte(value) {
+    let texto = String(value ?? "")
+        .trim()
+        .replace(/[€\s]/g, "");
 
+    if (!texto) return NaN;
+
+    const tieneComa = texto.includes(",");
+    const tienePunto = texto.includes(".");
+
+    if (tieneComa && tienePunto) {
+        if (texto.lastIndexOf(",") > texto.lastIndexOf(".")) {
+            texto = texto.replace(/\./g, "").replace(",", ".");
+        } else {
+            texto = texto.replace(/,/g, "");
+        }
+    } else if (tieneComa) {
+        texto = texto.replace(",", ".");
+    }
+
+    return Number(texto);
+}
+
+module.exports = async (req, res) => {
     if (req.method !== "GET") {
         return res.status(405).json({
             error: "Método no permitido."
@@ -20,158 +40,184 @@ module.exports = async (req, res) => {
     }
 
     try {
+        // 1. Exigir autenticación de Supabase.
+        const authorization = req.headers.authorization || "";
+        const token = authorization.startsWith("Bearer ")
+            ? authorization.slice(7).trim()
+            : "";
 
+        if (!token) {
+            return res.status(401).json({
+                error: "Debes iniciar sesión para consultar esta reserva."
+            });
+        }
+
+        const {
+            data: { user },
+            error: errorAuth
+        } = await supabase.auth.getUser(token);
+
+        if (errorAuth || !user || !user.email) {
+            return res.status(401).json({
+                error: "La sesión no es válida. Inicia sesión nuevamente."
+            });
+        }
+
+        // 2. Comprobar el identificador de Stripe.
         const sessionId = req.query.session_id;
 
-if (!sessionId) {
+        if (
+            typeof sessionId !== "string" ||
+            !/^cs_(test|live)_/.test(sessionId)
+        ) {
+            return res.status(400).json({
+                error: "Identificador de pago no válido."
+            });
+        }
 
-    return res.status(400).json({
-        error: "Falta session_id."
-    });
+        // 3. Recuperar y verificar la sesión directamente en Stripe.
+        const session =
+            await stripe.checkout.sessions.retrieve(sessionId);
 
-}
+        if (session.payment_status !== "paid") {
+            return res.status(402).json({
+                error: "El pago todavía no está confirmado."
+            });
+        }
 
-        // Buscar la reserva
+        const numeroReserva = session.metadata?.numero_reserva;
 
-       const { data: reserva, error: errorReserva } = await supabase
-    .from("mudanzas")
-    .select("*")
-    .eq("stripe_session_id", sessionId)
-    .maybeSingle();
+        if (!numeroReserva) {
+            return res.status(404).json({
+                error: "No se encontró la reserva asociada al pago."
+            });
+        }
 
-if (errorReserva) throw errorReserva;
+        // 4. Buscar exclusivamente la reserva identificada por Stripe.
+        const { data: reserva, error: errorReserva } = await supabase
+            .from("mudanzas")
+            .select(`
+                id,
+                numero_reserva,
+                email,
+                nombre,
+                fecha,
+                origen,
+                destino,
+                estado,
+                preciototal,
+                precioreserva,
+                importe_total,
+                importe_reserva,
+                importe_restante,
+                stripe_session_id
+            `)
+            .eq("numero_reserva", numeroReserva)
+            .maybeSingle();
 
-if (reserva) {
-    return res.status(200).json(reserva);
-}
+        if (errorReserva) throw errorReserva;
 
-// Stripe puede redirigir a confirmacion.html antes de que
-// el webhook haya actualizado la reserva en Supabase.
-// Recuperamos directamente la sesión de Stripe.
+        if (!reserva) {
+            return res.status(404).json({
+                error: "No se encontró la reserva."
+            });
+        }
 
-const session = await stripe.checkout.sessions.retrieve(sessionId);
-
-const numeroReserva = session?.metadata?.numero_reserva;
-
-if (!numeroReserva) {
-    return res.status(404).json({
-        error: "La sesión de pago no contiene número de reserva."
-    });
-}
-
-const { data: reservaPorNumero, error: errorNumero } = await supabase
-    .from("mudanzas")
-    .select("*")
-    .eq("numero_reserva", numeroReserva)
-    .maybeSingle();
-
-if (errorNumero) throw errorNumero;
-
-if (!reservaPorNumero) {
-    return res.status(404).json({
-        error: "No se encontró la reserva asociada al pago."
-    });
-}
-
-if (session.payment_status === "paid") {
-
-        // Convierte correctamente importes en formato español o decimal.
-    // Ejemplos:
-    // "953.13 €"     -> 953.13
-    // "1.274,80 €"   -> 1274.80
-    // "1274.80 €"    -> 1274.80
-    function parseImporte(value) {
-        let texto = String(value ?? "")
+        // 5. Verificar que la reserva pertenece al usuario autenticado.
+        const emailCliente = String(reserva.email || "")
             .trim()
-            .replace(/[€\s]/g, "");
+            .toLowerCase();
 
-        if (!texto) {
-            return NaN;
+        const emailAutenticado = String(user.email)
+            .trim()
+            .toLowerCase();
+
+        if (
+            !emailCliente ||
+            emailCliente !== emailAutenticado
+        ) {
+            return res.status(403).json({
+                error: "No tienes autorización para consultar esta reserva."
+            });
         }
 
-        const tieneComa = texto.includes(",");
-        const tienePunto = texto.includes(".");
-
-        if (tieneComa && tienePunto) {
-            // Formato español: 1.274,80
-            if (texto.lastIndexOf(",") > texto.lastIndexOf(".")) {
-                texto = texto
-                    .replace(/\./g, "")
-                    .replace(",", ".");
-            } else {
-                // Formato internacional: 1,274.80
-                texto = texto.replace(/,/g, "");
-            }
-        } else if (tieneComa) {
-            // 953,13
-            texto = texto.replace(",", ".");
+        // 6. Impedir que una sesión diferente reclame la reserva.
+        if (
+            reserva.stripe_session_id &&
+            reserva.stripe_session_id !== session.id
+        ) {
+            return res.status(403).json({
+                error: "La sesión de pago no corresponde a esta reserva."
+            });
         }
 
-        return Number(texto);
-    }
+        // 7. Sincronizar el pago si el webhook todavía no lo ha hecho.
+        const importeTotal = parseImporte(reserva.preciototal);
+        const importeReserva = parseImporte(reserva.precioreserva);
 
-    const importeTotal =
-        parseImporte(reservaPorNumero.preciototal);
+        if (
+            !Number.isFinite(importeTotal) ||
+            !Number.isFinite(importeReserva) ||
+            importeTotal < 0 ||
+            importeReserva < 0 ||
+            importeReserva > importeTotal
+        ) {
+            return res.status(500).json({
+                error: "Los importes de la reserva no son válidos."
+            });
+        }
 
-    const importeReserva =
-        parseImporte(reservaPorNumero.precioreserva);
-
-    if (
-        !Number.isFinite(importeTotal) ||
-        !Number.isFinite(importeReserva)
-    ) {
-        return res.status(500).json({
-            error:
-                "La reserva no contiene importes válidos para completar el pago."
-        });
-    }
-
-    const importeRestante =
-        Number(
+        const importeRestante = Number(
             (importeTotal - importeReserva).toFixed(2)
         );
 
-    const payload = {
-        stripe_session_id: session.id,
-        stripe_payment_intent: session.payment_intent,
-        estado: "Pendiente de asignación",
-        estado_pago: "Pagado 30 % - Pendiente 70 %",
-        importe_total: importeTotal,
-        importe_reserva: importeReserva,
-        importe_restante: importeRestante
-    };
+        const payload = {
+            stripe_session_id: session.id,
+            stripe_payment_intent: session.payment_intent,
+            estado: "Pendiente de asignación",
+            estado_pago: "Pagado 30 % - Pendiente 70 %",
+            importe_total: importeTotal,
+            importe_reserva: importeReserva,
+            importe_restante: importeRestante
+        };
 
-    const { data: sincronizada, error: errorSync } =
-        await supabase
-            .from("mudanzas")
-            .update(payload)
-            .eq("id", reservaPorNumero.id)
-            .select("*")
-            .maybeSingle();
+        const { data: sincronizada, error: errorSync } =
+            await supabase
+                .from("mudanzas")
+                .update(payload)
+                .eq("id", reserva.id)
+                .or(
+                    `stripe_session_id.is.null,stripe_session_id.eq.${session.id}`
+                )
+                .select(`
+                    numero_reserva,
+                    nombre,
+                    fecha,
+                    origen,
+                    destino,
+                    estado,
+                    importe_total,
+                    importe_reserva,
+                    importe_restante
+                `)
+                .maybeSingle();
 
-    if (errorSync) throw errorSync;
+        if (errorSync) throw errorSync;
 
-    return res.status(200).json(
-        sincronizada || {
-            ...reservaPorNumero,
-            ...payload
+        if (!sincronizada) {
+            return res.status(409).json({
+                error: "No se pudo verificar la reserva. Contacta con RODAX."
+            });
         }
-    );
-}
 
-return res.status(200).json(reservaPorNumero);
+        // 8. Devolver únicamente los datos necesarios para la confirmación.
+        return res.status(200).json(sincronizada);
 
-
-        }
-
-    catch (err) {
-
-        console.error(err);
+    } catch (err) {
+        console.error("ERROR OBTENIENDO RESERVA:", err);
 
         return res.status(500).json({
-            error: err.message
+            error: "No se pudo verificar la reserva. Inténtalo de nuevo."
         });
-
     }
-
 };
