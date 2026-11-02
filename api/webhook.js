@@ -320,6 +320,90 @@ if (error) {
     throw error;
 }
 
+// ==========================================================
+// ACCESO AUTOMÁTICO DEL CLIENTE — MAGIC LINK
+// ==========================================================
+
+try {
+    const mudanzaActualizada =
+        Array.isArray(updateData) && updateData.length > 0
+            ? updateData[0]
+            : null;
+
+    if (!mudanzaActualizada) {
+        throw new Error("No se encontró la mudanza actualizada.");
+    }
+
+    const emailCliente = String(
+        mudanzaActualizada.email || ""
+    ).trim().toLowerCase();
+
+    if (!emailCliente) {
+        throw new Error("La reserva no contiene un correo electrónico.");
+    }
+
+    // Reclamar el envío una sola vez, incluso con reintentos de Stripe.
+    const { data: envioReclamado, error: errorReclamo } =
+        await supabase
+            .from("mudanzas")
+            .update({
+                email_acceso_estado: "enviando"
+            })
+            .eq("id", mudanzaActualizada.id)
+            .or("email_acceso_estado.is.null,email_acceso_estado.eq.error")
+            .select("id")
+            .maybeSingle();
+
+    if (errorReclamo) throw errorReclamo;
+
+    if (envioReclamado) {
+        const { error: errorEmail } =
+            await supabase.auth.signInWithOtp({
+                email: emailCliente,
+                options: {
+                    emailRedirectTo:
+                        "https://rodaxmudanzasweb.vercel.app/area-cliente.html"
+                }
+            });
+
+        if (errorEmail) {
+            await supabase
+                .from("mudanzas")
+                .update({
+                    email_acceso_estado: "error"
+                })
+                .eq("id", mudanzaActualizada.id);
+
+            throw errorEmail;
+        }
+
+        const { error: errorEstadoEmail } = await supabase
+            .from("mudanzas")
+            .update({
+                email_acceso_estado: "enviado",
+                email_acceso_enviado_at: new Date().toISOString()
+            })
+            .eq("id", mudanzaActualizada.id);
+
+        if (errorEstadoEmail) {
+            console.error(
+                "No se pudo registrar el envío del Magic Link:",
+                errorEstadoEmail
+            );
+        }
+
+        console.log("MAGIC LINK SOLICITADO PARA:", emailCliente);
+
+    } else {
+        console.log(
+            "MAGIC LINK YA ENVIADO O EN PROCESO:",
+            mudanzaActualizada.numero_reserva
+        );
+    }
+
+} catch (errorMagicLink) {
+    console.error("ERROR ENVIANDO MAGIC LINK:", errorMagicLink);
+}
 
         console.log("Resultado actualización:");
 
