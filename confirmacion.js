@@ -96,29 +96,39 @@ fecha.toLocaleDateString("es-ES", {
     year: "numeric"
 });
 
-        document.getElementById("ruta").innerHTML = `
-<div class="flex flex-col">
+               // Construir la ruta de forma segura.
+        // Origen y destino se insertan como texto, nunca como HTML.
+        const ruta = document.getElementById("ruta");
 
-<div class="font-semibold">
-📍 ${datos.origen}
-</div>
+        ruta.replaceChildren();
 
-<div class="flex justify-center items-center py-3">
+        const columnaRuta = document.createElement("div");
+        columnaRuta.className = "flex flex-col";
 
-<span class="text-blue-600 text-5xl leading-none">
+        const origen = document.createElement("div");
+        origen.className = "font-semibold";
+        origen.textContent = `📍 ${datos.origen || ""}`;
 
-↓
+        const separador = document.createElement("div");
+        separador.className = "flex justify-center items-center py-3";
 
-</span>
+        const flecha = document.createElement("span");
+        flecha.className = "text-blue-600 text-5xl leading-none";
+        flecha.textContent = "↓";
 
-</div>
+        const destino = document.createElement("div");
+        destino.className = "font-semibold";
+        destino.textContent = `📍 ${datos.destino || ""}`;
 
-<div class="font-semibold">
-📍 ${datos.destino}
-</div>
+        separador.appendChild(flecha);
 
-</div>
-`;
+        columnaRuta.append(
+            origen,
+            separador,
+            destino
+        );
+
+        ruta.appendChild(columnaRuta);
 
         document.getElementById("importeTotal").textContent =
 Number(datos.importe_total).toLocaleString("es-ES",{
