@@ -1814,11 +1814,13 @@ $('btn-cerrar-cancelacion-2').onclick = () => {
     }
 
 
-    db.auth.onAuthStateChange(() =>
-      loadReservas().catch(e =>
-        setLoginMessage(e.message, true)
-      )
+    db.auth.onAuthStateChange(() => {
+  setTimeout(() => {
+    loadReservas().catch(e =>
+      setLoginMessage(e.message, true)
     );
+  }, 0);
+});
 
     try {
       await loadReservas();
