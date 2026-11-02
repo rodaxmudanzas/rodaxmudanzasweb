@@ -9,6 +9,19 @@ const supabase = createClient(
     process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+// Cliente independiente para autenticación de clientes.
+const supabaseAuth = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_PUBLISHABLE_KEY,
+    {
+        auth: {
+            autoRefreshToken: false,
+            persistSession: false,
+            detectSessionInUrl: false
+        }
+    }
+);
+
 module.exports.config = {
     api: {
         bodyParser: false,
@@ -376,7 +389,7 @@ try {
 
         if (envioReclamado) {
             const { error: errorEmail } =
-                await supabase.auth.signInWithOtp({
+                await supabaseAuth.auth.signInWithOtp({
                     email: emailCliente,
                     options: {
                         shouldCreateUser: true,
