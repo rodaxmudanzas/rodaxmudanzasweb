@@ -325,80 +325,100 @@ if (error) {
 // ==========================================================
 
 try {
-    const mudanzaActualizada =
-        Array.isArray(updateData) && updateData.length > 0
-            ? updateData[0]
-            : null;
+    // Solo enviar acceso cuando Stripe confirme el pago.
+    if (session.payment_status !== "paid") {
+        console.log("Magic Link pendiente: el pago no está confirmado.");
+    } else {
+        const mudanzaActualizada =
+            Array.isArray(updateData) && updateData.length > 0
+                ? updateData[0]
+                : null;
 
-    if (!mudanzaActualizada) {
-        throw new Error("No se encontró la mudanza actualizada.");
-    }
+        if (!mudanzaActualizada) {
+            throw new Error("No se encontró la mudanza actualizada.");
+        }
 
-    const emailCliente = String(
-        mudanzaActualizada.email || ""
-    ).trim().toLowerCase();
+        const emailCliente = String(
+            mudanzaActualizada.email || ""
+        ).trim().toLowerCase();
 
-    if (!emailCliente) {
-        throw new Error("La reserva no contiene un correo electrónico.");
-    }
+        if (!emailCliente) {
+            throw new Error("La reserva no contiene un correo electrónico.");
+        }
 
-    // Reclamar el envío una sola vez, incluso con reintentos de Stripe.
-    const { data: envioReclamado, error: errorReclamo } =
-        await supabase
-            .from("mudanzas")
-            .update({
-                email_acceso_estado: "enviando"
-            })
-            .eq("id", mudanzaActualizada.id)
-            .or("email_acceso_estado.is.null,email_acceso_estado.eq.error")
-            .select("id")
-            .maybeSingle();
+        // Permitir recuperar intentos que lleven más de 15 minutos bloqueados.
+        const ahora = new Date();
+        const limiteReintento = new Date(
+            ahora.getTime() - 15 * 60 * 1000
+        ).toISOString();
 
-    if (errorReclamo) throw errorReclamo;
-
-    if (envioReclamado) {
-        const { error: errorEmail } =
-            await supabase.auth.signInWithOtp({
-                email: emailCliente,
-                options: {
-                    emailRedirectTo:
-                        "https://rodaxmudanzasweb.vercel.app/area-cliente.html"
-                }
-            });
-
-        if (errorEmail) {
+        // Reclamar el envío de forma condicionada.
+        const { data: envioReclamado, error: errorReclamo } =
             await supabase
                 .from("mudanzas")
                 .update({
-                    email_acceso_estado: "error"
+                    email_acceso_estado: "enviando",
+                    email_acceso_enviado_at: ahora.toISOString()
+                })
+                .eq("id", mudanzaActualizada.id)
+                .or(
+                    [
+                        "email_acceso_estado.is.null",
+                        "email_acceso_estado.eq.error",
+                        "and(email_acceso_estado.eq.enviando,email_acceso_enviado_at.is.null)",
+                        `and(email_acceso_estado.eq.enviando,email_acceso_enviado_at.lt.${limiteReintento})`
+                    ].join(",")
+                )
+                .select("id")
+                .maybeSingle();
+
+        if (errorReclamo) throw errorReclamo;
+
+        if (envioReclamado) {
+            const { error: errorEmail } =
+                await supabase.auth.signInWithOtp({
+                    email: emailCliente,
+                    options: {
+                        shouldCreateUser: true,
+                        emailRedirectTo:
+                            "https://rodaxmudanzasweb.vercel.app/area-cliente.html"
+                    }
+                });
+
+            if (errorEmail) {
+                await supabase
+                    .from("mudanzas")
+                    .update({
+                        email_acceso_estado: "error"
+                    })
+                    .eq("id", mudanzaActualizada.id);
+
+                throw errorEmail;
+            }
+
+            const { error: errorEstadoEmail } = await supabase
+                .from("mudanzas")
+                .update({
+                    email_acceso_estado: "enviado",
+                    email_acceso_enviado_at: new Date().toISOString()
                 })
                 .eq("id", mudanzaActualizada.id);
 
-            throw errorEmail;
-        }
+            if (errorEstadoEmail) {
+                console.error(
+                    "Error registrando el envío del Magic Link:",
+                    errorEstadoEmail
+                );
+            }
 
-        const { error: errorEstadoEmail } = await supabase
-            .from("mudanzas")
-            .update({
-                email_acceso_estado: "enviado",
-                email_acceso_enviado_at: new Date().toISOString()
-            })
-            .eq("id", mudanzaActualizada.id);
+            console.log("MAGIC LINK ENVIADO A:", emailCliente);
 
-        if (errorEstadoEmail) {
-            console.error(
-                "No se pudo registrar el envío del Magic Link:",
-                errorEstadoEmail
+        } else {
+            console.log(
+                "MAGIC LINK YA ENVIADO O EN PROCESO:",
+                mudanzaActualizada.numero_reserva
             );
         }
-
-        console.log("MAGIC LINK SOLICITADO PARA:", emailCliente);
-
-    } else {
-        console.log(
-            "MAGIC LINK YA ENVIADO O EN PROCESO:",
-            mudanzaActualizada.numero_reserva
-        );
     }
 
 } catch (errorMagicLink) {
