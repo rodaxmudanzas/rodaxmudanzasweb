@@ -68,7 +68,18 @@ console.log(event.data.object.metadata);
         console.log("Evento verificado correctamente");
         console.log("Tipo:", event.type);
 
-        if (event.type !== "checkout.session.completed") {
+        const eventosPagoAdmitidos = [
+    "checkout.session.completed",
+    "checkout.session.async_payment_succeeded"
+];
+
+if (!eventosPagoAdmitidos.includes(event.type)) {
+    console.log("Evento ignorado:", event.type);
+
+    return res.json({
+        received: true
+    });
+}
 
             console.log("Evento ignorado");
 
@@ -81,6 +92,24 @@ console.log(event.data.object.metadata);
         console.log("Pago completado");
 
         const session = event.data.object;
+
+        // SEGURIDAD: no actualizar reservas sin pago confirmado.
+if (
+    session.status !== "complete" ||
+    session.payment_status !== "paid"
+) {
+    console.log(
+        "Pago todavía no confirmado:",
+        session.id,
+        session.status,
+        session.payment_status
+    );
+
+    return res.json({
+        received: true,
+        payment_pending: true
+    });
+}
 
 console.log("SESSION COMPLETA");
 console.log(session);
@@ -227,14 +256,26 @@ if (importeReserva > importeTotal) {
 // Comprobación informativa:
 // lo cobrado por Stripe debe coincidir con la reserva.
 
-if (Math.round(importeReserva * 100) !== Number(session.amount_total)) {
-
-    console.warn(
-        "Aviso: amount_total de Stripe (céntimos) no coincide con la reserva:",
-        session.amount_total,
-        importeReserva
+if (
+    !Number.isFinite(Number(session.amount_total)) ||
+    Math.round(importeReserva * 100) !== Number(session.amount_total) ||
+    session.currency !== "eur" ||
+    session.mode !== "payment"
+) {
+    console.error(
+        "ERROR DE VALIDACIÓN DEL PAGO:",
+        {
+            session_id: session.id,
+            amount_total: session.amount_total,
+            importe_reserva: importeReserva,
+            currency: session.currency,
+            mode: session.mode
+        }
     );
 
+    return res.status(400).json({
+        error: "El pago no coincide con los datos de la reserva."
+    });
 }
 
 
@@ -289,6 +330,40 @@ const { data: reserva, error: errorReserva } = await supabase
     .select("*")
     .eq("numero_reserva", numeroReserva);
 
+    if (errorReserva) {
+    throw errorReserva;
+}
+
+if (!Array.isArray(reserva) || reserva.length !== 1) {
+    console.error(
+        "La reserva no existe o el número no es único:",
+        numeroReserva
+    );
+
+    return res.status(400).json({
+        error: "No se pudo identificar una única reserva."
+    });
+}
+
+const reservaActual = reserva[0];
+
+// No permitir que otra sesión de Stripe sustituya la sesión original.
+if (
+    reservaActual.stripe_session_id &&
+    reservaActual.stripe_session_id !== session.id
+) {
+    console.error(
+        "Conflicto de sesión Stripe:",
+        numeroReserva,
+        reservaActual.stripe_session_id,
+        session.id
+    );
+
+    return res.status(409).json({
+        error: "La reserva ya está vinculada a otra sesión de pago."
+    });
+}
+
 console.log("================================");
 console.log("RESERVA ENCONTRADA:");
 console.log(reserva);
@@ -309,12 +384,19 @@ const { data: updateData, error } = await supabase
     importe_reserva: importeReserva,
     importe_restante: importeRestante
 })
-.eq("numero_reserva", numeroReserva)
+.eq("id", reservaActual.id)
+.or(`stripe_session_id.is.null,stripe_session_id.eq.${session.id}`)
 .select();
 
 console.log("ERROR:", error);
 
 console.log("UPDATE:", updateData);
+
+if (!Array.isArray(updateData) || updateData.length !== 1) {
+    throw new Error(
+        "No se actualizó la reserva. Puede existir un conflicto de sesión."
+    );
+}
 
 if(updateData){
     console.log("FILAS:", updateData.length);
