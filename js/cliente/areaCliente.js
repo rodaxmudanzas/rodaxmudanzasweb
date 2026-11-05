@@ -1564,7 +1564,7 @@ $('btn-cerrar-cancelacion-2').onclick = () => {
     const { error } = await db.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${location.origin}/area-cliente.html`
+        emailRedirectTo: 'https://rodaxmudanzasweb.vercel.app/area-cliente.html'
       }
     });
 
