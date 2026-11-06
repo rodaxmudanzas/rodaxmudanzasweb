@@ -364,6 +364,41 @@ if (
     });
 }
 
+// ==========================================================
+// IDEMPOTENCIA STRIPE — RECLAMAR EVENTO
+// ==========================================================
+
+if (!event.id) {
+    throw new Error("Stripe no ha proporcionado un event.id válido.");
+}
+
+const { data: eventoReclamado, error: errorReclamoEvento } =
+    await supabase.rpc("claim_stripe_webhook_event", {
+        p_event_id: event.id,
+        p_event_type: event.type,
+        p_session_id: session.id
+    });
+
+if (errorReclamoEvento) {
+    console.error(
+        "ERROR RECLAMANDO EVENTO STRIPE:",
+        errorReclamoEvento
+    );
+    throw errorReclamoEvento;
+}
+
+if (eventoReclamado !== true) {
+    console.log(
+        "EVENTO STRIPE DUPLICADO O YA EN PROCESO:",
+        event.id
+    );
+
+    return res.status(200).json({
+        received: true,
+        duplicate: true
+    });
+}
+
 console.log("================================");
 console.log("RESERVA ENCONTRADA:");
 console.log(reserva);
@@ -702,13 +737,53 @@ try {
 
 }
 
-        console.log("WEBHOOK FINALIZADO CORRECTAMENTE");
+        // ==========================================================
+// IDEMPOTENCIA STRIPE — EVENTO PROCESADO
+// ==========================================================
 
-        return res.status(200).json({
-            received: true
-        });
+const { error: errorMarcarProcesado } = await supabase
+    .from("stripe_webhook_events")
+    .update({
+        status: "processed",
+        processed_at: new Date().toISOString(),
+        last_error: null
+    })
+    .eq("event_id", event.id);
+
+if (errorMarcarProcesado) {
+    console.error(
+        "ERROR MARCANDO EVENTO STRIPE COMO PROCESADO:",
+        errorMarcarProcesado
+    );
+
+    throw errorMarcarProcesado;
+}
+
+console.log("WEBHOOK FINALIZADO CORRECTAMENTE");
+
+return res.status(200).json({
+    received: true
+});
 
     } catch (err) {
+
+                // Registrar el fallo para permitir un reintento controlado.
+        if (typeof event !== "undefined" && event?.id) {
+            const { error: errorMarcarFallido } = await supabase
+                .from("stripe_webhook_events")
+                .update({
+                    status: "failed",
+                    last_error: String(err?.message || err).slice(0, 2000)
+                })
+                .eq("event_id", event.id);
+
+            if (errorMarcarFallido) {
+                console.error(
+                    "ERROR REGISTRANDO EVENTO STRIPE FALLIDO:",
+                    errorMarcarFallido
+                );
+            }
+        }
 
         console.error("================================");
         console.error("ERROR EN WEBHOOK");
