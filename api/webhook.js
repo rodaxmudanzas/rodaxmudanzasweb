@@ -40,6 +40,8 @@ module.exports = async function (req, res) {
         return res.status(405).send("Método no permitido");
     }
 
+        let eventoStripe = null;
+
     try {
 
         const signature = req.headers["stripe-signature"];
@@ -53,11 +55,13 @@ module.exports = async function (req, res) {
 
         console.log("Body recibido");
 
-        const event = stripe.webhooks.constructEvent(
+                const event = stripe.webhooks.constructEvent(
             buf,
             signature,
             process.env.STRIPE_WEBHOOK_SECRET
         );
+
+        eventoStripe = event;
 
         console.log("EVENTO RECIBIDO");
 
@@ -768,14 +772,14 @@ return res.status(200).json({
     } catch (err) {
 
                 // Registrar el fallo para permitir un reintento controlado.
-        if (typeof event !== "undefined" && event?.id) {
+        if (eventoStripe?.id) {
             const { error: errorMarcarFallido } = await supabase
                 .from("stripe_webhook_events")
                 .update({
                     status: "failed",
                     last_error: String(err?.message || err).slice(0, 2000)
                 })
-                .eq("event_id", event.id);
+                .eq("event_id", eventoStripe.id);
 
             if (errorMarcarFallido) {
                 console.error(
