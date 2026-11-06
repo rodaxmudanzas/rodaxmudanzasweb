@@ -81,14 +81,6 @@ if (!eventosPagoAdmitidos.includes(event.type)) {
     });
 }
 
-            console.log("Evento ignorado");
-
-            return res.json({
-                received: true
-            });
-
-        }
-
         console.log("Pago completado");
 
         const session = event.data.object;
@@ -305,10 +297,18 @@ console.log("================================");
 
         const fechaCobro70 = new Date(data.fecha);
 
-        fechaCobro70.setHours(7);
-        fechaCobro70.setMinutes(0);
-        fechaCobro70.setSeconds(0);
-        fechaCobro70.setMilliseconds(0);
+if (!data.fecha || Number.isNaN(fechaCobro70.getTime())) {
+    console.error("Fecha de servicio inválida:", data.fecha);
+
+    return res.status(400).json({
+        error: "La fecha de servicio no es válida."
+    });
+}
+
+fechaCobro70.setHours(7);
+fechaCobro70.setMinutes(0);
+fechaCobro70.setSeconds(0);
+fechaCobro70.setMilliseconds(0);
 
         console.log("Actualizando Supabase...");
 
@@ -392,28 +392,24 @@ console.log("ERROR:", error);
 
 console.log("UPDATE:", updateData);
 
+if (error) {
+    console.error("ERROR SUPABASE:");
+    console.error(error);
+    throw error;
+}
+
 if (!Array.isArray(updateData) || updateData.length !== 1) {
     throw new Error(
         "No se actualizó la reserva. Puede existir un conflicto de sesión."
     );
 }
 
-if(updateData){
-    console.log("FILAS:", updateData.length);
-}
+console.log("FILAS:", updateData.length);
 
-            console.log("Filas actualizadas:");
+console.log("Filas actualizadas:");
 console.log(updateData);
 console.log("Cantidad:");
-console.log(updateData?.length ?? 0);
-
-if (error) {
-
-    console.error("ERROR SUPABASE:");
-    console.error(error);
-
-    throw error;
-}
+console.log(updateData.length);
 
 // ==========================================================
 // ACCESO AUTOMÁTICO DEL CLIENTE — MAGIC LINK
