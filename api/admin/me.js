@@ -1,4 +1,4 @@
-const { obtenerContextoAdmin } = require("./_auth");
+const { obtenerContextoAdmin } = require("../../lib/admin-auth");
 
 module.exports = async function handler(req, res) {
     if (req.method !== "GET") {
