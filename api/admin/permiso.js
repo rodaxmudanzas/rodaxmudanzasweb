@@ -5,8 +5,8 @@ const GERENTE_GENERAL_USER_ID = "ffd55e6b-7d3e-4735-851f-636cfbf94d70";
 module.exports = async function handler(req, res) {
     res.setHeader("Cache-Control", "no-store");
 
-    if (req.method !== "POST") {
-        res.setHeader("Allow", "POST");
+    if (req.method !== "POST" && req.method !== "GET") {
+        res.setHeader("Allow", "GET, POST");
         return res.status(405).json({
             ok: false,
             error: "metodo_no_permitido",
@@ -28,6 +28,86 @@ module.exports = async function handler(req, res) {
             ok: false,
             error: "solo_gerente_general",
             mensaje: "Solo el Gerente General puede modificar permisos."
+        });
+    }
+
+    if (req.method === "GET") {
+        const userIdConsulta = typeof req.query?.user_id === "string" ? req.query.user_id.trim() : "";
+        if (!userIdConsulta) {
+            return res.status(400).json({
+                ok: false,
+                error: "colaborador_requerido",
+                mensaje: "Indica el colaborador que deseas consultar."
+            });
+        }
+
+        const { data: colaboradorConsulta, error: colaboradorConsultaError } = await contexto.adminClient
+            .from("rodax_colaboradores")
+            .select("user_id, perfil, estado, protegido")
+            .eq("user_id", userIdConsulta)
+            .maybeSingle();
+
+        if (colaboradorConsultaError || !colaboradorConsulta || colaboradorConsulta.protegido) {
+            return res.status(404).json({
+                ok: false,
+                error: "colaborador_no_disponible",
+                mensaje: "El colaborador no existe o no está disponible."
+            });
+        }
+
+        const { data: asignacionesConsulta, error: asignacionesConsultaError } = await contexto.adminClient
+            .from("rodax_permisos_usuario")
+            .select("permiso_id, permitido, motivo")
+            .eq("user_id", userIdConsulta);
+
+        if (asignacionesConsultaError) {
+            console.error("Error consultando permisos del colaborador:", asignacionesConsultaError);
+            return res.status(500).json({
+                ok: false,
+                error: "error_lectura_permisos",
+                mensaje: "No se pudieron consultar los permisos del colaborador."
+            });
+        }
+
+        const { data: plantillaConsulta, error: plantillaConsultaError } = await contexto.adminClient
+            .from("rodax_asignacion_plantilla")
+            .select("plantilla_id")
+            .eq("user_id", userIdConsulta)
+            .maybeSingle();
+
+        if (plantillaConsultaError) {
+            console.error("Error consultando plantilla del colaborador:", plantillaConsultaError);
+            return res.status(500).json({
+                ok: false,
+                error: "error_lectura_plantilla",
+                mensaje: "No se pudo consultar la plantilla del colaborador."
+            });
+        }
+
+        let permisosPlantilla = [];
+        if (plantillaConsulta?.plantilla_id) {
+            const { data: detalle, error: detalleError } = await contexto.adminClient
+                .from("rodax_plantilla_detalle_permisos")
+                .select("permiso_id, permitido")
+                .eq("plantilla_id", plantillaConsulta.plantilla_id);
+
+            if (detalleError) {
+                console.error("Error consultando detalle de plantilla:", detalleError);
+                return res.status(500).json({
+                    ok: false,
+                    error: "error_lectura_plantilla",
+                    mensaje: "No se pudo consultar el detalle de la plantilla."
+                });
+            }
+            permisosPlantilla = detalle || [];
+        }
+
+        return res.status(200).json({
+            ok: true,
+            user_id: userIdConsulta,
+            plantilla_id: plantillaConsulta?.plantilla_id || null,
+            asignaciones: asignacionesConsulta || [],
+            permisos_plantilla: permisosPlantilla
         });
     }
 
