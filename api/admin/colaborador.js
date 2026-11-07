@@ -111,6 +111,14 @@ module.exports = async function handler(req, res) {
 
     const cuenta = coincidencias[0];
 
+    if (!cuenta.email_confirmed_at) {
+        return res.status(409).json({
+            ok: false,
+            error: "email_no_verificado",
+            mensaje: "La cuenta debe tener el correo verificado antes de incorporarla al equipo."
+        });
+    }
+
     if (cuenta.id === usuario.id) {
         return res.status(400).json({
             ok: false,
