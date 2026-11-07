@@ -91,6 +91,16 @@
             </button>
 
             <p class="px-4 pt-5 pb-2 text-[10px] uppercase tracking-widest text-slate-500 font-bold">
+                Administración
+            </p>
+            <button id="nav-equipo-admin" data-admin-view="equipo"
+                onclick="cambiarVistaAdmin('equipo')"
+                class="admin-nav hidden w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-left">
+                <i data-lucide="users" class="w-4 h-4"></i>
+                Equipo y permisos
+            </button>
+
+            <p class="px-4 pt-5 pb-2 text-[10px] uppercase tracking-widest text-slate-500 font-bold">
                 Control
             </p>
 
@@ -197,6 +207,63 @@
                         </div>
                     </div>
                 </div>
+            </section>
+
+            <section id="admin-view-equipo" class="admin-view hidden space-y-6">
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900">Equipo y permisos</h2>
+                        <p class="text-sm text-slate-500 mt-1">Gestión reservada al Gerente General. Las cuentas nuevas comienzan sin permisos.</p>
+                    </div>
+                    <button onclick="cargarEquipoAdmin()" class="px-4 py-2 rounded-xl bg-blue-50 text-blue-700 font-bold text-sm">Actualizar equipo</button>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+                    <section class="xl:col-span-1 bg-white border border-slate-200 rounded-2xl p-5">
+                        <h3 class="font-black text-slate-800 mb-4">Incorporar colaborador</h3>
+                        <form id="form-alta-colaborador" class="space-y-3">
+                            <label class="block text-xs font-bold text-slate-600">Correo de cuenta ya registrada en RODAX</label>
+                            <input id="nuevo-colaborador-email" type="email" required placeholder="correo@ejemplo.com" class="w-full border rounded-xl px-3 py-2 text-sm">
+                            <label class="block text-xs font-bold text-slate-600">Perfil</label>
+                            <select id="nuevo-colaborador-perfil" required class="w-full border rounded-xl px-3 py-2 text-sm">
+                                <option value="administrador">Administrador</option>
+                                <option value="supervisor">Supervisor</option>
+                                <option value="operario">Operario</option>
+                            </select>
+                            <label class="block text-xs font-bold text-slate-600">Departamento</label>
+                            <select id="nuevo-colaborador-departamento" required class="w-full border rounded-xl px-3 py-2 text-sm">
+                                <option>Operaciones</option><option>Marketplace</option><option>Atención al Cliente</option>
+                                <option>Transportistas</option><option>Flota y Documentación</option><option>Finanzas</option>
+                                <option>Administración</option><option>Tecnología y Sistemas</option>
+                            </select>
+                            <label class="block text-xs font-bold text-slate-600">Equipo (opcional)</label>
+                            <input id="nuevo-colaborador-equipo" maxlength="100" placeholder="Nombre del equipo" class="w-full border rounded-xl px-3 py-2 text-sm">
+                            <button id="btn-alta-colaborador" type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3 font-bold text-sm">Incorporar colaborador</button>
+                            <p class="text-xs text-slate-500">La cuenta debe existir previamente en Supabase Auth y tener el correo verificado. Esta pantalla no crea contraseñas ni envía invitaciones.</p>
+                        </form>
+                    </section>
+
+                    <section class="xl:col-span-2 bg-white border border-slate-200 rounded-2xl p-5">
+                        <h3 class="font-black text-slate-800 mb-4">Colaboradores registrados</h3>
+                        <div id="tabla-equipo-admin" class="overflow-x-auto text-sm">
+                            <p class="text-slate-400">Cargando equipo…</p>
+                        </div>
+                    </section>
+                </div>
+
+                <section class="bg-white border border-slate-200 rounded-2xl p-5">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
+                        <div>
+                            <h3 class="font-black text-slate-800">Permisos individuales</h3>
+                            <p class="text-xs text-slate-500 mt-1">Las asignaciones individuales prevalecen sobre la plantilla. Cada cambio exige un motivo y queda auditado.</p>
+                        </div>
+                        <select id="selector-colaborador-permisos" class="border rounded-xl px-3 py-2 text-sm min-w-64">
+                            <option value="">Selecciona un colaborador</option>
+                        </select>
+                    </div>
+                    <div id="panel-permisos-colaborador" class="text-sm text-slate-400">Selecciona un colaborador para consultar sus permisos.</div>
+                </section>
+                <div id="equipo-admin-mensaje" class="text-sm font-semibold" role="status"></div>
             </section>
 
             <section id="admin-view-mudanzas" class="admin-view hidden space-y-5">
@@ -373,36 +440,45 @@
 
         lucide.createIcons();
 
-        // 2. COMPROBAR LA SESIÓN DE SUPABASE
+        // FASE 4: la autorización del panel procede exclusivamente de la API.
+let contextoAdminActual = null;
+let equipoAdmin = [];
+let catalogoPermisosAdmin = [];
+let permisosAsignadosAdmin = [];
+
+async function solicitarAdmin(url, opciones = {}) {
+    const { data: { session }, error } = await dbClient.auth.getSession();
+    if (error || !session?.access_token) throw new Error('La sesión ha caducado. Inicia sesión de nuevo.');
+
+    const respuesta = await fetch(url, {
+        ...opciones,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + session.access_token,
+            ...(opciones.headers || {})
+        }
+    });
+    const datos = await respuesta.json().catch(() => ({}));
+    if (!respuesta.ok || !datos.ok) throw new Error(datos.mensaje || 'No se pudo completar la operación.');
+    return datos;
+}
+
 async function comprobarSesionAdmin() {
     loginScreen.classList.remove('hidden');
     adminPanel.classList.add('hidden');
+    contextoAdminActual = null;
 
-    const { data: { session }, error } =
-        await dbClient.auth.getSession();
+    const { data: { session }, error } = await dbClient.auth.getSession();
+    if (error || !session) return;
 
-    if (error || !session) {
-        return;
+    try {
+        contextoAdminActual = await solicitarAdmin('/api/admin/me');
+        await mostrarPanel();
+    } catch (errorApi) {
+        await dbClient.auth.signOut();
+        loginError.textContent = errorApi.message || 'Esta cuenta no tiene acceso al panel.';
+        loginError.classList.remove('hidden');
     }
-
-    const { data: rolUsuario, error: errorRol } = await dbClient
-    .from('admin_roles')
-    .select('role')
-    .eq('user_id', session.user.id)
-    .in('role', ['admin', 'supervisor', 'operaciones'])
-    .maybeSingle();
-
-if (errorRol || !rolUsuario) {
-    await dbClient.auth.signOut();
-
-    loginError.textContent =
-        'Acceso denegado: esta cuenta no tiene permisos autorizados.';
-    loginError.classList.remove('hidden');
-
-    return;
-}
-
-await mostrarPanel();
 }
 
         // 3. INICIAR SESIÓN CON SUPABASE AUTH
@@ -455,24 +531,32 @@ await mostrarPanel();
 
         // 4. MOSTRAR EL PANEL
 async function mostrarPanel() {
-    const rol = await obtenerRolActual();
-
-    if (!rol || !['admin', 'supervisor', 'operaciones'].includes(rol)) {
+    if (!contextoAdminActual?.ok || !contextoAdminActual?.colaborador) {
         await dbClient.auth.signOut();
-
         adminPanel.classList.add('hidden');
         loginScreen.classList.remove('hidden');
-
-        loginError.textContent =
-            'Acceso denegado: no tienes un rol autorizado.';
-        loginError.classList.remove('hidden');
-
         return;
     }
 
+    const perfil = contextoAdminActual.colaborador.perfil;
+    const etiquetas = {
+        gerente_general: 'Gerente General',
+        administrador: 'Administrador',
+        supervisor: 'Supervisor',
+        operario: 'Operario'
+    };
+    document.getElementById('admin-role-label').textContent = etiquetas[perfil] || perfil;
+    document.getElementById('admin-email-label')?.replaceChildren(
+        document.createTextNode(contextoAdminActual.usuario?.email || '')
+    );
+
+    // Solo el Gerente General puede ver y gestionar el equipo global.
+    document.getElementById('nav-equipo-admin')?.classList.toggle(
+        'hidden', !contextoAdminActual.esGerenteGeneralProtegido
+    );
+
     loginScreen.classList.add('hidden');
     adminPanel.classList.remove('hidden');
-
     await cargarTodo();
 }
 
@@ -496,30 +580,7 @@ async function mostrarPanel() {
         comprobarSesionAdmin();
 
         // CONTROL DE PERMISOS DEL PANEL ADMINISTRATIVO
-let rolActualAdmin = null;
-
-async function obtenerRolActual() {
-    const { data: { session }, error: errorSesion } =
-        await dbClient.auth.getSession();
-
-    if (errorSesion || !session) {
-        return null;
-    }
-
-    const { data, error } = await dbClient
-        .from('admin_roles')
-        .select('role')
-        .eq('user_id', session.user.id)
-        .maybeSingle();
-
-    if (error || !data) {
-        console.error('No se pudo obtener el rol:', error);
-        return null;
-    }
-
-    rolActualAdmin = data.role;
-    return rolActualAdmin;
-}
+let rolActualAdmin = null; // Compatibilidad temporal con funciones antiguas del panel.
 
         // 4. CRUD Y RENDERIZADO
         async function cargarTodo() {
@@ -546,23 +607,11 @@ async function obtenerRolActual() {
         }
 
         function tienePermiso(accion) {
-    const permisos = {
-        admin: [
-            'ver_mudanzas',
-            'confirmar_pagos',
-            'desasignar_mudanzas'
-        ],
-        supervisor: [
-            'ver_mudanzas',
-            'desasignar_mudanzas'
-        ],
-        operaciones: [
-            'ver_mudanzas'
-        ]
-    };
-
-    return permisos[rolActualAdmin]?.includes(accion) ?? false;
-}
+            return Boolean(
+                contextoAdminActual?.esGerenteGeneralProtegido ||
+                contextoAdminActual?.permisos?.includes(accion)
+            );
+        }
 
         function renderizar(mudanzas) {
             const tbody = document.getElementById('tabla-admin');
@@ -994,11 +1043,14 @@ function cambiarVistaAdmin(vista) {
 
     const titulos = {
         dashboard: 'Dashboard',
-        mudanzas: 'Mudanzas y expedientes'
+        mudanzas: 'Mudanzas y expedientes',
+        equipo: 'Equipo y permisos'
     };
 
     document.getElementById('admin-view-title').textContent =
         titulos[vista] || 'Administración';
+
+    if (vista === 'equipo') cargarEquipoAdmin();
 }
 
 
@@ -1148,6 +1200,149 @@ document.getElementById('filtro-busqueda-mudanza')
 document.getElementById('filtro-estado-mudanza')
     ?.addEventListener('change', aplicarFiltrosMudanzas);
 
+
+
+/* =========================
+   FASE 4 — EQUIPO Y PERMISOS
+========================= */
+function escaparHTMLAdmin(valor) {
+    return String(valor ?? '').replace(/[&<>"']/g, caracter => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[caracter]);
+}
+
+async function cargarEquipoAdmin() {
+    if (!contextoAdminActual?.esGerenteGeneralProtegido) return;
+    const contenedor = document.getElementById('tabla-equipo-admin');
+    const mensaje = document.getElementById('equipo-admin-mensaje');
+    contenedor.innerHTML = '<p class="text-slate-400">Cargando equipo…</p>';
+    mensaje.textContent = '';
+    try {
+        const datos = await solicitarAdmin('/api/admin/equipo');
+        equipoAdmin = datos.equipo || [];
+        catalogoPermisosAdmin = datos.permisos || [];
+        if (!equipoAdmin.length) {
+            contenedor.innerHTML = '<p class="text-slate-500">Todavía no hay colaboradores registrados.</p>';
+        } else {
+            contenedor.innerHTML = `
+                <table class="w-full text-left min-w-[620px]">
+                    <thead><tr class="text-xs uppercase text-slate-400 border-b">
+                        <th class="py-2 pr-3">Correo</th><th class="py-2 pr-3">Perfil</th>
+                        <th class="py-2 pr-3">Departamento / equipo</th><th class="py-2 pr-3">Estado</th><th class="py-2">Acceso</th>
+                    </tr></thead>
+                    <tbody>${equipoAdmin.map(item => `
+                        <tr class="border-b last:border-0">
+                            <td class="py-3 pr-3 font-semibold">${escaparHTMLAdmin(item.email || item.user_id)}</td>
+                            <td class="py-3 pr-3">${escaparHTMLAdmin(item.perfil)}</td>
+                            <td class="py-3 pr-3">${escaparHTMLAdmin(item.departamento)}${item.equipo ? ' · '+escaparHTMLAdmin(item.equipo) : ''}</td>
+                            <td class="py-3 pr-3">${escaparHTMLAdmin(item.estado)}</td>
+                            <td class="py-3">${item.email_confirmado ? 'Correo verificado' : 'Pendiente de verificar'}</td>
+                        </tr>`).join('')}</tbody>
+                </table>`;
+        }
+        const selector = document.getElementById('selector-colaborador-permisos');
+        selector.innerHTML = '<option value="">Selecciona un colaborador</option>' +
+            equipoAdmin.filter(item => !item.protegido && item.estado === 'activo')
+                .map(item => `<option value="${escaparHTMLAdmin(item.user_id)}">${escaparHTMLAdmin(item.email || item.user_id)} — ${escaparHTMLAdmin(item.perfil)}</option>`).join('');
+        lucide.createIcons();
+    } catch (error) {
+        contenedor.innerHTML = '<p class="text-red-600">No se pudo cargar el equipo.</p>';
+        mensaje.textContent = error.message;
+        mensaje.className = 'text-sm font-semibold text-red-600';
+    }
+}
+
+async function cargarPermisosColaboradorAdmin(userId) {
+    const panel = document.getElementById('panel-permisos-colaborador');
+    if (!userId) {
+        panel.textContent = 'Selecciona un colaborador para consultar sus permisos.';
+        return;
+    }
+    panel.innerHTML = '<p class="text-slate-400">Consultando permisos…</p>';
+    try {
+        const datos = await solicitarAdmin('/api/admin/permiso?user_id=' + encodeURIComponent(userId));
+        const individuales = new Map((datos.asignaciones || []).map(item => [item.permiso_id, item.permitido]));
+        const plantilla = new Map((datos.permisos_plantilla || []).map(item => [item.permiso_id, item.permitido]));
+        const grupos = {};
+        catalogoPermisosAdmin.forEach(p => (grupos[p.grupo] ||= []).push(p));
+        panel.innerHTML = Object.entries(grupos).map(([grupo, permisos]) => `
+            <div class="border border-slate-200 rounded-xl p-4 mb-3">
+                <h4 class="font-black text-slate-800 mb-3">${escaparHTMLAdmin(grupo)}</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    ${permisos.map(p => {
+                        const permitido = individuales.has(p.id) ? individuales.get(p.id) === true : plantilla.get(p.id) === true;
+                        const origen = individuales.has(p.id) ? 'Asignación individual' : (plantilla.has(p.id) ? 'Plantilla' : 'Sin asignar');
+                        return `<label class="flex items-start gap-3 p-2 rounded-lg hover:bg-slate-50">
+                            <input type="checkbox" class="mt-1" data-permiso-codigo="${escaparHTMLAdmin(p.codigo)}" ${permitido ? 'checked' : ''}>
+                            <span><span class="block font-semibold text-slate-700">${escaparHTMLAdmin(p.accion)}</span>
+                            <span class="block text-xs text-slate-400">${escaparHTMLAdmin(p.descripcion || '')} · ${origen}</span></span>
+                        </label>`;
+                    }).join('')}
+                </div>
+            </div>`).join('') || '<p class="text-slate-500">No hay permisos activos en el catálogo.</p>';
+        panel.querySelectorAll('input[data-permiso-codigo]').forEach(control => {
+            control.addEventListener('change', async () => {
+                const motivo = prompt('Indica el motivo de este cambio de permiso (obligatorio):');
+                if (!motivo || !motivo.trim()) {
+                    await cargarPermisosColaboradorAdmin(userId);
+                    return;
+                }
+                control.disabled = true;
+                try {
+                    await solicitarAdmin('/api/admin/permiso', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            user_id: userId,
+                            codigo: control.dataset.permisoCodigo,
+                            permitido: control.checked,
+                            motivo: motivo.trim()
+                        })
+                    });
+                    await cargarPermisosColaboradorAdmin(userId);
+                    document.getElementById('equipo-admin-mensaje').textContent = 'Permiso actualizado y registrado en auditoría.';
+                    document.getElementById('equipo-admin-mensaje').className = 'text-sm font-semibold text-emerald-700';
+                } catch (error) {
+                    alert(error.message);
+                    await cargarPermisosColaboradorAdmin(userId);
+                }
+            });
+        });
+    } catch (error) {
+        panel.innerHTML = '<p class="text-red-600"></p>';
+        panel.querySelector('p').textContent = error.message;
+    }
+}
+
+document.getElementById('selector-colaborador-permisos')?.addEventListener('change', event => {
+    cargarPermisosColaboradorAdmin(event.target.value);
+});
+
+document.getElementById('form-alta-colaborador')?.addEventListener('submit', async event => {
+    event.preventDefault();
+    const boton = document.getElementById('btn-alta-colaborador');
+    const mensaje = document.getElementById('equipo-admin-mensaje');
+    boton.disabled = true;
+    try {
+        const resultado = await solicitarAdmin('/api/admin/colaborador', {
+            method: 'POST',
+            body: JSON.stringify({
+                email: document.getElementById('nuevo-colaborador-email').value.trim(),
+                perfil: document.getElementById('nuevo-colaborador-perfil').value,
+                departamento: document.getElementById('nuevo-colaborador-departamento').value,
+                equipo: document.getElementById('nuevo-colaborador-equipo').value.trim() || null
+            })
+        });
+        event.target.reset();
+        mensaje.textContent = resultado.mensaje || 'Colaborador incorporado.';
+        mensaje.className = 'text-sm font-semibold text-emerald-700';
+        await cargarEquipoAdmin();
+    } catch (error) {
+        mensaje.textContent = error.message;
+        mensaje.className = 'text-sm font-semibold text-red-600';
+    } finally {
+        boton.disabled = false;
+    }
+});
 
     </script>
 </body>
